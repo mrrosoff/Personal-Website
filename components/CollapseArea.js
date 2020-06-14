@@ -91,28 +91,28 @@ const downloadClient = (OS, makeNotReadyMessage) =>
 {
 	if (OS === "Debian")
 	{
-		let a = document.createElement('a');
-		a.href = "https://github.com/mrrosoff/Personal-Website/raw/master/static/installers/project-explorer_1.0.0_amd64.deb";
-		a.download = 'project-explorer.deb';
-		document.body.appendChild(a);
-		a.click();
-		setTimeout(() => document.body.removeChild(a), 0);
+		doDownload("https://github.com/mrrosoff/Personal-Website/raw/master/static/installers/project-explorer_1.0.0_amd64.deb");
 	}
 
 	if (OS === "Red Hat")
 	{
-		let a = document.createElement('a');
-		a.href = "https://github.com/mrrosoff/Personal-Website/raw/master/static/installers/project-explorer_1.0.0_amd64.deb";
-		a.download = 'project-explorer.deb';
-		document.body.appendChild(a);
-		a.click();
-		setTimeout(() => document.body.removeChild(a), 0);
+		doDownload("https://github.com/mrrosoff/Personal-Website/raw/master/static/installers/project-explorer-1.0.0-1.x86_64.rpm");
 	}
 
 	else
 	{
 		makeNotReadyMessage();
 	}
-}
+};
+
+const doDownload = (link) =>
+{
+	let a = document.createElement('a');
+	a.href = link;
+	a.download = 'project-explorer.deb';
+	document.body.appendChild(a);
+	a.click();
+	setTimeout(() => document.body.removeChild(a), 0);
+};
 
 export default CollapseArea;
