@@ -17,7 +17,7 @@ module.exports = {
 	},
 	plugins: [
 		new CleanWebpackPlugin(),
-		new HtmlWebpackPlugin({ template: "static/index.html", favicon: "static/favicon.ico"}),
+		new HtmlWebpackPlugin({ template: "static/templates/index.html", favicon: "static/templates/favicon.ico"}),
 		new webpack.HotModuleReplacementPlugin()
 	],
 	output: { filename: "bundle.js", path: path.join(__dirname, outputDirectory) },

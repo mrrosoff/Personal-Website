@@ -44,6 +44,7 @@ const ClientOptions = props =>
 	let OS = props.OS;
 
 	let notReadyMessage = "This Feature Will Be Available In A Future Release.";
+	let makeNotReadyMessage = () => props.produceSnackbar(notReadyMessage, "info");
 
 	return (
 		<Grid container
@@ -52,12 +53,31 @@ const ClientOptions = props =>
 			  alignContent={'center'}
 			  spacing={2}
 		>
-			<Grid item>
-				<GreenButton text={`Download the ${OS} Client`} onClick={() => props.produceSnackbar(notReadyMessage, "info")}/>
-			</Grid>
-			<Grid item>
-				<GreenButton text={"View the Web Client"} onClick={() => props.produceSnackbar(notReadyMessage, "info")}/>
-			</Grid>
+			{
+				OS === "Linux" ?
+					<Grid item>
+						<GreenButton
+							text={`Download the Debian Client`}
+							onClick={() => downloadClient('Debian', makeNotReadyMessage)}
+						/>
+					</Grid> :
+					<Grid item>
+						<GreenButton
+							text={`Download the ${OS} Client`}
+							onClick={() => downloadClient(OS, makeNotReadyMessage)}
+						/>
+					</Grid>
+			}
+			{
+				OS === "Linux" ?
+					<Grid item>
+						<GreenButton
+							text={`Download the Red Hat Client`}
+							onClick={() => downloadClient('Red Hat', makeNotReadyMessage)}
+						/>
+					</Grid> : null
+			}
+
 		</Grid>
 	);
 };
@@ -65,7 +85,34 @@ const ClientOptions = props =>
 const GreenButton = props =>
 {
 	return <Button variant="contained" color={"primary"} size={'small'} onClick={props.onClick}>{props.text}</Button>
-
 };
+
+const downloadClient = (OS, makeNotReadyMessage) =>
+{
+	if (OS === "Debian")
+	{
+		let a = document.createElement('a');
+		a.href = "https://github.com/mrrosoff/Personal-Website/raw/master/static/installers/project-explorer_1.0.0_amd64.deb";
+		a.download = 'project-explorer.deb';
+		document.body.appendChild(a);
+		a.click();
+		setTimeout(() => document.body.removeChild(a), 0);
+	}
+
+	if (OS === "Red Hat")
+	{
+		let a = document.createElement('a');
+		a.href = "https://github.com/mrrosoff/Personal-Website/raw/master/static/installers/project-explorer_1.0.0_amd64.deb";
+		a.download = 'project-explorer.deb';
+		document.body.appendChild(a);
+		a.click();
+		setTimeout(() => document.body.removeChild(a), 0);
+	}
+
+	else
+	{
+		makeNotReadyMessage();
+	}
+}
 
 export default CollapseArea;

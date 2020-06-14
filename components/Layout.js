@@ -14,7 +14,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import LinkButton from "./LinkButton";
 import CollapseArea from "./CollapseArea";
 
-import Profile from '../static/profile.jpg';
+import Profile from '../static/images/profile.jpg';
 
 const useStyles = makeStyles(theme => ({
 	card: { [theme.breakpoints.up('xs')]: { width: '90vw' },
