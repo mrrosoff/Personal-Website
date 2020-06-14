@@ -101,7 +101,7 @@ const downloadClient = (OS, makeNotReadyMessage) =>
 
 	else if (OS === "Windows")
 	{
-		doDownload("https://github.com/mrrosoff/Personal-Website/raw/master/static/installers/project-explorer-1.0.0_Setup.exe");
+		doDownload("https://github.com/mrrosoff/Personal-Website/raw/master/static/installers/project-explorer-1.0.0%20Setup.exe");
 	}
 
 	else
