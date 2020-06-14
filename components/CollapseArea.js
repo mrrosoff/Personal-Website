@@ -94,9 +94,14 @@ const downloadClient = (OS, makeNotReadyMessage) =>
 		doDownload("https://github.com/mrrosoff/Personal-Website/raw/master/static/installers/project-explorer_1.0.0_amd64.deb");
 	}
 
-	if (OS === "Red Hat")
+	else if (OS === "Red Hat")
 	{
 		doDownload("https://github.com/mrrosoff/Personal-Website/raw/master/static/installers/project-explorer-1.0.0-1.x86_64.rpm");
+	}
+
+	else if (OS === "Windows")
+	{
+		doDownload("https://github.com/mrrosoff/Personal-Website/raw/master/static/installers/project-explorer-1.0.0_Setup.exe");
 	}
 
 	else
