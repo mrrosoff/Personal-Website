@@ -91,17 +91,22 @@ const downloadClient = (OS, makeNotReadyMessage) =>
 {
 	if (OS === "Debian")
 	{
-		doDownload("https://github.com/mrrosoff/Personal-Website/raw/master/static/installers/project-explorer_1.0.0_amd64.deb");
+		doDownload("https://github.com/mrrosoff/Personal-Website/raw/master/static/installers/project-explorer_1.3.0_amd64.deb");
 	}
 
 	else if (OS === "Red Hat")
 	{
-		doDownload("https://github.com/mrrosoff/Personal-Website/raw/master/static/installers/project-explorer-1.0.0-1.x86_64.rpm");
+		doDownload("https://github.com/mrrosoff/Personal-Website/raw/master/static/installers/project-explorer-1.3.0-1.x86_64.rpm");
 	}
 
 	else if (OS === "Windows")
 	{
-		doDownload("https://github.com/mrrosoff/Personal-Website/raw/master/static/installers/project-explorer-1.0.0%20Setup.exe");
+		doDownload("https://github.com/mrrosoff/Personal-Website/raw/master/static/installers/project-explorer-1.3.0.Setup.exe");
+	}
+
+	else if (OS === "MacOS")
+	{
+		doDownload("https://github.com/mrrosoff/Personal-Website/raw/master/static/installers/project-explorer-1.3.0.dmg");
 	}
 
 	else
