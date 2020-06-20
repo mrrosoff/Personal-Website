@@ -91,12 +91,12 @@ const downloadClient = (OS, makeNotReadyMessage) =>
 {
 	if (OS === "Debian")
 	{
-		doDownload("https://github.com/mrrosoff/Project-Explorer/releases/latest/download/project-explorer_1.4.1_amd64.deb");
+		doDownload("https://github.com/mrrosoff/Project-Explorer/releases/latest/download/project-explorer_1.4.2_amd64.deb");
 	}
 
 	else if (OS === "Red Hat")
 	{
-		doDownload("https://github.com/mrrosoff/Project-Explorer/releases/latest/download/project-explorer-1.4.1-1.x86_64.rpm");
+		doDownload("https://github.com/mrrosoff/Project-Explorer/releases/latest/download/project-explorer-1.4.2-1.x86_64.rpm");
 	}
 
 	else if (OS === "Windows")
@@ -106,7 +106,7 @@ const downloadClient = (OS, makeNotReadyMessage) =>
 
 	else if (OS === "MacOS")
 	{
-		doDownload("https://github.com/mrrosoff/Project-Explorer/releases/latest/download/project-explorer-1.4.1.dmg");
+		doDownload("https://github.com/mrrosoff/Project-Explorer/releases/latest/download/project-explorer-1.4.2.dmg");
 	}
 
 	else
