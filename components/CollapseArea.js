@@ -89,24 +89,26 @@ const GreenButton = props =>
 
 const downloadClient = (OS, makeNotReadyMessage) =>
 {
+	let version = "1.4.4";
+
 	if (OS === "Debian")
 	{
-		doDownload("https://github.com/mrrosoff/Project-Explorer/releases/latest/download/project-explorer_1.4.3_amd64.deb");
+		doDownload("https://github.com/mrrosoff/Project-Explorer/releases/latest/download/project-explorer_" + version + "_amd64.deb");
 	}
 
 	else if (OS === "Red Hat")
 	{
-		doDownload("https://github.com/mrrosoff/Project-Explorer/releases/latest/download/project-explorer-1.4.3-1.x86_64.rpm");
+		doDownload("https://github.com/mrrosoff/Project-Explorer/releases/latest/download/project-explorer-" + version + "-1.x86_64.rpm");
 	}
 
 	else if (OS === "Windows")
 	{
-		doDownload("https://github.com/mrrosoff/Project-Explorer/releases/latest/download/project-explorer-1.4.3.Setup.exe");
+		doDownload("https://github.com/mrrosoff/Project-Explorer/releases/latest/download/project-explorer-" + version + ".Setup.exe");
 	}
 
 	else if (OS === "MacOS")
 	{
-		doDownload("https://github.com/mrrosoff/Project-Explorer/releases/latest/download/project-explorer-1.4.3.dmg");
+		doDownload("https://github.com/mrrosoff/Project-Explorer/releases/latest/download/project-explorer-" + version + ".dmg");
 	}
 
 	else
