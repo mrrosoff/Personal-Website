@@ -1,6 +1,6 @@
 {
   "name": "personal-website",
-  "version": "1.0.0",
+  "version": "2.0.1",
   "description": "My Personal Website",
   "scripts": {
     "dev": "webpack-dev-server --mode development --devtool inline-source-map",
