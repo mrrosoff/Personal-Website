@@ -1,0 +1,31 @@
+name: Build and Deploy to Pages
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+
+  build-and-deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: "Install Node Modules"
+        run: npm install
+
+      - name: "Build Site"
+        run: npm run build
+
+      - name: "Deploy Site"
+        uses: JamesIves/github-pages-deploy-action@releases/v3
+          with:
+            GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+            BRANCH: site
+            FOLDER: dist

@@ -1,10 +1,10 @@
 {
   "name": "personal-website",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "description": "My Personal Website",
   "scripts": {
-    "dev": "webpack-dev-server --mode development --devtool inline-source-map",
-    "prod": "webpack --mode production && cp _headers dist"
+    "start": "webpack-dev-server --mode development --devtool inline-source-map",
+    "build": "webpack --mode production"
   },
   "author": "Max Rosoff",
   "license": "MIT",
