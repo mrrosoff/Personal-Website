@@ -4,7 +4,7 @@
   "description": "My Personal Website",
   "scripts": {
     "start": "webpack-dev-server --mode development --devtool inline-source-map",
-    "build": "webpack --mode production && cp CNAME docs"
+    "build": "webpack --mode production && cp CNAME dist"
   },
   "author": "Max Rosoff",
   "license": "MIT",

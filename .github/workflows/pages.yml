@@ -15,7 +15,7 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
         with:
-          persist-credentials: false
+            persist-credentials: false
 
       - name: "Install Node Modules"
         run: npm install
@@ -24,8 +24,9 @@ jobs:
         run: npm run build
 
       - name: "Deploy Site"
-        uses: JamesIves/github-pages-deploy-action@releases/v3
+        uses: johno/actions-push-subdirectories@master
+        env:
+            API_TOKEN_GITHUB: ${{ secrets.ACCESS_TOKEN }}
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: docs
-          FOLDER: dist
+            args: dist mrrosoff Personal-Website-Built-For-Pages
