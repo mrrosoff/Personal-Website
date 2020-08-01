@@ -24,9 +24,11 @@ jobs:
         run: npm run build
 
       - name: "Deploy Site"
-        uses: johno/actions-push-subdirectories@master
+        uses: cpina/github-action-push-to-another-repository@master
         env:
             API_TOKEN_GITHUB: ${{ secrets.ACCESS_TOKEN }}
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-            args: dist mrrosoff Personal-Website-Built-For-Pages
+            source-directory: 'dist'
+            destination-github-username: 'mrrosoff'
+            destination-repository-name: 'Personal-Website-Built-For-Pages'
+            user-email: maxrosoff1@gmail.com
