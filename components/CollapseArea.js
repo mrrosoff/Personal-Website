@@ -89,7 +89,7 @@ const GreenButton = props =>
 
 const downloadClient = (OS, makeNotReadyMessage) =>
 {
-	let version = "1.6.2";
+	let version = "1.7.0";
 
 	if (OS === "Debian")
 	{
