@@ -89,16 +89,18 @@ const GreenButton = props =>
 
 const downloadClient = (OS, makeNotReadyMessage) =>
 {
-	let version = "1.7.1";
+	let version = "1.7.2";
 
 	if (OS === "Debian")
 	{
-		doDownload("https://github.com/mrrosoff/Project-Explorer/releases/latest/download/project-explorer_" + version + "_amd64.deb");
+		makeNotReadyMessage();
+		// doDownload("https://github.com/mrrosoff/Project-Explorer/releases/latest/download/project-explorer_" + version + "_amd64.deb");
 	}
 
 	else if (OS === "Red Hat")
 	{
-		doDownload("https://github.com/mrrosoff/Project-Explorer/releases/latest/download/project-explorer-" + version + "-1.x86_64.rpm");
+		makeNotReadyMessage();
+		// doDownload("https://github.com/mrrosoff/Project-Explorer/releases/latest/download/project-explorer-" + version + "-1.x86_64.rpm");
 	}
 
 	else if (OS === "Windows")
