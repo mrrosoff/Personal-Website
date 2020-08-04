@@ -106,7 +106,7 @@ const downloadClient = (OS, makeNotReadyMessage) =>
 		doDownload("https://github.com/mrrosoff/Project-Explorer/releases/latest/download/project-explorer-" + version + ".Setup.exe");
 	}
 
-	else if (OS === "MacOS")
+	else if (OS === "Mac OS")
 	{
 		doDownload("https://github.com/mrrosoff/Project-Explorer/releases/latest/download/project-explorer-" + version + ".dmg");
 	}
