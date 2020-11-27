@@ -3,8 +3,8 @@
   "version": "3.0.0",
   "description": "My Personal Website",
   "scripts": {
-    "start": "webpack-dev-server --mode development --devtool inline-source-map",
-    "build": "webpack --mode production && cp CNAME dist"
+    "start": "webpack-dev-server -d",
+    "build": "webpack -p"
   },
   "author": "Max Rosoff",
   "license": "MIT",
