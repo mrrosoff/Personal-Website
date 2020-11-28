@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import ReactTerminalStateless from 'react-terminal-component/src/ReactTerminalStateless';
+import ReactTerminalStateless from './ReactTerminalStateless';
 import TerminalStateless from './ReactTerminalStateless';
 
 class Terminal extends Component

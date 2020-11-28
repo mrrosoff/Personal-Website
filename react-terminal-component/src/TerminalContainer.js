@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import defaultTheme from 'react-terminal-component/src/themes/default';
+import defaultTheme from './themes/default';
 
 const TerminalContainer = styled.div`
   & > :last-child {

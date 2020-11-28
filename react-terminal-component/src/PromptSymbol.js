@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import defaultTheme from 'react-terminal-component/src/themes/default';
+import defaultTheme from './themes/default';
 
 const PromptSymbol = styled.span`
   margin-right: 0.25em;

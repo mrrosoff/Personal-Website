@@ -1,6 +1,6 @@
-import Emulator from 'react-terminal-component/javascript-terminal/src/emulator';
+import Emulator from './emulator';
 import HistoryKeyboardPlugin
-	from 'react-terminal-component/javascript-terminal/src/emulator/plugins/HistoryKeyboardPlugin';
+	from './emulator/plugins/HistoryKeyboardPlugin';
 import {
 	CommandMapping,
 	EmulatorState,
@@ -8,11 +8,11 @@ import {
 	FileSystem,
 	History,
 	Outputs
-} from 'react-terminal-component/javascript-terminal/src/emulator-state';
-import {OutputFactory, OutputType} from 'react-terminal-component/javascript-terminal/src/emulator-output';
-import {DirOp, FileOp} from 'react-terminal-component/javascript-terminal/src/fs';
-import {OptionParser} from 'react-terminal-component/javascript-terminal/src/parser';
-import defaultCommandMapping from 'react-terminal-component/javascript-terminal/src/commands';
+} from './emulator-state';
+import {OutputFactory, OutputType} from './emulator-output';
+import {DirOp, FileOp} from './fs';
+import {OptionParser} from './parser';
+import defaultCommandMapping from './commands';
 
 // Any class/function exported here forms part of the emulator API
 export {

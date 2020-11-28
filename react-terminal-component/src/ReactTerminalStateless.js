@@ -2,11 +2,11 @@ import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import {ThemeProvider} from 'styled-components';
 import {Emulator, EmulatorState, HistoryKeyboardPlugin} from '../javascript-terminal';
-import defaultTheme from 'react-terminal-component/src/themes/default';
-import CommandInput from 'react-terminal-component/src/input/CommandInput';
-import OutputList from 'react-terminal-component/src/OutputList';
-import TerminalContainer from 'react-terminal-component/src/TerminalContainer';
-import defaultRenderers from 'react-terminal-component/src/output';
+import defaultTheme from './themes/default';
+import CommandInput from './input/CommandInput';
+import OutputList from './OutputList';
+import TerminalContainer from './TerminalContainer';
+import defaultRenderers from './output';
 
 class TerminalStateless extends Component
 {
