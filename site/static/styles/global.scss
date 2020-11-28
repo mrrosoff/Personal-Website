@@ -1,0 +1,38 @@
+@font-face {
+  font-family: 'Clacon';
+  font-style: normal;
+  src: url("../fonts/clacon.ttf") format('truetype');
+}
+
+html {
+  height: 100%
+}
+
+body {
+  min-height: 100%
+}
+
+body, #root {
+
+  div {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  div::-webkit-scrollbar {
+    display: none;
+  }
+
+  * {
+    font-family: 'Clacon', serif !important;
+    font-size: 22px;
+  }
+
+  background-color: #121212 !important;
+  color: white;
+}
+
+a {
+  text-decoration: none;
+  cursor: pointer;
+}

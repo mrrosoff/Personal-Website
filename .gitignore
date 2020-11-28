@@ -9,5 +9,6 @@ node_modules
 
 # Build Files
 
-dist
 build
+dist
+out
