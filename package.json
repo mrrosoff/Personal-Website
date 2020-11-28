@@ -3,10 +3,9 @@
   "version": "4.1.2",
   "description": "My Personal Website",
   "scripts": {
-    "build-js-terminal": "cd react-terminal-component/javascript-terminal && yarn install && yarn build && cd ../..",
-    "build-react-terminal": "cd react-terminal-component && yarn install && yarn build && cd ..",
-    "start": "npm run build-js-terminal && npm run build-react-terminal && webpack-dev-server -d",
-    "build": "npm run build-js-terminal && npm run build-react-terminal && webpack -p"
+    "build-js-terminal": "cd javascript-terminal && yarn install && yarn build && cd ../..",
+    "start": "npm run build-js-terminal && webpack-dev-server -d",
+    "build": "npm run build-js-terminal && webpack -p"
   },
   "author": "Max Rosoff",
   "license": "MIT",

@@ -43,7 +43,6 @@ const Template = props =>
 						alt="Max Rosoff"
 						src={Profile}
 						onClick={() => setOpen(!open)}
-						style={{width: 55, height: 55}}
 					/>
 				</div>
 				<div style={{position: "absolute", top: 70, right: 0}}>
