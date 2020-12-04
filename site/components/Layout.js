@@ -8,16 +8,14 @@ import LinkedInIcon from '@material-ui/icons/LinkedIn'
 import GitHubIcon from '@material-ui/icons/GitHub';
 import GetAppIcon from '@material-ui/icons/GetApp';
 
-import {LinkButtonWithIcon} from "./styled/Buttons";
-
 import Profile from '../static/images/profile.jpg';
 
-import BootUp from "./terminal/BootUp";
-import Terminal from "./terminal/Terminal";
+import BootUp from "./BootUp";
+import TerminalEmbed from "./TerminalEmbed";
 
 const Layout = props =>
 {
-	const [bootingUp, setBootingUp] = useState(true);
+	const [bootingUp, setBootingUp] = useState(false);
 
 	let creationDate = new Date();
 	creationDate.setMinutes(creationDate.getMinutes() - 8);
@@ -26,7 +24,7 @@ const Layout = props =>
 
 	return (
 		<Template {...props}>
-			{bootingUp ? <BootUp setBootingUp={setBootingUp} creationDate={creationDate}/> : <Terminal/>}
+			{bootingUp ? <BootUp setBootingUp={setBootingUp} creationDate={creationDate}/> : <TerminalEmbed />}
 		</Template>
 	);
 };
@@ -129,6 +127,21 @@ const Buttons = props =>
 				</Grid>
 			</Grid>
 		</Grid>
+	);
+};
+
+export const LinkButtonWithIcon = props =>
+{
+	return (
+		<Button
+			href={props.href}
+			target="_blank"
+			rel="noopener"
+			className={props.className ? props.className : ""}
+			startIcon={props.icon}
+		>
+			{props.children}
+		</Button>
 	);
 };
 
