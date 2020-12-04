@@ -1,8 +1,8 @@
-import * as GlobUtil from 'fs/util/glob-util';
-import * as DirOp from 'fs/operations/directory-operations';
-import * as FileOp from 'fs/operations/file-operations';
-import * as PathUtil from 'fs/util/path-util';
-import {fsErrorType, makeError} from 'fs/fs-error';
+import * as GlobUtil from '../util/glob-util';
+import * as DirOp from './directory-operations';
+import * as FileOp from './file-operations';
+import * as PathUtil from '../util/path-util';
+import {fsErrorType, makeError} from '../fs-error';
 
 /**
  * Adds a file or directory to a path

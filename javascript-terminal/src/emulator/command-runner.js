@@ -1,6 +1,6 @@
-import {emulatorErrorType, makeError} from 'emulator/emulator-error';
-import {makeErrorOutput} from 'emulator-output/output-factory';
-import * as CommandMappingUtil from 'emulator-state/command-mapping';
+import {emulatorErrorType, makeError} from './emulator-error';
+import {makeErrorOutput} from '../output';
+import * as CommandMappingUtil from '../emulator-state/command-mapping';
 
 /**
  * Makes an internal emulator error for emulator output. Error output may be

@@ -1,7 +1,7 @@
 import React from 'react';
-import PromptSymbol from 'PromptSymbol';
-import OutputContainer from 'output/OutputContainer';
-import TextCommandWrapper from 'output/TextCommandWrapper';
+import PromptSymbol from '../PromptSymbol';
+import OutputContainer from './OutputContainer';
+import TextCommandWrapper from './TextCommandWrapper';
 
 const HeaderOutput = ({content, promptSymbol}) => (
     <OutputContainer>

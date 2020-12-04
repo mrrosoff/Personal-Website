@@ -2,9 +2,9 @@
  * Adds modification permissions to directory operations by wrapping
  * directory operations
  */
-import * as DirectoryOperations from 'fs/operations/directory-operations';
-import * as PermissionUtil from 'fs/util/permission-util';
-import {fsErrorType, makeError} from 'fs/fs-error';
+import * as DirectoryOperations from '../operations/directory-operations';
+import * as PermissionUtil from '../util/permission-util';
+import {fsErrorType, makeError} from '../fs-error';
 
 const makeDirectoryOperationPermissionError = (message = 'Cannot modify directory') =>
 {

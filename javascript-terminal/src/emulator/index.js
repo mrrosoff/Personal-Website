@@ -1,9 +1,9 @@
-import * as CommandRunner from 'emulator/command-runner';
+import * as CommandRunner from '../emulator/command-runner';
 import {parseCommands} from '../parser';
-import {makeHeaderOutput, makeTextOutput} from 'emulator-output/output-factory';
-import {recordCommand} from 'emulator-state/history';
-import {getEnvironmentVariable} from 'emulator-state/environment-variables';
-import {suggestCommandOptions, suggestCommands, suggestFileSystemNames} from 'emulator/auto-complete';
+import {makeHeaderOutput, makeTextOutput} from '../output';
+import {recordCommand} from '../emulator-state/history';
+import {getEnvironmentVariable} from '../emulator-state/environment-variables';
+import {suggestCommandOptions, suggestCommands, suggestFileSystemNames} from './auto-complete';
 
 export default class Emulator
 {

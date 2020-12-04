@@ -1,4 +1,4 @@
-import BoundedHistoryIterator from 'emulator/plugins/BoundedHistoryIterator';
+import BoundedHistoryIterator from './BoundedHistoryIterator';
 
 export default class HistoryKeyboardPlugin
 {

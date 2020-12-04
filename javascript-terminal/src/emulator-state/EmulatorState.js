@@ -1,9 +1,8 @@
-import {Map} from 'immutable';
-import {create as createCommandMapping} from 'emulator-state/command-mapping';
-import {create as createEnvironmentVariables} from 'emulator-state/environment-variables';
-import {create as createFileSystem} from 'emulator-state/file-system';
-import {create as createHistory} from 'emulator-state/history';
-import {create as createOutputs} from 'emulator-state/outputs';
+import {create as createCommandMapping} from './command-mapping';
+import {create as createEnvironmentVariables} from './environment-variables';
+import {create as createFileSystem} from './file-system';
+import {create as createHistory} from './history';
+import {create as createOutputs} from './outputs';
 
 const FS_KEY = 'fs';
 const ENVIRONMENT_VARIABLES_KEY = 'environmentVariables';
@@ -46,13 +45,13 @@ export default class EmulatorState
                   commandMapping = createCommandMapping()
                 })
   {
-    const stateMap = new Map({
+    const stateMap = {
       [FS_KEY]: fs,
       [ENVIRONMENT_VARIABLES_KEY]: environmentVariables,
       [HISTORY_KEY]: history,
       [OUTPUTS_KEY]: outputs,
       [COMMAND_MAPPING_KEY]: commandMapping
-    });
+    };
 
     return new EmulatorState(stateMap);
   }

@@ -189,7 +189,7 @@ Here us an example of adding a command to print the contents of the arguments:
 
 ```javascript
 const customCommandMapping = Terminal.CommandMapping.create({
-  ...Terminal.defaultCommandMapping,
+  ...Terminal.defaultCommandMapping.js,
   'print': {
     'function': (state, opts) => {
       const input = opts.join(' ');

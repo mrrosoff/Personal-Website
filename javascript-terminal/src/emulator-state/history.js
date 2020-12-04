@@ -1,4 +1,3 @@
-import {Stack} from 'immutable';
 
 /**
  * Creates a new history stack of previous commands that have been run in the

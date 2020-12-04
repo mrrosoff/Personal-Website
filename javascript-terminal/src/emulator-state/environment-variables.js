@@ -1,4 +1,3 @@
-import {Map} from 'immutable';
 
 /**
  * Environment variable mapping containing arbitary data accessed by any

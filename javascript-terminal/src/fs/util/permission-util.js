@@ -1,4 +1,4 @@
-import * as PathUtil from 'fs/util/path-util';
+import * as PathUtil from './path-util';
 
 const DEFAULT_PERMISSION = true;
 

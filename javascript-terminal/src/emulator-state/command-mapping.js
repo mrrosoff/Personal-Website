@@ -1,5 +1,4 @@
-import {fromJS} from 'immutable';
-import defaultCommandMapping from 'commands';
+import defaultCommandMapping from '../defaultCommandMapping';
 
 /**
  * Links a command name to a function

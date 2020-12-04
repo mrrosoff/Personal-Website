@@ -1,8 +1,8 @@
-import * as PathUtil from 'fs/util/path-util';
-import * as BaseOp from 'fs/operations/base-operations';
-import {isFile} from 'fs/util/file-util';
-import {hasDirectory} from 'fs/operations/directory-operations';
-import {fsErrorType, makeError} from 'fs/fs-error';
+import * as PathUtil from '../util/path-util';
+import * as BaseOp from './base-operations';
+import {isFile} from '../util/file-util';
+import {hasDirectory} from './directory-operations';
+import {fsErrorType, makeError} from '../fs-error';
 
 /**
  * Checks whether a file exists

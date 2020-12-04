@@ -2,9 +2,9 @@
  * Adds modification permissions to file operations by wrapping
  * file operations
  */
-import * as PermissionUtil from 'fs/util/permission-util';
-import * as FileOperations from 'fs/operations/file-operations';
-import {fsErrorType, makeError} from 'fs/fs-error';
+import * as PermissionUtil from '../util/permission-util';
+import * as FileOperations from '../operations/file-operations';
+import {fsErrorType, makeError} from '../fs-error';
 
 const makeFileOperationPermissionError = (message = 'Cannot modify file') =>
 {

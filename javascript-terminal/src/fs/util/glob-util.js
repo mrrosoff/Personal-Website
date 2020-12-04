@@ -1,6 +1,5 @@
 import minimatch from 'minimatch';
 import capture from 'minimatch-capture';
-import {List} from 'immutable';
 
 const GLOB_OPTIONS = {dot: true};
 

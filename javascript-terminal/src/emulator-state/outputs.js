@@ -1,4 +1,3 @@
-import {List, Record} from 'immutable';
 
 /**
  * Stores outputs from the emulator (e.g. text to display after running a command)

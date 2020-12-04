@@ -1,6 +1,6 @@
-import * as PathUtil from 'fs/util/path-util';
-import * as GlobUtil from 'fs/util/glob-util';
-import {getCommandNames, getCommandOptDef, isCommandSet} from 'emulator-state/command-mapping';
+import * as PathUtil from '../fs/util/path-util';
+import * as GlobUtil from '../fs/util/glob-util';
+import {getCommandNames, getCommandOptDef, isCommandSet} from '../emulator-state/command-mapping';
 
 /**
  * Suggest command names

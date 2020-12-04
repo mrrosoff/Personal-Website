@@ -1,4 +1,3 @@
-import {fromJS} from 'immutable';
 
 /**
  * Checks if a JavaScript object is a file object

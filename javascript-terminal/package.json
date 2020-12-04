@@ -3,6 +3,7 @@
   "version": "2.0.0",
   "description": "Emulate a Terminal Environment in JavaScript",
   "scripts": {
+    "start": "webpack -d",
     "build": "webpack -p"
   },
   "author": "Max Rosoff based on Work By Rohan Chandra",

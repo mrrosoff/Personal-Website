@@ -1,9 +1,9 @@
-import * as FileUtil from 'fs/util/file-util';
-import * as GlobUtil from 'fs/util/glob-util';
-import * as PathUtil from 'fs/util/path-util';
-import * as BaseOp from 'fs/operations/base-operations';
-import {fsErrorType, makeError} from 'fs/fs-error';
-import {hasFile} from 'fs/operations/file-operations';
+import * as FileUtil from '../util/file-util';
+import * as GlobUtil from '../util/glob-util';
+import * as PathUtil from '../util/path-util';
+import * as BaseOp from './base-operations';
+import {fsErrorType, makeError} from '../fs-error';
+import {hasFile} from './file-operations';
 
 const onlyFilesFilter = fs => path => FileUtil.isFile(fs.get(path));
 const onlyDirectoriesFilter = fs => path => FileUtil.isDirectory(fs.get(path));

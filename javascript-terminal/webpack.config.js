@@ -5,7 +5,7 @@ const outputDirectory = "dist";
 
 module.exports = {
 	entry: ["@babel/polyfill", "./src/index.js"],
-	devtool: 'cheap-source-map',
+	devtool: 'eval-source-map',
 	module: {
 		rules: [
 			{
