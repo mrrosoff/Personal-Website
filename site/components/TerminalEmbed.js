@@ -1,9 +1,9 @@
 import React, {useEffect} from 'react';
 
-import { CommandMapping, DefaultCommandMapping, EmulatorState, FileSystem, OutputFactory } from '../../javascript-terminal/dist/bundle';
+import { CommandMapping, DefaultCommandMapping, EmulatorState, FileSystem, OutputFactory } from '../../javascript-terminal';
 
 import Terminal from './terminal/Terminal';
-import {files} from "./FileSystem";
+import {files} from "../FileSystem";
 
 const TerminalEmbed = props =>
 {

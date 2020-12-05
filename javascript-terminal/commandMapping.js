@@ -7,6 +7,7 @@ import echo from "./commands/echo";
 import head from "./commands/head";
 import history from "./commands/history";
 import ls from "./commands/ls";
+import man from "./commands/man";
 import mkdir from "./commands/mkdir";
 import printenv from "./commands/printenv";
 import pwd from "./commands/pwd";
@@ -18,9 +19,9 @@ import whoami from "./commands/whoami";
 
 const commandMapping = {
 	cat, cd, clear, cp, display,
-	echo, head, history, ls, mkdir,
-	printenv, pwd, rm, rmdir, tail,
-	touch, whoami
+	echo, head, history, ls, man,
+	mkdir, printenv, pwd, rm, rmdir,
+	tail, touch, whoami
 }
 
 export default commandMapping;

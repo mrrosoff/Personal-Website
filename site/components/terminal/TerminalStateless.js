@@ -2,7 +2,7 @@ import React, {useRef, useState} from 'react';
 
 import {ThemeProvider} from 'styled-components';
 
-import {Emulator, HistoryKeyboardPlugin} from '../../../javascript-terminal/dist/bundle';
+import {Emulator, HistoryKeyboardPlugin} from '../../../javascript-terminal';
 
 import TerminalContainer from './TerminalContainer';
 import CommandInput from './CommandInput';

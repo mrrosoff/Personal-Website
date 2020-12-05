@@ -1,6 +1,6 @@
 import {parseOptions} from '../parser';
 import * as OutputFactory from '../output';
-import {resolvePath} from '../emulator-state/util';
+import {relativeToAbsolutePath} from '../emulator-state/util';
 
 export const optDef = { '-n, --lines': '<count>' };
 
@@ -10,7 +10,7 @@ const head = (state, commandOptions) =>
 
   if(argv.length === 0) return {};
 
-  const filePath = resolvePath(state, argv[0]);
+  const filePath = relativeToAbsolutePath(state, argv[0]);
   const headTrimmingFn = (lines, lineCount) => lines.slice(0, lineCount);
   const {content, err} = trimFileContent(state.getFileSystem(), filePath, options, headTrimmingFn);
 
