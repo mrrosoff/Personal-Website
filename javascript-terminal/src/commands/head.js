@@ -1,39 +1,22 @@
-/**
- * Prints the first n lines of a file
- * Usage: head -n 5 file.txt
- */
-import parseOptions from 'parser/option-parser';
+import {parseOptions} from '../parser';
 import * as OutputFactory from '../output';
-import {trimFileContent} from 'commands/util/_head_tail_util.js';
-import {resolvePath} from 'emulator-state/util';
+import {resolvePath} from '../emulator-state/util';
 
-export const optDef = {
-  '-n, --lines': '<count>'
-};
+export const optDef = { '-n, --lines': '<count>' };
 
-export default (state, commandOptions) =>
+const head = (state, commandOptions) =>
 {
   const {argv, options} = parseOptions(commandOptions, optDef);
 
-  if(argv.length === 0)
-  {
-    return {};
-  }
+  if(argv.length === 0) return {};
 
   const filePath = resolvePath(state, argv[0]);
   const headTrimmingFn = (lines, lineCount) => lines.slice(0, lineCount);
-  const {content, err} = trimFileContent(
-      state.getFileSystem(), filePath, options, headTrimmingFn
-  );
+  const {content, err} = trimFileContent(state.getFileSystem(), filePath, options, headTrimmingFn);
 
-  if(err)
-  {
-    return {
-      output: OutputFactory.makeErrorOutput(err)
-    };
-  }
+  if(err) return { output: OutputFactory.makeErrorOutput(err) };
 
-  return {
-    output: OutputFactory.makeTextOutput(content)
-  };
+  return { output: OutputFactory.makeTextOutput(content) };
 };
+
+export default head;

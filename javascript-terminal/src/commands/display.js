@@ -23,7 +23,7 @@ const fileToImageOutput = (fs, filePath) =>
 
 export const optDef = {};
 
-export default (state, commandOptions) =>
+const display = (state, commandOptions) =>
 {
 	const {argv} = parseOptions(commandOptions, optDef);
 
@@ -34,3 +34,5 @@ export default (state, commandOptions) =>
 
 	return { outputs: filePaths.map(path => fileToImageOutput(state.getFileSystem(), path)) };
 };
+
+export default display;

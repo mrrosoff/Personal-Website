@@ -1,39 +1,22 @@
-/**
- * Prints the last n lines of a file
- * Usage: tail -n 5 file.txt
- */
-import parseOptions from 'parser/option-parser';
+import {parseOptions} from '../parser';
 import * as OutputFactory from '../output';
-import {trimFileContent} from 'commands/util/_head_tail_util.js';
-import {resolvePath} from 'emulator-state/util';
+import {relativeToAbsolutePath} from '../emulator-state/util';
 
-export const optDef = {
-  '-n, --lines': '<count>'
-};
+export const optDef = { '-n, --lines': '<count>' };
 
-export default (state, commandOptions) =>
+const tail = (state, commandOptions) =>
 {
   const {argv, options} = parseOptions(commandOptions, optDef);
 
-  if(argv.length === 0)
-  {
-    return {};
-  }
+  if(argv.length === 0) return {};
 
-  const filePath = resolvePath(state, argv[0]);
+  const filePath = relativeToAbsolutePath(state, argv[0]);
   const tailTrimmingFn = (lines, lineCount) => lines.slice(-1 * lineCount);
-  const {content, err} = trimFileContent(
-      state.getFileSystem(), filePath, options, tailTrimmingFn
-  );
+  const {content, err} = trimFileContent(state.getFileSystem(), filePath, options, tailTrimmingFn);
 
-  if(err)
-  {
-    return {
-      output: OutputFactory.makeErrorOutput(err)
-    };
-  }
+  if(err) return { output: OutputFactory.makeErrorOutput(err) };
 
-  return {
-    output: OutputFactory.makeTextOutput(content)
-  };
+  return { output: OutputFactory.makeTextOutput(content) };
 };
+
+export default tail;

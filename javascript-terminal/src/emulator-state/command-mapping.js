@@ -1,11 +1,11 @@
-import defaultCommandMapping from '../defaultCommandMapping';
+import commandMapping from '../commandMapping';
 
 /**
  * Links a command name to a function
  * @param  {Object} [commandMapping={}] default command map
  * @return {Map}                        command mapping
  */
-export const create = (commandMapping = defaultCommandMapping) =>
+export const create = (commandMapping = commandMapping) =>
 {
   for(const commandName of Object.keys(commandMapping))
   {

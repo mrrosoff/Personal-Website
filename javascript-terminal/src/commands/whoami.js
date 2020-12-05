@@ -1,19 +1,13 @@
-/**
- * Prints the username of the logged in user
- * Usage: whoami
- */
 import * as OutputFactory from '../output';
-import {getEnvironmentVariable} from 'emulator-state/environment-variables';
+import {getEnvironmentVariable} from '../emulator-state/environment-variables';
 
-const FALLBACK_USERNAME = 'root';
+const FALLBACK_USERNAME = 'dev';
 
 export const optDef = {};
 
-export default (state, commandOptions) =>
+const whoami = (state, commandOptions) =>
 {
-  return {
-    output: OutputFactory.makeTextOutput(
-        getEnvironmentVariable(state.getEnvVariables(), 'user') || FALLBACK_USERNAME
-    )
-  };
+  return { output: OutputFactory.makeTextOutput(getEnvironmentVariable(state.getEnvVariables(), 'user') || FALLBACK_USERNAME) };
 };
+
+export default whoami;
