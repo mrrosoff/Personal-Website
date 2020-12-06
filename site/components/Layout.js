@@ -34,21 +34,24 @@ const Template = props =>
 	const [open, setOpen] = useState(false);
 
 	return (
-		<Box pt={8} pb={5} pl={8} pr={8}>
-			<div style={{position: "relative"}}>
-				<div style={{position: "absolute", top: 0, right: 0}}>
-					<Avatar
-						alt="Max Rosoff"
-						src={Profile}
-						onClick={() => setOpen(!open)}
-					/>
+		<Grid container justify={"center"} alignContent={"center"} alignItems={"center"} style={{width: "100vw", height: "100vh"}}>
+			<Grid item style={{width: "90%", height: "90%"}}>
+				<div style={{position: "relative"}}>
+					<div style={{position: "absolute", top: 0, right: 0}}>
+						<Avatar
+							alt="Max Rosoff"
+							src={Profile}
+							onClick={() => setOpen(!open)}
+						/>
+					</div>
+					<div style={{position: "absolute", top: 70, right: 0}}>
+						{open ? <UserCard open={open} {...props} /> : null}
+					</div>
 				</div>
-				<div style={{position: "absolute", top: 70, right: 0}}>
-					{open ? <UserCard open={open} {...props} /> : null}
-				</div>
-			</div>
-			{props.children}
-		</Box>
+				{props.children}
+			</Grid>
+		</Grid>
+
 	);
 }
 const UserCard = props =>

@@ -1,16 +1,10 @@
-/**
- * Adds modification permissions to directory operations by wrapping
- * directory operations
- */
 import * as DirectoryOperations from '../operations/directory-operations';
 import * as PermissionUtil from '../util/permission-util';
 import {fsErrorType, makeError} from '../fs-error';
 
 const makeDirectoryOperationPermissionError = (message = 'Cannot modify directory') =>
 {
-  return {
-    err: makeError(fsErrorType.PERMISSION_DENIED, message)
-  };
+  return { err: makeError(fsErrorType.PERMISSION_DENIED, message) };
 };
 
 export const hasDirectory = (...args) =>
@@ -82,3 +76,10 @@ export const renameDirectory = (fs, currentPath, newPath) =>
 
   return DirectoryOperations.renameDirectory(fs, currentPath, newPath);
 };
+
+const DirOp = {
+  makeDirectoryOperationPermissionError, hasDirectory, listDirectory, listDirectoryFiles, listDirectoryFolders,
+  addDirectory, copyDirectory, deleteDirectory, renameDirectory
+}
+
+export default DirOp;

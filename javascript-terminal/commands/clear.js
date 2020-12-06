@@ -1,11 +1,11 @@
-import {create as createOutputs} from '../emulator-state/outputs';
+import {create as createOutputs} from '../emulator-state/Outputs';
 
 
 export const optDef = {};
 
-const clear = (state, commandOptions) =>
+const functionDef = (state, commandOptions) =>
 {
   return { state: state.setOutputs(createOutputs()) };
 };
 
-export default clear;
+export default {optDef, functionDef};

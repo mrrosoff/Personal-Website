@@ -1,13 +1,12 @@
-import * as OutputFactory from '../output';
-import {getEnvironmentVariable} from '../emulator-state/environment-variables';
+import {getEnvironmentVariable} from '../emulator-state/EnvironmentVariables';
 
 const FALLBACK_USERNAME = 'dev';
 
 export const optDef = {};
 
-const whoami = (state, commandOptions) =>
+const functionDef = (state, commandOptions) =>
 {
-  return { output: OutputFactory.makeTextOutput(getEnvironmentVariable(state.getEnvVariables(), 'user') || FALLBACK_USERNAME) };
+  return { output: getEnvironmentVariable(state.getEnvVariables(), 'user') || FALLBACK_USERNAME };
 };
 
-export default whoami;
+export default {optDef, functionDef};

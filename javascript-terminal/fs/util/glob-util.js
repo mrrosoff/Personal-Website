@@ -15,12 +15,12 @@ export const globSeq = (seq, globPattern) =>
 
 export const globPaths = (fs, globPattern) =>
 {
-  return globSeq(fs.keySeq(), globPattern);
+  return globSeq(Object.keys(fs), globPattern);
 };
 
 export const captureGlobPaths = (fs, globPattern, filterCondition = (path) => true) =>
 {
-  return fs.keySeq().reduce((captures, path) =>
+  return Object.keys(fs).reduce((captures, path) =>
   {
     if(filterCondition(path))
     {
@@ -33,5 +33,5 @@ export const captureGlobPaths = (fs, globPattern, filterCondition = (path) => tr
     }
 
     return captures;
-  }, List());
+  }, []);
 };

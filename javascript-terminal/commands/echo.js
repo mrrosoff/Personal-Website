@@ -1,5 +1,4 @@
-import * as OutputFactory from '../output';
-import {getEnvironmentVariable} from '../emulator-state/environment-variables';
+import {getEnvironmentVariable} from '../emulator-state/EnvironmentVariables';
 
 const VARIABLE_GROUP_REGEX = /\$(\w+)/g;
 const DOUBLE_SPACE_REGEX = /\s\s+/g;
@@ -11,13 +10,13 @@ const substituteEnvVariables = (environmentVariables, inputStr) =>
 
 export const optDef = {};
 
-const echo = (state, commandOptions) =>
+const functionDef = (state, commandOptions) =>
 {
   const input = commandOptions.join(' ');
   const outputStr = substituteEnvVariables(state.getEnvVariables(), input);
   const cleanStr = outputStr.trim().replace(DOUBLE_SPACE_REGEX, ' ');
 
-  return { output: OutputFactory.makeTextOutput(cleanStr) };
+  return { output: cleanStr };
 };
 
-export default echo;
+export default {optDef, functionDef};

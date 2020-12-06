@@ -1,11 +1,10 @@
-import * as OutputFactory from '../output';
-import {getEnvironmentVariable} from '../emulator-state/environment-variables';
+import {getEnvironmentVariable} from '../emulator-state/EnvironmentVariables';
 
 export const optDef = {};
 
-const pwd = (state, commandOptions) =>
+const functionDef = (state, commandOptions) =>
 {
-  return { output: OutputFactory.makeTextOutput(getEnvironmentVariable(state.getEnvVariables(), 'cwd')) };
+  return { output: getEnvironmentVariable(state.getEnvVariables(), 'cwd') };
 };
 
-export default pwd;
+export default {optDef, functionDef};

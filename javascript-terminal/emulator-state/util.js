@@ -1,4 +1,4 @@
-import * as EnvVariableUtil from './environment-variables';
+import * as EnvVariableUtil from './EnvironmentVariables';
 import * as PathUtil from '../fs/util/path-util';
 
 

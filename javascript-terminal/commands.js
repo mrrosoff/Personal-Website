@@ -17,11 +17,11 @@ import tail from "./commands/tail";
 import touch from "./commands/touch";
 import whoami from "./commands/whoami";
 
-const commandMapping = {
+const commands = {
 	cat, cd, clear, cp, display,
 	echo, head, history, ls, man,
 	mkdir, printenv, pwd, rm, rmdir,
 	tail, touch, whoami
 }
 
-export default commandMapping;
+export default commands;

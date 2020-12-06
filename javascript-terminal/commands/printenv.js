@@ -1,6 +1,5 @@
 import {parseOptions} from '../parser';
-import * as OutputFactory from '../output';
-import {getEnvironmentVariable} from '../emulator-state/environment-variables';
+import {getEnvironmentVariable} from '../emulator-state/EnvironmentVariables';
 
 const stringifyEnvVariables = (envVariables) =>
 {
@@ -10,18 +9,18 @@ const stringifyEnvVariables = (envVariables) =>
 
 export const optDef = {};
 
-const printenv = (state, commandOptions) =>
+const functionDef = (state, commandOptions) =>
 {
   const {argv} = parseOptions(commandOptions, optDef);
   const envVariables = state.getEnvVariables();
 
-  if(argv.length === 0) return { output: OutputFactory.makeTextOutput(stringifyEnvVariables(envVariables)) };
+  if(argv.length === 0) return { output: stringifyEnvVariables(envVariables) };
 
   const varValue = getEnvironmentVariable(envVariables, argv[0]);
 
-  if(varValue) return { output: OutputFactory.makeTextOutput(varValue) };
+  if(varValue) return { output: varValue };
 
   return {};
 };
 
-export default printenv;
+export default {optDef, functionDef};

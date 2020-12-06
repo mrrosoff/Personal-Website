@@ -1,6 +1,5 @@
 import {parseOptions} from '../parser';
 import * as DirOp from '../fs/operations-with-permissions/directory-operations';
-import * as OutputFactory from '../output';
 import * as FileUtil from '../fs/util/file-util';
 import {relativeToAbsolutePath} from '../emulator-state/util';
 
@@ -8,7 +7,7 @@ const EMPTY_DIR = FileUtil.makeDirectory();
 
 export const optDef = {};
 
-const mkdir = (state, commandOptions) =>
+const functionDef = (state, commandOptions) =>
 {
   const {argv} = parseOptions(commandOptions, optDef);
 
@@ -19,10 +18,10 @@ const mkdir = (state, commandOptions) =>
 
   if(err)
   {
-    return { output: OutputFactory.makeErrorOutput(err) };
+    return { output: err };
   }
 
   return { state: state.setFileSystem(fs) };
 };
 
-export default mkdir;
+export default {optDef, functionDef};

@@ -2,14 +2,13 @@ import React from "react";
 
 import {parseOptions} from '../parser';
 import * as FileOp from '../fs/operations-with-permissions/file-operations';
-import * as OutputFactory from '../output';
 import {relativeToAbsolutePath} from '../emulator-state/util';
 
 const fileToImageOutput = (fs, filePath) =>
 {
 	const {err, file} = FileOp.readFile(fs, filePath);
 
-	if(err) return OutputFactory.makeErrorOutput(err);
+	if(err) return err;
 
 	let jsxElement = <img alt={"Image"} src={file.get('content')} style={{width: "auto", height: 360, padding: 10}} />;
 
@@ -18,12 +17,12 @@ const fileToImageOutput = (fs, filePath) =>
 		jsxElement = <iframe width="640" height="360" frameBorder="0" src={file.get('content')} style={{padding: 10}} />;
 	}
 
-	return OutputFactory.makeTextOutput(jsxElement);
+	return jsxElement;
 };
 
 export const optDef = {};
 
-const display = (state, commandOptions) =>
+const functionDef = (state, commandOptions) =>
 {
 	const {argv} = parseOptions(commandOptions, optDef);
 
@@ -35,4 +34,4 @@ const display = (state, commandOptions) =>
 	return { outputs: filePaths.map(path => fileToImageOutput(state.getFileSystem(), path)) };
 };
 
-export default display;
+export default {optDef, functionDef};

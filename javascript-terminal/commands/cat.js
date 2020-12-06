@@ -1,6 +1,5 @@
 import {parseOptions} from '../parser';
 import * as FileOp from '../fs/operations-with-permissions/file-operations';
-import * as OutputFactory from '../output';
 import {relativeToAbsolutePath} from '../emulator-state/util';
 
 const fileToTextOutput = (fs, filePath) =>
@@ -9,12 +8,12 @@ const fileToTextOutput = (fs, filePath) =>
 
   if(err) return OutputFactory.makeErrorOutput(err);
 
-  return OutputFactory.makeTextOutput(file.get('content'));
+  return file.content;
 };
 
 export const optDef = {};
 
-const cat = (state, commandOptions) =>
+const functionDef = (state, commandOptions) =>
 {
   const {argv} = parseOptions(commandOptions, optDef);
 
@@ -24,4 +23,4 @@ const cat = (state, commandOptions) =>
   return { outputs: filePaths.map(path => fileToTextOutput(state.getFileSystem(), path)) };
 };
 
-export default cat;
+export default {optDef, functionDef};

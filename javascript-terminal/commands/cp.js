@@ -2,7 +2,6 @@ import {parseOptions} from '../parser';
 import * as FileOp from '../fs/operations-with-permissions/file-operations';
 import * as DirectoryOp from '../fs/operations-with-permissions/directory-operations';
 import * as PathUtil from '../fs/util/path-util';
-import * as OutputFactory from '../output';
 import * as FileUtil from '../fs/util/file-util';
 import {fsErrorType, makeError} from '../fs/fs-error';
 import {relativeToAbsolutePath} from '../emulator-state/util';
@@ -14,14 +13,12 @@ const copySourceFile = (state, srcPath, destPath, isTrailingPathDest) =>
 
   if(isTrailingPathDest && !DirectoryOp.hasDirectory(fs, destPath))
   {
-    const dirAtTrailingPathNonExistentErr = makeError(fsErrorType.NO_SUCH_DIRECTORY);
-
-    return { output: OutputFactory.makeErrorOutput(dirAtTrailingPathNonExistentErr) };
+    return { output: makeError(fsErrorType.NO_SUCH_DIRECTORY) };
   }
 
   const {fs: copiedFS, err} = FileOp.copyFile(fs, srcPath, destPath);
 
-  if(err) return { output: OutputFactory.makeErrorOutput(err) };
+  if(err) return { output: err };
 
   return { state: state.setFileSystem(copiedFS) };
 };
@@ -47,20 +44,20 @@ const copySourceDirectory = (state, srcPath, destPath) =>
 
     if(err)
     {
-      return { output: OutputFactory.makeErrorOutput(err) };
+      return { output: err };
     }
   }
 
   const {fs, err} = DirectoryOp.copyDirectory(state.getFileSystem(), srcPath, destPath);
 
-  if(err) return { output: OutputFactory.makeErrorOutput(err) };
+  if(err) return { output: err };
 
   return { state: state.setFileSystem(fs) };
 };
 
 export const optDef = { '-r, --recursive': '' };
 
-const cp = (state, commandOptions) =>
+const functionDef = (state, commandOptions) =>
 {
   const {argv, options} = parseOptions(commandOptions, optDef);
 
@@ -72,7 +69,7 @@ const cp = (state, commandOptions) =>
 
   if(srcPath === destPath)
   {
-    return { output: OutputFactory.makeTextOutput('Source and destination are the same (not copied).') };
+    return { output: 'Source and destination are the same (not copied).' };
   }
 
   if(options.recursive) return copySourceDirectory(state, srcPath, destPath);
@@ -80,4 +77,4 @@ const cp = (state, commandOptions) =>
   return copySourceFile(state, srcPath, destPath, isTrailingDestPath);
 };
 
-export default cp;
+export default {optDef, functionDef};

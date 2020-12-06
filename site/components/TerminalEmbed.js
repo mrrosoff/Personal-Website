@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 
-import { CommandMapping, DefaultCommandMapping, EmulatorState, FileSystem, OutputFactory } from '../../javascript-terminal';
+import { CommandMapping, DefaultCommandMapping, EmulatorState, FileSystem } from '../../javascript-terminal';
 
 import Terminal from './terminal/Terminal';
 import {files} from "../FileSystem";
@@ -20,12 +20,12 @@ const TerminalEmbed = props =>
 		'commandMapping': CommandMapping.create({
 			...DefaultCommandMapping,
 			'exit': {
-				'function': (state, opts) => close(),
+				'functionDef': (state, opts) => close(),
 				'optDef': {}
 			},
 			'help': {
-				'function': (state, opts) => ({
-					output: OutputFactory.makeTextOutput(
+				'functionDef': (state, opts) => ({
+					output:
 						'Welcome to Help!' + '\n' + '\n' +
 						"Some Basic Commands" + '\n' + '\n' +
 						'cat: Read A File ' + '\n' +
@@ -33,7 +33,6 @@ const TerminalEmbed = props =>
 						'cd: Change Directory' + '\n' +
 						'ls: List Files' + '\n' + '\n' +
 						'For More Information, Try \"man [command]\"'
-					)
 				}),
 				'optDef': {}
 			}
@@ -52,7 +51,7 @@ const TerminalEmbed = props =>
 				height: '88vh'
 			}}
 			emulatorState={customState}
-			promptSymbol={"dev@rosoff:$"}
+			promptSymbol={"dev@rosoff"}
 			errorStr={"Looks Like That Command Isn't Valid. Try 'help' For More Information."}
 		/>
 	);

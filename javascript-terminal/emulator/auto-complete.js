@@ -1,6 +1,6 @@
 import * as PathUtil from '../fs/util/path-util';
 import * as GlobUtil from '../fs/util/glob-util';
-import {getCommandNames, getCommandOptDef, isCommandSet} from '../emulator-state/command-mapping';
+import {getCommandNames, getCommandOptDef, isCommandSet} from '../emulator-state/CommandMapping';
 
 /**
  * Suggest command names
@@ -29,7 +29,7 @@ export const suggestCommandOptions = (cmdMapping, commandName, partialStr) =>
     return [];
   }
 
-  const optDefSeq = getCommandOptDef(cmdMapping, commandName).keySeq().flatMap(opts =>
+  const optDefSeq = Object.keys(getCommandOptDef(cmdMapping, commandName)).flatMap(opts =>
       opts.split(',').map(opt => opt.trim())
   );
 

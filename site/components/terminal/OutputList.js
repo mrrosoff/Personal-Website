@@ -1,21 +1,26 @@
 import React from 'react';
 
+import {Grid, Typography} from "@material-ui/core";
+import PromptSymbol from "./PromptSymbol";
+
 const OutputList = props =>
 {
-    return props.outputs.map((output, index) =>
-    {
-        const type = output.get('type');
-        const content = output.get('content');
-
-        if(!props.outputRenderers.hasOwnProperty(type))
+    return <Grid container direction={"column"} spacing={1}>
         {
-            throw new Error(`No output renderer set for ${type} in outputRenderers`);
+            props.emulatorState.getOutputs().map((content, key) =>
+                <Grid item key={key}>
+                    <Grid container direction={"column"}>
+                        <Grid item>
+                            <PromptSymbol theme={props.theme} {...props}>{props.promptSymbol}</PromptSymbol>
+                        </Grid>
+                        <Grid item>
+                            {content.split("\n").map((line, key) => <Typography key={key}>{line}</Typography>)}
+                        </Grid>
+                    </Grid>
+                </Grid>
+            )
         }
-
-        const OutputComponent = props.outputRenderers[type];
-
-        return <OutputComponent key={index} content={content} {...props}/>;
-    });
+    </Grid>
 }
 
 export default OutputList;

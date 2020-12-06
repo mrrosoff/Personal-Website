@@ -1,4 +1,5 @@
 
+export const create = (outputs = []) => outputs;
 
 export const addRecord = (outputs, outputRecord) =>
 {
@@ -14,3 +15,5 @@ export const addRecord = (outputs, outputRecord) =>
 
   return outputs.push(outputRecord);
 };
+
+export default {create};

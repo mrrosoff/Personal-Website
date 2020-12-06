@@ -1,6 +1,5 @@
 import {parseOptions} from '../parser';
-import * as OutputFactory from '../output';
-import {create as createHistory} from '../emulator-state/history';
+import {create as createHistory} from '../emulator-state/History';
 
 const clearStateHistory = (state) => state.setHistory(createHistory());
 
@@ -8,13 +7,13 @@ const stringifyStateHistory = (state) => state.getHistory().join('\n');
 
 export const optDef = { '-c, --clear': '' };
 
-const history = (state, commandOptions) =>
+const functionDef = (state, commandOptions) =>
 {
   const {options} = parseOptions(commandOptions, optDef);
 
   if(options.clear) return { state: clearStateHistory(state) };
 
-  return { output: OutputFactory.makeTextOutput(stringifyStateHistory(state)) };
+  return { output: stringifyStateHistory(state) };
 };
 
-export default history;
+export default {optDef, functionDef};

@@ -57,3 +57,6 @@ export const deleteFile = (fs, filePath) =>
 
   return FileOperations.deleteFile(fs, filePath);
 };
+
+const FileOp = {}
+export default FileOp;

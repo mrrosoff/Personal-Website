@@ -1,8 +1,7 @@
 import {parseOptions} from '../parser';
 import * as DirectoryOp from '../fs/operations-with-permissions/directory-operations';
-import * as EnvVariableUtil from '../emulator-state/environment-variables';
+import * as EnvVariableUtil from '../emulator-state/EnvironmentVariables';
 import * as PathUtil from '../fs/util/path-util';
-import * as OutputFactory from '../output';
 
 const IMPLIED_DIRECTORY_ENTRIES = ['.', '..'];
 
@@ -17,9 +16,7 @@ const resolveDirectoryToList = (envVariables, argv) =>
 
 const makeSortedReturn = (listing) =>
 {
-  const sortedListing = listing.sort();
-
-  return { output: OutputFactory.makeTextOutput(sortedListing.join('\n')) };
+  return { output: listing.sort().join('\n') };
 };
 
 const removeHiddenFilesFilter = (record) =>
@@ -29,13 +26,13 @@ const removeHiddenFilesFilter = (record) =>
 
 export const optDef = {'-a, --all': '', '-A, --almost-all': '' };
 
-const ls = (state, commandOptions) =>
+const functionDef = (state, commandOptions) =>
 {
   const {options, argv} = parseOptions(commandOptions, optDef);
   const dirPath = resolveDirectoryToList(state.getEnvVariables(), argv);
   const {err, list: dirList} = DirectoryOp.listDirectory(state.getFileSystem(), dirPath);
 
-  if(err) return { output: OutputFactory.makeErrorOutput(err) };
+  if(err) return { output: err };
 
   if(options.all)
   {
@@ -50,4 +47,4 @@ const ls = (state, commandOptions) =>
   return makeSortedReturn(dirList.filter(removeHiddenFilesFilter));
 };
 
-export default ls;
+export default {optDef, functionDef};

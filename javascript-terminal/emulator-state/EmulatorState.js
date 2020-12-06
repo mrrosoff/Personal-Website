@@ -1,8 +1,8 @@
-import {create as createCommandMapping} from './command-mapping';
-import {create as createEnvironmentVariables} from './environment-variables';
-import {create as createFileSystem} from './file-system';
-import {create as createHistory} from './history';
-import {create as createOutputs} from './outputs';
+import {create as createCommandMapping} from './CommandMapping';
+import {create as createEnvironmentVariables} from './EnvironmentVariables';
+import {create as createFileSystem} from './FileSystem';
+import {create as createHistory} from './History';
+import {create as createOutputs} from './Outputs';
 
 const FS_KEY = 'fs';
 const ENVIRONMENT_VARIABLES_KEY = 'environmentVariables';
@@ -12,31 +12,21 @@ const COMMAND_MAPPING_KEY = 'commandMapping';
 
 export default class EmulatorState
 {
-  constructor(immutable)
+  constructor(state)
   {
-    if(!immutable || !(immutable instanceof Map))
+    if(!state)
     {
       throw new Error('Do not use the constructor directly. Use the static create method.');
     }
 
-    this._immutable = immutable;
+    this.state = state;
   }
 
-  /**
-   * Creates emulator state with defaults
-   * @return {EmulatorState} default emulator state
-   */
   static createEmpty()
   {
     return EmulatorState.create({});
   }
 
-  /**
-   * Creates emulator state using the user's state components, or a default
-   * fallback if none is provided
-   * @param  {object} optionally contains each component as a key and the component as a value
-   * @return {EmulatorState}     emulator state
-   */
   static create({
                   fs = createFileSystem(),
                   environmentVariables = createEnvironmentVariables(),
@@ -58,71 +48,57 @@ export default class EmulatorState
 
   getFileSystem()
   {
-    return this.getImmutable().get(FS_KEY);
+    return this.state[FS_KEY];
   }
 
   setFileSystem(newFileSystem)
   {
-    return new EmulatorState(
-        this.getImmutable().set(FS_KEY, newFileSystem)
-    );
+    this.state[FS_KEY] = newFileSystem;
+    return this;
   }
 
   getEnvVariables()
   {
-    return this.getImmutable().get(ENVIRONMENT_VARIABLES_KEY);
+    return this.state[ENVIRONMENT_VARIABLES_KEY];
   }
 
   setEnvVariables(newEnvVariables)
   {
-    return new EmulatorState(
-        this.getImmutable().set(ENVIRONMENT_VARIABLES_KEY, newEnvVariables)
-    );
+    this.state[ENVIRONMENT_VARIABLES_KEY] = newEnvVariables;
   }
 
   getHistory()
   {
-    return this.getImmutable().get(HISTORY_KEY);
+    return this.state[HISTORY_KEY];
   }
 
   setHistory(newHistory)
   {
-    return new EmulatorState(
-        this.getImmutable().set(HISTORY_KEY, newHistory)
-    );
+    this.state[HISTORY_KEY] = newHistory;
   }
 
   getOutputs()
   {
-    return this.getImmutable().get(OUTPUTS_KEY);
+    return this.state[OUTPUTS_KEY];
   }
 
   setOutputs(newOutputs)
   {
-    return new EmulatorState(
-        this.getImmutable().set(OUTPUTS_KEY, newOutputs)
-    );
+    this.state[OUTPUTS_KEY] = newOutputs;
   }
 
   getCommandMapping()
   {
-    return this.getImmutable().get(COMMAND_MAPPING_KEY);
+    return this.state[COMMAND_MAPPING_KEY];
   }
 
   setCommandMapping(newCommandMapping)
   {
-    return new EmulatorState(
-        this.getImmutable().set(COMMAND_MAPPING_KEY, newCommandMapping)
-    );
+    this.state[COMMAND_MAPPING_KEY] = newCommandMapping;
   }
 
-  getImmutable()
+  getState()
   {
-    return this._immutable;
-  }
-
-  toJS()
-  {
-    return this._immutable.toJS();
+    return this.state;
   }
 }

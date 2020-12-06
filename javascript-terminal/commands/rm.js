@@ -1,8 +1,7 @@
 import {parseOptions} from '../parser';
 import * as FileOp from '../fs/operations-with-permissions/file-operations';
 import * as DirOp from '../fs/operations-with-permissions/directory-operations';
-import * as OutputFactory from '../output';
-import {resolvePath} from '../emulator-state/util';
+import {relativeToAbsolutePath} from '../emulator-state/util';
 import {fsErrorType, makeError} from '../fs/fs-error';
 
 export const optDef = {
@@ -14,16 +13,16 @@ const makeNoPathErrorOutput = () =>
 {
   const noSuchFileOrDirError = makeError(fsErrorType.NO_SUCH_FILE_OR_DIRECTORY);
 
-  return { output: OutputFactory.makeErrorOutput(noSuchFileOrDirError) };
+  return { output: noSuchFileOrDirError };
 };
 
-const rm = (state, commandOptions) =>
+const functionDef = (state, commandOptions) =>
 {
   const {argv, options} = parseOptions(commandOptions, optDef);
 
   if(argv.length === 0) return {};
 
-  const deletionPath = resolvePath(state, argv[0]);
+  const deletionPath = relativeToAbsolutePath(state, argv[0]);
   const fs = state.getFileSystem();
 
   if(deletionPath === '/' && options.noPreserveRoot !== true) return {};
@@ -34,9 +33,9 @@ const rm = (state, commandOptions) =>
       DirOp.deleteDirectory(fs, deletionPath, true) :
       FileOp.deleteFile(fs, deletionPath);
 
-  if(err) return { output: OutputFactory.makeErrorOutput(err) };
+  if(err) return { output: err };
 
   return { state: state.setFileSystem(deletedPathFS) };
 };
 
-export default rm;
+export default {optDef, functionDef};

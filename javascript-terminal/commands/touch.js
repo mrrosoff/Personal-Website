@@ -1,6 +1,5 @@
 import {parseOptions} from '../parser';
 import * as FileOp from '../fs/operations-with-permissions/file-operations';
-import * as OutputFactory from '../output';
 import * as FileUtil from '../fs/util/file-util';
 import {relativeToAbsolutePath} from '../emulator-state/util';
 
@@ -8,7 +7,7 @@ const EMPTY_FILE = FileUtil.makeFile();
 
 export const optDef = {};
 
-const touch = (state, commandOptions) =>
+const functionDef = (state, commandOptions) =>
 {
   const {argv} = parseOptions(commandOptions, optDef);
 
@@ -20,9 +19,9 @@ const touch = (state, commandOptions) =>
 
   const {fs, err} = FileOp.writeFile(state.getFileSystem(), filePath, EMPTY_FILE);
 
-  if(err) return { output: OutputFactory.makeErrorOutput(err) };
+  if(err) return { output: err };
 
   return { state: state.setFileSystem(fs) };
 };
 
-export default touch;
+export default {optDef, functionDef};
