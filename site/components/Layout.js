@@ -8,16 +8,14 @@ import LinkedInIcon from '@material-ui/icons/LinkedIn'
 import GitHubIcon from '@material-ui/icons/GitHub';
 import GetAppIcon from '@material-ui/icons/GetApp';
 
-import {LinkButtonWithIcon} from "./styled/Buttons";
-
 import Profile from '../static/images/profile.jpg';
 
-import BootUp from "./terminal/BootUp";
-import Terminal from "./terminal/Terminal";
+import BootUp from "./BootUp";
+import TerminalEmbed from "./TerminalEmbed";
 
 const Layout = props =>
 {
-	const [bootingUp, setBootingUp] = useState(true);
+	const [bootingUp, setBootingUp] = useState(false);
 
 	let creationDate = new Date();
 	creationDate.setMinutes(creationDate.getMinutes() - 8);
@@ -26,7 +24,7 @@ const Layout = props =>
 
 	return (
 		<Template {...props}>
-			{bootingUp ? <BootUp setBootingUp={setBootingUp} creationDate={creationDate}/> : <Terminal/>}
+			{bootingUp ? <BootUp setBootingUp={setBootingUp} creationDate={creationDate}/> : <TerminalEmbed />}
 		</Template>
 	);
 };
@@ -36,22 +34,24 @@ const Template = props =>
 	const [open, setOpen] = useState(false);
 
 	return (
-		<Box pt={8} pb={5} pl={8} pr={8}>
-			<div style={{position: "relative"}}>
-				<div style={{position: "absolute", top: 0, right: 0}}>
-					<Avatar
-						alt="Max Rosoff"
-						src={Profile}
-						onClick={() => setOpen(!open)}
-						style={{width: 55, height: 55}}
-					/>
+		<Grid container justify={"center"} alignContent={"center"} alignItems={"center"} style={{width: "100vw", height: "100vh"}}>
+			<Grid item style={{width: "90%", height: "90%"}}>
+				<div style={{position: "relative"}}>
+					<div style={{position: "absolute", top: 0, right: 0}}>
+						<Avatar
+							alt="Max Rosoff"
+							src={Profile}
+							onClick={() => setOpen(!open)}
+						/>
+					</div>
+					<div style={{position: "absolute", top: 70, right: 0}}>
+						{open ? <UserCard open={open} {...props} /> : null}
+					</div>
 				</div>
-				<div style={{position: "absolute", top: 70, right: 0}}>
-					{open ? <UserCard open={open} {...props} /> : null}
-				</div>
-			</div>
-			{props.children}
-		</Box>
+				{props.children}
+			</Grid>
+		</Grid>
+
 	);
 }
 const UserCard = props =>
@@ -130,6 +130,21 @@ const Buttons = props =>
 				</Grid>
 			</Grid>
 		</Grid>
+	);
+};
+
+export const LinkButtonWithIcon = props =>
+{
+	return (
+		<Button
+			href={props.href}
+			target="_blank"
+			rel="noopener"
+			className={props.className ? props.className : ""}
+			startIcon={props.icon}
+		>
+			{props.children}
+		</Button>
 	);
 };
 

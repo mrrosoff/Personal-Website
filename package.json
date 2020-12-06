@@ -3,10 +3,9 @@
   "version": "4.1.2",
   "description": "My Personal Website",
   "scripts": {
-    "build-js-terminal": "cd react-terminal-component/javascript-terminal && yarn install && yarn build && cd ../..",
-    "build-react-terminal": "cd react-terminal-component && yarn install && yarn build && cd ..",
-    "start": "npm run build-js-terminal && npm run build-react-terminal && webpack-dev-server -d",
-    "build": "npm run build-js-terminal && npm run build-react-terminal && webpack -p"
+    "clean": "rm -rf node_modules package-lock.json",
+    "start": "webpack-dev-server -d",
+    "build": "npm run clean && npm install && webpack -p"
   },
   "author": "Max Rosoff",
   "license": "MIT",
@@ -20,13 +19,15 @@
     "@mui-treasury/styling": "^0.2.8",
     "clsx": "latest",
     "framer-motion": "^2.3.0",
+    "get-options": "^1.2.0",
     "lodash": "^4.17.19",
+    "minimatch": "^3.0.4",
+    "minimatch-capture": "^1.1.0",
     "module-alias": "^2.2.2",
     "notistack": "^0.9.17",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-transition-group": "^4.4.1",
-    "styled-components": "^5.1.1"
+    "react-transition-group": "^4.4.1"
   },
   "devDependencies": {
     "@babel/core": "^7.11.0",

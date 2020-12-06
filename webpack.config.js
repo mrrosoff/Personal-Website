@@ -8,7 +8,7 @@ const outputDirectory = "dist";
 module.exports = {
 	entry: ["@babel/polyfill", "./site/index.js"],
 	devServer: {port: 3000, open: true, hot: true},
-	devtool: 'cheap-source-map',
+	devtool: 'eval-source-map',
 	module: {
 		rules: [
 			{
