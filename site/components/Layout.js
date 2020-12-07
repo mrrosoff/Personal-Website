@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {forwardRef, useRef, useState} from 'react';
 
 import {Avatar, Box, Button, Grid, Paper} from '@material-ui/core';
 
@@ -13,47 +13,53 @@ import Profile from '../static/images/profile.jpg';
 import BootUp from "./BootUp";
 import TerminalEmbed from "./TerminalEmbed";
 
-const Layout = props =>
+const Layout = (props, ref) =>
 {
-	const [bootingUp, setBootingUp] = useState(false);
+	const [bootingUp, setBootingUp] = useState(true);
 
 	let creationDate = new Date();
 	creationDate.setMinutes(creationDate.getMinutes() - 8);
 	creationDate.setHours(creationDate.getHours() - 2);
 	creationDate.setDate(creationDate.getDate() - 5);
 
+	const [open, setOpen] = useState(false);
+
+	let inputRef = useRef(null);
+
 	return (
-		<Template {...props}>
-			{bootingUp ? <BootUp setBootingUp={setBootingUp} creationDate={creationDate}/> : <TerminalEmbed />}
-		</Template>
+		<Box width={"100vw"} height={"100vh"}>
+			<Box p={7} style={{width: "100%", height: "100%", overflow: "hidden"}}>
+				<Grid container justify={"space-between"} alignItems={"flex-start"} style={{width: "100%", height: "100%", overflow: "auto"}}>
+					<Grid item>
+						{
+							bootingUp ?
+								<BootUp setBootingUp={setBootingUp} creationDate={creationDate}/> :
+								<TerminalEmbed ref={inputRef}/>
+						}
+					</Grid>
+					<Grid item>
+						<Grid container direction={"column"} justify={"flex-start"} alignItems={"flex-end"} spacing={2}>
+							<Grid item>
+								<Avatar
+									alt="Max Rosoff"
+									src={Profile}
+									onClick={() => setOpen(!open)}
+								/>
+							</Grid>
+							{
+								open ?
+									<Grid item>
+										<UserCard open={open} {...props} />
+									</Grid>: null
+							}
+						</Grid>
+					</Grid>
+				</Grid>
+			</Box>
+		</Box>
 	);
 };
 
-const Template = props =>
-{
-	const [open, setOpen] = useState(false);
-
-	return (
-		<Grid container justify={"center"} alignContent={"center"} alignItems={"center"} style={{width: "100vw", height: "100vh"}}>
-			<Grid item style={{width: "90%", height: "90%"}}>
-				<div style={{position: "relative"}}>
-					<div style={{position: "absolute", top: 0, right: 0}}>
-						<Avatar
-							alt="Max Rosoff"
-							src={Profile}
-							onClick={() => setOpen(!open)}
-						/>
-					</div>
-					<div style={{position: "absolute", top: 70, right: 0}}>
-						{open ? <UserCard open={open} {...props} /> : null}
-					</div>
-				</div>
-				{props.children}
-			</Grid>
-		</Grid>
-
-	);
-}
 const UserCard = props =>
 {
 	return (
@@ -233,4 +239,4 @@ const doDownload = (link) =>
 	setTimeout(() => document.body.removeChild(a), 0);
 };
 
-export default Layout;
+export default forwardRef(Layout);

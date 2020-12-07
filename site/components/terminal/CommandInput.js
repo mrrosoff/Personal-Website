@@ -7,7 +7,6 @@ import { Grid, InputBase } from '@material-ui/core';
 const CommandInput = (props, ref) =>
 {
     const inputRef = useRef();
-
     useImperativeHandle(ref, () => ({ focus: () => { inputRef.current.focus() }}));
 
     return (

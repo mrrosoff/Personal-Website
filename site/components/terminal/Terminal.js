@@ -1,25 +1,18 @@
-import React, {useRef, useState} from 'react';
+import React, {forwardRef, useState} from 'react';
 
-import {Grid} from "@material-ui/core";
+import {Grid, Typography} from "@material-ui/core";
 import {Emulator, HistoryKeyboardPlugin} from '../../../javascript-terminal';
 
 import CommandInput from './CommandInput';
-import OutputList from './OutputList';
+import PromptSymbol from "./PromptSymbol";
 
-const Terminal = props =>
+const Terminal = (props, ref) =>
 {
-  let inputRef = useRef(null);
-
   const [input, setInput] = useState('');
   const [emulatorState, setEmulatorState] = useState(props.emulatorState);
 
   let emulator = new Emulator();
   let historyKeyboardPlugin = new HistoryKeyboardPlugin(emulatorState);
-
-  const focus = () =>
-  {
-    if(inputRef.current) inputRef.current.focus();
-  }
 
   const onKeyDown = (e) =>
   {
@@ -53,18 +46,26 @@ const Terminal = props =>
   }
 
   if(!emulatorState) return null;
+  let outputs = emulatorState.getOutputs();
 
   return (
-      <Grid container direction={"column"} spacing={2} onClick={() => focus()} style={{width: "100%", height: "100%"}}>
+      <Grid container direction={"column"} justify={"flex-start"} spacing={1} onClick={() => focus()}>
         {
-          emulatorState.getOutputs().length > 0 ?
-              <Grid item>
-                <OutputList emulatorState={emulatorState} {...props}/>
-              </Grid> : null
+          outputs.length > 0 ?
+              outputs.map((content, key) =>
+                  <Grid item key={key} container direction={"column"}>
+                    <Grid item>
+                      <PromptSymbol theme={props.theme} {...props}>{props.promptSymbol}</PromptSymbol>
+                    </Grid>
+                    <Grid item>
+                      {content.split("\n").map((line, key) => <Typography key={key}>{line}</Typography>)}
+                    </Grid>
+                  </Grid>
+              ) : null
         }
-        <Grid item>
+        <Grid item key={outputs.length}>
           <CommandInput
-              ref={inputRef}
+
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={onKeyDown}
@@ -76,4 +77,4 @@ const Terminal = props =>
   );
 }
 
-export default Terminal;
+export default forwardRef(Terminal);
