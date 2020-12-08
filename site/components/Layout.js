@@ -1,4 +1,4 @@
-import React, {forwardRef, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 
 import {Avatar, Box, Button, Grid, Paper} from '@material-ui/core';
 
@@ -23,7 +23,7 @@ const Layout = props =>
 
 	return (
 		<Box width={"100vw"} height={"100vh"}>
-			<Box p={7} style={{width: "100%", height: "100%", position: "absolute"}} onClick={() => inputRef.current.focus()}>
+			<Box p={8} style={{width: "100%", height: "100%", overflow: "hidden"}} onClick={() => inputRef.current.focus()}>
 				<div style={{position: "relative"}}>
 					<Grid container style={{position: "absolute", top: 0, right: 0}} direction={"column"} justify={"flex-end"} alignItems={"flex-end"} spacing={2}>
 						<Grid item>
@@ -40,6 +40,9 @@ const Layout = props =>
 								</Grid>: null
 						}
 					</Grid>
+				</div>
+				<div style={{width: "100%", height: "100%", overflowY: "scroll"}}>
+
 					{
 						bootingUp ?
 							<BootUp setBootingUp={setBootingUp} /> :

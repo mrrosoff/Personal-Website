@@ -52,7 +52,7 @@ const Terminal = (props, ref) =>
   let outputs = emulatorState.getOutputs();
 
   return (
-      <Grid container direction={"column"} justify={"flex-start"} spacing={1} style={{width: "100%", height: "100%"}}>
+      <Grid container direction={"column"} justify={"flex-start"} spacing={1}>
         {
           outputs.length > 0 ?
               outputs.map((content, key) =>
