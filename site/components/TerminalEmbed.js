@@ -47,7 +47,7 @@ const TerminalEmbed = (props, ref) =>
 				promptSymbolColor: '#2BC903',
 				commandColor: '#FCFCFC',
 				outputColor: '#FCFCFC',
-				errorOutputColor: '#ff0606',
+				errorColor: '#ff0606',
 				width: '100%',
 				height: '88vh'
 			}}

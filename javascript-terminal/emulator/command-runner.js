@@ -16,6 +16,7 @@ export const run = (commandMapping, commandName, commandArgs, errorString = emul
   {
     return command(...commandArgs);
   }
+
   catch(fatalCommandError)
   {
     return { output: emulatorErrorType.UNEXPECTED_COMMAND_FAILURE };

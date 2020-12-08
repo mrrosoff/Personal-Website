@@ -64,6 +64,11 @@ const BootUp = props =>
 
 const HeaderAndReleaseData = props =>
 {
+	let creationDate = new Date();
+	creationDate.setMinutes(creationDate.getMinutes() - 8);
+	creationDate.setHours(creationDate.getHours() - 2);
+	creationDate.setDate(creationDate.getDate() - 5);
+
 	return (
 		<Grid container spacing={4}>
 			<Grid item>
@@ -80,7 +85,7 @@ const HeaderAndReleaseData = props =>
 			<Grid item>
 				<Grid container justify={"center"} direction={"column"} style={{height: '100%'}}>
 					<Grid item>
-						<Typography>Released: {props.creationDate.toString()}</Typography>
+						<Typography>Released: {creationDate.toString()}</Typography>
 					</Grid>
 					<Grid item>
 						<a href={"https://github.com/mrrosoff/Personal-Website"} target="_blank"

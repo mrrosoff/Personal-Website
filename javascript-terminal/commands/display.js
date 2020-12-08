@@ -31,7 +31,7 @@ const functionDef = (state, commandOptions) =>
 	const regex = new RegExp('\.(png|jpe?g|mov|mp4)$', 'g');
 	const filePaths = argv.map(pathArg => relativeToAbsolutePath(state, pathArg)).filter(item => item.match(regex));
 
-	return { outputs: filePaths.map(path => fileToImageOutput(state.getFileSystem(), path)) };
+	return { output: filePaths.map(path => fileToImageOutput(state.getFileSystem(), path)).join("\n") };
 };
 
 export default {optDef, functionDef};

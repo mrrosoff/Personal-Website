@@ -20,7 +20,7 @@ const functionDef = (state, commandOptions) =>
   if(argv.length === 0) return {};
 
   const filePaths = argv.map(pathArg => relativeToAbsolutePath(state, pathArg));
-  return { outputs: filePaths.map(path => fileToTextOutput(state.getFileSystem(), path)) };
+  return { output: filePaths.map(path => fileToTextOutput(state.getFileSystem(), path)).join("\n") };
 };
 
 export default {optDef, functionDef};

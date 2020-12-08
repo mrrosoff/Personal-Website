@@ -15,12 +15,7 @@ import TerminalEmbed from "./TerminalEmbed";
 
 const Layout = props =>
 {
-	const [bootingUp, setBootingUp] = useState(true);
-
-	let creationDate = new Date();
-	creationDate.setMinutes(creationDate.getMinutes() - 8);
-	creationDate.setHours(creationDate.getHours() - 2);
-	creationDate.setDate(creationDate.getDate() - 5);
+	const [bootingUp, setBootingUp] = useState(false);
 
 	const [open, setOpen] = useState(false);
 
@@ -47,7 +42,7 @@ const Layout = props =>
 					</Grid>
 					{
 						bootingUp ?
-							<BootUp setBootingUp={setBootingUp} creationDate={creationDate}/> :
+							<BootUp setBootingUp={setBootingUp} /> :
 							<TerminalEmbed ref={inputRef}/>
 					}
 				</div>

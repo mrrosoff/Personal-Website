@@ -79,7 +79,7 @@ export default class Emulator
       const commandMapping = state.getCommandMapping();
       const commandArgs = [state, commandOptions];
 
-      const {state: nextState, output, outputs} = CommandRunner.run(commandMapping, commandName, commandArgs, errorString);
+      const {state: nextState, output: output} = CommandRunner.run(commandMapping, commandName, commandArgs, errorString);
 
       if(nextState)
       {
@@ -88,12 +88,7 @@ export default class Emulator
 
       if(output)
       {
-        state = this._addCommandOutputs(state, [output]);
-      }
-
-      else if(outputs)
-      {
-        state = this._addCommandOutputs(state, outputs);
+        this._addCommandOutput(state, output);
       }
     }
 
@@ -107,13 +102,8 @@ export default class Emulator
     return state;
   }
 
-  _addCommandOutputs(state, outputs)
+  _addCommandOutput(state, output)
   {
-    for(const output of outputs)
-    {
-      state.setOutputs([...state.getOutputs(), output]);
-    }
-
-    return state;
+    state.setOutputs([...state.getOutputs(), {type: "output", command: state.getHistory()[state.getHistory().length - 1], output: output}]);
   }
 }

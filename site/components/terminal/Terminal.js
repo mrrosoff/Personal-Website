@@ -4,7 +4,10 @@ import {Grid, Typography} from "@material-ui/core";
 import {Emulator, HistoryKeyboardPlugin} from '../../../javascript-terminal';
 
 import CommandInput from './CommandInput';
-import PromptSymbol from "./PromptSymbol";
+
+import OutputHeader from "./output/OutputHeader";
+import OutputText from "./output/OutputText";
+import OutputError from "./output/OutputError";
 
 const Terminal = (props, ref) =>
 {
@@ -55,10 +58,10 @@ const Terminal = (props, ref) =>
               outputs.map((content, key) =>
                   <Grid item key={key} container direction={"column"}>
                     <Grid item>
-                      <PromptSymbol theme={props.theme} {...props}>{props.promptSymbol}</PromptSymbol>
+                      <OutputHeader {...props}>{content.command}</OutputHeader>
                     </Grid>
                     <Grid item>
-                      {content.split("\n").map((line, key) => <Typography key={key}>{line}</Typography>)}
+                      <OutputText {...props}>{content.output}</OutputText>
                     </Grid>
                   </Grid>
               ) : null
