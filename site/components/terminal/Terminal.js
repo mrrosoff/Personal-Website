@@ -65,7 +65,6 @@ const Terminal = (props, ref) =>
         }
         <Grid item key={outputs.length}>
           <CommandInput
-
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={onKeyDown}

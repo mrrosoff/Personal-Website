@@ -1,3 +1,8 @@
+::-webkit-scrollbar {display:none}
+.name {
+  max-width: 100%;
+  overflow-x: hidden;
+}
 @font-face {
   font-family: 'Clacon';
   font-style: normal;

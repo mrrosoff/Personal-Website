@@ -15,7 +15,7 @@ import TerminalEmbed from "./TerminalEmbed";
 
 const Layout = (props, ref) =>
 {
-	const [bootingUp, setBootingUp] = useState(true);
+	const [bootingUp, setBootingUp] = useState(false);
 
 	let creationDate = new Date();
 	creationDate.setMinutes(creationDate.getMinutes() - 8);
@@ -28,33 +28,34 @@ const Layout = (props, ref) =>
 
 	return (
 		<Box width={"100vw"} height={"100vh"}>
-			<Box p={7} style={{width: "100%", height: "100%", overflow: "hidden"}}>
-				<Grid container justify={"space-between"} alignItems={"flex-start"} style={{width: "100%", height: "100%", overflow: "auto"}}>
+			<Box p={7} style={{width: "100%", height: "100%", position: "absolute"}}>
+			<div style={{position: "relative"}}>
+				<Grid container style={{position: "absolute", top: 0, right: 0}} direction={"column"} justify={"flex-end"} alignItems={"flex-end"} spacing={2}>
 					<Grid item>
-						{
-							bootingUp ?
-								<BootUp setBootingUp={setBootingUp} creationDate={creationDate}/> :
-								<TerminalEmbed ref={inputRef}/>
-						}
+						<Avatar
+							style={{zIndex: 5}}
+							alt="Max Rosoff"
+							src={Profile}
+							onClick={() => setOpen(!open)}
+						/>
 					</Grid>
-					<Grid item>
-						<Grid container direction={"column"} justify={"flex-start"} alignItems={"flex-end"} spacing={2}>
+					{
+						open ?
 							<Grid item>
-								<Avatar
-									alt="Max Rosoff"
-									src={Profile}
-									onClick={() => setOpen(!open)}
-								/>
-							</Grid>
-							{
-								open ?
-									<Grid item>
-										<UserCard open={open} {...props} />
-									</Grid>: null
-							}
-						</Grid>
-					</Grid>
+								<UserCard open={open} {...props} />
+							</Grid>: null
+					}
 				</Grid>
+			</div>
+			</Box>
+			<Box p={7} style={{width: "100%", height: "100%", overflow: "auto", overflowY: "scroll", overflowX: "hidden", position: "absolute"}}>
+
+				{
+					bootingUp ?
+						<BootUp setBootingUp={setBootingUp} creationDate={creationDate}/> :
+						<TerminalEmbed ref={inputRef}/>
+				}
+
 			</Box>
 		</Box>
 	);
