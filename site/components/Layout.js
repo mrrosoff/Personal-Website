@@ -15,7 +15,7 @@ import TerminalEmbed from "./TerminalEmbed";
 
 const Layout = props =>
 {
-	const [bootingUp, setBootingUp] = useState(false);
+	const [bootingUp, setBootingUp] = useState(true);
 
 	let creationDate = new Date();
 	creationDate.setMinutes(creationDate.getMinutes() - 8);
