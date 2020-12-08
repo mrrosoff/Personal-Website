@@ -6,7 +6,7 @@ const fileToTextOutput = (fs, filePath) =>
 {
   const {err, file} = FileOp.readFile(fs, filePath);
 
-  if(err) return OutputFactory.makeErrorOutput(err);
+  if(err) return err;
 
   return file.content;
 };
