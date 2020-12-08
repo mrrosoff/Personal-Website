@@ -1,4 +1,4 @@
-import React, {forwardRef, useImperativeHandle, useRef} from 'react';
+import React, {forwardRef, useRef, useImperativeHandle} from 'react';
 
 import PromptSymbol from './PromptSymbol';
 
@@ -7,7 +7,7 @@ import { Grid, InputBase } from '@material-ui/core';
 const CommandInput = (props, ref) =>
 {
     const inputRef = useRef();
-    useImperativeHandle(ref, () => ({ focus: () => { inputRef.current.focus() }}));
+    useImperativeHandle(ref, () => ({ focus: () => inputRef.current.focus() }));
 
     return (
         <Grid container alignContent={"center"} alignItems={"center"} spacing={2}>

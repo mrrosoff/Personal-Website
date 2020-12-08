@@ -1,4 +1,4 @@
-import React, {forwardRef, useState} from 'react';
+import React, {forwardRef, useRef, useState} from 'react';
 
 import {Grid, Typography} from "@material-ui/core";
 import {Emulator, HistoryKeyboardPlugin} from '../../../javascript-terminal';
@@ -49,7 +49,7 @@ const Terminal = (props, ref) =>
   let outputs = emulatorState.getOutputs();
 
   return (
-      <Grid container direction={"column"} justify={"flex-start"} spacing={1} onClick={() => focus()}>
+      <Grid container direction={"column"} justify={"flex-start"} spacing={1} style={{width: "100%", height: "100%"}}>
         {
           outputs.length > 0 ?
               outputs.map((content, key) =>
@@ -65,9 +65,9 @@ const Terminal = (props, ref) =>
         }
         <Grid item key={outputs.length}>
           <CommandInput
+              ref={ref}
               value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={onKeyDown}
+              onChange={(e) => setInput(e.target.value)} onKeyDown={onKeyDown}
               emulatorState={emulatorState}
               {...props}
           />

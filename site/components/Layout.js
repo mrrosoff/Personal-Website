@@ -13,9 +13,9 @@ import Profile from '../static/images/profile.jpg';
 import BootUp from "./BootUp";
 import TerminalEmbed from "./TerminalEmbed";
 
-const Layout = (props, ref) =>
+const Layout = props =>
 {
-	const [bootingUp, setBootingUp] = useState(true);
+	const [bootingUp, setBootingUp] = useState(false);
 
 	let creationDate = new Date();
 	creationDate.setMinutes(creationDate.getMinutes() - 8);
@@ -24,38 +24,33 @@ const Layout = (props, ref) =>
 
 	const [open, setOpen] = useState(false);
 
-	let inputRef = useRef(null);
+	let inputRef = useRef();
 
 	return (
 		<Box width={"100vw"} height={"100vh"}>
-			<Box p={7} style={{width: "100%", height: "100%", position: "absolute"}}>
-			<div style={{position: "relative"}}>
-				<Grid container style={{position: "absolute", top: 0, right: 0}} direction={"column"} justify={"flex-end"} alignItems={"flex-end"} spacing={2}>
-					<Grid item>
-						<Avatar
-							style={{zIndex: 5}}
-							alt="Max Rosoff"
-							src={Profile}
-							onClick={() => setOpen(!open)}
-						/>
+			<Box p={7} style={{width: "100%", height: "100%", position: "absolute"}} onClick={() => inputRef.current.focus()}>
+				<div style={{position: "relative"}}>
+					<Grid container style={{position: "absolute", top: 0, right: 0}} direction={"column"} justify={"flex-end"} alignItems={"flex-end"} spacing={2}>
+						<Grid item>
+							<Avatar
+								alt="Max Rosoff"
+								src={Profile}
+								onClick={() => setOpen(!open)}
+							/>
+						</Grid>
+						{
+							open ?
+								<Grid item>
+									<UserCard open={open} {...props} />
+								</Grid>: null
+						}
 					</Grid>
 					{
-						open ?
-							<Grid item>
-								<UserCard open={open} {...props} />
-							</Grid>: null
+						bootingUp ?
+							<BootUp setBootingUp={setBootingUp} creationDate={creationDate}/> :
+							<TerminalEmbed ref={inputRef}/>
 					}
-				</Grid>
-			</div>
-			</Box>
-			<Box p={7} style={{width: "100%", height: "100%", overflow: "auto", overflowY: "scroll", overflowX: "hidden", position: "absolute"}}>
-
-				{
-					bootingUp ?
-						<BootUp setBootingUp={setBootingUp} creationDate={creationDate}/> :
-						<TerminalEmbed ref={inputRef}/>
-				}
-
+				</div>
 			</Box>
 		</Box>
 	);
@@ -240,4 +235,4 @@ const doDownload = (link) =>
 	setTimeout(() => document.body.removeChild(a), 0);
 };
 
-export default forwardRef(Layout);
+export default Layout;

@@ -1,11 +1,11 @@
-import React, {useEffect} from 'react';
+import React, {forwardRef, useEffect} from 'react';
 
 import { CommandMapping, DefaultCommandMapping, EmulatorState, FileSystem } from '../../javascript-terminal';
 
 import Terminal from './terminal/Terminal';
 import {files} from "../FileSystem";
 
-const TerminalEmbed = props =>
+const TerminalEmbed = (props, ref) =>
 {
 	useEffect(() =>
 	{
@@ -41,6 +41,7 @@ const TerminalEmbed = props =>
 
 	return (
 		<Terminal
+			ref={ref}
 			theme={{
 				background: '#121212',
 				promptSymbolColor: '#2BC903',
@@ -57,4 +58,4 @@ const TerminalEmbed = props =>
 	);
 };
 
-export default TerminalEmbed;
+export default forwardRef(TerminalEmbed);
