@@ -24,7 +24,7 @@ const CommandInput = (props, ref) =>
             <Grid item>
                 <Grid container justify={"center"} alignContent={"center"} alignItems={"center"}>
                     <Grid item>
-                        <Typography>{props.value}</Typography>
+                        <Typography style={{whiteSpace: "pre"}}>{props.value}</Typography>
                     </Grid>
                     <Grid item>
                         <div id={"cursor"} style={{width: 8, height: 18, background: "#FFFFFF"}}/>
@@ -33,6 +33,7 @@ const CommandInput = (props, ref) =>
                         <InputBase
                             autoFocus
                             inputRef={inputRef}
+                            value={props.value}
                             onChange={props.onChange}
                             onKeyDown={props.onKeyDown}
                             style={{width: 0, height: 0, opacity: 0}}

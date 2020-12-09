@@ -7,7 +7,7 @@ const OutputError = props =>
 {
 	return(
 		props.children.split("\n").map((line, key) =>
-			<Typography key={key} color={props.theme.errorColor}>
+			<Typography key={key} style={{color: props.theme.errorColor}}>
 				{line}
 			</Typography>
 		)

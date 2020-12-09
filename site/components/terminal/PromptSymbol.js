@@ -17,7 +17,7 @@ const PromptSymbol = props => {
 			</Grid>
 			<Grid item align={"center"}>
 				<Typography style={{color: props.theme.promptSymbolColor}}>
-					{props.emulatorState.getEnvVariables().cwd}
+					{props.cwd ? props.cwd : props.emulatorState.getEnvVariables().cwd}
 				</Typography>
 			</Grid>
 		</Grid>

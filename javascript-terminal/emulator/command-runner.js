@@ -1,9 +1,9 @@
-import {emulatorErrorType, makeError} from './emulator-error';
+import {emulatorErrorType} from './emulator-error';
 import * as CommandMappingUtil from '../emulator-state/CommandMapping';
 
 export const run = (commandMapping, commandName, commandArgs, errorString = emulatorErrorType.COMMAND_NOT_FOUND) =>
 {
-  const notFoundCallback = () => ({output: makeError(errorString)})
+  const notFoundCallback = () => ({ output: errorString, type: "error" })
 
   if(!CommandMappingUtil.isCommandSet(commandMapping, commandName))
   {

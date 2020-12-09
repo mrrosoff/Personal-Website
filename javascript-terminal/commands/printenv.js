@@ -1,5 +1,4 @@
 import {parseOptions} from '../parser';
-import {getEnvironmentVariable} from '../emulator-state/EnvironmentVariables';
 
 const stringifyEnvVariables = (envVariables) =>
 {
@@ -16,7 +15,7 @@ const functionDef = (state, commandOptions) =>
 
   if(argv.length === 0) return { output: stringifyEnvVariables(envVariables) };
 
-  const varValue = getEnvironmentVariable(envVariables, argv[0]);
+  const varValue = envVariables[argv[0]];
 
   if(varValue) return { output: varValue };
 

@@ -1,15 +1,17 @@
 import {parseOptions} from '../parser';
 import * as DirectoryOp from '../fs/operations-with-permissions/directory-operations';
-import * as EnvVariableUtil from '../emulator-state/EnvironmentVariables';
 import * as PathUtil from '../fs/util/path-util';
 
 const IMPLIED_DIRECTORY_ENTRIES = ['.', '..'];
 
 const resolveDirectoryToList = (envVariables, argv) =>
 {
-  const cwd = EnvVariableUtil.getEnvironmentVariable(envVariables, 'cwd');
+  const cwd = envVariables.cwd;
 
-  if(argv.length > 0) return PathUtil.toAbsolutePath(argv[0], cwd);
+  if(argv.length > 0)
+  {
+    return PathUtil.toAbsolutePath(argv[0], cwd);
+  }
 
   return cwd;
 };
@@ -32,7 +34,7 @@ const functionDef = (state, commandOptions) =>
   const dirPath = resolveDirectoryToList(state.getEnvVariables(), argv);
   const {err, list: dirList} = DirectoryOp.listDirectory(state.getFileSystem(), dirPath);
 
-  if(err) return { output: err };
+  if(err) return { output: err.message, type: "error"};
 
   if(options.all)
   {

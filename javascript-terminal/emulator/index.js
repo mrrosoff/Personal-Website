@@ -1,6 +1,5 @@
 import CommandRunner from '../emulator/command-runner';
 import {parseCommands} from '../parser';
-import {getEnvironmentVariable} from '../emulator-state/EnvironmentVariables';
 import {suggestCommandOptions, suggestCommands, suggestFileSystemNames} from './auto-complete';
 
 export default class Emulator
@@ -38,7 +37,7 @@ export default class Emulator
     }
 
     const strToComplete = isTypingNewPart ? '' : lastTextEntered;
-    const cwd = getEnvironmentVariable(state.getEnvVariables(), 'cwd');
+    const cwd = state.getEnvVariables().cwd;
 
     return [
       ...suggestCommandOptions(state.getCommandMapping(), cmdName, strToComplete),
@@ -55,13 +54,13 @@ export default class Emulator
 
     if(str.trim() === '')
     {
-      state = this._addCommandOutputs(state, ['']);
+      state = this.addCommandOutput(state, '');
     }
 
     else
     {
-      state = this._addCommandToHistory(state, str);
-      state = this._updateStateByExecution(state, str, errorString);
+      this.addCommandToHistory(state, str);
+      state = this.updateStateByExecution(state, str, errorString);
     }
 
     for(const executionListener of executionListeners)
@@ -72,38 +71,45 @@ export default class Emulator
     return state;
   };
 
-  _updateStateByExecution(state, commandStrToExecute, errorString)
+  updateStateByExecution(state, commandStrToExecute, errorString)
   {
     for(const {commandName, commandOptions} of parseCommands(commandStrToExecute))
     {
       const commandMapping = state.getCommandMapping();
       const commandArgs = [state, commandOptions];
 
-      const {state: nextState, output: output} = CommandRunner.run(commandMapping, commandName, commandArgs, errorString);
+      const {state: nextState, output: output, type: type} = CommandRunner.run(commandMapping, commandName, commandArgs, errorString);
 
       if(nextState)
       {
         state = nextState;
+        this.addCommandOutput(state, '')
       }
 
       if(output)
       {
-        this._addCommandOutput(state, output);
+        if (type === "cwd")
+        {
+          this.addCommandOutput(state, '', "output", output)
+        }
+
+        else
+        {
+          this.addCommandOutput(state, output, type);
+        }
       }
     }
 
     return state;
   }
 
-  _addCommandToHistory(state, command)
+  addCommandToHistory(state, command)
   {
-
     state.setHistory([...state.getHistory(), command]);
-    return state;
   }
 
-  _addCommandOutput(state, output)
+  addCommandOutput(state, output, type = "output", cwd = state.getEnvVariables().cwd)
   {
-    state.setOutputs([...state.getOutputs(), {type: "output", command: state.getHistory()[state.getHistory().length - 1], output: output}]);
+    state.setOutputs([...state.getOutputs(), {type: type, command: state.getHistory()[state.getHistory().length - 1], output: output, cwd: cwd}]);
   }
 }

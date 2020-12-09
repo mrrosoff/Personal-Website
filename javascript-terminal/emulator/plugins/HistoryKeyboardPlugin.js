@@ -1,49 +1,37 @@
-import BoundedHistoryIterator from './BoundedHistoryIterator';
-
 export default class HistoryKeyboardPlugin
 {
   constructor(state)
   {
-    this._nullableHistoryIterator = null;
     this.historyStack = state.getHistory();
+    this.index = this.historyStack.length - 1;
   }
 
-  // Plugin contract
-  onExecuteStarted(state, str)
-  {
-    // no-op
-  }
+  onExecuteStarted(state, str) {}
 
-  // Plugin contract
   onExecuteCompleted(state)
   {
-    this._nullableHistoryIterator = null;
     this.historyStack = state.getHistory();
+    this.historyStack.push('');
+    this.index = this.historyStack.length - 1;
   }
 
-  // Plugin API
   completeUp()
   {
-    this.createHistoryIteratorIfNull();
+    if(this.index - 1 >= 0)
+    {
+      return this.historyStack[--this.index];
+    }
 
-    return this._nullableHistoryIterator.up();
+    return null;
   }
 
   completeDown()
   {
-    this.createHistoryIteratorIfNull();
-
-    return this._nullableHistoryIterator.down();
-  }
-
-  // Private methods
-  createHistoryIteratorIfNull()
-  {
-    if(!this._nullableHistoryIterator)
+    if(this.index + 1 < this.historyStack.size)
     {
-      this._nullableHistoryIterator = new BoundedHistoryIterator(
-          this.historyStack
-      );
+      return this.historyStack[++this.index];
     }
+
+    return null;
   }
 }

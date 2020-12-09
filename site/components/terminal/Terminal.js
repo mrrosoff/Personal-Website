@@ -1,6 +1,6 @@
-import React, {forwardRef, useRef, useState} from 'react';
+import React, {forwardRef, useState} from 'react';
 
-import {Grid, Typography} from "@material-ui/core";
+import {Grid} from "@material-ui/core";
 import {Emulator, HistoryKeyboardPlugin} from '../../../javascript-terminal';
 
 import CommandInput from './CommandInput';
@@ -24,13 +24,15 @@ const Terminal = (props, ref) =>
       case 'ArrowUp':
 
         e.preventDefault();
-        setInput(historyKeyboardPlugin.completeUp());
+        let up = historyKeyboardPlugin.completeUp();
+        setInput(up ? up : '')
         break;
 
       case 'ArrowDown':
 
         e.preventDefault();
-        setInput(historyKeyboardPlugin.completeDown());
+        let down = historyKeyboardPlugin.completeDown();
+        setInput(down ? down : '')
         break;
 
       case 'Tab':
@@ -58,11 +60,16 @@ const Terminal = (props, ref) =>
               outputs.map((content, key) =>
                   <Grid item key={key} container direction={"column"}>
                     <Grid item>
-                      <OutputHeader {...props}>{content.command}</OutputHeader>
+                      <OutputHeader cwd={content.cwd} {...props}>{content.command}</OutputHeader>
                     </Grid>
-                    <Grid item>
-                      <OutputText {...props}>{content.output}</OutputText>
-                    </Grid>
+                    {content.type === "error" ?
+                        <Grid item>
+                          <OutputError {...props}>{content.output}</OutputError>
+                        </Grid> :
+                        <Grid item>
+                          <OutputText {...props}>{content.output}</OutputText>
+                        </Grid>
+                    }
                   </Grid>
               ) : null
         }
