@@ -1,6 +1,6 @@
 # Personal-Website
 
-### Personal Website for Max Rosoff
+### My Personal Website
 
 ## About Project
 
