@@ -4,18 +4,18 @@
 
 # Node Files
 
-package-lock.json
 node_modules
+package-lock.json
 
-# Server Files
-
-target
-dependency-reduced-pom.xml
-
-# Build Files
+# Output Files
 
 build
 coverage
 dist
 lib
 out
+
+# Server Files
+
+dependency-reduced-pom.xml
+target
