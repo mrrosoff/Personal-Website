@@ -1,6 +1,5 @@
 import {parseOptions} from '../parser';
-import * as FileOp from '../fs/operations-with-permissions/file-operations';
-import {relativeToAbsolutePath} from '../emulator-state/util';
+import {relativeToAbsolutePath} from '../emulator-state/EmulatorState';
 
 const fileToTextOutput = (fs, filePath) =>
 {

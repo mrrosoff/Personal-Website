@@ -25,21 +25,6 @@ export const isCommandSet = (commandMapping, commandName) =>
   return commandName in commandMapping;
 };
 
-export const setCommand = (commandMapping, commandName, commandFn, optDef) =>
-{
-  if(commandFn === undefined)
-  {
-    throw new Error(`Cannot set ${commandName} command without function`);
-  }
-
-  if(optDef === undefined)
-  {
-    throw new Error(`Cannot set ${commandName} command without optDef (pass in {} if the command takes no options)`);
-  }
-
-  commandMapping[commandName] = { 'functionDef': commandFn, 'optDef': optDef };
-  return commandMapping;
-};
 
 export const getCommandFn = (commandMapping, commandName) =>
 {
@@ -66,4 +51,4 @@ export const getCommandNames = (commandMapping) =>
   return Object.keys(commandMapping);
 };
 
-export default {create, isCommandSet, setCommand, getCommandFn, getCommandOptDef, getCommandNames};
+export default {create, isCommandSet, getCommandFn, getCommandOptDef, getCommandNames};

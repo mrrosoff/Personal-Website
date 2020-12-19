@@ -1,19 +1,27 @@
-export const isFile = (map) =>
+export const isFile = (obj) =>
 {
-  return map.content;
+  return obj.type === "-";
 };
 
-export const isDirectory = (map) =>
+export const isDirectory = (obj) =>
 {
-  return !map.content;
+  return obj.type === "d";
 };
 
-export const makeFile = (content = '', metadata = {}) =>
+export const isSymbolicLink = (obj) =>
 {
-  return {content, ...metadata};
+  return obj.type === "l";
 };
 
-export const makeDirectory = (metadata = {}) =>
+export const makeEmptyFile = () =>
 {
-  return metadata;
-};
+  return {type: "-", permissions: "rwx------", content: ""}
+}
+
+
+export const makeEmptyDirectory = () =>
+{
+  return {type: "d", permissions: "rwx------", content: {}}
+}
+
+export default {isFile, isDirectory, isSymbolicLink, makeEmptyFile, makeEmptyDirectory};

@@ -1,6 +1,6 @@
 import {parseOptions} from '../parser';
-import * as DirectoryOp from '../fs/operations-with-permissions/directory-operations';
 import * as PathUtil from '../fs/util/path-util';
+import {listDirectory} from "../fs/operations/directory-operations";
 
 const IMPLIED_DIRECTORY_ENTRIES = ['.', '..'];
 
@@ -32,21 +32,28 @@ const functionDef = (state, commandOptions) =>
 {
   const {options, argv} = parseOptions(commandOptions, optDef);
   const dirPath = resolveDirectoryToList(state.getEnvVariables(), argv);
-  const {err, list: dirList} = DirectoryOp.listDirectory(state.getFileSystem(), dirPath);
 
-  if(err) return { output: err.message, type: "error"};
-
-  if(options.all)
+  try
   {
-    return makeSortedReturn(IMPLIED_DIRECTORY_ENTRIES.concat(dirList));
+    const dirList = listDirectory(state.getFileSystem(), dirPath);
+
+    if(options.all)
+    {
+      return makeSortedReturn(IMPLIED_DIRECTORY_ENTRIES.concat(dirList));
+    }
+
+    else if(options.almostAll)
+    {
+      return makeSortedReturn(dirList);
+    }
+
+    return makeSortedReturn(dirList.filter(removeHiddenFilesFilter));
   }
 
-  else if(options.almostAll)
+  catch(err)
   {
-    return makeSortedReturn(dirList);
+    return { output: err.message, type: "error"};
   }
-
-  return makeSortedReturn(dirList.filter(removeHiddenFilesFilter));
 };
 
 export default {optDef, functionDef};

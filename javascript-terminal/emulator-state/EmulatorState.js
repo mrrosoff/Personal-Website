@@ -1,8 +1,6 @@
 import {create as createCommandMapping} from './CommandMapping';
-import {create as createEnvironmentVariables} from './EnvironmentVariables';
-import {create as createFileSystem} from './FileSystem';
-import {create as createHistory} from './History';
-import {create as createOutputs} from './Outputs';
+import * as FileUtil from "../fs/util/file-util";
+import * as PathUtil from "../fs/util/path-util";
 
 const FS_KEY = 'fs';
 const ENVIRONMENT_VARIABLES_KEY = 'environmentVariables';
@@ -28,10 +26,10 @@ export default class EmulatorState
   }
 
   static create({
-                  fs = createFileSystem(),
-                  environmentVariables = createEnvironmentVariables(),
-                  history = createHistory(),
-                  outputs = createOutputs(),
+                  fs =  { '/': FileUtil.makeEmptyDirectory() },
+                  environmentVariables = { cwd: "/" },
+                  history = [],
+                  outputs = [],
                   commandMapping = createCommandMapping()
                 })
   {
@@ -102,3 +100,8 @@ export default class EmulatorState
     return this.state;
   }
 }
+
+export const relativeToAbsolutePath = (state, path) =>
+{
+  return PathUtil.toAbsolutePath(path, state.getEnvVariables().cwd);
+};

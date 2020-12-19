@@ -1,82 +1,31 @@
-import * as GlobUtil from '../util/glob-util';
-import * as DirOp from './directory-operations';
-import * as FileOp from './file-operations';
-import * as PathUtil from '../util/path-util';
-import {fsErrorType, makeError} from '../fs-error';
+import {getLastPathPart, toPathParts} from "../util/path-util";
 
-/**
- * Adds a file or directory to a path
- * @param {Map}     fs                     file system
- * @param {string}  pathToAdd              path to add the file or directory to
- * @param {string}  fsElementToAdd         file or directory map
- * @param {Boolean} [addParentPaths=false] true, if path parent directories should
- *                                         be made (if they don't exist)
- * @return {object}                        file system or error
- */
-export const add = (fs, pathToAdd, fsElementToAdd, addParentPaths = false) =>
+export const findFsPart = (fs, path) =>
 {
-  if(fs.has(pathToAdd))
-  {
-    return {
-      err: makeError(fsErrorType.FILE_OR_DIRECTORY_EXISTS)
-    };
-  }
+  let fsSection = fs;
+  let pathParts = toPathParts(path);
 
-  const parentPaths = PathUtil.getPathBreadCrumbs(pathToAdd).slice(0, -1);
-
-  for(const parentPath of parentPaths)
+  for (const pathPart of pathParts.slice(0, pathParts.length - 1))
   {
-    if(FileOp.hasFile(fs, parentPath))
+    if(!fs[pathPart])
     {
-      return {
-        err: makeError(fsErrorType.NOT_A_DIRECTORY,
-            `Cannot add path to a file: ${parentPath}`)
-      };
+      throw new Error("Specified Path Not In Filesystem");
     }
 
-    if(!fs.has(parentPath) && !addParentPaths)
-    {
-      return {
-        err: makeError(fsErrorType.NO_SUCH_DIRECTORY,
-            `Parent directory does not exist: ${parentPath}`)
-      };
-    }
+    fsSection = fs[pathPart];
   }
 
-  const addedDirectoryFs = fs.set(pathToAdd, fsElementToAdd);
+  return fsSection;
+}
 
-  return {
-    fs: addParentPaths ? DirOp.fillGaps(addedDirectoryFs) : addedDirectoryFs
-  };
+export const add = (fs, pathToAdd, fsElementToAdd) =>
+{
+  findFsPart(fs, pathToAdd)[getLastPathPart(pathToAdd)] = fsElementToAdd;
+  return fs;
 };
 
-/**
- * Removes a file or directory from a path
- * @param  {Map}     fs                                  file system
- * @param  {string}  pathToRemove                        removes the path
- * @param  {Boolean} [isNonEmptyDirectoryRemovable=true] true if non-empty paths can be removed
- * @return {object}                                      file system or error
- */
-export const remove = (fs, pathToRemove, isNonEmptyDirectoryRemovable = true) =>
+export const remove = (fs, pathToRemove) =>
 {
-  if(!fs.has(pathToRemove))
-  {
-    return {
-      err: makeError(fsErrorType.NO_SUCH_FILE_OR_DIRECTORY)
-    };
-  }
-
-  const childPathPattern = pathToRemove === '/' ? '/**' : `${pathToRemove}/**`;
-  const childPaths = GlobUtil.globPaths(fs, childPathPattern);
-
-  if(!isNonEmptyDirectoryRemovable && !childPaths.isEmpty())
-  {
-    return {
-      err: makeError(fsErrorType.DIRECTORY_NOT_EMPTY)
-    };
-  }
-
-  return {
-    fs: fs.removeAll(childPaths.concat(pathToRemove))
-  };
+  delete findFsPart(fs, pathToRemove)[getLastPathPart(pathToRemove)];
+  return fs;
 };

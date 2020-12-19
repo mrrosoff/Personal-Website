@@ -1,8 +1,5 @@
 import {parseOptions} from '../parser';
-import * as FileOp from '../fs/operations-with-permissions/file-operations';
-import * as DirOp from '../fs/operations-with-permissions/directory-operations';
-import {relativeToAbsolutePath} from '../emulator-state/util';
-import {fsErrorType, makeError} from '../fs/fs-error';
+import {relativeToAbsolutePath} from '../emulator-state/EmulatorState';
 
 export const optDef = {
   '--no-preserve-root, --noPreserveRoot': '',

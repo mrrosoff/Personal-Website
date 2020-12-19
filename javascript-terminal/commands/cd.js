@@ -1,7 +1,5 @@
 import {parseOptions} from '../parser';
-import * as DirectoryOp from '../fs/operations-with-permissions/directory-operations';
-import {fsErrorType, makeError} from '../fs/fs-error';
-import {relativeToAbsolutePath} from '../emulator-state/util';
+import {relativeToAbsolutePath} from '../emulator-state/EmulatorState';
 
 export const optDef = {};
 

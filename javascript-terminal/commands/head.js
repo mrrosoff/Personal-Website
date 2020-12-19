@@ -1,5 +1,5 @@
 import {parseOptions} from '../parser';
-import {relativeToAbsolutePath} from '../emulator-state/util';
+import {relativeToAbsolutePath} from '../emulator-state/EmulatorState';
 
 export const optDef = { '-n, --lines': '<count>' };
 

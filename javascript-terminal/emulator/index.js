@@ -1,6 +1,6 @@
-import CommandRunner from '../emulator/command-runner';
 import {parseCommands} from '../parser';
 import {suggestCommandOptions, suggestCommands, suggestFileSystemNames} from './auto-complete';
+import * as CommandMappingUtil from "../emulator-state/CommandMapping";
 
 export default class Emulator
 {
@@ -54,13 +54,13 @@ export default class Emulator
 
     if(str.trim() === '')
     {
-      state = this.addCommandOutput(state, '');
+      this.addCommandOutput(state, '');
     }
 
     else
     {
       this.addCommandToHistory(state, str);
-      state = this.updateStateByExecution(state, str, errorString);
+      this.updateStateByExecution(state, str, errorString);
     }
 
     for(const executionListener of executionListeners)
@@ -78,7 +78,7 @@ export default class Emulator
       const commandMapping = state.getCommandMapping();
       const commandArgs = [state, commandOptions];
 
-      const {state: nextState, output: output, type: type} = CommandRunner.run(commandMapping, commandName, commandArgs, errorString);
+      const {state: nextState, output: output, type: type} = this.runCommand(commandMapping, commandName, commandArgs, errorString);
 
       if(nextState)
       {
@@ -99,8 +99,6 @@ export default class Emulator
         }
       }
     }
-
-    return state;
   }
 
   addCommandToHistory(state, command)
@@ -112,4 +110,26 @@ export default class Emulator
   {
     state.setOutputs([...state.getOutputs(), {type: type, command: state.getHistory()[state.getHistory().length - 1], output: output, cwd: cwd}]);
   }
+
+  runCommand(commandMapping, commandName, commandArgs, errorString = 'Command not found')
+  {
+    const notFoundCallback = () => ({ output: errorString, type: "error" })
+
+    if(!CommandMappingUtil.isCommandSet(commandMapping, commandName))
+    {
+      return notFoundCallback(...commandArgs);
+    }
+
+    const command = CommandMappingUtil.getCommandFn(commandMapping, commandName);
+
+    try
+    {
+      return command(...commandArgs);
+    }
+
+    catch(fatalCommandError)
+    {
+      return { output: "An unknown command error occurred" };
+    }
+  };
 }

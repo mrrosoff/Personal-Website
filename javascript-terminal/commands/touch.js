@@ -1,9 +1,6 @@
 import {parseOptions} from '../parser';
-import * as FileOp from '../fs/operations-with-permissions/file-operations';
-import * as FileUtil from '../fs/util/file-util';
-import {relativeToAbsolutePath} from '../emulator-state/util';
-
-const EMPTY_FILE = FileUtil.makeFile();
+import {relativeToAbsolutePath} from '../emulator-state/EmulatorState';
+import {makeEmptyFile} from "../fs/util/file-util";
 
 export const optDef = {};
 
@@ -17,7 +14,7 @@ const functionDef = (state, commandOptions) =>
 
   if(state.getFileSystem().has(filePath)) return {};
 
-  const {fs, err} = FileOp.writeFile(state.getFileSystem(), filePath, EMPTY_FILE);
+  const {fs, err} = FileOp.writeFile(state.getFileSystem(), filePath, makeEmptyFile());
 
   if(err) return { output: err };
 

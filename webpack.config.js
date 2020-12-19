@@ -27,7 +27,7 @@ module.exports = {
 						{loader: 'sass-loader'}
 					]
 			},
-			{test: /\.(woff|woff2|eot|ttf|otf|png|svg|jpe?g|gif|mp4|wav|mp3)$/i, loader: ['file-loader']}
+			{test: /\.(woff|woff2|eot|ttf|otf|png|svg|jpe?g|gif|mp4|wav|mp3)$/i, loader: 'file-loader'}
 		]
 	},
 	plugins: [

@@ -1,6 +1,6 @@
 import React, {forwardRef, useEffect} from 'react';
 
-import { CommandMapping, DefaultCommandMapping, EmulatorState, FileSystem } from '../../javascript-terminal';
+import { CommandMapping, DefaultCommandMapping, EmulatorState } from '../../javascript-terminal';
 
 import Terminal from './terminal/Terminal';
 import {files} from "../FileSystem";
@@ -16,7 +16,7 @@ const TerminalEmbed = (props, ref) =>
 	});
 
 	const customState = EmulatorState.create({
-		'fs': FileSystem.create(files),
+		'fs': files,
 		'commandMapping': CommandMapping.create({
 			...DefaultCommandMapping,
 			'exit': {

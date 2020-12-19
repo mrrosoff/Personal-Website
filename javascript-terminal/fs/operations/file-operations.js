@@ -2,32 +2,15 @@ import * as PathUtil from '../util/path-util';
 import * as BaseOp from './base-operations';
 import {isFile} from '../util/file-util';
 import {hasDirectory} from './directory-operations';
-import {fsErrorType, makeError} from '../fs-error';
-
-export const hasFile = (fs, filePath) =>
-{
-  if(fs[filePath])
-  {
-    const possibleFile = fs[filePath];
-
-    return isFile(possibleFile);
-  }
-  return false;
-};
 
 export const readFile = (fs, filePath) =>
 {
-  if(hasDirectory(fs, filePath))
+  if(isFile(filePath))
   {
-    return { err: makeError(fsErrorType.IS_A_DIRECTORY) };
+    return fs[filePath].content;
   }
 
-  if(!hasFile(fs, filePath))
-  {
-    return { err: makeError(fsErrorType.NO_SUCH_FILE) };
-  }
-
-  return { file: fs[filePath] };
+  return null;
 };
 
 export const writeFile = (fs, filePath, file) =>

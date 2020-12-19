@@ -1,7 +1,6 @@
 import {parseOptions} from '../parser';
-import {create as createHistory} from '../emulator-state/History';
 
-const clearStateHistory = (state) => state.setHistory(createHistory());
+const clearStateHistory = (state) => state.setHistory([]);
 
 const stringifyStateHistory = (state) => state.getHistory().join('\n');
 

@@ -21,8 +21,6 @@
     "framer-motion": "^2.9.5",
     "get-options": "^1.2.0",
     "lodash": "^4.17.20",
-    "minimatch": "^3.0.4",
-    "minimatch-capture": "^1.1.0",
     "module-alias": "^2.2.2",
     "notistack": "^1.0.2",
     "react": "^17.0.1",

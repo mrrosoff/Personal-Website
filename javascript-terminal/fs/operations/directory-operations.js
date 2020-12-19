@@ -1,114 +1,23 @@
 import * as FileUtil from '../util/file-util';
-import * as GlobUtil from '../util/glob-util';
 import * as PathUtil from '../util/path-util';
 import * as BaseOp from './base-operations';
-import {fsErrorType, makeError} from '../fs-error';
-import {hasFile} from './file-operations';
-
-const onlyFilesFilter = fs => path => FileUtil.isFile(fs[path]);
-const onlyDirectoriesFilter = fs => path => FileUtil.isDirectory(fs[path]);
-
-export const fillGaps = (fs) =>
-{
-  const emptyDirectory = FileUtil.makeDirectory();
-
-  const directoryGapPaths = Object.keys(fs).flatMap(path => PathUtil.getPathBreadCrumbs(path)).filter(path => !fs[path]);
-
-  for(const directoryGapPath of directoryGapPaths)
-  {
-    fs[directoryGapPath] = emptyDirectory;
-  }
-
-  return fs
-};
-
-export const hasDirectory = (fs, path) =>
-{
-  return fs[path] && FileUtil.isDirectory(fs[path]);
-};
-
-export const listDirectoryFiles = (fs, path) =>
-{
-  if(hasFile(fs, path))
-  {
-    return { err: makeError(fsErrorType.FILE_EXISTS, 'File exists at path') };
-  }
-
-  if(!hasDirectory(fs, path))
-  {
-    return { err: makeError(fsErrorType.NO_SUCH_DIRECTORY, 'Cannot list files in non-existent directory') };
-  }
-
-  const filesPattern = path === '/' ? '/*' : `${path}/*`;
-
-  return { list: GlobUtil.captureGlobPaths(fs, filesPattern, onlyFilesFilter(fs)) };
-};
-
-export const listDirectoryFolders = (fs, path, isTrailingSlashAppended = true) =>
-{
-  if(hasFile(fs, path))
-  {
-    return { err: makeError(fsErrorType.FILE_EXISTS, 'File exists at path') };
-  }
-
-  if(!hasDirectory(fs, path))
-  {
-    return { err: makeError(fsErrorType.NO_SUCH_DIRECTORY, 'Cannot list folders in non-existent directory') };
-  }
-
-  const foldersPattern = path === '/' ? '/*' : `${path}/*`;
-  const folderNames = GlobUtil.captureGlobPaths(fs, foldersPattern, onlyDirectoriesFilter(fs));
-
-  if(isTrailingSlashAppended)
-  {
-    return { list: folderNames.map(folderName => `${folderName}/`) };
-  }
-
-  return { list: folderNames };
-};
+import {isFile} from "../util/file-util";
+import {findFsPart} from "./base-operations";
+import {getLastPathPart} from "../util/path-util";
 
 export const listDirectory = (fs, path, addTrailingSlash = true) =>
 {
-  const {err: listFileErr, list: fileList} = listDirectoryFiles(fs, path);
-  const {err: listFolderErr, list: folderList} = listDirectoryFolders(fs, path, addTrailingSlash);
-
-  if(listFileErr || listFolderErr)
+  if(isFile(fs[path]))
   {
-    return {err: listFileErr ? listFileErr : listFolderErr};
+    throw new Error("File Exists At Path");
   }
 
-  return {list: fileList.concat(folderList)};
+  return Object.keys(findFsPart(fs, path)[getLastPathPart(path)].contents);
 };
 
-export const addDirectory = (fs, path, dir, addParentPaths = true) =>
+export const addDirectory = (fs, path, dir) =>
 {
-  if(hasFile(fs, PathUtil.getPathParent(path)))
-  {
-    return { err: makeError(fsErrorType.FILE_EXISTS, 'File exists at path') };
-  }
-
-  return BaseOp.add(fs, path, dir, addParentPaths);
-};
-
-const isPathTypeMatching = (fs, pathSeq) =>
-{
-  for(const [srcPath, destPath] of pathSeq)
-  {
-    if(fs[destPath])
-    {
-      if(hasFile(fs, srcPath) && hasDirectory(fs, destPath))
-      {
-        return false;
-      }
-
-      else if(hasDirectory(fs, srcPath) && hasFile(fs, destPath))
-      {
-        return false;
-      }
-    }
-  }
-
-  return true;
+  return BaseOp.add(fs, path, dir);
 };
 
 export const copyDirectory = (fs, srcPath, destPath, overwrite = true) =>

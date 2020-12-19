@@ -1,10 +1,7 @@
 import {parseOptions} from '../parser';
-import * as FileOp from '../fs/operations-with-permissions/file-operations';
-import * as DirectoryOp from '../fs/operations-with-permissions/directory-operations';
 import * as PathUtil from '../fs/util/path-util';
 import * as FileUtil from '../fs/util/file-util';
-import {fsErrorType, makeError} from '../fs/fs-error';
-import {relativeToAbsolutePath} from '../emulator-state/util';
+import {relativeToAbsolutePath} from '../emulator-state/EmulatorState';
 
 
 const copySourceFile = (state, srcPath, destPath, isTrailingPathDest) =>
@@ -37,7 +34,7 @@ const copySourceDirectory = (state, srcPath, destPath) =>
 
   if(!DirectoryOp.hasDirectory(state.getFileSystem(), destPath))
   {
-    const emptyDir = FileUtil.makeDirectory();
+    const emptyDir = FileUtil.makeEmptyDirectory();
     const {fs, err} = DirectoryOp.addDirectory(state.getFileSystem(), destPath, emptyDir, false);
 
     state = state.setFileSystem(fs);

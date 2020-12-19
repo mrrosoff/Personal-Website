@@ -1,13 +1,11 @@
 import * as PathUtil from '../fs/util/path-util';
-import * as GlobUtil from '../fs/util/glob-util';
 import {getCommandNames, getCommandOptDef, isCommandSet} from '../emulator-state/CommandMapping';
 import {isDirectory} from "../fs/util/file-util";
 
 export const suggestCommands = (cmdMapping, partialStr) =>
 {
   const commandNameSeq = getCommandNames(cmdMapping);
-
-  return [...GlobUtil.globSeq(commandNameSeq, `${partialStr}*`)];
+  return commandNameSeq.filter((cmd) => partialStr === cmd.substr(0, partialStr.length))
 };
 
 export const suggestCommandOptions = (cmdMapping, commandName, partialStr) =>
@@ -17,11 +15,8 @@ export const suggestCommandOptions = (cmdMapping, commandName, partialStr) =>
     return [];
   }
 
-  const optDefSeq = Object.keys(getCommandOptDef(cmdMapping, commandName)).flatMap(opts =>
-      opts.split(',').map(opt => opt.trim())
-  );
-
-  return [...GlobUtil.globSeq(optDefSeq, `${partialStr}*`)];
+  const optDefSeq = Object.keys(getCommandOptDef(cmdMapping, commandName)).flatMap(opts => opts.split(',').map(opt => opt.trim()));
+  return optDefSeq.filter((option) => partialStr === option.substr(0, partialStr.length))
 };
 
 export const suggestFileSystemNames = (fileSystem, cwd, partialStr) =>
@@ -34,7 +29,7 @@ export const suggestFileSystemNames = (fileSystem, cwd, partialStr) =>
 
   const childPaths = GlobUtil.globPaths(fileSystem, globPattern);
 
-  if(PathUtil.isAbsPath(partialStr))
+  if(PathUtil.isAbsolutePath(partialStr))
   {
     return [...childPaths];
   }
