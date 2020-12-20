@@ -1,16 +1,12 @@
 import {parseOptions} from '../parser';
 import {relativeToAbsolutePath} from '../emulator-state/EmulatorState';
+import * as DirOp from "../fs/operations/directory-operations";
+import * as FileOp from "../fs/operations/file-operations";
 
 export const optDef = {
 	'--no-preserve-root, --noPreserveRoot': '',
-	'-r, --recursive': ''
-};
-
-const makeNoPathErrorOutput = () =>
-{
-	const noSuchFileOrDirError = makeError(fsErrorType.NO_SUCH_FILE_OR_DIRECTORY);
-
-	return {output: noSuchFileOrDirError};
+	'-r, --recursive': '',
+	'-f, --force': ''
 };
 
 const functionDef = (state, commandOptions) =>
@@ -32,16 +28,7 @@ const functionDef = (state, commandOptions) =>
 			return {};
 		}
 
-		if(!fs.has(deletionPath))
-		{
-			return makeNoPathErrorOutput();
-		}
-
-		const {fs: deletedPathFS, err} = options.recursive === true ?
-			DirOp.deleteDirectory(fs, deletionPath, true) :
-			FileOp.deleteFile(fs, deletionPath);
-
-		state.setFileSystem(deletedPathFS);
+		options.recursive === true ? DirOp.deleteDirectory(fs, deletionPath) : FileOp.deleteFile(fs, deletionPath);
 		return {output: ""};
 	}
 

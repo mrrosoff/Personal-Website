@@ -1,11 +1,11 @@
 import * as PathUtil from '../util/path-util';
 import * as BaseOp from './base-operations';
-import {isFile} from '../util/file-util';
-import {findFsPart} from "./base-operations";
+import {fsSearch, fsSearchParent} from "./base-operations";
+import {getLastPathPart} from "../util/path-util";
 
 export const readFile = (fs, path) =>
 {
-  return findFsPart(fs, path).contents
+  return fsSearch(fs, path).contents
 };
 
 export const writeFile = (fs, path, file) =>
@@ -38,17 +38,14 @@ export const copyFile = (fs, sourcePath, destPath) =>
   return { fs: fs };
 };
 
-export const deleteFile = (fs, filePath) =>
+export const deleteFile = (fs, path) =>
 {
-  if(hasDirectory(fs, filePath))
+  const fsPart = fsSearchParent(fs, path);
+
+  if (fsPart[getLastPathPart(path)].type !== "-")
   {
-    return { err: makeError(fsErrorType.IS_A_DIRECTORY) };
+    throw Error("Not A File At Specified Path")
   }
 
-  if(!hasFile(fs, filePath))
-  {
-    return { err: makeError(fsErrorType.NO_SUCH_FILE) };
-  }
-
-  return BaseOp.remove(fs, filePath);
+  return BaseOp.remove(fs, path);
 };

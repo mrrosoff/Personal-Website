@@ -1,6 +1,6 @@
 import {parseOptions} from '../parser';
 import {relativeToAbsolutePath} from '../emulator-state/EmulatorState';
-import {findFsPart} from "../fs/operations/base-operations";
+import {fsSearch} from "../fs/operations/base-operations";
 
 export const optDef = {};
 
@@ -12,7 +12,7 @@ const functionDef = (state, commandOptions) =>
 	{
 		const newCwdPath = argv[0] ? relativeToAbsolutePath(state, argv[0]) : '/';
 
-		findFsPart(state.getFileSystem(), newCwdPath);
+		fsSearch(state.getFileSystem(), newCwdPath);
 
 		state.setEnvVariables({...state.getEnvVariables(), cwd: newCwdPath});
 		return {output: "", type: "cwd"};

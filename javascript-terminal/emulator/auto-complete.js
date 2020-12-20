@@ -1,6 +1,6 @@
 import * as PathUtil from '../fs/util/path-util';
 import {getCommandNames, getCommandOptDef, isCommandSet} from '../emulator-state/CommandMapping';
-import {findFsPartWithFailedPaths} from "../fs/operations/base-operations";
+import {fsSearchAutoComplete} from "../fs/operations/base-operations";
 
 export const suggestCommands = (cmdMapping, partialStr) =>
 {
@@ -22,6 +22,6 @@ export const suggestCommandOptions = (cmdMapping, commandName, partialStr) =>
 export const suggestFileSystemNames = (fs, cwd, partialStr) =>
 {
   const path = PathUtil.toAbsolutePath(partialStr, cwd);
-  const fsPart = findFsPartWithFailedPaths(fs, path);
+  const fsPart = fsSearchAutoComplete(fs, path);
   return Object.keys(fsPart).filter(fileName => partialStr === fileName.substr(0, partialStr.length));
 };

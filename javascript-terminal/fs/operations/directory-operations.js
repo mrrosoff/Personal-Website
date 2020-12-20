@@ -1,9 +1,9 @@
 import * as BaseOp from './base-operations';
-import {findFsPart} from "./base-operations";
+import {fsSearch} from "./base-operations";
 
 export const listDirectory = (fs, path) =>
 {
-  return Object.keys(findFsPart(fs, path));
+  return Object.keys(fsSearch(fs, path));
 };
 
 export const addDirectory = (fs, path, dir) =>
@@ -44,19 +44,9 @@ export const copyDirectory = (fs, srcPath, destPath, overwrite = true) =>
   return { fs: fs };
 };
 
-export const deleteDirectory = (fs, pathToDelete, isNonEmptyDirectoryRemovable = false) =>
+export const deleteDirectory = (fs, path) =>
 {
-  if(hasFile(fs, pathToDelete))
-  {
-    return { err: makeError(fsErrorType.FILE_EXISTS, 'File exists at path') };
-  }
-
-  if(!hasDirectory(fs, pathToDelete))
-  {
-    return { err: makeError(fsErrorType.NO_SUCH_DIRECTORY, `No such directory: ${pathToDelete}`) };
-  }
-
-  return BaseOp.remove(fs, pathToDelete, isNonEmptyDirectoryRemovable);
+  return BaseOp.remove(fs, path);
 };
 
 export const renameDirectory = (fs, currentPath, newPath) =>

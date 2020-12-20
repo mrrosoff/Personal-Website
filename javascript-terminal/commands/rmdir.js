@@ -1,5 +1,6 @@
 import {parseOptions} from '../parser';
 import {relativeToAbsolutePath} from '../emulator-state/EmulatorState';
+import * as DirOp from "../fs/operations/directory-operations";
 
 export const optDef = {};
 
@@ -15,8 +16,7 @@ const functionDef = (state, commandOptions) =>
 	try
 	{
 		const pathToDelete = relativeToAbsolutePath(state, argv[0]);
-		const {fs, err} = DirOp.deleteDirectory(state.getFileSystem(), pathToDelete, false);
-		state.setFileSystem(fs);
+		DirOp.deleteDirectory(state.getFileSystem(), pathToDelete);
 		return {output: ""};
 	}
 
