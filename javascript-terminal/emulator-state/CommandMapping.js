@@ -8,12 +8,12 @@ export const create = (commandMapping = commands) =>
 
     if(!command.functionDef)
     {
-      throw new Error(`Failed to create command mapping: missing command function for ${commandName}`);
+      throw Error(`Failed to create command mapping: missing command function for ${commandName}`);
     }
 
     if(!command.optDef)
     {
-      throw new Error(`Failed to create command mapping: missing option definition (optDef) for ${commandName}`);
+      throw Error(`Failed to create command mapping: missing option definition (optDef) for ${commandName}`);
     }
   }
 

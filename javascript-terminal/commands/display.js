@@ -2,21 +2,17 @@ import React from "react";
 
 import {parseOptions} from '../parser';
 import {relativeToAbsolutePath} from '../emulator-state/EmulatorState';
+import * as FileOp from "../fs/operations/file-operations";
 
 const fileToImageOutput = (fs, filePath) =>
 {
-	const {err, file} = FileOp.readFile(fs, filePath);
+	const file = FileOp.read(fs, filePath);
 
-	if(err)
-	{
-		return err;
-	}
-
-	let jsxElement = <img alt={"Image"} src={file.get('content')} style={{width: "auto", height: 360, padding: 10}}/>;
+	let jsxElement = <img alt={"Image"} src={file} style={{width: "auto", height: 360, padding: 10}}/>;
 
 	if(filePath.match(new RegExp('\.(mov|mp4)$', 'g')))
 	{
-		jsxElement = <iframe width="640" height="360" frameBorder="0" src={file.get('content')} style={{padding: 10}}/>;
+		jsxElement = <iframe width="640" height="360" frameBorder="0" src={file} style={{padding: 10}}/>;
 	}
 
 	return jsxElement;

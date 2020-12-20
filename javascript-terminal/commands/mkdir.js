@@ -17,7 +17,7 @@ const functionDef = (state, commandOptions) =>
 	try
 	{
 		const newFolderPath = relativeToAbsolutePath(state, argv[0]);
-		DirOp.addDirectory(state.getFileSystem(), newFolderPath, makeEmptyDirectory());
+		DirOp.add(state.getFileSystem(), newFolderPath, makeEmptyDirectory());
 
 		return {output: ""};
 	}

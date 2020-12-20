@@ -28,7 +28,7 @@ const functionDef = (state, commandOptions) =>
 			return {};
 		}
 
-		options.recursive === true ? DirOp.deleteDirectory(fs, deletionPath) : FileOp.deleteFile(fs, deletionPath);
+		options.recursive === true ? DirOp.remove(fs, deletionPath) : FileOp.remove(fs, deletionPath);
 		return {output: ""};
 	}
 

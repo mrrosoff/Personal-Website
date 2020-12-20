@@ -17,7 +17,7 @@ const functionDef = (state, commandOptions) =>
 	try
 	{
 		const filePath = relativeToAbsolutePath(state, argv[0]);
-		FileOp.writeFile(state.getFileSystem(), filePath, makeEmptyFile());
+		FileOp.write(state.getFileSystem(), filePath, makeEmptyFile());
 		return {output: ""};
 	}
 

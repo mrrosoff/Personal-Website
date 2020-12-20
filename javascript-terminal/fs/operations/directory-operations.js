@@ -1,62 +1,30 @@
 import * as BaseOp from './base-operations';
-import {fsSearch} from "./base-operations";
+import {fsSearch, fsSearchParent} from "./base-operations";
+import {getLastPathPart} from "../util/path-util";
 
-export const listDirectory = (fs, path) =>
+export const list = (fs, path) =>
 {
   return Object.keys(fsSearch(fs, path));
 };
 
-export const addDirectory = (fs, path, dir) =>
+export const add = (fs, path, dir) =>
 {
   BaseOp.add(fs, path, dir);
 };
 
-export const copyDirectory = (fs, srcPath, destPath, overwrite = true) =>
+export const copy = (fs, srcPath, destPath) =>
 {
-  if(!hasDirectory(fs, srcPath))
-  {
-    return { err: makeError(fsErrorType.NO_SUCH_DIRECTORY, 'Source directory does not exist') };
-  }
-
-  if(!hasDirectory(fs, destPath))
-  {
-    return { err: makeError(fsErrorType.NO_SUCH_DIRECTORY, 'Destination directory does not exist') };
-  }
-
-  const srcChildPattern = srcPath === '/' ? '/**' : `${srcPath}/**`;
-  const srcPaths = GlobUtil.globPaths(fs, srcChildPattern);
-  const srcSubPaths = GlobUtil.captureGlobPaths(fs, srcChildPattern);
-  const destPaths = srcSubPaths.map(path => path === '/' ? destPath : `${destPath}/${path}`);
-
-  if(!isPathTypeMatching(fs, srcPaths.zip(destPaths)))
-  {
-    return { err: makeError(fsErrorType.OTHER, 'Cannot overwrite a directory with file OR a file with directory') };
-  }
-
-  for(const [srcPath, destPath] of srcPaths.zip(destPaths))
-  {
-    if(!fs.has(destPath) || overwrite)
-    {
-      fs[destPath] = fs[srcPath];
-    }
-  }
-
-  return { fs: fs };
+  const fsPart = fsSearchParent(fs, srcPath);
+  fsPart[getLastPathPart(destPath)] = fsPart[getLastPathPart(srcPath)];
 };
 
-export const deleteDirectory = (fs, path) =>
+export const remove = (fs, path) =>
 {
   return BaseOp.remove(fs, path);
 };
 
-export const renameDirectory = (fs, currentPath, newPath) =>
+export const rename = (fs, currentPath, newPath) =>
 {
-  const {err, fs: copiedFS} = copyDirectory(fs, currentPath, newPath, true);
-
-  if(err)
-  {
-    return {err};
-  }
-
-  return deleteDirectory(copiedFS, currentPath, true);
+  copy(fs, currentPath, newPath);
+  remove(fs, currentPath);
 };

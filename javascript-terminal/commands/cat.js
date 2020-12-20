@@ -16,7 +16,7 @@ const functionDef = (state, commandOptions) =>
 	try
 	{
 		const filePaths = argv.map(pathArg => relativeToAbsolutePath(state, pathArg));
-		return {output: filePaths.map(path => FileOp.readFile(state.getFileSystem(), path)).join("\n")};
+		return {output: filePaths.map(path => FileOp.read(state.getFileSystem(), path)).join("\n")};
 	}
 
 	catch(err)

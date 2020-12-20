@@ -1,44 +1,30 @@
-import * as PathUtil from '../util/path-util';
 import * as BaseOp from './base-operations';
 import {fsSearch, fsSearchParent} from "./base-operations";
 import {getLastPathPart} from "../util/path-util";
 
-export const readFile = (fs, path) =>
+export const read = (fs, path) =>
 {
-  return fsSearch(fs, path).contents
+  return fsSearch(fs, path);
 };
 
-export const writeFile = (fs, path, file) =>
+export const write = (fs, path, file) =>
 {
   BaseOp.add(fs, path, file);
 };
 
-export const copyFile = (fs, sourcePath, destPath) =>
+export const copy = (fs, srcPath, destPath) =>
 {
-  if(!hasFile(fs, sourcePath))
+  const fsPart = fsSearchParent(fs, srcPath);
+
+  if (fsPart[getLastPathPart(srcPath)].type !== "-")
   {
-    return { err: makeError(fsErrorType.NO_SUCH_FILE, 'Source file does not exist') };
+    throw Error("Not A File At Specified Path")
   }
 
-  const pathParent = PathUtil.getPathParent(destPath);
-
-  if(!hasDirectory(fs, pathParent))
-  {
-    return { err: makeError(fsErrorType.NO_SUCH_DIRECTORY, 'Destination directory does not exist') };
-  }
-
-  if(hasDirectory(fs, destPath))
-  {
-    const sourceFileName = PathUtil.getLastPathPart(sourcePath);
-    destPath = destPath === '/' ? `/${sourceFileName}` : `${destPath}/${sourceFileName}`;
-  }
-
-  fs[destPath] = fs[sourcePath];
-
-  return { fs: fs };
+  fsPart[getLastPathPart(destPath)] = fsPart[getLastPathPart(srcPath)];
 };
 
-export const deleteFile = (fs, path) =>
+export const remove = (fs, path) =>
 {
   const fsPart = fsSearchParent(fs, path);
 
@@ -48,4 +34,10 @@ export const deleteFile = (fs, path) =>
   }
 
   return BaseOp.remove(fs, path);
+};
+
+export const rename = (fs, currentPath, newPath) =>
+{
+  copy(fs, currentPath, newPath);
+  remove(fs, currentPath);
 };

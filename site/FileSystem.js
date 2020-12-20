@@ -23,7 +23,7 @@ export const files = {
 				type: "d",
 				permissions: "rwx------",
 				contents: {}
-			},
+			}
 		},
 	}
 };

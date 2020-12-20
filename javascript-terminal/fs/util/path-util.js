@@ -96,3 +96,5 @@ export const toAbsolutePath = (relativePath, cwd) =>
 
 	return toPath(pathStack);
 };
+
+export default {isTrailingPath, removeTrailingSeparator, isAbsolutePath, isRelativePath, toPathParts, toPath, getPathParent, getLastPathPart, toAbsolutePath}

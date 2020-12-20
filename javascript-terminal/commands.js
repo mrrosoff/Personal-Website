@@ -9,6 +9,7 @@ import history from "./commands/history";
 import ls from "./commands/ls";
 import man from "./commands/man";
 import mkdir from "./commands/mkdir";
+import mv from "./commands/mv";
 import printenv from "./commands/printenv";
 import pwd from "./commands/pwd";
 import rm from "./commands/rm";
@@ -20,8 +21,8 @@ import whoami from "./commands/whoami";
 const commands = {
 	cat, cd, clear, cp, display,
 	echo, head, history, ls, man,
-	mkdir, printenv, pwd, rm, rmdir,
-	tail, touch, whoami
+	mv, mkdir, printenv, pwd, rm,
+	rmdir, tail, touch, whoami
 }
 
 export default commands;

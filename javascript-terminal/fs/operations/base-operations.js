@@ -45,7 +45,7 @@ export const fsSearch = (fs, path) =>
   {
     if(!fsSection[pathPart])
     {
-      throw new Error("Specified Path Not In Filesystem");
+      throw Error("Specified Path Not In Filesystem");
     }
 
     fsSection = fsSection[pathPart].contents;

@@ -8,16 +8,24 @@ const functionDef = (state, commandOptions) =>
 {
 	const {options, argv} = parseOptions(commandOptions, optDef);
 
-	if(argv.length === 0)
+	if(argv.length < 2)
 	{
 		return {};
 	}
 
 	try
 	{
-		const pathToDelete = relativeToAbsolutePath(state, argv[0]);
-		DirOp.remove(state.getFileSystem(), pathToDelete);
-		return {output: ""};
+		const srcPath = relativeToAbsolutePath(state, argv[0]);
+		const destPath = relativeToAbsolutePath(state, argv[1]);
+
+		if(srcPath === destPath)
+		{
+			return {output: 'Source and destination are the same (not copied).'};
+		}
+
+		DirOp.rename(state.getFileSystem(), srcPath, destPath);
+
+		return {output: ""}
 	}
 
 	catch(err)

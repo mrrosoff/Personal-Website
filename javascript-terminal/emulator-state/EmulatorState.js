@@ -14,7 +14,7 @@ export default class EmulatorState
   {
     if(!state)
     {
-      throw new Error('Do not use the constructor directly. Use the static create method.');
+      throw Error('Do not use the constructor directly. Use the static create method.');
     }
 
     this.state = state;

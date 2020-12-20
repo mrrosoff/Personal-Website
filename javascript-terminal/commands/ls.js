@@ -1,6 +1,6 @@
 import {parseOptions} from '../parser';
 import * as PathUtil from '../fs/util/path-util';
-import {listDirectory} from "../fs/operations/directory-operations";
+import * as DirOp from "../fs/operations/directory-operations";
 
 const IMPLIED_DIRECTORY_ENTRIES = ['.', '..'];
 
@@ -30,7 +30,7 @@ const functionDef = (state, commandOptions) =>
 	try
 	{
 		const dirPath = resolveDirectoryToList(state.getEnvVariables(), argv);
-		const dirList = listDirectory(state.getFileSystem(), dirPath);
+		const dirList = DirOp.list(state.getFileSystem(), dirPath);
 
 		if(options.all)
 		{
