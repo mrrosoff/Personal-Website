@@ -1,11 +1,10 @@
 # Personal-Website
 
-### Personal Website for Max Rosoff
+### My Personal Website
 
 ## About Project
 
-This site is built using React.js. I use the Material-UI library for styling. The site is hosted on GitHub Pages and 
-links to [my custom domain.](maxrosoff.com)
+This site is built using React.js. The site is hosted on GitHub Pages and links to [my custom domain](maxrosoff.com).
 
 ## Installation
 
