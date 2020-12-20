@@ -1,6 +1,6 @@
 import * as PathUtil from '../fs/util/path-util';
 import {getCommandNames, getCommandOptDef, isCommandSet} from '../emulator-state/CommandMapping';
-import {isDirectory} from "../fs/util/file-util";
+import {findFsPart, findFsPartWithFailedPaths} from "../fs/operations/base-operations";
 
 export const suggestCommands = (cmdMapping, partialStr) =>
 {
@@ -19,30 +19,9 @@ export const suggestCommandOptions = (cmdMapping, commandName, partialStr) =>
   return optDefSeq.filter((option) => partialStr === option.substr(0, partialStr.length))
 };
 
-export const suggestFileSystemNames = (fileSystem, cwd, partialStr) =>
+export const suggestFileSystemNames = (fs, cwd, partialStr) =>
 {
   const path = PathUtil.toAbsolutePath(partialStr, cwd);
-
-  const completeNamePattern = `${path}*`;
-  const completeSubfolderPattern = path === '/' ? '/*' : `${path}*/*`;
-  const globPattern = partialStr.endsWith('/') ? completeSubfolderPattern : completeNamePattern;
-
-  const childPaths = GlobUtil.globPaths(fileSystem, globPattern);
-
-  if(PathUtil.isAbsolutePath(partialStr))
-  {
-    return [...childPaths];
-  }
-
-  return [...childPaths.map(path =>
-  {
-    let pathPartsWithoutTail = PathUtil.toPathParts(partialStr);
-
-    if (isDirectory(fileSystem[path]))
-    {
-      pathPartsWithoutTail = pathPartsWithoutTail.slice(0, -1);
-    }
-
-    return PathUtil.toPath(pathPartsWithoutTail.concat(PathUtil.getLastPathPart(path)));
-  })];
+  const fsPart = findFsPartWithFailedPaths(fs, path);
+  return Object.keys(fsPart).filter(fileName => partialStr === fileName.substr(0, partialStr.length));
 };

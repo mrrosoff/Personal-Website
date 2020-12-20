@@ -5,14 +5,9 @@ import {isFile} from "../util/file-util";
 import {findFsPart} from "./base-operations";
 import {getLastPathPart} from "../util/path-util";
 
-export const listDirectory = (fs, path, addTrailingSlash = true) =>
+export const listDirectory = (fs, path) =>
 {
-  if(isFile(fs[path]))
-  {
-    throw new Error("File Exists At Path");
-  }
-
-  return Object.keys(findFsPart(fs, path)[getLastPathPart(path)].contents);
+  return Object.keys(findFsPart(fs, path));
 };
 
 export const addDirectory = (fs, path, dir) =>
