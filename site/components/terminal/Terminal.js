@@ -1,4 +1,4 @@
-import React, {forwardRef, useState} from 'react';
+import React, {forwardRef, useEffect, useState} from 'react';
 
 import {Grid} from "@material-ui/core";
 import {Emulator, HistoryKeyboardPlugin} from '../../../javascript-terminal';
@@ -13,6 +13,7 @@ const Terminal = (props, ref) =>
 {
   const [input, setInput] = useState('');
   const [emulatorState, setEmulatorState] = useState(props.emulatorState);
+  const [outputs, setOutputs] = useState([]);
 
   let emulator = new Emulator();
   let historyKeyboardPlugin = new HistoryKeyboardPlugin(emulatorState);
@@ -45,34 +46,38 @@ const Terminal = (props, ref) =>
 
         e.preventDefault();
         setEmulatorState(emulator.execute(emulatorState, input, [historyKeyboardPlugin], props.errorStr));
-        setInput('');
+        setInput("");
+        setOutputs(calculateOutputs());
         break;
     }
   }
 
   if(!emulatorState) return null;
-  let outputs = emulatorState.getOutputs();
+
+  const calculateOutputs = () =>
+  {
+    return emulatorState.getOutputs().map((content, key) =>
+        <Grid item key={key} container direction={"column"}>
+          <Grid item>
+            <OutputHeader cwd={content.cwd} {...props}>{content.command}</OutputHeader>
+          </Grid>
+          {content.type === "error" ?
+              <Grid item>
+                <OutputError {...props}>{content.output}</OutputError>
+              </Grid> :
+              <Grid item>
+                <OutputText {...props}>{content.output}</OutputText>
+              </Grid>
+          }
+        </Grid>
+    );
+  }
+
+  useEffect(() => setOutputs(calculateOutputs()), [input]);
 
   return (
       <Grid container direction={"column"} justify={"flex-start"} spacing={1}>
-        {
-          outputs.length > 0 ?
-              outputs.map((content, key) =>
-                  <Grid item key={key} container direction={"column"}>
-                    <Grid item>
-                      <OutputHeader cwd={content.cwd} {...props}>{content.command}</OutputHeader>
-                    </Grid>
-                    {content.type === "error" ?
-                        <Grid item>
-                          <OutputError {...props}>{content.output}</OutputError>
-                        </Grid> :
-                        <Grid item>
-                          <OutputText {...props}>{content.output}</OutputText>
-                        </Grid>
-                    }
-                  </Grid>
-              ) : null
-        }
+        {outputs}
         <Grid item key={outputs.length}>
           <CommandInput
               ref={ref}

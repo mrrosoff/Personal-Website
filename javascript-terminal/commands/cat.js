@@ -1,25 +1,29 @@
 import {parseOptions} from '../parser';
 import {relativeToAbsolutePath} from '../emulator-state/EmulatorState';
-
-const fileToTextOutput = (fs, filePath) =>
-{
-  const {err, file} = FileOp.readFile(fs, filePath);
-
-  if(err) return err;
-
-  return file.content;
-};
+import * as FileOp from "../fs/operations/file-operations";
 
 export const optDef = {};
 
 const functionDef = (state, commandOptions) =>
 {
-  const {argv} = parseOptions(commandOptions, optDef);
+	const {options, argv} = parseOptions(commandOptions, optDef);
 
-  if(argv.length === 0) return {};
+	if(argv.length === 0)
+	{
+		return {};
+	}
 
-  const filePaths = argv.map(pathArg => relativeToAbsolutePath(state, pathArg));
-  return { output: filePaths.map(path => fileToTextOutput(state.getFileSystem(), path)).join("\n") };
+	try
+	{
+		const filePaths = argv.map(pathArg => relativeToAbsolutePath(state, pathArg));
+		return {output: filePaths.map(path => FileOp.readFile(state.getFileSystem(), path)).join("\n")};
+	}
+
+	catch(err)
+	{
+		return {output: err.message, type: "error"};
+	}
+
 };
 
 export default {optDef, functionDef};

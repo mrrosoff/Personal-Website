@@ -1,21 +1,28 @@
 import {parseOptions} from '../parser';
 import {relativeToAbsolutePath} from '../emulator-state/EmulatorState';
 
-export const optDef = { '-n, --lines': '<count>' };
+export const optDef = {'-n, --lines': '<count>'};
 
 const functionDef = (state, commandOptions) =>
 {
-  const {argv, options} = parseOptions(commandOptions, optDef);
+	const {options, argv} = parseOptions(commandOptions, optDef);
 
-  if(argv.length === 0) return {};
+	if(argv.length === 0)
+	{
+		return {};
+	}
 
-  const filePath = relativeToAbsolutePath(state, argv[0]);
-  const tailTrimmingFn = (lines, lineCount) => lines.slice(-1 * lineCount);
-  const {content, err} = trimFileContent(state.getFileSystem(), filePath, options, tailTrimmingFn);
+	try
+	{
+		const filePath = relativeToAbsolutePath(state, argv[0]);
+		const tailTrimmingFn = (lines, lineCount) => lines.slice(-1 * lineCount);
+		return {output: trimFileContent(state.getFileSystem(), filePath, options, tailTrimmingFn)};
+	}
 
-  if(err) return { output: err };
-
-  return { output: content };
+	catch(err)
+	{
+		return {output: err.message, type: "error"};
+	}
 };
 
 export default {optDef, functionDef};

@@ -38,7 +38,7 @@ export const findFsPart = (fs, path) =>
 
 export const add = (fs, pathToAdd, fsElementToAdd) =>
 {
-  findFsPart(fs, pathToAdd)[getLastPathPart(pathToAdd)] = fsElementToAdd;
+  findFsPartWithFailedPaths(fs, pathToAdd)[getLastPathPart(pathToAdd)] = fsElementToAdd;
 };
 
 export const remove = (fs, pathToRemove) =>

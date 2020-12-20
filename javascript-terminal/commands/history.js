@@ -1,18 +1,20 @@
 import {parseOptions} from '../parser';
 
-const clearStateHistory = (state) => state.setHistory([]);
-
-const stringifyStateHistory = (state) => state.getHistory().join('\n');
-
-export const optDef = { '-c, --clear': '' };
+export const optDef = {};
 
 const functionDef = (state, commandOptions) =>
 {
-  const {options} = parseOptions(commandOptions, optDef);
+	const {options, argv} = parseOptions(commandOptions, optDef);
 
-  if(options.clear) return { state: clearStateHistory(state) };
+	try
+	{
+		return {output: state.getHistory().join('\n')};
+	}
 
-  return { output: stringifyStateHistory(state) };
+	catch(err)
+	{
+		return {output: err.message, type: "error"};
+	}
 };
 
 export default {optDef, functionDef};

@@ -1,6 +1,6 @@
 import * as PathUtil from '../fs/util/path-util';
 import {getCommandNames, getCommandOptDef, isCommandSet} from '../emulator-state/CommandMapping';
-import {findFsPart, findFsPartWithFailedPaths} from "../fs/operations/base-operations";
+import {findFsPartWithFailedPaths} from "../fs/operations/base-operations";
 
 export const suggestCommands = (cmdMapping, partialStr) =>
 {

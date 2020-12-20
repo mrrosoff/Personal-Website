@@ -15,13 +15,12 @@ export const isSymbolicLink = (obj) =>
 
 export const makeEmptyFile = () =>
 {
-  return {type: "-", permissions: "rwx------", content: ""}
+  return {type: "-", permissions: "rwx------", contents: ""}
 }
-
 
 export const makeEmptyDirectory = () =>
 {
-  return {type: "d", permissions: "rwx------", content: {}}
+  return {type: "d", permissions: "rwx------", contents: {}}
 }
 
 export default {isFile, isDirectory, isSymbolicLink, makeEmptyFile, makeEmptyDirectory};

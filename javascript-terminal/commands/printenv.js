@@ -1,25 +1,33 @@
 import {parseOptions} from '../parser';
 
-const stringifyEnvVariables = (envVariables) =>
-{
-  const outputs = envVariables.reduce((outputs, varVal, varKey) => [...outputs, `${varKey}=${varVal}`], []);
-  return outputs.join('\n');
-};
-
 export const optDef = {};
 
 const functionDef = (state, commandOptions) =>
 {
-  const {argv} = parseOptions(commandOptions, optDef);
-  const envVariables = state.getEnvVariables();
+	const {options, argv} = parseOptions(commandOptions, optDef);
+	const envVariables = state.getEnvVariables();
 
-  if(argv.length === 0) return { output: stringifyEnvVariables(envVariables) };
+	if(argv.length === 0)
+	{
+		return {output: Object.entries(envVariables).map(entry => entry[0] + "=" + entry[1]).join('\n')};
+	}
 
-  const varValue = envVariables[argv[0]];
+	try
+	{
+		const varValue = envVariables[argv[0]];
 
-  if(varValue) return { output: varValue };
+		if(varValue)
+		{
+			return {output: varValue};
+		}
 
-  return {};
+		return {};
+	}
+
+	catch(err)
+	{
+		return {output: err.message, type: "error"};
+	}
 };
 
 export default {optDef, functionDef};

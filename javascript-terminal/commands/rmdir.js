@@ -5,19 +5,25 @@ export const optDef = {};
 
 const functionDef = (state, commandOptions) =>
 {
-  const {argv} = parseOptions(commandOptions, optDef);
+	const {options, argv} = parseOptions(commandOptions, optDef);
 
-  if(argv.length === 0) return {};
+	if(argv.length === 0)
+	{
+		return {};
+	}
 
-  const pathToDelete = relativeToAbsolutePath(state, argv[0]);
-  const {fs, err} = DirOp.deleteDirectory(state.getFileSystem(), pathToDelete, false);
+	try
+	{
+		const pathToDelete = relativeToAbsolutePath(state, argv[0]);
+		const {fs, err} = DirOp.deleteDirectory(state.getFileSystem(), pathToDelete, false);
+		state.setFileSystem(fs);
+		return {output: ""};
+	}
 
-  if(err)
-  {
-    return { output: err };
-  }
-
-  return { state: state.setFileSystem(fs) };
+	catch(err)
+	{
+		return {output: err.message, type: "error"};
+	}
 };
 
 export default {optDef, functionDef};

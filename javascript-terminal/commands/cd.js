@@ -1,20 +1,27 @@
 import {parseOptions} from '../parser';
 import {relativeToAbsolutePath} from '../emulator-state/EmulatorState';
+import {findFsPart} from "../fs/operations/base-operations";
 
 export const optDef = {};
 
 const functionDef = (state, commandOptions) =>
 {
-  const {argv} = parseOptions(commandOptions, optDef);
-  const oldCwdPath = state.getEnvVariables().cwd;
-  const newCwdPath = argv[0] ? relativeToAbsolutePath(state, argv[0]) : '/';
+	const {options, argv} = parseOptions(commandOptions, optDef);
 
-  if(!DirectoryOp.hasDirectory(state.getFileSystem(), newCwdPath))
-  {
-    return { output: makeError(fsErrorType.NO_SUCH_DIRECTORY) };
-  }
+	try
+	{
+		const newCwdPath = argv[0] ? relativeToAbsolutePath(state, argv[0]) : '/';
 
-  return { state: state.setEnvVariables({...state.getEnvVariables(), cwd: newCwdPath }), output: oldCwdPath, type: "cwd" };
+		findFsPart(state.getFileSystem(), newCwdPath);
+
+		state.setEnvVariables({...state.getEnvVariables(), cwd: newCwdPath});
+		return {output: "", type: "cwd"};
+	}
+
+	catch(err)
+	{
+		return {output: err.message, type: "error"};
+	}
 };
 
 export default {optDef, functionDef};

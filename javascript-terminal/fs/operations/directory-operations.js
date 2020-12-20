@@ -1,9 +1,5 @@
-import * as FileUtil from '../util/file-util';
-import * as PathUtil from '../util/path-util';
 import * as BaseOp from './base-operations';
-import {isFile} from "../util/file-util";
 import {findFsPart} from "./base-operations";
-import {getLastPathPart} from "../util/path-util";
 
 export const listDirectory = (fs, path) =>
 {
@@ -12,7 +8,7 @@ export const listDirectory = (fs, path) =>
 
 export const addDirectory = (fs, path, dir) =>
 {
-  return BaseOp.add(fs, path, dir);
+  BaseOp.add(fs, path, dir);
 };
 
 export const copyDirectory = (fs, srcPath, destPath, overwrite = true) =>

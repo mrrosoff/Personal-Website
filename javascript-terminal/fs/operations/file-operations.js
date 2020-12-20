@@ -1,21 +1,16 @@
 import * as PathUtil from '../util/path-util';
 import * as BaseOp from './base-operations';
 import {isFile} from '../util/file-util';
-import {hasDirectory} from './directory-operations';
+import {findFsPart} from "./base-operations";
 
-export const readFile = (fs, filePath) =>
+export const readFile = (fs, path) =>
 {
-  if(isFile(filePath))
-  {
-    return fs[filePath].content;
-  }
-
-  return null;
+  return findFsPart(fs, path).contents
 };
 
-export const writeFile = (fs, filePath, file) =>
+export const writeFile = (fs, path, file) =>
 {
-  return BaseOp.add(fs, filePath, file);
+  BaseOp.add(fs, path, file);
 };
 
 export const copyFile = (fs, sourcePath, destPath) =>

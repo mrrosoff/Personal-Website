@@ -6,54 +6,49 @@ const IMPLIED_DIRECTORY_ENTRIES = ['.', '..'];
 
 const resolveDirectoryToList = (envVariables, argv) =>
 {
-  const cwd = envVariables.cwd;
+	const cwd = envVariables.cwd;
 
-  if(argv.length > 0)
-  {
-    return PathUtil.toAbsolutePath(argv[0], cwd);
-  }
+	if(argv.length > 0)
+	{
+		return PathUtil.toAbsolutePath(argv[0], cwd);
+	}
 
-  return cwd;
+	return cwd;
 };
 
 const makeSortedReturn = (listing) =>
 {
-  return { output: listing.sort().join('\n') };
+	return {output: listing.sort().join('\n')};
 };
 
-const removeHiddenFilesFilter = (record) =>
-{
-  return !record.startsWith('.');
-};
-
-export const optDef = {'-a, --all': '', '-A, --almost-all': '' };
+export const optDef = {'-a, --all': '', '-A, --almost-all': ''};
 
 const functionDef = (state, commandOptions) =>
 {
-  const {options, argv} = parseOptions(commandOptions, optDef);
-  const dirPath = resolveDirectoryToList(state.getEnvVariables(), argv);
+	const {options, argv} = parseOptions(commandOptions, optDef);
 
-  try
-  {
-    const dirList = listDirectory(state.getFileSystem(), dirPath);
+	try
+	{
+		const dirPath = resolveDirectoryToList(state.getEnvVariables(), argv);
+		const dirList = listDirectory(state.getFileSystem(), dirPath);
 
-    if(options.all)
-    {
-      return makeSortedReturn(IMPLIED_DIRECTORY_ENTRIES.concat(dirList));
-    }
+		if(options.all)
+		{
+			return makeSortedReturn(IMPLIED_DIRECTORY_ENTRIES.concat(dirList));
+		}
 
-    else if(options.almostAll)
-    {
-      return makeSortedReturn(dirList);
-    }
+		else if(options.almostAll)
+		{
+			return makeSortedReturn(dirList);
+		}
 
-    return makeSortedReturn(dirList.filter(removeHiddenFilesFilter));
-  }
+		return makeSortedReturn(dirList.filter(record => !record.startsWith('.')));
+	}
 
-  catch(err)
-  {
-    return { output: err.message, type: "error"};
-  }
+	catch(err)
+	{
+		return {output: err.message, type: "error"};
+	}
 };
 
 export default {optDef, functionDef};

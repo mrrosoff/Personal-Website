@@ -52,14 +52,15 @@ export default class Emulator
       executionListener.onExecuteStarted(state, str);
     }
 
-    if(str.trim() === '')
+    this.addCommandToHistory(state, str);
+
+    if(str.trim() === "")
     {
-      this.addCommandOutput(state, '');
+      this.addCommandOutput(state, "", "output");
     }
 
     else
     {
-      this.addCommandToHistory(state, str);
       this.updateStateByExecution(state, str, errorString);
     }
 
@@ -78,25 +79,12 @@ export default class Emulator
       const commandMapping = state.getCommandMapping();
       const commandArgs = [state, commandOptions];
 
-      const {state: nextState, output: output, type: type} = this.runCommand(commandMapping, commandName, commandArgs, errorString);
+      const {output: output, type: type = "output"} = this.runCommand(commandMapping, commandName, commandArgs, errorString);
 
-      if(nextState)
+      if (output || output === "")
       {
-        state = nextState;
-        this.addCommandOutput(state, '')
-      }
-
-      if(output)
-      {
-        if (type === "cwd")
-        {
-          this.addCommandOutput(state, '', "output", output)
-        }
-
-        else
-        {
-          this.addCommandOutput(state, output, type);
-        }
+        const lastCwd = state.getOutputs().length > 0 ? state.getOutputs()[state.getOutputs().length - 1].cwd : "/";
+        this.addCommandOutput(state, output, type, type === "cwd" ? lastCwd : undefined);
       }
     }
   }
@@ -106,7 +94,7 @@ export default class Emulator
     state.setHistory([...state.getHistory(), command]);
   }
 
-  addCommandOutput(state, output, type = "output", cwd = state.getEnvVariables().cwd)
+  addCommandOutput(state, output, type, cwd = state.getEnvVariables().cwd)
   {
     state.setOutputs([...state.getOutputs(), {type: type, command: state.getHistory()[state.getHistory().length - 1], output: output, cwd: cwd}]);
   }
