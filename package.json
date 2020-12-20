@@ -1,6 +1,6 @@
 {
   "name": "personal-website",
-  "version": "4.1.2",
+  "version": "4.2.0",
   "description": "My Personal Website",
   "scripts": {
     "clean": "rm -rf node_modules package-lock.json",
