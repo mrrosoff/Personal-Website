@@ -1,7 +1,7 @@
 import React, {forwardRef, useEffect, useState} from 'react';
 
 import {Grid} from "@material-ui/core";
-import {Emulator, HistoryKeyboardPlugin} from '../../../javascript-terminal';
+import {Emulator} from '../../../javascript-terminal';
 
 import CommandInput from './CommandInput';
 

@@ -22,19 +22,6 @@ const TerminalEmbed = (props, ref) =>
 			'exit': {
 				'functionDef': (state, opts) => close(),
 				'optDef': {}
-			},
-			'help': {
-				'functionDef': (state, opts) => ({
-					output:
-						'Welcome to Help!' + '\n' + '\n' +
-						"Some Basic Commands" + '\n' + '\n' +
-						'cat: Read A File ' + '\n' +
-						'display: Display A Media Link' + '\n' +
-						'cd: Change Directory' + '\n' +
-						'ls: List Files' + '\n' + '\n' +
-						'For More Information, Try \"man [command]\"'
-				}),
-				'optDef': {}
 			}
 		})
 	});
@@ -53,7 +40,7 @@ const TerminalEmbed = (props, ref) =>
 			}}
 			emulatorState={customState}
 			promptSymbol={"dev@rosoff"}
-			errorStr={"Looks Like That Command Isn't Valid. Try 'help' For More Information."}
+			errorStr={"Command Not Found"}
 		/>
 	);
 };

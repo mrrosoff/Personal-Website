@@ -1,18 +1,29 @@
 import React from "react";
 
+import {Hidden} from "@material-ui/core";
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
 import CssBaseline from "@material-ui/core/CssBaseline";
 
 import {SnackbarProvider, useSnackbar} from 'notistack';
 
-import Layout from './Layout'
+import MobileLayout from "./MobileLayout";
+import DesktopLayout from './DesktopLayout';
 
 const LoadApp = () =>
 {
 	const {enqueueSnackbar} = useSnackbar();
 	const produceSnackBar = (message, variant = "error") => enqueueSnackbar(message, {variant: variant});
 
-	return <Layout produceSnackBar={produceSnackBar}/>;
+	return (
+		<>
+			<Hidden mdUp>
+				<MobileLayout />
+			</Hidden>
+			<Hidden smDown>
+				<DesktopLayout produceSnackBar={produceSnackBar}/>
+			</Hidden>
+		</>
+	);
 };
 
 const App = () =>

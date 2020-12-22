@@ -20,11 +20,6 @@ export default class EmulatorState
     this.state = state;
   }
 
-  static createEmpty()
-  {
-    return EmulatorState.create({});
-  }
-
   static create({
                   fs =  { '/': FileUtil.makeEmptyDirectory() },
                   environmentVariables = { cwd: "/" },
@@ -52,7 +47,6 @@ export default class EmulatorState
   setFileSystem(newFileSystem)
   {
     this.state[FS_KEY] = newFileSystem;
-    return this;
   }
 
   getEnvVariables()
@@ -93,11 +87,6 @@ export default class EmulatorState
   setCommandMapping(newCommandMapping)
   {
     this.state[COMMAND_MAPPING_KEY] = newCommandMapping;
-  }
-
-  getState()
-  {
-    return this.state;
   }
 }
 

@@ -13,7 +13,7 @@ import Profile from '../static/images/profile.jpg';
 import BootUp from "./BootUp";
 import TerminalEmbed from "./TerminalEmbed";
 
-const Layout = props =>
+const DesktopLayout = props =>
 {
 	const [bootingUp, setBootingUp] = useState(true);
 	const [open, setOpen] = useState(false);
@@ -232,4 +232,4 @@ const doDownload = (link) =>
 	setTimeout(() => document.body.removeChild(a), 0);
 };
 
-export default Layout;
+export default DesktopLayout;

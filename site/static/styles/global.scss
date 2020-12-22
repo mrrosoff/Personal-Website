@@ -12,10 +12,6 @@ html {
   }
 }
 
-body {
-  min-height: 100%
-}
-
 body, #root {
 
   * {
@@ -25,6 +21,7 @@ body, #root {
 
   background-color: #121212 !important;
   color: white;
+  min-height: 100%
 }
 
 a {
