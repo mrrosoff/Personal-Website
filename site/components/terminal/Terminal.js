@@ -14,9 +14,9 @@ const Terminal = (props, ref) =>
   const [input, setInput] = useState('');
   const [emulatorState, setEmulatorState] = useState(props.emulatorState);
   const [outputs, setOutputs] = useState([]);
+  const [historyIndex, setHistoryIndex] = useState(-1);
 
   let emulator = new Emulator();
-  let historyKeyboardPlugin = new HistoryKeyboardPlugin(emulatorState);
 
   const onKeyDown = (e) =>
   {
@@ -25,15 +25,24 @@ const Terminal = (props, ref) =>
       case 'ArrowUp':
 
         e.preventDefault();
-        let up = historyKeyboardPlugin.completeUp();
-        setInput(up ? up : '')
+        const historyUp = emulatorState.getHistory();
+        setHistoryIndex(prevState => {
+          const nextIndexValue = prevState < historyUp.length - 1 ? prevState + 1 : prevState;
+          setInput(historyUp[historyUp.length - nextIndexValue - 1]);
+          return nextIndexValue;
+        });
         break;
 
       case 'ArrowDown':
 
         e.preventDefault();
-        let down = historyKeyboardPlugin.completeDown();
-        setInput(down ? down : '')
+        const historyDown = emulatorState.getHistory();
+        setHistoryIndex(prevState => {
+          const nextIndexValue = prevState > -1 ? prevState - 1 : prevState;
+          const nextInputValue = historyDown[historyDown.length - nextIndexValue - 1];
+          setInput(nextInputValue ? nextInputValue : "");
+          return nextIndexValue;
+        });
         break;
 
       case 'Tab':
@@ -45,8 +54,9 @@ const Terminal = (props, ref) =>
       case 'Enter':
 
         e.preventDefault();
-        setEmulatorState(emulator.execute(emulatorState, input, [historyKeyboardPlugin], props.errorStr));
+        setEmulatorState(emulator.execute(emulatorState, input, props.errorStr));
         setInput("");
+        setHistoryIndex(-1);
         setOutputs(calculateOutputs());
         break;
     }
@@ -61,14 +71,15 @@ const Terminal = (props, ref) =>
           <Grid item>
             <OutputHeader cwd={content.cwd} {...props}>{content.command}</OutputHeader>
           </Grid>
-          {content.type === "error" ?
-              <Grid item>
-                <OutputError {...props}>{content.output}</OutputError>
-              </Grid> :
-              <Grid item>
-                <OutputText {...props}>{content.output}</OutputText>
-              </Grid>
-          }
+          {content.output.map(output =>
+              output.type === "error" ?
+                  <Grid item>
+                    <OutputError {...props}>{output.output}</OutputError>
+                  </Grid> :
+                  <Grid item>
+                    <OutputText {...props}>{output.output}</OutputText>
+                  </Grid>
+          )}
         </Grid>
     );
   }

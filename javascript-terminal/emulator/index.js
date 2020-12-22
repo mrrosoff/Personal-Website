@@ -47,11 +47,6 @@ export default class Emulator
 
   execute(state, str, executionListeners = [], errorString)
   {
-    for(const executionListener of executionListeners)
-    {
-      executionListener.onExecuteStarted(state, str);
-    }
-
     this.addCommandToHistory(state, str);
 
     if(str.trim() === "")
@@ -64,16 +59,13 @@ export default class Emulator
       this.updateStateByExecution(state, str, errorString);
     }
 
-    for(const executionListener of executionListeners)
-    {
-      executionListener.onExecuteCompleted(state);
-    }
-
     return state;
   };
 
   updateStateByExecution(state, commandStrToExecute, errorString)
   {
+    let commandResults = [];
+
     for(const {commandName, commandOptions} of parseCommands(commandStrToExecute))
     {
       const commandMapping = state.getCommandMapping();
@@ -84,8 +76,17 @@ export default class Emulator
       if (output || output === "")
       {
         const lastCwd = state.getOutputs().length > 0 ? state.getOutputs()[state.getOutputs().length - 1].cwd : "/";
-        this.addCommandOutput(state, output, type, type === "cwd" ? lastCwd : undefined);
+        commandResults.push({state, output: {output, type}, cwd: type === "cwd" ? lastCwd : undefined})
       }
+    }
+
+    if (commandResults.length)
+    {
+      this.addCommandOutput(
+          commandResults[commandResults.length - 1].state,
+          commandResults.map(elem => elem.output),
+          commandResults[commandResults.length - 1].cwd,
+      );
     }
   }
 
@@ -94,9 +95,9 @@ export default class Emulator
     state.setHistory([...state.getHistory(), command]);
   }
 
-  addCommandOutput(state, output, type, cwd = state.getEnvVariables().cwd)
+  addCommandOutput(state, outputs, cwd = state.getEnvVariables().cwd)
   {
-    state.setOutputs([...state.getOutputs(), {type: type, command: state.getHistory()[state.getHistory().length - 1], output: output, cwd: cwd}]);
+    state.setOutputs([...state.getOutputs(), {output: outputs, command: state.getHistory()[state.getHistory().length - 1], cwd: cwd}]);
   }
 
   runCommand(commandMapping, commandName, commandArgs, errorString = 'Command not found')

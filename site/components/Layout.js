@@ -15,8 +15,7 @@ import TerminalEmbed from "./TerminalEmbed";
 
 const Layout = props =>
 {
-	const [bootingUp, setBootingUp] = useState(false);
-
+	const [bootingUp, setBootingUp] = useState(true);
 	const [open, setOpen] = useState(false);
 
 	let inputRef = useRef();
