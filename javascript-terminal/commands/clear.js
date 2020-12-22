@@ -1,4 +1,4 @@
-import {parseOptions} from "../parser";
+import {parseOptions} from '../parser';
 
 export const optDef = {};
 
@@ -14,7 +14,7 @@ const functionDef = (state, commandOptions) =>
 
 	catch(err)
 	{
-		return {output: err.message, type: "error"};
+		return {output: err.message, type: 'error'};
 	}
 };
 

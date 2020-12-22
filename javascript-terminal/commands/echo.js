@@ -1,4 +1,4 @@
-import {parseOptions} from "../parser";
+import {parseOptions} from '../parser';
 
 const VARIABLE_GROUP_REGEX = /\$(\w+)/g;
 const DOUBLE_SPACE_REGEX = /\s\s+/g;
@@ -20,7 +20,7 @@ const functionDef = (state, commandOptions) =>
 		const outputStr = substituteEnvVariables(state.getEnvVariables(), input);
 		let cleanStr = outputStr.trim().replace(DOUBLE_SPACE_REGEX, ' ');
 
-		if(cleanStr[0] === "\"" && cleanStr[cleanStr.length - 1] === "\"")
+		if(cleanStr[0] === '"' && cleanStr[cleanStr.length - 1] === '"')
 		{
 			cleanStr = cleanStr.slice(1, cleanStr.length - 1);
 		}
@@ -30,7 +30,7 @@ const functionDef = (state, commandOptions) =>
 
 	catch(err)
 	{
-		return {output: err.message, type: "error"};
+		return {output: err.message, type: 'error'};
 	}
 };
 

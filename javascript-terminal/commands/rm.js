@@ -1,7 +1,7 @@
 import {parseOptions} from '../parser';
 import {relativeToAbsolutePath} from '../emulator-state/EmulatorState';
-import * as DirOp from "../fs/operations/directory-operations";
-import * as FileOp from "../fs/operations/file-operations";
+import * as DirOp from '../fs/operations/directory-operations';
+import * as FileOp from '../fs/operations/file-operations';
 
 export const optDef = {
 	'--no-preserve-root, --noPreserveRoot': '',
@@ -29,12 +29,12 @@ const functionDef = (state, commandOptions) =>
 		}
 
 		options.recursive === true ? DirOp.remove(fs, deletionPath) : FileOp.remove(fs, deletionPath);
-		return {output: ""};
+		return {output: ''};
 	}
 
 	catch(err)
 	{
-		return {output: err.message, type: "error"};
+		return {output: err.message, type: 'error'};
 	}
 };
 

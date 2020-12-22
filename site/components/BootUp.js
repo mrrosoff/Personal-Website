@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState} from 'react';
 
-import {Box, Grid, Typography} from "@material-ui/core";
+import {Box, Grid, Typography} from '@material-ui/core';
 
-import Logo from "../static/images/logo.png";
+import Logo from '../static/images/logo.png';
 
 const BootUp = props =>
 {
@@ -10,29 +10,29 @@ const BootUp = props =>
 
 	useEffect(() =>
 	{
-		setTimeout(() => setState(1), 300)
-		setTimeout(() => setState(2), 500)
-		setTimeout(() => setState(3), 8000)
-		setTimeout(() => setState(4), 1200)
-		setTimeout(() => setState(5), 1500)
-		setTimeout(() => setState(6), 1600)
-		setTimeout(() => setState(7), 1700)
-		setTimeout(() => setState(8), 1800)
-		setTimeout(() => setState(9), 1900)
-		setTimeout(() => setState(10), 2100)
-		setTimeout(() => setState(11), 2400)
-		setTimeout(() => setState(12), 3000)
-		setTimeout(() => setState(13), 3500)
-		setTimeout(() => setState(14), 4000)
-		setTimeout(() => setState(15), 4500)
-		setTimeout(() => setState(16), 5000)
-		setTimeout(() => setState(17), 5500)
-		setTimeout(() => setState(18), 5800)
-		setTimeout(() => props.setBootingUp(false), 8000)
+		setTimeout(() => setState(1), 300);
+		setTimeout(() => setState(2), 500);
+		setTimeout(() => setState(3), 8000);
+		setTimeout(() => setState(4), 1200);
+		setTimeout(() => setState(5), 1500);
+		setTimeout(() => setState(6), 1600);
+		setTimeout(() => setState(7), 1700);
+		setTimeout(() => setState(8), 1800);
+		setTimeout(() => setState(9), 1900);
+		setTimeout(() => setState(10), 2100);
+		setTimeout(() => setState(11), 2400);
+		setTimeout(() => setState(12), 3000);
+		setTimeout(() => setState(13), 3500);
+		setTimeout(() => setState(14), 4000);
+		setTimeout(() => setState(15), 4500);
+		setTimeout(() => setState(16), 5000);
+		setTimeout(() => setState(17), 5500);
+		setTimeout(() => setState(18), 5800);
+		setTimeout(() => props.setBootingUp(false), 8000);
 	}, []);
 
 	return (
-		<Grid container direction={"column"} spacing={4}>
+		<Grid container direction={'column'} spacing={4}>
 			<Grid item>
 				<HeaderAndReleaseData {...props} />
 			</Grid>
@@ -72,10 +72,10 @@ const HeaderAndReleaseData = props =>
 	return (
 		<Grid container spacing={4}>
 			<Grid item>
-				<img src={Logo} alt={"Logo"} style={{width: 100, height: 100}}/>
+				<img src={Logo} alt={'Logo'} style={{width: 100, height: 100}}/>
 			</Grid>
 			<Grid item>
-				<Grid container justify={"center"} alignContent={"center"} alignItems={"center"} direction={"column"}
+				<Grid container justify={'center'} alignContent={'center'} alignItems={'center'} direction={'column'}
 					  style={{height: '100%'}}>
 					<Grid item>
 						<Typography>Rosoff OS (BETA PROGRAM)</Typography>
@@ -83,24 +83,24 @@ const HeaderAndReleaseData = props =>
 				</Grid>
 			</Grid>
 			<Grid item>
-				<Grid container justify={"center"} direction={"column"} style={{height: '100%'}}>
+				<Grid container justify={'center'} direction={'column'} style={{height: '100%'}}>
 					<Grid item>
 						<Typography>Released: {creationDate.toString()}</Typography>
 					</Grid>
 					<Grid item>
-						<a href={"https://github.com/mrrosoff/Personal-Website"} target="_blank"
+						<a href={'https://github.com/mrrosoff/Personal-Website'} target="_blank"
 						   style={{color: '#FCFCFC', fontSize: 22}}>Open Source (BETA 4.1.2)</a>
 					</Grid>
 				</Grid>
 			</Grid>
 		</Grid>
 	);
-}
+};
 
 const SystemInfo = props =>
 {
 	return (
-		<Grid container direction={"column"} style={{paddingLeft: 20}}>
+		<Grid container direction={'column'} style={{paddingLeft: 20}}>
 			{props.state >= 3 ?
 				<Grid item>
 					<Box pl={1} pr={1}>
@@ -150,12 +150,12 @@ const SystemInfo = props =>
 				</Grid> : null}
 		</Grid>
 	);
-}
+};
 
 const DriveInfo = props =>
 {
 	return (
-		<Grid container direction={"column"} spacing={1}>
+		<Grid container direction={'column'} spacing={1}>
 			{props.state >= 12 ?
 				<Grid item>
 					<header>
@@ -174,5 +174,5 @@ const DriveInfo = props =>
 				</Grid> : null}
 		</Grid>
 	);
-}
+};
 export default BootUp;

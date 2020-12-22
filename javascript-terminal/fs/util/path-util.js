@@ -45,7 +45,7 @@ export const toPath = (pathParts) =>
 {
 	if(pathParts[0] === '/')
 	{
-		return "/" + pathParts.slice(1).join('/');
+		return '/' + pathParts.slice(1).join('/');
 	}
 
 	return pathParts.join('/');
@@ -97,4 +97,14 @@ export const toAbsolutePath = (relativePath, cwd) =>
 	return toPath(pathStack);
 };
 
-export default {isTrailingPath, removeTrailingSeparator, isAbsolutePath, isRelativePath, toPathParts, toPath, getPathParent, getLastPathPart, toAbsolutePath}
+export default {
+	isTrailingPath,
+	removeTrailingSeparator,
+	isAbsolutePath,
+	isRelativePath,
+	toPathParts,
+	toPath,
+	getPathParent,
+	getLastPathPart,
+	toAbsolutePath
+};

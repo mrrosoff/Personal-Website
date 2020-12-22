@@ -80,7 +80,7 @@ const functionDef = (state, commandOptions) =>
 
 	catch(err)
 	{
-		return {output: err.message, type: "error"};
+		return {output: err.message, type: 'error'};
 	}
 };
 

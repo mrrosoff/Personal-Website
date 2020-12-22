@@ -4,14 +4,14 @@ import {Avatar, Box, Button, Grid, Paper} from '@material-ui/core';
 
 import FacebookIcon from '@material-ui/icons/Facebook';
 import InstagramIcon from '@material-ui/icons/Instagram';
-import LinkedInIcon from '@material-ui/icons/LinkedIn'
+import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import GetAppIcon from '@material-ui/icons/GetApp';
 
 import Profile from '../static/images/profile.jpg';
 
-import BootUp from "./BootUp";
-import TerminalEmbed from "./TerminalEmbed";
+import BootUp from './BootUp';
+import TerminalEmbed from './TerminalEmbed';
 
 const DesktopLayout = props =>
 {
@@ -21,10 +21,12 @@ const DesktopLayout = props =>
 	let inputRef = useRef();
 
 	return (
-		<Box width={"100vw"} height={"100vh"}>
-			<Box p={8} style={{width: "100%", height: "100%", overflow: "hidden"}} onClick={() => inputRef.current.focus()}>
-				<div style={{position: "relative"}}>
-					<Grid container style={{position: "absolute", top: 0, right: 0}} direction={"column"} justify={"flex-end"} alignItems={"flex-end"} spacing={2}>
+		<Box width={'100vw'} height={'100vh'}>
+			<Box p={8} style={{width: '100%', height: '100%', overflow: 'hidden'}}
+				 onClick={() => inputRef.current.focus()}>
+				<div style={{position: 'relative'}}>
+					<Grid container style={{position: 'absolute', top: 0, right: 0}} direction={'column'}
+						  justify={'flex-end'} alignItems={'flex-end'} spacing={2}>
 						<Grid item>
 							<Avatar
 								alt="Max Rosoff"
@@ -36,15 +38,15 @@ const DesktopLayout = props =>
 							open ?
 								<Grid item>
 									<UserCard open={open} {...props} />
-								</Grid>: null
+								</Grid> : null
 						}
 					</Grid>
 				</div>
-				<div style={{width: "100%", height: "100%", overflowY: "scroll"}}>
+				<div style={{width: '100%', height: '100%', overflowY: 'scroll'}}>
 
 					{
 						bootingUp ?
-							<BootUp setBootingUp={setBootingUp} /> :
+							<BootUp setBootingUp={setBootingUp}/> :
 							<TerminalEmbed ref={inputRef}/>
 					}
 				</div>
@@ -57,25 +59,25 @@ const UserCard = props =>
 {
 	return (
 		<Paper elevation={3} style={{width: 350, height: 265}}>
-			<Box p={3} style={{position: "relative", height: "100%"}}>
+			<Box p={3} style={{position: 'relative', height: '100%'}}>
 				<Buttons {...props} />
 			</Box>
 		</Paper>
 	);
-}
+};
 
 const Buttons = props =>
 {
 	const OS = getOS(props.produceSnackBar);
-	let notReadyMessage = "This Feature Will Be Available In A Future Release";
-	let makeNotReadyMessage = () => props.produceSnackBar(notReadyMessage, "info");
+	let notReadyMessage = 'This Feature Will Be Available In A Future Release';
+	let makeNotReadyMessage = () => props.produceSnackBar(notReadyMessage, 'info');
 
 	return (
-		<Grid container alignContent={"center"} style={{height: "100%"}}>
+		<Grid container alignContent={'center'} style={{height: '100%'}}>
 			<Grid item>
 				<Grid container spacing={1}>
 					{
-						OS === "Linux" ?
+						OS === 'Linux' ?
 							<>
 								<Grid item>
 									<Button startIcon={<GetAppIcon/>}
@@ -100,13 +102,13 @@ const Buttons = props =>
 					<Grid item>
 						<Grid container spacing={2}>
 							<Grid item>
-								<LinkButtonWithIcon href={"https://www.facebook.com/maxr.rosoff"}
+								<LinkButtonWithIcon href={'https://www.facebook.com/maxr.rosoff'}
 													icon={<FacebookIcon/>}>
 									Facebook
 								</LinkButtonWithIcon>
 							</Grid>
 							<Grid item>
-								<LinkButtonWithIcon href={"https://www.instagram.com/thenameismr.r/"}
+								<LinkButtonWithIcon href={'https://www.instagram.com/thenameismr.r/'}
 													icon={<InstagramIcon/>}>
 									Instagram
 								</LinkButtonWithIcon>
@@ -114,13 +116,13 @@ const Buttons = props =>
 						</Grid>
 						<Grid container spacing={2}>
 							<Grid item>
-								<LinkButtonWithIcon href={"https://www.linkedin.com/in/max-rosoff"}
+								<LinkButtonWithIcon href={'https://www.linkedin.com/in/max-rosoff'}
 													icon={<LinkedInIcon/>}>
 									LinkedIn
 								</LinkButtonWithIcon>
 							</Grid>
 							<Grid item>
-								<LinkButtonWithIcon href={"https://www.github.com/mrrosoff"} icon={<GitHubIcon/>}>
+								<LinkButtonWithIcon href={'https://www.github.com/mrrosoff'} icon={<GitHubIcon/>}>
 									GitHub
 								</LinkButtonWithIcon>
 							</Grid>
@@ -139,7 +141,7 @@ export const LinkButtonWithIcon = props =>
 			href={props.href}
 			target="_blank"
 			rel="noopener"
-			className={props.className ? props.className : ""}
+			className={props.className ? props.className : ''}
 			startIcon={props.icon}
 		>
 			{props.children}
@@ -184,7 +186,7 @@ const getOS = (produceSnackBar) =>
 
 	else
 	{
-		produceSnackBar("You are using an unspecified platform. Some effects may not operate correctly.", "warning")
+		produceSnackBar('You are using an unspecified platform. Some effects may not operate correctly.', 'warning');
 	}
 
 	return os;
@@ -192,28 +194,28 @@ const getOS = (produceSnackBar) =>
 
 const downloadClient = (OS, makeNotReadyMessage) =>
 {
-	let version = "1.7.2";
+	let version = '1.7.2';
 
-	if(OS === "Debian")
+	if(OS === 'Debian')
 	{
 		makeNotReadyMessage();
 		// doDownload("https://github.com/mrrosoff/Project-Explorer/releases/latest/download/project-explorer_" + version + "_amd64.deb");
 	}
 
-	else if(OS === "Red Hat")
+	else if(OS === 'Red Hat')
 	{
 		makeNotReadyMessage();
 		// doDownload("https://github.com/mrrosoff/Project-Explorer/releases/latest/download/project-explorer-" + version + "-1.x86_64.rpm");
 	}
 
-	else if(OS === "Windows")
+	else if(OS === 'Windows')
 	{
-		doDownload("https://github.com/mrrosoff/Project-Explorer/releases/latest/download/project-explorer-" + version + ".Setup.exe");
+		doDownload('https://github.com/mrrosoff/Project-Explorer/releases/latest/download/project-explorer-' + version + '.Setup.exe');
 	}
 
-	else if(OS === "Mac OS")
+	else if(OS === 'Mac OS')
 	{
-		doDownload("https://github.com/mrrosoff/Project-Explorer/releases/latest/download/Project-Explorer.dmg");
+		doDownload('https://github.com/mrrosoff/Project-Explorer/releases/latest/download/Project-Explorer.dmg');
 	}
 
 	else

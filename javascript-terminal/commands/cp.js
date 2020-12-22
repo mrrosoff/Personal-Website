@@ -1,7 +1,7 @@
 import {parseOptions} from '../parser';
 import {relativeToAbsolutePath} from '../emulator-state/EmulatorState';
-import * as DirOp from "../fs/operations/directory-operations";
-import * as FileOp from "../fs/operations/file-operations";
+import * as DirOp from '../fs/operations/directory-operations';
+import * as FileOp from '../fs/operations/file-operations';
 
 export const optDef = {'-r, --recursive': ''};
 
@@ -34,12 +34,12 @@ const functionDef = (state, commandOptions) =>
 			FileOp.copy(state.getFileSystem(), srcPath, destPath);
 		}
 
-		return {output: ""}
+		return {output: ''};
 	}
 
 	catch(err)
 	{
-		return {output: err.message, type: "error"};
+		return {output: err.message, type: 'error'};
 	}
 };
 

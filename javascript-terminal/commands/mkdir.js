@@ -1,7 +1,7 @@
 import {parseOptions} from '../parser';
 import {relativeToAbsolutePath} from '../emulator-state/EmulatorState';
-import {makeEmptyDirectory} from "../fs/util/file-util";
-import * as DirOp from "../fs/operations/directory-operations";
+import {makeEmptyDirectory} from '../fs/util/file-util';
+import * as DirOp from '../fs/operations/directory-operations';
 
 export const optDef = {};
 
@@ -19,12 +19,12 @@ const functionDef = (state, commandOptions) =>
 		const newFolderPath = relativeToAbsolutePath(state, argv[0]);
 		DirOp.add(state.getFileSystem(), newFolderPath, makeEmptyDirectory());
 
-		return {output: ""};
+		return {output: ''};
 	}
 
 	catch(err)
 	{
-		return {output: err.message, type: "error"};
+		return {output: err.message, type: 'error'};
 	}
 };
 

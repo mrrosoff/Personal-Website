@@ -1,6 +1,6 @@
 import {parseOptions} from '../parser';
 import * as PathUtil from '../fs/util/path-util';
-import * as DirOp from "../fs/operations/directory-operations";
+import * as DirOp from '../fs/operations/directory-operations';
 
 const IMPLIED_DIRECTORY_ENTRIES = ['.', '..'];
 
@@ -47,7 +47,7 @@ const functionDef = (state, commandOptions) =>
 
 	catch(err)
 	{
-		return {output: err.message, type: "error"};
+		return {output: err.message, type: 'error'};
 	}
 };
 

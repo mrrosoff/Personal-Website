@@ -1,17 +1,17 @@
 import React, {forwardRef, useEffect} from 'react';
 
-import { CommandMapping, DefaultCommandMapping, EmulatorState } from '../../javascript-terminal';
+import {CommandMapping, DefaultCommandMapping, EmulatorState} from '../../javascript-terminal';
 
 import Terminal from './terminal/Terminal';
-import {files} from "../FileSystem";
+import {files} from '../FileSystem';
 
 const TerminalEmbed = (props, ref) =>
 {
 	useEffect(() =>
 	{
-		for(let form of document.getElementsByTagName("FORM"))
+		for(let form of document.getElementsByTagName('FORM'))
 		{
-			form.setAttribute("spellcheck", "false")
+			form.setAttribute('spellcheck', 'false');
 		}
 	});
 
@@ -39,8 +39,8 @@ const TerminalEmbed = (props, ref) =>
 				height: '88vh'
 			}}
 			emulatorState={customState}
-			promptSymbol={"dev@rosoff"}
-			errorStr={"Command Not Found"}
+			promptSymbol={'dev@rosoff'}
+			errorStr={'Command Not Found'}
 		/>
 	);
 };

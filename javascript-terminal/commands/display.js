@@ -1,14 +1,14 @@
-import React from "react";
+import React from 'react';
 
 import {parseOptions} from '../parser';
 import {relativeToAbsolutePath} from '../emulator-state/EmulatorState';
-import * as FileOp from "../fs/operations/file-operations";
+import * as FileOp from '../fs/operations/file-operations';
 
 const fileToImageOutput = (fs, filePath) =>
 {
 	const file = FileOp.read(fs, filePath);
 
-	let jsxElement = <img alt={"Image"} src={file} style={{width: "auto", height: 360, padding: 10}}/>;
+	let jsxElement = <img alt={'Image'} src={file} style={{width: 'auto', height: 360, padding: 10}}/>;
 
 	if(filePath.match(new RegExp('\.(mov|mp4)$', 'g')))
 	{
@@ -34,12 +34,12 @@ const functionDef = (state, commandOptions) =>
 		const regex = new RegExp('\.(png|jpe?g|mov|mp4)$', 'g');
 		const filePaths = argv.map(pathArg => relativeToAbsolutePath(state, pathArg)).filter(item => item.match(regex));
 
-		return {output: filePaths.map(path => fileToImageOutput(state.getFileSystem(), path)).join("\n")};
+		return {output: filePaths.map(path => fileToImageOutput(state.getFileSystem(), path)).join('\n')};
 	}
 
 	catch(err)
 	{
-		return {output: err.message, type: "error"};
+		return {output: err.message, type: 'error'};
 	}
 };
 

@@ -9,7 +9,7 @@ const functionDef = (state, commandOptions) =>
 
 	if(argv.length === 0)
 	{
-		return {output: Object.entries(envVariables).map(entry => entry[0] + "=" + entry[1]).join('\n')};
+		return {output: Object.entries(envVariables).map(entry => entry[0] + '=' + entry[1]).join('\n')};
 	}
 
 	try
@@ -26,7 +26,7 @@ const functionDef = (state, commandOptions) =>
 
 	catch(err)
 	{
-		return {output: err.message, type: "error"};
+		return {output: err.message, type: 'error'};
 	}
 };
 

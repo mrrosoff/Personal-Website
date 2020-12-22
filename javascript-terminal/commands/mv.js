@@ -1,6 +1,6 @@
 import {parseOptions} from '../parser';
 import {relativeToAbsolutePath} from '../emulator-state/EmulatorState';
-import * as DirOp from "../fs/operations/directory-operations";
+import * as DirOp from '../fs/operations/directory-operations';
 
 export const optDef = {};
 
@@ -25,12 +25,12 @@ const functionDef = (state, commandOptions) =>
 
 		DirOp.rename(state.getFileSystem(), srcPath, destPath);
 
-		return {output: ""}
+		return {output: ''};
 	}
 
 	catch(err)
 	{
-		return {output: err.message, type: "error"};
+		return {output: err.message, type: 'error'};
 	}
 };
 

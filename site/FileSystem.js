@@ -1,30 +1,29 @@
-
 export const files = {
-	"/": {
-		type: "d",
-		permissions: "rwx------",
+	'/': {
+		type: 'd',
+		permissions: 'rwx------',
 		contents: {
-			"Desktop": {
-				type: "d",
-				permissions: "rwx------",
+			'Desktop': {
+				type: 'd',
+				permissions: 'rwx------',
 				contents: {}
 			},
-			"Documents": {
-				type: "d",
-				permissions: "rwx------",
+			'Documents': {
+				type: 'd',
+				permissions: 'rwx------',
 				contents: {}
 			},
-			"Music": {
-				type: "d",
-				permissions: "rwx------",
+			'Music': {
+				type: 'd',
+				permissions: 'rwx------',
 				contents: {}
 			},
-			"Videos": {
-				type: "d",
-				permissions: "rwx------",
+			'Videos': {
+				type: 'd',
+				permissions: 'rwx------',
 				contents: {}
 			}
-		},
+		}
 	}
 };
 
