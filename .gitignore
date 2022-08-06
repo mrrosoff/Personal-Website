@@ -9,7 +9,6 @@ package-lock.json
 
 # Output Files
 
-.parcel-cache
 build
 coverage
 dist
