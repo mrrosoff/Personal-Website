@@ -4,7 +4,7 @@ import { parseOptions } from "../parser";
 import { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import * as FileOp from "../fs/operations/file-operations";
 
-const fileToImageOutput = (fs, filePath) => {
+const fileToImageOutput = (fs: any, filePath: any) => {
 	const file = FileOp.read(fs, filePath);
 
 	let jsxElement = (
@@ -22,7 +22,7 @@ const fileToImageOutput = (fs, filePath) => {
 
 export const optDef = {};
 
-const functionDef = (state, commandOptions) => {
+const functionDef = (state: any, commandOptions: any) => {
 	const { options, argv } = parseOptions(commandOptions, optDef);
 
 	if (argv.length === 0) {
@@ -40,7 +40,7 @@ const functionDef = (state, commandOptions) => {
 				.map((path) => fileToImageOutput(state.getFileSystem(), path))
 				.join("\n")
 		};
-	} catch (err) {
+	} catch (err: any) {
 		return { output: err.message, type: "error" };
 	}
 };

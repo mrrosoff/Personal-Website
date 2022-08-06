@@ -4,15 +4,15 @@ import { Avatar, Box, Paper } from "@mui/material";
 
 import { DesktopSocialButtonList } from "./SocialButtons";
 
-import Profile from "../../../static/images/profile.jpg";
+import Profile from "../../assets/images/profile.jpg";
 
 import BootUp from "./desktop/BootUp";
 import TerminalEmbed from "./desktop/TerminalEmbed";
 
-const DesktopLayout = (props) => {
-	const [bootingUp, setBootingUp] = useState(process.env.NODE_ENV === "production");
+const DesktopLayout = () => {
+	const [bootingUp, setBootingUp] = useState(import.meta.env.DEV);
 
-	let inputRef = useRef(null);
+	let inputRef: any = useRef(null);
 
 	const creationDate = new Date();
 	creationDate.setMinutes(creationDate.getMinutes() - 8);
@@ -72,7 +72,7 @@ const LinksAndMenu = () => {
 	);
 };
 
-const Links = (props) => {
+const Links = (props: any) => {
 	return (
 		<Box sx={{ position: "absolute", top: 0, right: 80, display: "flex" }}>
 			<a

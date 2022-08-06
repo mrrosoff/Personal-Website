@@ -40,7 +40,7 @@ const SocialList = [
 	}
 ];
 
-export const DesktopSocialButtonList = (props) => {
+export const DesktopSocialButtonList = () => {
 	return (
 		<Box p={2} display={"flex"} flexWrap={"wrap"}>
 			{SocialList.map((socialDetails, index) => (
@@ -56,7 +56,7 @@ export const DesktopSocialButtonList = (props) => {
 	);
 };
 
-export const MobileSocialButtonList = (props) => {
+export const MobileSocialButtonList = () => {
 	return (
 		<Grid
 			container
@@ -79,7 +79,7 @@ export const MobileSocialButtonList = (props) => {
 	);
 };
 
-const SocialButton = (props) => {
+const SocialButton = (props: any) => {
 	const Icon = props.icon;
 	return (
 		<Button

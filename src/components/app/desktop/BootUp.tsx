@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 
 import { Box, Grid, Typography } from "@mui/material";
 
-import Logo from "../../../../static/images/logo.png";
+import Logo from "../../../assets/images/logo.png";
 
-const BootUp = (props) => {
+const BootUp = (props: any) => {
 	const [state, setState] = useState(0);
 
 	useEffect(() => {
@@ -62,7 +62,7 @@ const BootUp = (props) => {
 	);
 };
 
-const Header = (props) => {
+const Header = () => {
 	return (
 		<Grid container spacing={4}>
 			<Grid item>
@@ -86,7 +86,7 @@ const Header = (props) => {
 	);
 };
 
-const ReleaseData = (props) => {
+const ReleaseData = (props: any) => {
 	return (
 		<Grid container justifyContent={"center"} direction={"column"} style={{ height: "100%" }}>
 			<Grid item>
@@ -105,7 +105,7 @@ const ReleaseData = (props) => {
 	);
 };
 
-const SystemInfo = (props) => {
+const SystemInfo = (props: any) => {
 	return (
 		<Grid container direction={"column"} style={{ paddingLeft: 20 }}>
 			{props.state >= 3 ? (
@@ -166,7 +166,7 @@ const SystemInfo = (props) => {
 	);
 };
 
-const DriveInfo = (props) => {
+const DriveInfo = (props: any) => {
 	return (
 		<Grid container direction={"column"} spacing={1}>
 			{props.state >= 12 ? (

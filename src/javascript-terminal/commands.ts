@@ -40,4 +40,4 @@ const commands = {
 	whoami
 };
 
-export default commands;
+export default commands as any;

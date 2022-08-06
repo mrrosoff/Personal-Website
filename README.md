@@ -8,8 +8,9 @@ This site is built using React.js. The site is hosted on GitHub Pages and links 
 
 ## Installation
 
-This site is built using Webpack, and uses NPM as a package manager. To build the site for development, use 
+This site is built using Vite, and uses NPM as a package manager. Run the following commands to start the site in development mode.
 
 ```bash
+nvm use
 npm install && npm start
 ```
