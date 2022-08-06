@@ -3,7 +3,7 @@ import { Grid } from "@mui/material";
 import PromptSymbol from "../PromptSymbol";
 import OutputText from "./OutputText";
 
-const OutputHeader = (props) => (
+const OutputHeader = (props: any) => (
 	<Grid container alignContent={"center"} alignItems={"center"} spacing={2}>
 		<Grid item>
 			<PromptSymbol theme={props.theme} {...props}>

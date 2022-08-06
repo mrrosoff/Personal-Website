@@ -5,7 +5,7 @@ import { getLastPathPart } from "../fs/util/path-util";
 
 export const optDef = {};
 
-const functionDef = (state, commandOptions) => {
+const functionDef = (state: any, commandOptions: any) => {
 	const { options, argv } = parseOptions(commandOptions, optDef);
 
 	try {
@@ -23,7 +23,7 @@ const functionDef = (state, commandOptions) => {
 
 		state.setEnvVariables({ ...state.getEnvVariables(), cwd: newCwdPath });
 		return { output: "", type: "cwd", oldCwdPath: oldCwdPath };
-	} catch (err) {
+	} catch (err: any) {
 		return { output: err.message, type: "error" };
 	}
 };

@@ -5,7 +5,7 @@ import * as PathUtil from "../fs/util/path-util";
 import { fsSearchParent } from "../fs/operations/base-operations";
 
 export default class Emulator {
-	autocomplete(state, partialStr) {
+	autocomplete(state: any, partialStr: string) {
 		try {
 			const suggestions = this.suggest(state, partialStr);
 			if (suggestions.length > 1) {
@@ -28,7 +28,7 @@ export default class Emulator {
 		}
 	}
 
-	suggest(state, partialStr) {
+	suggest(state: any, partialStr: string) {
 		partialStr = partialStr.replace(/^\s+/g, "");
 
 		const lastPartialChar = partialStr.slice(-1);
@@ -62,7 +62,7 @@ export default class Emulator {
 		];
 	}
 
-	execute(state, str, errorString) {
+	execute(state: any, str: string, errorString: string) {
 		this.addCommandToHistory(state, str);
 
 		if (str.trim() === "") {
@@ -75,7 +75,7 @@ export default class Emulator {
 		return state;
 	}
 
-	updateStateByExecution(state, commandStrToExecute, errorString) {
+	updateStateByExecution(state: any, commandStrToExecute: string, errorString: string) {
 		let commandResults = [];
 
 		for (const { commandName, commandOptions } of parseCommands(commandStrToExecute)) {
@@ -107,11 +107,11 @@ export default class Emulator {
 		}
 	}
 
-	addCommandToHistory(state, command) {
+	addCommandToHistory(state: any, command: string) {
 		state.setHistory([...state.getHistory(), command]);
 	}
 
-	addCommandOutput(state, outputs, cwd = state.getEnvVariables().cwd) {
+	addCommandOutput(state: any, outputs: any[], cwd = state.getEnvVariables().cwd) {
 		state.setOutputs([
 			...state.getOutputs(),
 			{
@@ -122,11 +122,11 @@ export default class Emulator {
 		]);
 	}
 
-	runCommand(commandMapping, commandName, commandArgs, errorString = "Command not found") {
+	runCommand(commandMapping: any, commandName: string, commandArgs: any, errorString = "Command not found") {
 		const notFoundCallback = () => ({ output: errorString, type: "error" });
 
 		if (!CommandMappingUtil.isCommandSet(commandMapping, commandName)) {
-			return notFoundCallback(...commandArgs);
+			return notFoundCallback();
 		}
 
 		const command = CommandMappingUtil.getCommandFn(commandMapping, commandName);

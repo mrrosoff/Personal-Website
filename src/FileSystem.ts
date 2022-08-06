@@ -1,4 +1,14 @@
-const files = {
+type FileType = "-" | "d" | "l";
+
+interface FileSystem {
+    [name: string]: {
+        type: FileType;
+        permissions: string;
+        contents: FileSystem | string;
+    };
+}
+
+const files: FileSystem = {
     "/": {
         type: "d",
         permissions: "rwx------",

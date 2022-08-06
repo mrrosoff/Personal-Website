@@ -9,18 +9,18 @@ export const create = (commandMapping = commands): any => {
 	return commandMapping;
 };
 
-export const isCommandSet = (commandMapping = commands, commandName: any) => {
+export const isCommandSet = (commandMapping = commands, commandName: string) => {
     return commandName in commandMapping;
 };
 
-export const getCommandFn = (commandMapping = commands, commandName: any) => {
+export const getCommandFn = (commandMapping = commands, commandName: string) => {
 	if (commandName in commandMapping) {
 		return commandMapping[commandName].functionDef;
 	}
 	return undefined;
 };
 
-export const getCommandOptDef = (commandMapping = commands, commandName: any) => {
+export const getCommandOptDef = (commandMapping = commands, commandName: string) => {
     if (commandName in commandMapping) {
         return commandMapping[commandName].optDef;
     }

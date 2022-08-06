@@ -4,7 +4,7 @@ import * as FileOp from "../fs/operations/file-operations";
 
 export const optDef = {};
 
-const functionDef = (state, commandOptions) => {
+const functionDef = (state: any, commandOptions: any) => {
 	const { options, argv } = parseOptions(commandOptions, optDef);
 
 	if (argv.length === 0) {
@@ -16,7 +16,7 @@ const functionDef = (state, commandOptions) => {
 		return {
 			output: filePaths.map((path) => FileOp.read(state.getFileSystem(), path)).join("\n")
 		};
-	} catch (err) {
+	} catch (err: any) {
 		return { output: err.message, type: "error" };
 	}
 };

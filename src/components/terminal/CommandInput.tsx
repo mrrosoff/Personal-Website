@@ -4,7 +4,7 @@ import PromptSymbol from "./PromptSymbol";
 
 import { Grid, InputBase, Typography } from "@mui/material";
 
-const CommandInput = (props, ref) => {
+const CommandInput = (props: any, ref: any) => {
 	useEffect(() => {
 		let interval = setInterval(() => {
 			let visibility = document.getElementById("cursor").style.visibility;

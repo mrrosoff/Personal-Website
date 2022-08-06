@@ -10,7 +10,7 @@ const OUTPUTS_KEY = "outputs";
 const COMMAND_MAPPING_KEY = "commandMapping";
 
 export default class EmulatorState {
-	constructor(state) {
+	constructor(state: any) {
 		if (!state) throw Error("Do Not Use Constructor Directly. Use create Method");
 		this.state = state;
 	}
@@ -39,7 +39,7 @@ export default class EmulatorState {
 		return this.state[TAB_COUNT_KEY];
 	}
 
-	setTabCount(newTabCount) {
+	setTabCount(newTabCount: number) {
 		this.state[TAB_COUNT_KEY] = newTabCount;
 	}
 
@@ -47,7 +47,7 @@ export default class EmulatorState {
 		return this.state[FS_KEY];
 	}
 
-	setFileSystem(newFileSystem) {
+	setFileSystem(newFileSystem: any) {
 		this.state[FS_KEY] = newFileSystem;
 	}
 
@@ -63,7 +63,7 @@ export default class EmulatorState {
 		return this.state[HISTORY_KEY];
 	}
 
-	setHistory(newHistory) {
+	setHistory(newHistory: any) {
 		this.state[HISTORY_KEY] = newHistory;
 	}
 
@@ -71,7 +71,7 @@ export default class EmulatorState {
 		return this.state[OUTPUTS_KEY];
 	}
 
-	setOutputs(newOutputs) {
+	setOutputs(newOutputs: any) {
 		this.state[OUTPUTS_KEY] = newOutputs;
 	}
 
@@ -79,11 +79,11 @@ export default class EmulatorState {
 		return this.state[COMMAND_MAPPING_KEY];
 	}
 
-	setCommandMapping(newCommandMapping) {
+	setCommandMapping(newCommandMapping: any) {
 		this.state[COMMAND_MAPPING_KEY] = newCommandMapping;
 	}
 }
 
-export const relativeToAbsolutePath = (state, path) => {
+export const relativeToAbsolutePath = (state: any, path: string) => {
 	return PathUtil.toAbsolutePath(path, state.getEnvVariables().cwd);
 };
