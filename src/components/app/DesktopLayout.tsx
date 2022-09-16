@@ -10,7 +10,7 @@ import BootUp from "./desktop/BootUp";
 import TerminalEmbed from "./desktop/TerminalEmbed";
 
 const DesktopLayout = () => {
-	const [bootingUp, setBootingUp] = useState(import.meta.env.DEV);
+	const [bootingUp, setBootingUp] = useState(import.meta.env.PROD);
 
 	let inputRef: any = useRef(null);
 
