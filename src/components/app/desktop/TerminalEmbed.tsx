@@ -20,7 +20,7 @@ const TerminalEmbed = (props: any, ref: any) => {
 				functionDef: () => close(),
 				optDef: {}
 			}
-		})
+		} as any)
 	});
 
 	return (
