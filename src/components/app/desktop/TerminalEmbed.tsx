@@ -5,7 +5,7 @@ import { CommandMapping, DefaultCommandMapping, EmulatorState } from "../../../j
 import Terminal from "../../terminal/Terminal";
 import files from "../../../FileSystem";
 
-const TerminalEmbed = (props: any, ref: any) => {
+const TerminalEmbed = (_props: any, ref: any) => {
 	useEffect(() => {
 		for (let form of document.getElementsByTagName("FORM")) {
 			form.setAttribute("spellcheck", "false");
@@ -13,7 +13,7 @@ const TerminalEmbed = (props: any, ref: any) => {
 	}, []);
 
 	const customState = EmulatorState.create({
-		fs: files,
+		fs: files as any,
 		commandMapping: CommandMapping.create({
 			...DefaultCommandMapping,
 			exit: {

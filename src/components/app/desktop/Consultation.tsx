@@ -5,44 +5,44 @@ const Consultation = (props: any) => {
     const [mainText, setMainText] = useState<string>("");
     const [secondaryText, setSecondaryText] = useState<string>("");
 
+    const [visibleCursor, setVisibleCursor] = useState<boolean>(true);
+
     useEffect(() => {
-        // set up text to print, each item in array is new line
+        const interval = setInterval(() => {
+            setVisibleCursor((visible) => !visible);
+        }, 600);
+        return () => clearInterval(interval);
+    }, []);
+
+    useEffect(() => {
         const fullMainText = "Consulting";
-        const fullSecondaryText =
-            "If you have a need for any variety of tech services, I could be your solution.";
-
-        const typingSpeed = 250;
-        const secondaryTextDelay = 5000;
-
-        const mainTextInterval = setInterval(() => {
-            const fullMainIndex = fullMainText.indexOf(mainText) || 0 + mainText.length + 1;
-            console.log(mainText, fullMainIndex)
-            if (fullMainIndex > fullMainText.length) {
-                clearInterval(mainTextInterval);
+        let i = 0;
+        const interval = setInterval(() => {
+            console.log(i)
+            if (i > fullMainText.length) {
+                clearInterval(interval);
             }
-            setMainText(mainText + fullMainText[fullMainIndex]);
-        }, typingSpeed);
-
-        const secondaryTextTimeout = setTimeout(() => {
-            const secondaryTextInterval = setInterval(() => {
-                const fullSecondaryIndex =
-                    fullSecondaryText.indexOf(mainText) + mainText.length + 1;
-                if (fullSecondaryIndex > fullSecondaryText.length) {
-                    clearInterval(secondaryTextInterval);
-                }
-                setSecondaryText(mainText + fullSecondaryText[fullSecondaryIndex]);
-            }, typingSpeed);
-        }, secondaryTextDelay);
-
-        return () => {
-            clearTimeout(secondaryTextTimeout);
-            clearInterval(mainTextInterval);
-        };
+            setMainText((mainText) => mainText + fullMainText[i]);
+            i++;
+        }, 350);
+        return () => clearInterval(interval);
     }, []);
 
     return (
         <Box>
-            <Typography>{mainText}</Typography>
+            <Box display={"flex"} alignItems={"center"}>
+                <Typography style={{ fontSize: 150, fontWeight: 600 }}>{mainText}</Typography>
+                <Box
+                    id={"cursor"}
+                    ml={2}
+                    width={65}
+                    height={150}
+                    sx={{
+                        visibility: visibleCursor ? "visible" : "hidden",
+                        background: "#FFFFFF"
+                    }}
+                />
+            </Box>
             <Typography>{secondaryText}</Typography>
         </Box>
     );
