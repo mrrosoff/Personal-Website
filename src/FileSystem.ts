@@ -1,3 +1,5 @@
+import { DateTime } from "luxon";
+
 type FileType = "-" | "d" | "l";
 
 interface FileSystem {
@@ -8,6 +10,7 @@ interface FileSystem {
     };
 }
 
+const date = DateTime.now();
 const files: FileSystem = {
     "/": {
         type: "d",
@@ -34,7 +37,27 @@ const files: FileSystem = {
             Music: {
                 type: "d",
                 permissions: "rwx------",
-                contents: {}
+                contents: {
+                    "groovy.mov": {
+                        type: "-",
+                        permissions: "rwx------",
+                        contents: "https://www.youtube.com/embed/dQw4w9WgXcQ?controls=0&autoplay=1"
+                    },
+                    "smooth.mp4": {
+                        type: "-",
+                        permissions: "rwx------",
+                        contents: "https://www.youtube.com/embed/GG7fLOmlhYg?controls=0&autoplay=1"
+                    },
+                    ...(date.month === 9 &&
+                        date.day === 21 && {
+                            "isItThatTime.mp4": {
+                                type: "-",
+                                permissions: "rwx------",
+                                contents:
+                                    "https://www.youtube.com/embed/Gs069dndIYk?controls=0&controls=0autoplay=1"
+                            }
+                        })
+                }
             },
             Videos: {
                 type: "d",

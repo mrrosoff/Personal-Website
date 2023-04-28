@@ -1,13 +1,14 @@
 import { Box, Button, Grid, Typography } from "@mui/material";
 
 import DescriptionIcon from "@mui/icons-material/Description";
+import EmailIcon from "@mui/icons-material/Email";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import TwitterIcon from "@mui/icons-material/Twitter";
 
-const SocialList = [
+const socialList = [
     {
         name: "Resume",
         url: "https://bit.ly/rosoff-resume",
@@ -40,18 +41,28 @@ const SocialList = [
     }
 ];
 
+const contactList = [
+    {
+        name: "Email",
+        url: "mailto:me@maxrosoff.com",
+        icon: EmailIcon
+    }
+];
+
 export const DesktopSocialButtonList = (props: { sx?: any }) => {
     return (
         <Box p={2} sx={props.sx} display={"flex"} flexWrap={"wrap"}>
-            {SocialList.map((socialDetails, index) => (
-                <Box key={index} mr={1}>
-                    <SocialButton
-                        href={socialDetails.url}
-                        icon={socialDetails.icon}
-                        text={socialDetails.name}
-                    />
-                </Box>
-            ))}
+            {socialList.map((socialDetails, index) => {
+                return (
+                    <Box key={index} mr={1}>
+                        <CustomIconButton
+                            href={socialDetails.url}
+                            icon={socialDetails.icon}
+                            text={socialDetails.name}
+                        />
+                    </Box>
+                );
+            })}
         </Box>
     );
 };
@@ -66,9 +77,9 @@ export const MobileSocialButtonList = () => {
             alignItems={"center"}
             alignContent={"center"}
         >
-            {SocialList.map((socialDetails, index) => (
+            {socialList.map((socialDetails, index) => (
                 <Grid item key={index}>
-                    <SocialButton
+                    <CustomIconButton
                         href={socialDetails.url}
                         icon={socialDetails.icon}
                         text={socialDetails.name}
@@ -79,7 +90,25 @@ export const MobileSocialButtonList = () => {
     );
 };
 
-const SocialButton = (props: any) => {
+export const ContactButtonList = (props: { sx?: any }) => {
+    return (
+        <Box p={2} sx={props.sx} display={"flex"} flexWrap={"wrap"}>
+            {contactList.map((socialDetails, index) => {
+                return (
+                    <Box key={index} mr={1}>
+                        <CustomIconButton
+                            href={socialDetails.url}
+                            icon={socialDetails.icon}
+                            text={socialDetails.name}
+                        />
+                    </Box>
+                );
+            })}
+        </Box>
+    );
+};
+
+const CustomIconButton = (props: any) => {
     const Icon = props.icon;
     return (
         <Button
