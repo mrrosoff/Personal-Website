@@ -8,11 +8,9 @@ import Profile from "../../assets/images/profile.jpg";
 
 import BootUp from "./desktop/BootUp";
 import TerminalEmbed from "./desktop/TerminalEmbed";
-import Consultation from "./desktop/Consultation";
 
 const DesktopLayout = () => {
     const [bootingUp, setBootingUp] = useState(import.meta.env.PROD);
-    const [consulting, setConsulting] = useState(false);
 
     let inputRef: any = useRef(null);
 
@@ -22,14 +20,9 @@ const DesktopLayout = () => {
                 sx={{ p: 8, width: "100%", height: "100%", overflow: "hidden" }}
                 onClick={() => inputRef.current && inputRef.current.focus()}
             >
-                <LinksAndMenu consulting={consulting} setConsulting={setConsulting} />
+                <LinksAndMenu />
                 <Box sx={{ width: "100%", height: "100%", overflowY: "scroll" }}>
-                    <Page
-                        bootingUp={bootingUp}
-                        setBootingUp={setBootingUp}
-                        inputRef={inputRef}
-                        consulting={consulting}
-                    />
+                    <Page bootingUp={bootingUp} setBootingUp={setBootingUp} inputRef={inputRef} />
                 </Box>
             </Box>
         </Box>
@@ -44,11 +37,9 @@ const Page = (props: any) => {
 
     if (props.bootingUp) {
         return <BootUp setBootingUp={props.setBootingUp} creationDate={creationDate.toString()} />;
-    } else if (props.consulting) {
-        return <Consultation />;
-    } else {
-        return <TerminalEmbed ref={props.inputRef}/>;
     }
+
+    return <TerminalEmbed ref={props.inputRef} />;
 };
 
 const LinksAndMenu = (props: any) => {
@@ -85,12 +76,6 @@ const LinksAndMenu = (props: any) => {
 const Links = (props: any) => {
     return (
         <Box sx={{ position: "absolute", top: 0, right: 80, display: "flex" }}>
-            <a
-                style={{ paddingRight: 20, color: "#FCFCFC", fontSize: 22 }}
-                onClick={() => props.setConsulting((consulting: boolean) => !consulting)}
-            >
-                {props.consulting ? "Terminal" : "Consulting"}
-            </a>
             <a
                 href={"https://github.com/mrrosoff/Personal-Website"}
                 target="_blank"

@@ -32,7 +32,16 @@ const files: FileSystem = {
             Documents: {
                 type: "d",
                 permissions: "rwx------",
-                contents: {}
+                contents: {
+                    "consultation.txt": {
+                        type: "-",
+                        permissions: "rwx------",
+                        contents: `
+                            Looking for something custom made? I might be able to bring your vision to life.
+                            Contact me using the links under my profile picture to get started.
+                        `
+                    }
+                }
             },
             Music: {
                 type: "d",
@@ -62,7 +71,13 @@ const files: FileSystem = {
             Videos: {
                 type: "d",
                 permissions: "rwx------",
-                contents: {}
+                contents: {
+                    "technology.mp4": {
+                        type: "-",
+                        permissions: "rwx------",
+                        contents: "https://www.youtube.com/embed/kZvE6ESK_wI?controls=0&autoplay=1"
+                    }
+                }
             }
         }
     }
