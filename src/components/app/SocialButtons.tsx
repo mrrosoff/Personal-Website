@@ -36,7 +36,7 @@ const socialList = [
     },
     {
         name: "Twitter",
-        url: "https://twitter.com/MrRosoff",
+        url: "https://twitter.com/mr_rosoff",
         icon: TwitterIcon
     }
 ];
