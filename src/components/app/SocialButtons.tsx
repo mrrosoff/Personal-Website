@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Typography } from "@mui/material";
+import { Box, Button, Grid, IconButton, Typography } from "@mui/material";
 
 import DescriptionIcon from "@mui/icons-material/Description";
 import EmailIcon from "@mui/icons-material/Email";
@@ -6,7 +6,6 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
-import TwitterIcon from "@mui/icons-material/Twitter";
 
 const socialList = [
     {
@@ -15,43 +14,39 @@ const socialList = [
         icon: DescriptionIcon
     },
     {
+        name: "Email",
+        url: "mailto:me@maxrosoff.com",
+        icon: EmailIcon
+    },
+    {
         name: "LinkedIn",
         url: "https://www.linkedin.com/in/max-rosoff",
-        icon: LinkedInIcon
+        icon: LinkedInIcon,
+        social: true
     },
     {
         name: "GitHub",
         url: "https://www.github.com/mrrosoff",
-        icon: GitHubIcon
+        icon: GitHubIcon,
+        social: true
     },
     {
         name: "Facebook",
         url: "https://www.facebook.com/maxr.rosoff",
-        icon: FacebookIcon
+        icon: FacebookIcon,
+        social: true
     },
     {
         name: "Instagram",
         url: "https://www.instagram.com/thenameismr.r/",
-        icon: InstagramIcon
-    },
-    {
-        name: "Twitter",
-        url: "https://twitter.com/mr_rosoff",
-        icon: TwitterIcon
-    }
-];
-
-const contactList = [
-    {
-        name: "Email",
-        url: "mailto:me@maxrosoff.com",
-        icon: EmailIcon
+        icon: InstagramIcon,
+        social: true
     }
 ];
 
 export const DesktopSocialButtonList = (props: { sx?: any }) => {
     return (
-        <Box p={2} sx={props.sx} display={"flex"} flexWrap={"wrap"}>
+        <Box p={2} sx={props.sx} display={"flex"} flexWrap={"wrap"} justifyContent={"center"}>
             {socialList.map((socialDetails, index) => {
                 return (
                     <Box key={index} mr={1}>
@@ -59,6 +54,7 @@ export const DesktopSocialButtonList = (props: { sx?: any }) => {
                             href={socialDetails.url}
                             icon={socialDetails.icon}
                             text={socialDetails.name}
+                            social={socialDetails.social}
                         />
                     </Box>
                 );
@@ -90,41 +86,25 @@ export const MobileSocialButtonList = () => {
     );
 };
 
-export const ContactButtonList = (props: { sx?: any }) => {
-    return (
-        <Box p={2} sx={props.sx} display={"flex"} flexWrap={"wrap"}>
-            {contactList.map((socialDetails, index) => {
-                return (
-                    <Box key={index} mr={1}>
-                        <CustomIconButton
-                            href={socialDetails.url}
-                            icon={socialDetails.icon}
-                            text={socialDetails.name}
-                        />
-                    </Box>
-                );
-            })}
-        </Box>
-    );
-};
-
 const CustomIconButton = (props: any) => {
     const Icon = props.icon;
+    const ButtonType = props.social ? IconButton : Button;
     return (
-        <Button
+        <ButtonType
             className={"social-button"}
             href={props.href}
             target={"_blank"}
             rel={"noopener"}
             size={"large"}
-            {...props}
         >
             <Box sx={{ display: "flex", alignItems: "center", color: "white" }}>
                 <Icon />
-                <Box pl={2}>
-                    <Typography>{props.text}</Typography>
-                </Box>
+                {!props.social && (
+                    <Box pl={2}>
+                        <Typography>{props.text}</Typography>
+                    </Box>
+                )}
             </Box>
-        </Button>
+        </ButtonType>
     );
 };

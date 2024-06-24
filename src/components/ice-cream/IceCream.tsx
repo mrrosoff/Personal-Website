@@ -26,6 +26,23 @@ export const CurrentFlavors = () => {
             <Typography sx={{ paddingTop: 5 }} variant="h2">
                 Current Flavors
             </Typography>
+            <Box display={"flex"} alignItems={"center"} sx={{ paddingTop: 4 }}>
+                <Box
+                    display={"flex"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                    sx={{
+                        width: 250,
+                        height: 150,
+                        border: 1,
+                        padding: 2,
+                        marginRight: 1.5
+                    }}
+                >
+                    <Typography align={"center"}>Mystery</Typography>
+                </Box>
+                <Card>Peaches</Card>
+            </Box>
         </Box>
     );
 };

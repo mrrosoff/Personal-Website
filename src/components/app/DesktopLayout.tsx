@@ -47,7 +47,7 @@ const LinksAndMenu = (props: any) => {
             <Links open={open} setOpen={setOpen} {...props} />
             <Box sx={{ position: "absolute", top: 65, right: 0 }}>
                 {open && (
-                    <Paper style={{ width: 310 }}>
+                    <Paper style={{ width: 270 }}>
                         <DesktopSocialButtonList />
                     </Paper>
                 )}
