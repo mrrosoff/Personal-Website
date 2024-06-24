@@ -2,7 +2,10 @@ import { parseOptions } from "../parser";
 
 export const optDef = {};
 
-const functionDef = (state: any, commandOptions: any) => {
+const functionDef = (
+    state: { getEnvVariables: () => { (): any; new (): any; user: any } },
+    commandOptions: string[]
+) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
 
     try {

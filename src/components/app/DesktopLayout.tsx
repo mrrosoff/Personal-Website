@@ -1,42 +1,40 @@
 import { useRef, useState } from "react";
+import { Link, Outlet, useMatch } from "react-router-dom";
 
 import { Avatar, Box, Paper } from "@mui/material";
 
 import { DesktopSocialButtonList } from "./SocialButtons";
-
-import Profile from "../../assets/images/profile.jpg";
-
 import BootUp from "./desktop/BootUp";
 import TerminalEmbed from "./desktop/TerminalEmbed";
 
-const DesktopLayout = () => {
-    const [bootingUp, setBootingUp] = useState(import.meta.env.PROD);
+import Profile from "../../assets/images/profile.jpg";
 
-    let inputRef: any = useRef(null);
-
+const DesktopLayout = (props: { inputRef: { current: { focus: () => any } } }) => {
     return (
         <Box width={"100vw"} height={"100vh"}>
             <Box
                 sx={{ p: 8, width: "100%", height: "100%", overflow: "hidden" }}
-                onClick={() => inputRef.current && inputRef.current.focus()}
+                onClick={() => props.inputRef.current && props.inputRef.current.focus()}
             >
                 <LinksAndMenu />
                 <Box sx={{ width: "100%", height: "100%", overflowY: "scroll" }}>
-                    <Page bootingUp={bootingUp} setBootingUp={setBootingUp} inputRef={inputRef} />
+                    <Outlet />
                 </Box>
             </Box>
         </Box>
     );
 };
 
-const Page = (props: any) => {
+export const Page = (props: any) => {
+    const [bootingUp, setBootingUp] = useState(import.meta.env.PROD);
+
     const creationDate = new Date();
     creationDate.setMinutes(creationDate.getMinutes() - 8);
     creationDate.setHours(creationDate.getHours() - 2);
     creationDate.setDate(creationDate.getDate() - 5);
 
-    if (props.bootingUp) {
-        return <BootUp setBootingUp={props.setBootingUp} creationDate={creationDate.toString()} />;
+    if (bootingUp) {
+        return <BootUp setBootingUp={setBootingUp} creationDate={creationDate.toString()} />;
     }
 
     return <TerminalEmbed ref={props.inputRef} />;
@@ -74,15 +72,22 @@ const LinksAndMenu = (props: any) => {
 };
 
 const Links = (props: any) => {
+    const isIceCream = useMatch("/ice-cream");
     return (
         <Box sx={{ position: "absolute", top: 0, right: 80, display: "flex" }}>
-            <a
-                href={"https://github.com/mrrosoff/Personal-Website"}
+            <Link
+                to={isIceCream ? "/" : "ice-cream"}
+                style={{ paddingRight: 20, color: "#FCFCFC", fontSize: 22 }}
+            >
+                {isIceCream ? "Home" : "Ice Cream"}
+            </Link>
+            <Link
+                to={"https://github.com/mrrosoff/Personal-Website"}
                 target="_blank"
                 style={{ paddingRight: 20, color: "#FCFCFC", fontSize: 22 }}
             >
                 Source
-            </a>
+            </Link>
             <a
                 style={{ margin: 0, color: "#FCFCFC", fontSize: 22 }}
                 onClick={() => props.setOpen(!props.open)}

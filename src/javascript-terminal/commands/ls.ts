@@ -4,39 +4,42 @@ import * as DirOp from "../fs/operations/directory-operations";
 
 const IMPLIED_DIRECTORY_ENTRIES = [".", ".."];
 
-const resolveDirectoryToList = (envVariables, argv) => {
-	const cwd = envVariables.cwd;
+const resolveDirectoryToList = (envVariables: { cwd: any }, argv: string | any[]) => {
+    const cwd = envVariables.cwd;
 
-	if (argv.length > 0) {
-		return PathUtil.toAbsolutePath(argv[0], cwd);
-	}
+    if (argv.length > 0) {
+        return PathUtil.toAbsolutePath(argv[0], cwd);
+    }
 
-	return cwd;
+    return cwd;
 };
 
-const makeSortedReturn = (listing) => {
-	return { output: listing.sort().join("\n") };
+const makeSortedReturn = (listing: any[]) => {
+    return { output: listing.sort().join("\n") };
 };
 
 export const optDef = { "-a, --all": "", "-A, --almost-all": "" };
 
-const functionDef = (state, commandOptions) => {
-	const { options, argv } = parseOptions(commandOptions, optDef);
+const functionDef = (
+    state: { getEnvVariables: () => any; getFileSystem: () => any },
+    commandOptions: string[]
+) => {
+    const { options, argv } = parseOptions(commandOptions, optDef);
 
-	try {
-		const dirPath = resolveDirectoryToList(state.getEnvVariables(), argv);
-		const dirList = DirOp.list(state.getFileSystem(), dirPath);
+    try {
+        const dirPath = resolveDirectoryToList(state.getEnvVariables(), argv);
+        const dirList = DirOp.list(state.getFileSystem(), dirPath);
 
-		if (options.all) {
-			return makeSortedReturn(IMPLIED_DIRECTORY_ENTRIES.concat(dirList));
-		} else if (options.almostAll) {
-			return makeSortedReturn(dirList);
-		}
+        if (options.all) {
+            return makeSortedReturn(IMPLIED_DIRECTORY_ENTRIES.concat(dirList));
+        } else if (options.almostAll) {
+            return makeSortedReturn(dirList);
+        }
 
-		return makeSortedReturn(dirList.filter((record) => !record.startsWith(".")));
-	} catch (err) {
-		return { output: err.message, type: "error" };
-	}
+        return makeSortedReturn(dirList.filter((record) => !record.startsWith(".")));
+    } catch (err: any) {
+        return { output: err.message, type: "error" };
+    }
 };
 
 export default { optDef, functionDef };

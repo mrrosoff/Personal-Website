@@ -26,7 +26,7 @@ const fileToImageOutput = (fs: any, filePath: string) => {
 
 export const optDef = {};
 
-const functionDef = (state: any, commandOptions: any) => {
+const functionDef = (state: { getFileSystem: () => any }, commandOptions: string[]) => {
     const { argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length === 0) {

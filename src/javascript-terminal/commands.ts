@@ -6,6 +6,7 @@ import display from "./commands/display";
 import echo from "./commands/echo";
 import head from "./commands/head";
 import history from "./commands/history";
+import icecream from "./commands/icecream";
 import ls from "./commands/ls";
 import man from "./commands/man";
 import mkdir from "./commands/mkdir";
@@ -19,25 +20,26 @@ import touch from "./commands/touch";
 import whoami from "./commands/whoami";
 
 const commands = {
-	cat,
-	cd,
-	clear,
-	cp,
-	display,
-	echo,
-	head,
-	history,
-	ls,
-	man,
-	mv,
-	mkdir,
-	printenv,
-	pwd,
-	rm,
-	rmdir,
-	tail,
-	touch,
-	whoami
+    cat,
+    cd,
+    clear,
+    cp,
+    display,
+    echo,
+    head,
+    history,
+    icecream,
+    ls,
+    man,
+    mv,
+    mkdir,
+    printenv,
+    pwd,
+    rm,
+    rmdir,
+    tail,
+    touch,
+    whoami
 };
 
 export default commands;

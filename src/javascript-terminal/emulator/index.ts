@@ -147,7 +147,8 @@ export default class Emulator {
 
         try {
             return command(...commandArgs);
-        } catch (fatalCommandError) {
+        } catch (fatalCommandError: unknown) {
+            console.error(fatalCommandError);
             return { output: "An unknown command error occurred" };
         }
     }

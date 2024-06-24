@@ -5,7 +5,7 @@ import * as FileOp from "../fs/operations/file-operations";
 
 export const optDef = { "-r, --recursive": "" };
 
-const functionDef = (state, commandOptions) => {
+const functionDef = (state: { getFileSystem: () => any; }, commandOptions: string[]) => {
 	const { options, argv } = parseOptions(commandOptions, optDef);
 
 	if (argv.length < 2) {
@@ -27,7 +27,7 @@ const functionDef = (state, commandOptions) => {
 		}
 
 		return { output: "" };
-	} catch (err) {
+	} catch (err: any) {
 		return { output: err.message, type: "error" };
 	}
 };

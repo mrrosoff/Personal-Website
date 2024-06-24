@@ -14,7 +14,7 @@ const Terminal = (props: any, ref: any) => {
     const [input, setInput] = useState("");
     const [emulatorState, setEmulatorState] = useState(props.emulatorState);
     const [outputs, setOutputs] = useState([]);
-    const [historyIndex, setHistoryIndex] = useState(-1);
+    const [_, setHistoryIndex] = useState(-1);
 
     let emulator = new Emulator();
 

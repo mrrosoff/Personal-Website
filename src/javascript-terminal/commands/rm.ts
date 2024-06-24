@@ -4,33 +4,33 @@ import * as DirOp from "../fs/operations/directory-operations";
 import * as FileOp from "../fs/operations/file-operations";
 
 export const optDef = {
-	"--no-preserve-root, --noPreserveRoot": "",
-	"-r, --recursive": "",
-	"-f, --force": ""
+    "--no-preserve-root, --noPreserveRoot": "",
+    "-r, --recursive": "",
+    "-f, --force": ""
 };
 
-const functionDef = (state, commandOptions) => {
-	const { options, argv } = parseOptions(commandOptions, optDef);
+const functionDef = (state: { getFileSystem: () => any }, commandOptions: string[]) => {
+    const { options, argv } = parseOptions(commandOptions, optDef);
 
-	if (argv.length === 0) {
-		return {};
-	}
+    if (argv.length === 0) {
+        return {};
+    }
 
-	try {
-		const deletionPath = relativeToAbsolutePath(state, argv[0]);
-		const fs = state.getFileSystem();
+    try {
+        const deletionPath = relativeToAbsolutePath(state, argv[0]);
+        const fs = state.getFileSystem();
 
-		if (deletionPath === "/" && options.noPreserveRoot !== true) {
-			return {};
-		}
+        if (deletionPath === "/" && options.noPreserveRoot !== true) {
+            return {};
+        }
 
-		options.recursive === true
-			? DirOp.remove(fs, deletionPath)
-			: FileOp.remove(fs, deletionPath);
-		return { output: "" };
-	} catch (err) {
-		return { output: err.message, type: "error" };
-	}
+        options.recursive === true
+            ? DirOp.remove(fs, deletionPath)
+            : FileOp.remove(fs, deletionPath);
+        return { output: "" };
+    } catch (err: any) {
+        return { output: err.message, type: "error" };
+    }
 };
 
 export default { optDef, functionDef };

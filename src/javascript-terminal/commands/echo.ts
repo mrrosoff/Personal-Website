@@ -3,7 +3,7 @@ import { parseOptions } from "../parser";
 const VARIABLE_GROUP_REGEX = /\$(\w+)/g;
 const DOUBLE_SPACE_REGEX = /\s\s+/g;
 
-const substituteEnvVariables = (environmentVariables, inputStr) => {
+const substituteEnvVariables = (environmentVariables: { [x: string]: any; }, inputStr: string) => {
 	return inputStr.replace(
 		VARIABLE_GROUP_REGEX,
 		(match, varName) => environmentVariables[varName] || ""
@@ -12,7 +12,7 @@ const substituteEnvVariables = (environmentVariables, inputStr) => {
 
 export const optDef = {};
 
-const functionDef = (state, commandOptions) => {
+const functionDef = (state: { getEnvVariables: () => { [x: string]: any; }; }, commandOptions: any[]) => {
 	const { options, argv } = parseOptions(commandOptions, optDef);
 
 	try {
@@ -25,7 +25,7 @@ const functionDef = (state, commandOptions) => {
 		}
 
 		return { output: cleanStr };
-	} catch (err) {
+	} catch (err: any) {
 		return { output: err.message, type: "error" };
 	}
 };
