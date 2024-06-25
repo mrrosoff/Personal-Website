@@ -1,5 +1,12 @@
-import { useRef } from "react";
-import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import {
+    createBrowserRouter,
+    Navigate,
+    Outlet,
+    RouterProvider,
+    useLocation,
+    useNavigate
+} from "react-router-dom";
 
 import { Box } from "@mui/material";
 import { createTheme, ThemeProvider, StyledEngineProvider } from "@mui/material/styles";
@@ -23,16 +30,21 @@ const App = () => {
     const router = createBrowserRouter([
         {
             path: "/",
-            element: <Layout inputRef={inputRef} />,
-            errorElement: <ErrorPage />,
+            element: <Router404Inject />,
+            errorElement: <Navigate to="/" replace={true} />,
             children: [
                 {
-                    index: true,
-                    element: <Page inputRef={inputRef} />
-                },
-                {
-                    path: "ice-cream",
-                    element: <IceCream />
+                    element: <Layout inputRef={inputRef} />,
+                    children: [
+                        {
+                            index: true,
+                            element: <Page inputRef={inputRef} />
+                        },
+                        {
+                            path: "ice-cream",
+                            element: <IceCream />
+                        }
+                    ]
                 }
             ]
         }
@@ -48,6 +60,20 @@ const App = () => {
     );
 };
 
+const Router404Inject = () => {
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    useEffect(() => {
+        const splitPath = location.search.split("/");
+        if (splitPath[0] === "?") {
+            navigate(splitPath[1]);
+        }
+    }, [location]);
+
+    return <Outlet />;
+};
+
 const Layout = (props: { inputRef: { current: { focus: () => any } } }) => {
     return (
         <>
@@ -59,10 +85,6 @@ const Layout = (props: { inputRef: { current: { focus: () => any } } }) => {
             </Box>
         </>
     );
-};
-
-const ErrorPage = () => {
-    return <Navigate to="/" replace={true} />;
 };
 
 export default App;

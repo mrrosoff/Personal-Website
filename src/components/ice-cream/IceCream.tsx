@@ -1,7 +1,7 @@
-import { ReactElement } from "react";
-
 import { Box, Typography } from "@mui/material";
 import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
+
+import Peaches from "../../assets/images/peaches.png";
 
 const IceCream = () => {
     return (
@@ -26,22 +26,40 @@ export const CurrentFlavors = () => {
             <Typography sx={{ paddingTop: 5 }} variant="h2">
                 Current Flavors
             </Typography>
-            <Box display={"flex"} alignItems={"center"} sx={{ paddingTop: 4 }}>
+            <Box display={"flex"} alignItems={"center"} sx={{ paddingTop: 2 }} flexWrap={"wrap"}>
+                <Box
+                    position={"relative"}
+                    display={"flex"}
+                    flexDirection={"column"}
+                    sx={{ border: 1, padding: 2, margin: 1.5, marginLeft: 0 }}
+                >
+                    <Typography variant={"h4"} align={"center"}>
+                        Mystery
+                    </Typography>
+                    <Typography align={"center"} sx={{ width: 500 }}>
+                        Classic flavors with a mystery ingredient. You may like it, or you may
+                        not...
+                    </Typography>
+                    <Typography sx={{ position: "absolute", top: 5, left: 20 }}>???</Typography>
+                    <Typography sx={{ position: "absolute", top: 5, right: 20 }}>???</Typography>
+                    <Typography sx={{ position: "absolute", bottom: 5, left: 20 }}>???</Typography>
+                    <Typography sx={{ position: "absolute", bottom: 5, right: 20 }}>???</Typography>
+                </Box>
                 <Box
                     display={"flex"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                    sx={{
-                        width: 250,
-                        height: 150,
-                        border: 1,
-                        padding: 2,
-                        marginRight: 1.5
-                    }}
+                    flexDirection={"column"}
+                    sx={{ border: 1, padding: 2, margin: 1.5 }}
                 >
-                    <Typography align={"center"}>Mystery</Typography>
+                    <Box display={"flex"} justifyContent={"space-between"}>
+                        <Typography variant={"h4"} color={"orange"}>
+                            Peaches
+                        </Typography>
+                        <img src={Peaches} alt={"Peaches"} style={{ width: 50 }} />
+                    </Box>
+                    <Typography sx={{ width: 400 }}>
+                        A summer classic, good ole peaches and cream.
+                    </Typography>
                 </Box>
-                <Card>Peaches</Card>
             </Box>
         </Box>
     );
@@ -53,54 +71,129 @@ export const Schedule = () => {
             <Typography sx={{ paddingTop: 5 }} variant="h2">
                 Whats Coming Up...
             </Typography>
-            <Box display={"flex"} alignItems={"center"} sx={{ paddingTop: 4 }}>
+            <Typography>
+                The following is a list of possible upcoming flavors. Actual availability may vary
+                by seasonal produce and other factors.
+            </Typography>
+            <Box display={"flex"} alignItems={"center"} sx={{ paddingTop: 2 }}>
                 <Box
                     display={"flex"}
                     justifyContent={"center"}
                     alignItems={"center"}
                     sx={{
-                        width: 250,
-                        height: 150,
                         border: 1,
                         padding: 2,
                         marginRight: 1.5
                     }}
                 >
-                    <Typography align={"center"}>Blueberry Matcha</Typography>
+                    <Typography align={"center"} color={"pink"}>
+                        Rose Saffron
+                    </Typography>
                 </Box>
-                <ArrowRightAltRoundedIcon
-                    sx={{ fontSize: 40, marginLeft: 1.5, marginRight: 1.5 }}
-                />
-                <Card>Mexican Hot Chocolate</Card>
-                <ArrowRightAltRoundedIcon
-                    sx={{ fontSize: 40, marginLeft: 1.5, marginRight: 1.5 }}
-                />
-                <Card>?</Card>
-                <ArrowRightAltRoundedIcon
-                    sx={{ fontSize: 40, marginLeft: 1.5, marginRight: 1.5 }}
-                />
-                <Card>?</Card>
+                <Box
+                    display={"flex"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                    sx={{
+                        border: 1,
+                        padding: 2,
+                        margin: 1.5
+                    }}
+                >
+                    <Typography align={"center"} color={"blue"}>
+                        Blueberry
+                    </Typography>
+                    <Typography sx={{ paddingLeft: 1 }} align={"center"} color={"green"}>
+                        Matcha
+                    </Typography>
+                </Box>
+                <Box
+                    display={"flex"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                    sx={{
+                        border: 1,
+                        padding: 2,
+                        marginLeft: 1.5,
+                        marginRight: 1.5
+                    }}
+                >
+                    <Typography align={"center"} color={"grey"}>
+                        Black Sesame
+                    </Typography>
+                </Box>
+                <Box
+                    display={"flex"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                    sx={{
+                        border: 1,
+                        padding: 2,
+                        marginLeft: 1.5,
+                        marginRight: 1.5
+                    }}
+                >
+                    <Typography align={"center"} color={"brown"}>
+                        Mexican Hot Chocolate
+                    </Typography>
+                </Box>
+                <Box
+                    display={"flex"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                    sx={{
+                        border: 1,
+                        padding: 2,
+                        marginLeft: 1.5,
+                        marginRight: 1.5
+                    }}
+                >
+                    <Typography align={"center"} color={"purple"}>
+                        Taro
+                    </Typography>
+                </Box>
+                <Box
+                    display={"flex"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                    sx={{
+                        border: 1,
+                        padding: 2,
+                        marginLeft: 1.5,
+                        marginRight: 1.5
+                    }}
+                >
+                    <Typography align={"center"} color={"greenyellow"}>
+                        Pandan
+                    </Typography>
+                </Box>
+                <Box
+                    display={"flex"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                    sx={{
+                        border: 1,
+                        padding: 2,
+                        marginLeft: 1.5,
+                        marginRight: 1.5
+                    }}
+                >
+                    <Typography align={"center"}>Chestnut</Typography>
+                </Box>
+                <Box
+                    display={"flex"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                    sx={{
+                        border: 1,
+                        padding: 2,
+                        marginLeft: 1.5,
+                        marginRight: 1.5
+                    }}
+                >
+                    <Typography align={"center"}>???</Typography>
+                </Box>
             </Box>
-        </Box>
-    );
-};
-
-export const Card = (props: { children: string }) => {
-    return (
-        <Box
-            display={"flex"}
-            justifyContent={"center"}
-            alignItems={"center"}
-            sx={{
-                width: 250,
-                height: 150,
-                border: 1,
-                padding: 2,
-                marginLeft: 1.5,
-                marginRight: 1.5
-            }}
-        >
-            <Typography align={"center"}>{props.children}</Typography>
         </Box>
     );
 };
