@@ -1,7 +1,7 @@
-import { Box, Typography } from "@mui/material";
-import ArrowRightAltRoundedIcon from "@mui/icons-material/ArrowRightAltRounded";
+import { Box, Grid, Typography } from "@mui/material";
 
 import Peaches from "../../assets/images/peaches.png";
+import Brownie from "../../assets/images/brownie.png";
 
 const IceCream = () => {
     return (
@@ -26,41 +26,68 @@ export const CurrentFlavors = () => {
             <Typography sx={{ paddingTop: 5 }} variant="h2">
                 Current Flavors
             </Typography>
-            <Box display={"flex"} alignItems={"center"} sx={{ paddingTop: 2 }} flexWrap={"wrap"}>
-                <Box
-                    position={"relative"}
-                    display={"flex"}
-                    flexDirection={"column"}
-                    sx={{ border: 1, padding: 2, margin: 1.5, marginLeft: 0 }}
-                >
-                    <Typography variant={"h4"} align={"center"}>
-                        Mystery
-                    </Typography>
-                    <Typography align={"center"} sx={{ width: 500 }}>
-                        Classic flavors with a mystery ingredient. You may like it, or you may
-                        not...
-                    </Typography>
-                    <Typography sx={{ position: "absolute", top: 5, left: 20 }}>???</Typography>
-                    <Typography sx={{ position: "absolute", top: 5, right: 20 }}>???</Typography>
-                    <Typography sx={{ position: "absolute", bottom: 5, left: 20 }}>???</Typography>
-                    <Typography sx={{ position: "absolute", bottom: 5, right: 20 }}>???</Typography>
-                </Box>
-                <Box
-                    display={"flex"}
-                    flexDirection={"column"}
-                    sx={{ border: 1, padding: 2, margin: 1.5 }}
-                >
-                    <Box display={"flex"} justifyContent={"space-between"}>
-                        <Typography variant={"h4"} color={"orange"}>
-                            Peaches
+            <Grid container spacing={3} sx={{ paddingTop: 2 }}>
+                <Grid item>
+                    <Box
+                        width={500}
+                        position={"relative"}
+                        display={"flex"}
+                        flexDirection={"column"}
+                        sx={{ border: 1, padding: 2 }}
+                    >
+                        <Typography variant={"h4"} align={"center"}>
+                            Mystery
                         </Typography>
-                        <img src={Peaches} alt={"Peaches"} style={{ width: 50 }} />
+                        <Typography align={"center"}>
+                            Classic flavors, mystery ingredient. You may like it, or you may not...
+                        </Typography>
+                        <Typography sx={{ position: "absolute", top: 5, left: 20 }}>???</Typography>
+                        <Typography sx={{ position: "absolute", top: 5, right: 20 }}>
+                            ???
+                        </Typography>
+                        <Typography sx={{ position: "absolute", bottom: 5, left: 20 }}>
+                            ???
+                        </Typography>
+                        <Typography sx={{ position: "absolute", bottom: 5, right: 20 }}>
+                            ???
+                        </Typography>
                     </Box>
-                    <Typography sx={{ width: 400 }}>
-                        A summer classic, good ole peaches and cream.
-                    </Typography>
-                </Box>
-            </Box>
+                </Grid>
+                <Grid item>
+                    <Box
+                        width={435}
+                        display={"flex"}
+                        flexDirection={"column"}
+                        sx={{ border: 1, padding: 2 }}
+                    >
+                        <Box display={"flex"} justifyContent={"space-between"}>
+                            <Typography variant={"h4"} color={"orange"}>
+                                Peaches
+                            </Typography>
+                            <img src={Peaches} alt={"Peaches"} style={{ width: 50 }} />
+                        </Box>
+                        <Typography>A summer classic, good ole peaches and cream.</Typography>
+                    </Box>
+                </Grid>
+                <Grid item>
+                    <Box
+                        width={350}
+                        display={"flex"}
+                        flexDirection={"column"}
+                        sx={{ border: 1, padding: 2 }}
+                    >
+                        <Box display={"flex"} justifyContent={"space-between"}>
+                            <Typography variant={"h4"} color={"#54240A"}>
+                                Gooey Brownie
+                            </Typography>
+                            <img src={Brownie} alt={"Brownie"} style={{ width: 50 }} />
+                        </Box>
+                        <Typography>
+                            Soft, gooey, fudgy brownie chunks in a rich chocolate base.
+                        </Typography>
+                    </Box>
+                </Grid>
+            </Grid>
         </Box>
     );
 };
