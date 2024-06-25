@@ -127,7 +127,7 @@ export const Schedule = () => {
                         margin: 1.5
                     }}
                 >
-                    <Typography align={"center"} color={"blue"}>
+                    <Typography align={"center"} color={"#0096FF"}>
                         Blueberry
                     </Typography>
                     <Typography sx={{ paddingLeft: 1 }} align={"center"} color={"green"}>
