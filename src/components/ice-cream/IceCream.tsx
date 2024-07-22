@@ -2,16 +2,17 @@ import { Box, Grid, Typography } from "@mui/material";
 
 import Peaches from "../../assets/images/peaches.png";
 import Brownie from "../../assets/images/brownie.png";
+import Mango from "../../assets/images/mango.png";
+import LemonLime from "../../assets/images/lemon-lime.png";
 
 const IceCream = () => {
     return (
         <Box id={"ice-cream"}>
             <Typography variant="h1" sx={{ maxWidth: { lg: 800, xs: 400 } }}>
-                Max and Josette's Ice Cream Factory
+                Small Batch Ice Cream
             </Typography>
             <Typography sx={{ paddingTop: 1.5 }}>
-                Limited, high quality, Seattle based small batch ice cream. Creative flavors, priced
-                at $5 per pint.
+                Limited. High quality. Seattle based. Creative flavors, priced at $5 per pint.
             </Typography>
             <Typography>Contact me on any platform to order.</Typography>
             <CurrentFlavors />
@@ -28,63 +29,44 @@ export const CurrentFlavors = () => {
             </Typography>
             <Grid container spacing={3} sx={{ paddingTop: 2 }}>
                 <Grid item>
-                    <Box
-                        width={500}
-                        position={"relative"}
-                        display={"flex"}
-                        flexDirection={"column"}
-                        sx={{ border: 1, padding: 2 }}
-                    >
-                        <Typography variant={"h4"} align={"center"}>
+                    <Box display={"flex"} sx={{ border: 1, padding: 2 }}>
+                        <Typography sx={{ pr: 3 }}>???</Typography>
+                        <Typography variant={"h4"} align={"center"} sx={{ pr: 3 }}>
                             Mystery
                         </Typography>
-                        <Typography align={"center"}>
-                            Classic flavors, mystery ingredient. You may like it, or you may not...
-                        </Typography>
-                        <Typography sx={{ position: "absolute", top: 5, left: 20 }}>???</Typography>
-                        <Typography sx={{ position: "absolute", top: 5, right: 20 }}>
-                            ???
-                        </Typography>
-                        <Typography sx={{ position: "absolute", bottom: 5, left: 20 }}>
-                            ???
-                        </Typography>
-                        <Typography sx={{ position: "absolute", bottom: 5, right: 20 }}>
-                            ???
-                        </Typography>
+                        <Typography>???</Typography>
                     </Box>
                 </Grid>
                 <Grid item>
-                    <Box
-                        width={435}
-                        display={"flex"}
-                        flexDirection={"column"}
-                        sx={{ border: 1, padding: 2 }}
-                    >
-                        <Box display={"flex"} justifyContent={"space-between"}>
-                            <Typography variant={"h4"} color={"orange"}>
-                                Peaches
-                            </Typography>
-                            <img src={Peaches} alt={"Peaches"} style={{ width: 50 }} />
-                        </Box>
-                        <Typography>A summer classic, good ole peaches and cream.</Typography>
+                    <Box display={"flex"} sx={{ border: 1, padding: 2 }}>
+                        <Typography variant={"h4"} color={"orange"} sx={{ pr: 2 }}>
+                            Peaches
+                        </Typography>
+                        <img src={Peaches} alt={"Peaches"} style={{ width: 50 }} />
                     </Box>
                 </Grid>
                 <Grid item>
-                    <Box
-                        width={350}
-                        display={"flex"}
-                        flexDirection={"column"}
-                        sx={{ border: 1, padding: 2 }}
-                    >
-                        <Box display={"flex"} justifyContent={"space-between"}>
-                            <Typography variant={"h4"} color={"#54240A"}>
-                                Gooey Brownie
-                            </Typography>
-                            <img src={Brownie} alt={"Brownie"} style={{ width: 50 }} />
-                        </Box>
-                        <Typography>
-                            Soft, gooey, fudgy brownie chunks in a rich chocolate base.
+                    <Box display={"flex"} sx={{ border: 1, padding: 2 }}>
+                        <Typography variant={"h4"} color={"#54240A"} sx={{ pr: 2 }}>
+                            Gooey Brownie
                         </Typography>
+                        <img src={Brownie} alt={"Brownie"} style={{ width: 45 }} />
+                    </Box>
+                </Grid>
+                <Grid item>
+                    <Box display={"flex"} sx={{ border: 1, padding: 2 }}>
+                        <Typography variant={"h4"} color={"orange"} sx={{ pr: 2 }}>
+                            Mango
+                        </Typography>
+                        <img src={Mango} alt={"Mango"} style={{ width: 40, marginBottom: -5 }} />
+                    </Box>
+                </Grid>
+                <Grid item>
+                    <Box display={"flex"} sx={{ border: 1, padding: 2 }}>
+                        <Typography variant={"h4"} color={"yellow"} sx={{ pr: 2 }}>
+                            Lemon Lime
+                        </Typography>
+                        <img src={LemonLime} alt={"LemonLime"} style={{ width: 50 }} />
                     </Box>
                 </Grid>
             </Grid>
@@ -94,7 +76,7 @@ export const CurrentFlavors = () => {
 
 export const Schedule = () => {
     return (
-        <Box>
+        <Box sx={{ paddingTop: 3 }}>
             <Typography sx={{ paddingTop: 5 }} variant="h2">
                 Whats Coming Up...
             </Typography>
@@ -102,125 +84,70 @@ export const Schedule = () => {
                 The following is a list of possible upcoming flavors. Actual availability may vary
                 by seasonal produce and other factors.
             </Typography>
-            <Box display={"flex"} alignItems={"center"} sx={{ paddingTop: 2 }}>
-                <Box
-                    display={"flex"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                    sx={{
-                        border: 1,
-                        padding: 2,
-                        marginRight: 1.5
-                    }}
-                >
-                    <Typography align={"center"} color={"pink"}>
-                        Rose Saffron
-                    </Typography>
-                </Box>
-                <Box
-                    display={"flex"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                    sx={{
-                        border: 1,
-                        padding: 2,
-                        margin: 1.5
-                    }}
-                >
-                    <Typography align={"center"} color={"#0096FF"}>
-                        Blueberry
-                    </Typography>
-                    <Typography sx={{ paddingLeft: 1 }} align={"center"} color={"green"}>
-                        Matcha
-                    </Typography>
-                </Box>
-                <Box
-                    display={"flex"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                    sx={{
-                        border: 1,
-                        padding: 2,
-                        marginLeft: 1.5,
-                        marginRight: 1.5
-                    }}
-                >
-                    <Typography align={"center"} color={"grey"}>
-                        Black Sesame
-                    </Typography>
-                </Box>
-                <Box
-                    display={"flex"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                    sx={{
-                        border: 1,
-                        padding: 2,
-                        marginLeft: 1.5,
-                        marginRight: 1.5
-                    }}
-                >
-                    <Typography align={"center"} color={"brown"}>
-                        Mexican Hot Chocolate
-                    </Typography>
-                </Box>
-                <Box
-                    display={"flex"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                    sx={{
-                        border: 1,
-                        padding: 2,
-                        marginLeft: 1.5,
-                        marginRight: 1.5
-                    }}
-                >
-                    <Typography align={"center"} color={"purple"}>
-                        Taro
-                    </Typography>
-                </Box>
-                <Box
-                    display={"flex"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                    sx={{
-                        border: 1,
-                        padding: 2,
-                        marginLeft: 1.5,
-                        marginRight: 1.5
-                    }}
-                >
-                    <Typography align={"center"} color={"greenyellow"}>
-                        Pandan
-                    </Typography>
-                </Box>
-                <Box
-                    display={"flex"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                    sx={{
-                        border: 1,
-                        padding: 2,
-                        marginLeft: 1.5,
-                        marginRight: 1.5
-                    }}
-                >
-                    <Typography align={"center"}>Chestnut</Typography>
-                </Box>
-                <Box
-                    display={"flex"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                    sx={{
-                        border: 1,
-                        padding: 2,
-                        marginLeft: 1.5,
-                        marginRight: 1.5
-                    }}
-                >
-                    <Typography align={"center"}>???</Typography>
-                </Box>
-            </Box>
+            <Grid container spacing={3} sx={{ paddingTop: 2 }}>
+                <Grid item>
+                    <Box display={"flex"} sx={{ border: 1, padding: 2 }}>
+                        <Typography align={"center"} color={"purple"}>
+                            Lavender
+                        </Typography>
+                    </Box>
+                </Grid>
+                <Grid item>
+                    <Box display={"flex"} sx={{ border: 1, padding: 2 }}>
+                        <Typography align={"center"} color={"pink"}>
+                            Rose Saffron
+                        </Typography>
+                    </Box>
+                </Grid>
+                <Grid item>
+                    <Box display={"flex"} sx={{ border: 1, padding: 2 }}>
+                        <Typography align={"center"} color={"#0096FF"}>
+                            Blueberry
+                        </Typography>
+                        <Typography sx={{ paddingLeft: 1 }} align={"center"} color={"green"}>
+                            Matcha
+                        </Typography>
+                    </Box>
+                </Grid>
+                <Grid item>
+                    <Box display={"flex"} sx={{ border: 1, padding: 2 }}>
+                        <Typography align={"center"} color={"grey"}>
+                            Black Sesame
+                        </Typography>
+                    </Box>
+                </Grid>
+                <Grid item>
+                    <Box display={"flex"} sx={{ border: 1, padding: 2 }}>
+                        <Typography align={"center"} color={"brown"}>
+                            Mexican Hot Chocolate
+                        </Typography>
+                    </Box>
+                </Grid>
+                <Grid item>
+                    <Box display={"flex"} sx={{ border: 1, padding: 2 }}>
+                        <Typography align={"center"} color={"purple"}>
+                            Taro
+                        </Typography>
+                    </Box>
+                </Grid>
+                <Grid item>
+                    <Box display={"flex"} sx={{ border: 1, padding: 2 }}>
+                        <Typography align={"center"} color={"greenyellow"}>
+                            Pandan
+                        </Typography>
+                    </Box>
+                </Grid>
+                <Grid item>
+                    <Box display={"flex"} sx={{ border: 1, padding: 2 }}>
+                        <Typography align={"center"}>Chestnut</Typography>
+                    </Box>
+                </Grid>
+                <Grid item>
+                    <Box display={"flex"} sx={{ border: 1, padding: 2 }}>
+                        <Typography align={"center"}>???</Typography>
+                    </Box>
+                </Grid>
+            </Grid>
         </Box>
     );
 };
