@@ -4,6 +4,7 @@ import Peaches from "../../assets/images/peaches.png";
 import Brownie from "../../assets/images/brownie.png";
 import Mango from "../../assets/images/mango.png";
 import LemonLime from "../../assets/images/lemon-lime.png";
+import Strawberry from "../../assets/images/strawberry.png";
 
 const IceCream = () => {
     return (
@@ -69,6 +70,14 @@ export const CurrentFlavors = () => {
                         <img src={LemonLime} alt={"LemonLime"} style={{ width: 50 }} />
                     </Box>
                 </Grid>
+                <Grid item>
+                    <Box display={"flex"} sx={{ border: 1, padding: 2 }}>
+                        <Typography variant={"h4"} color={"red"} sx={{ pr: 2 }}>
+                            Strawberry
+                        </Typography>
+                        <img src={Strawberry} alt={"LemonLime"} style={{ width: 50 }} />
+                    </Box>
+                </Grid>
             </Grid>
         </Box>
     );
@@ -88,7 +97,7 @@ export const Schedule = () => {
                 <Grid item>
                     <Box display={"flex"} sx={{ border: 1, padding: 2 }}>
                         <Typography align={"center"} color={"purple"}>
-                            Lavender
+                            Honey Lavender
                         </Typography>
                     </Box>
                 </Grid>
