@@ -2,9 +2,7 @@ import { Box, Grid, Typography } from "@mui/material";
 
 import Peaches from "../../assets/images/peaches.png";
 import Brownie from "../../assets/images/brownie.png";
-import Mango from "../../assets/images/mango.png";
 import LemonLime from "../../assets/images/lemon-lime.png";
-import Strawberry from "../../assets/images/strawberry.png";
 
 const IceCream = () => {
     return (
@@ -31,35 +29,9 @@ export const CurrentFlavors = () => {
             <Grid container spacing={3} sx={{ paddingTop: 2 }}>
                 <Grid item>
                     <Box display={"flex"} sx={{ border: 1, padding: 2 }}>
-                        <Typography sx={{ pr: 3 }}>???</Typography>
-                        <Typography variant={"h4"} align={"center"} sx={{ pr: 3 }}>
-                            Mystery
+                        <Typography align={"center"} color={"purple"}>
+                            Honey Lavender
                         </Typography>
-                        <Typography>???</Typography>
-                    </Box>
-                </Grid>
-                <Grid item>
-                    <Box display={"flex"} sx={{ border: 1, padding: 2 }}>
-                        <Typography variant={"h4"} color={"orange"} sx={{ pr: 2 }}>
-                            Peaches
-                        </Typography>
-                        <img src={Peaches} alt={"Peaches"} style={{ width: 50 }} />
-                    </Box>
-                </Grid>
-                <Grid item>
-                    <Box display={"flex"} sx={{ border: 1, padding: 2 }}>
-                        <Typography variant={"h4"} color={"#54240A"} sx={{ pr: 2 }}>
-                            Gooey Brownie
-                        </Typography>
-                        <img src={Brownie} alt={"Brownie"} style={{ width: 45 }} />
-                    </Box>
-                </Grid>
-                <Grid item>
-                    <Box display={"flex"} sx={{ border: 1, padding: 2 }}>
-                        <Typography variant={"h4"} color={"orange"} sx={{ pr: 2 }}>
-                            Mango
-                        </Typography>
-                        <img src={Mango} alt={"Mango"} style={{ width: 40, marginBottom: -5 }} />
                     </Box>
                 </Grid>
                 <Grid item>
@@ -72,12 +44,30 @@ export const CurrentFlavors = () => {
                 </Grid>
                 <Grid item>
                     <Box display={"flex"} sx={{ border: 1, padding: 2 }}>
-                        <Typography variant={"h4"} color={"red"} sx={{ pr: 2 }}>
-                            Strawberry
+                        <Typography variant={"h4"} color={"orange"} sx={{ pr: 2 }}>
+                            Peaches
                         </Typography>
-                        <img src={Strawberry} alt={"LemonLime"} style={{ width: 50 }} />
+                        <img src={Peaches} alt={"Peaches"} style={{ width: 50 }} />
                     </Box>
                 </Grid>
+                <Grid item>
+                    <Box display={"flex"} sx={{ border: 1, padding: 2 }}>
+                        <Typography sx={{ pr: 3 }}>???</Typography>
+                        <Typography variant={"h4"} align={"center"} sx={{ pr: 3 }}>
+                            Mystery
+                        </Typography>
+                        <Typography>???</Typography>
+                    </Box>
+                </Grid>
+                <Grid item>
+                    <Box display={"flex"} sx={{ border: 1, padding: 2 }}>
+                        <Typography variant={"h4"} color={"#54240A"} sx={{ pr: 2 }}>
+                            Gooey Brownie
+                        </Typography>
+                        <img src={Brownie} alt={"Brownie"} style={{ width: 45 }} />
+                    </Box>
+                </Grid>
+                
             </Grid>
         </Box>
     );
@@ -94,13 +84,6 @@ export const Schedule = () => {
                 by seasonal produce and other factors.
             </Typography>
             <Grid container spacing={3} sx={{ paddingTop: 2 }}>
-                <Grid item>
-                    <Box display={"flex"} sx={{ border: 1, padding: 2 }}>
-                        <Typography align={"center"} color={"purple"}>
-                            Honey Lavender
-                        </Typography>
-                    </Box>
-                </Grid>
                 <Grid item>
                     <Box display={"flex"} sx={{ border: 1, padding: 2 }}>
                         <Typography align={"center"} color={"pink"}>
@@ -153,7 +136,9 @@ export const Schedule = () => {
                 </Grid>
                 <Grid item>
                     <Box display={"flex"} sx={{ border: 1, padding: 2 }}>
-                        <Typography align={"center"}>???</Typography>
+                        <Typography variant={"h4"} color={"red"}>
+                            Strawberry
+                        </Typography>
                     </Box>
                 </Grid>
             </Grid>

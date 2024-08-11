@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Link, Outlet, useMatch } from "react-router-dom";
 
 import { Avatar, Box, Paper } from "@mui/material";
