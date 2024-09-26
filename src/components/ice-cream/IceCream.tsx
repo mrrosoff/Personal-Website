@@ -34,8 +34,11 @@ export const CurrentFlavors = () => {
                 </Grid>
                 <Grid item>
                     <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
-                        <Typography align={"center"} color={"yellow"}>
-                            Lemon Lime
+                        <Typography align={"center"} color={"white"}>
+                            Goat Cheese +
+                        </Typography>
+                        <Typography sx={{ paddingLeft: 1 }} align={"center"} color={"blue"}>
+                            Blueberry Habanero
                         </Typography>
                     </Box>
                 </Grid>
@@ -45,36 +48,6 @@ export const CurrentFlavors = () => {
                             Peaches
                         </Typography>
                         <img src={Peaches} alt={"Peaches"} style={{ width: 50 }} />
-                    </Box>
-                </Grid>
-                <Grid item>
-                    <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
-                        <Typography sx={{ pr: 3 }}>???</Typography>
-                        <Typography align={"center"} sx={{ pr: 3 }}>
-                            Mystery
-                        </Typography>
-                        <Typography>???</Typography>
-                    </Box>
-                </Grid>
-
-                <Grid item>
-                    <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
-                        <Typography align={"center"} color={"#0096FF"}>
-                            Blueberry
-                        </Typography>
-                        <Typography sx={{ paddingLeft: 1 }} align={"center"} color={"green"}>
-                            Matcha
-                        </Typography>
-                    </Box>
-                </Grid>
-                <Grid item>
-                    <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
-                        <Typography align={"center"} color={"white"}>
-                            Goat Cheese +
-                        </Typography>
-                        <Typography sx={{ paddingLeft: 1 }} align={"center"} color={"blue"}>
-                            Blueberry Habanero
-                        </Typography>
                     </Box>
                 </Grid>
             </Grid>
@@ -95,8 +68,36 @@ export const Schedule = () => {
             <Grid container spacing={3} sx={{ paddingTop: 3 }}>
                 <Grid item>
                     <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
+                        <Typography align={"center"} color={"gold"}>
+                            Chocolate Waffle
+                        </Typography>
+                    </Box>
+                </Grid>
+                <Grid item>
+                    <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
+                        <Typography align={"center"} color={"grey"}>
+                            Essense Of Ghost
+                        </Typography>
+                    </Box>
+                </Grid>
+                <Grid item>
+                    <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
+                        <Typography align={"center"} color={"lightgreen"}>
+                            Caramel Apple
+                        </Typography>
+                    </Box>
+                </Grid>
+                <Grid item>
+                    <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
                         <Typography align={"center"} color={"pink"}>
                             Rose Saffron
+                        </Typography>
+                    </Box>
+                </Grid>
+                <Grid item>
+                    <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
+                        <Typography align={"center"} color={"maroon"}>
+                            Sinister Potion
                         </Typography>
                     </Box>
                 </Grid>
@@ -116,8 +117,8 @@ export const Schedule = () => {
                 </Grid>
                 <Grid item>
                     <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
-                        <Typography align={"center"} color={"purple"}>
-                            Taro
+                        <Typography align={"center"} color={"green"}>
+                            Lychee
                         </Typography>
                     </Box>
                 </Grid>
@@ -130,7 +131,7 @@ export const Schedule = () => {
                 </Grid>
                 <Grid item>
                     <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
-                        <Typography align={"center"}>Chestnut</Typography>
+                        <Typography align={"center"}>Black Milk Tea Boba</Typography>
                     </Box>
                 </Grid>
                 <Grid item>
