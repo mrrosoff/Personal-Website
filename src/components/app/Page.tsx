@@ -1,37 +1,29 @@
 import { useState } from "react";
-import { Link, Outlet, useMatch } from "react-router-dom";
+import { Link, useMatch } from "react-router-dom";
 
-import { Avatar, Box, Paper } from "@mui/material";
+import { Avatar, Box, Paper, useMediaQuery, useTheme } from "@mui/material";
 
 import { DesktopSocialButtonList } from "./SocialButtons";
 import BootUp from "./desktop/BootUp";
 import TerminalEmbed from "./desktop/TerminalEmbed";
 
 import Profile from "../../assets/images/profile.jpg";
+import MobileLayout from "./MobileLayout";
 
-const DesktopLayout = (props: { inputRef: { current: { focus: () => any } } }) => {
-    return (
-        <Box width={"100vw"} height={"100vh"}>
-            <Box
-                sx={{ p: 8, width: "100%", height: "100%", overflow: "hidden" }}
-                onClick={() => props.inputRef.current && props.inputRef.current.focus()}
-            >
-                <LinksAndMenu />
-                <Box sx={{ width: "100%", height: "100%", overflowY: "scroll" }}>
-                    <Outlet />
-                </Box>
-            </Box>
-        </Box>
-    );
-};
+const Page = (props: any) => {
+    const theme = useTheme();
+    const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
-export const Page = (props: any) => {
     const [bootingUp, setBootingUp] = useState(import.meta.env.PROD);
 
     const creationDate = new Date();
     creationDate.setMinutes(creationDate.getMinutes() - 8);
     creationDate.setHours(creationDate.getHours() - 2);
     creationDate.setDate(creationDate.getDate() - 5);
+
+    if (smallScreen) {
+        return <MobileLayout />;
+    }
 
     if (bootingUp) {
         return <BootUp setBootingUp={setBootingUp} creationDate={creationDate.toString()} />;
@@ -40,7 +32,7 @@ export const Page = (props: any) => {
     return <TerminalEmbed ref={props.inputRef} />;
 };
 
-const LinksAndMenu = (props: any) => {
+export const LinksAndMenu = (props: any) => {
     const [open, setOpen] = useState(false);
     return (
         <Box sx={{ position: "relative" }}>
@@ -98,4 +90,4 @@ const Links = (props: any) => {
     );
 };
 
-export default DesktopLayout;
+export default Page;
