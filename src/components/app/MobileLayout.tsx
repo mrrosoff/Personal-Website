@@ -1,6 +1,6 @@
 import { Avatar, Grid2 as Grid } from "@mui/material";
 
-import Profile from "../../assets/images/profile.jpg";
+import SmallProfile from "../../assets/images/small-profile.webp";
 import { MobileSocialButtonList } from "./SocialButtons";
 
 const MobileLayout = () => {
@@ -22,7 +22,7 @@ const MobileLayout = () => {
                 alignContent={"center"}
             >
                 <Grid>
-                    <Avatar alt="Max Rosoff" src={Profile} sx={{ width: 200, height: 200 }} />
+                    <Avatar alt="Max Rosoff" src={SmallProfile} sx={{ width: 200, height: 200 }} />
                 </Grid>
                 <Grid>
                     <MobileSocialButtonList />

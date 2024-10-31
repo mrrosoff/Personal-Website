@@ -7,7 +7,7 @@ import { DesktopSocialButtonList } from "./SocialButtons";
 import BootUp from "./desktop/BootUp";
 import TerminalEmbed from "./desktop/TerminalEmbed";
 
-import Profile from "../../assets/images/profile.jpg";
+import SmallProfile from "../../assets/images/small-profile.webp";
 import MobileLayout from "./MobileLayout";
 
 const Page = (props: any) => {
@@ -46,7 +46,7 @@ export const LinksAndMenu = (props: any) => {
             </Box>
             <Avatar
                 alt="Max Rosoff"
-                src={Profile}
+                src={SmallProfile}
                 onClick={() => setOpen(!open)}
                 style={{
                     width: 55,
