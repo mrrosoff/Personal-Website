@@ -50,29 +50,15 @@ export const CurrentFlavors = () => {
             >
                 <Grid display={"flex"} justifyContent={"center"}>
                     <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
-                        <Typography align={"center"} color={"gold"}>
-                            🍫 Chocolate Waffle 🧇
+                        <Typography align={"center"} color={"green"}>
+                            Chestnut Thyme 🌿
                         </Typography>
                     </Box>
                 </Grid>
                 <Grid display={"flex"} justifyContent={"center"}>
                     <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
-                        <Typography align={"center"} color={"grey"}>
-                            👻 Ghostly Presence 😱
-                        </Typography>
-                    </Box>
-                </Grid>
-                <Grid display={"flex"} justifyContent={"center"}>
-                    <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
-                        <Typography align={"center"} color={"lightgreen"}>
-                            🍏 Caramel Apple 🍎
-                        </Typography>
-                    </Box>
-                </Grid>
-                <Grid display={"flex"} justifyContent={"center"}>
-                    <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
-                        <Typography align={"center"} color={"maroon"}>
-                            ❤️ Love Potion 💖
+                        <Typography align={"center"} color={"chocolate"}>
+                            🌰 Chestnut's Roasting...
                         </Typography>
                     </Box>
                 </Grid>
@@ -109,16 +95,16 @@ export const LastBatch = () => {
                     </Box>
                 </Grid>
                 <Grid display={"flex"} justifyContent={"center"}>
-                    <Box
-                        display={"flex"}
-                        alignItems={"center"}
-                        sx={{ border: 1, padding: 2.5, borderRadius: 1 }}
-                    >
-                        <Typography align={"center"} color={"white"}>
-                            🧀 Goat Cheese +
+                    <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
+                        <Typography align={"center"} color={"grey"}>
+                            👻 Ghostly Presence 😱
                         </Typography>
-                        <Typography sx={{ paddingLeft: 1 }} align={"center"} color={"blue"}>
-                            Blueberry Habanero 🌶️
+                    </Box>
+                </Grid>
+                <Grid display={"flex"} justifyContent={"center"}>
+                    <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
+                        <Typography align={"center"} color={"maroon"}>
+                            ❤️ Love Potion 💖
                         </Typography>
                     </Box>
                 </Grid>
@@ -148,13 +134,6 @@ export const Schedule = () => {
                 direction={smallScreen ? "column" : undefined}
                 sx={{ paddingTop: smallScreen ? 4 : 2 }}
             >
-                <Grid display={"flex"} justifyContent={"center"}>
-                    <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
-                        <Typography align={"center"} color={"pink"}>
-                            🌰 Chestnut
-                        </Typography>
-                    </Box>
-                </Grid>
                 <Grid display={"flex"} justifyContent={"center"}>
                     <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
                         <Typography align={"center"} color={"pink"}>
