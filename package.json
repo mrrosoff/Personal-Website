@@ -11,9 +11,9 @@
     "dependencies": {
         "@emotion/react": "^11.14.0",
         "@emotion/styled": "^11.14.0",
-        "@mui/icons-material": "^6.3.0",
-        "@mui/lab": "^6.0.0-beta.21",
-        "@mui/material": "^6.3.0",
+        "@mui/icons-material": "^6.3.1",
+        "@mui/lab": "^6.0.0-beta.22",
+        "@mui/material": "^6.3.1",
         "get-options": "^1.2.0",
         "luxon": "^3.5.0",
         "react": "^19.0.0",
@@ -26,8 +26,8 @@
         "@types/react": "^19.0.2",
         "@types/react-dom": "^19.0.2",
         "@vitejs/plugin-react": "^4.3.4",
-        "sass": "^1.83.0",
+        "sass": "^1.83.1",
         "typescript": "^5.7.2",
-        "vite": "^6.0.5"
+        "vite": "^6.0.7"
     }
 }
