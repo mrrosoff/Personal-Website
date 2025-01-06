@@ -150,6 +150,13 @@ export const Schedule = () => {
             >
                 <Grid display={"flex"} justifyContent={"center"}>
                     <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
+                        <Typography align={"center"} color={"lightgreen"}>
+                            Pistachio
+                        </Typography>
+                    </Box>
+                </Grid>
+                <Grid display={"flex"} justifyContent={"center"}>
+                    <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
                         <Typography align={"center"} color={"yellow"}>
                             Lemon Sorbet 🍋‍🟩
                         </Typography>
