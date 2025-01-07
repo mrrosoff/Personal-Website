@@ -58,7 +58,7 @@ export const CurrentFlavors = () => {
                 <Grid display={"flex"} justifyContent={"center"}>
                     <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
                         <Typography align={"center"} color={"pink"}>
-                            🌹 Rose Saffron
+                            🌹 Persian Petals
                         </Typography>
                     </Box>
                 </Grid>
