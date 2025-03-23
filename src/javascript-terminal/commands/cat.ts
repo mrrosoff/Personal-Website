@@ -4,7 +4,7 @@ import * as FileOp from "../fs/operations/file-operations";
 
 export const optDef = {};
 
-const functionDef = (state: any, commandOptions: any) => {
+const functionDef = (state: any, commandOptions: string[]) => {
 	const { options, argv } = parseOptions(commandOptions, optDef);
 
 	if (argv.length === 0) {

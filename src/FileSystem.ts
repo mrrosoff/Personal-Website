@@ -2,13 +2,13 @@ import { DateTime } from "luxon";
 
 type FileType = "-" | "d" | "l";
 
-interface FileSystem {
-    [name: string]: {
-        type: FileType;
-        permissions: string;
-        contents: FileSystem | string;
-    };
-}
+export type File = {
+    type: FileType;
+    permissions: string;
+    contents: FileSystem | string;
+};
+
+export type FileSystem = Record<string, File>;
 
 const date = DateTime.now();
 const files: FileSystem = {

@@ -12,7 +12,7 @@ const substituteEnvVariables = (environmentVariables: { [x: string]: any; }, inp
 
 export const optDef = {};
 
-const functionDef = (state: { getEnvVariables: () => { [x: string]: any; }; }, commandOptions: any[]) => {
+const functionDef = (state: { getEnvVariables: () => { [x: string]: any; }; }, commandOptions: string[]) => {
 	const { options, argv } = parseOptions(commandOptions, optDef);
 
 	try {

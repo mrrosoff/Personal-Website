@@ -50,25 +50,26 @@ export const CurrentFlavors = () => {
             >
                 <Grid display={"flex"} justifyContent={"center"}>
                     <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
-                        <Typography align={"center"} color={"chocolate"}>
-                            Mexican Hot Chocolate ☕
+                        <Typography align={"center"} color={"orange"}>
+                            Orange Creamsicle 🍊
                         </Typography>
                     </Box>
                 </Grid>
                 <Grid display={"flex"} justifyContent={"center"}>
                     <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
-                        <Typography align={"center"} color={"pink"}>
-                            🌹 Persian Petals
+                        <Typography align={"center"} color={"brown"}>
+                            Chocolate Gooey Brownie 🍫
                         </Typography>
                     </Box>
                 </Grid>
                 <Grid display={"flex"} justifyContent={"center"}>
                     <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
-                        <Typography align={"center"} color={"grey"}>
-                            Black Sesame / Green Tea 🍵
+                        <Typography align={"center"} color={"yellow"}>
+                            Pina Colada 🍍
                         </Typography>
                     </Box>
                 </Grid>
+                
             </Grid>
         </Box>
     );
@@ -94,6 +95,20 @@ export const LastBatch = () => {
                 direction={smallScreen ? "column" : undefined}
                 sx={{ paddingTop: smallScreen ? 4 : 2 }}
             >
+                <Grid display={"flex"} justifyContent={"center"}>
+                    <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
+                        <Typography align={"center"} color={"chocolate"}>
+                            Mexican Hot Chocolate ☕
+                        </Typography>
+                    </Box>
+                </Grid>
+                <Grid display={"flex"} justifyContent={"center"}>
+                    <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
+                        <Typography align={"center"} color={"pink"}>
+                            🌹 Persian Petals
+                        </Typography>
+                    </Box>
+                </Grid>
                 <Grid display={"flex"} justifyContent={"center"}>
                     <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
                         <Typography align={"center"} color={"lightgrey"}>
@@ -177,13 +192,6 @@ export const Schedule = () => {
                 <Grid display={"flex"} justifyContent={"center"}>
                     <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
                         <Typography align={"center"}>Black Milk Tea Boba 🧋</Typography>
-                    </Box>
-                </Grid>
-                <Grid display={"flex"} justifyContent={"center"}>
-                    <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
-                        <Typography align={"center"} color={"green"}>
-                            🌿 Pandan
-                        </Typography>
                     </Box>
                 </Grid>
             </Grid>

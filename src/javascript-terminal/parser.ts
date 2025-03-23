@@ -1,7 +1,7 @@
 import getOpts from "get-options";
 
-export const parseOptions = (commandOptions: string[], optDef: any) =>
-	getOpts(commandOptions, optDef, { noAliasPropagation: "first-only" });
+export const parseOptions = (commandOptions: string[], optDef: string | Record<string, string>) =>
+    getOpts(commandOptions, optDef, { noAliasPropagation: "first-only" });
 
 const removeExcessWhiteSpace = (str: string) => str.trim().replace(/\s\s+/g, " ");
 const toCommandParts = (command: string) => removeExcessWhiteSpace(command).split(/\s/);
