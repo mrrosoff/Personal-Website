@@ -4,9 +4,9 @@
     "description": "My Personal Website",
     "scripts": {
         "clean": "rm -rf coverage dist",
-        "checkFormat": "prettier --check \"src/**/*.ts\"",
-        "format": "prettier --write \"src/**/*.ts\"",
-        "lint": "eslint \"src/**/*.ts\"",
+        "checkFormat": "prettier --check \"src/**/*.ts*\"",
+        "format": "prettier --write \"src/**/*.ts*\"",
+        "lint": "eslint \"src/**/*.ts*\"",
         "start": "vite",
         "build": "vite build"
     },

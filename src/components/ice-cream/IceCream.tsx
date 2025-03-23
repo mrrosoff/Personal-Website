@@ -104,13 +104,6 @@ export const LastBatch = () => {
                 </Grid>
                 <Grid display={"flex"} justifyContent={"center"}>
                     <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
-                        <Typography align={"center"} color={"pink"}>
-                            🌹 Persian Petals
-                        </Typography>
-                    </Box>
-                </Grid>
-                <Grid display={"flex"} justifyContent={"center"}>
-                    <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
                         <Typography align={"center"} color={"lightgrey"}>
                             👻 Ghostly Presence 😱
                         </Typography>
@@ -120,13 +113,6 @@ export const LastBatch = () => {
                     <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
                         <Typography align={"center"} color={"maroon"}>
                             ❤️ Love Potion 💖
-                        </Typography>
-                    </Box>
-                </Grid>
-                <Grid display={"flex"} justifyContent={"center"}>
-                    <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
-                        <Typography align={"center"} color={"green"}>
-                            Chestnut Thyme 🌿
                         </Typography>
                     </Box>
                 </Grid>
