@@ -1,4 +1,4 @@
-import { Avatar, Grid2 as Grid } from "@mui/material";
+import { Avatar, Grid } from "@mui/material";
 
 import SmallProfile from "../../assets/images/small-profile.webp";
 import { MobileSocialButtonList } from "./SocialButtons";

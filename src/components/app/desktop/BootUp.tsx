@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Box, Grid2 as Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 
 import Logo from "../../../assets/images/logo.webp";
 
@@ -145,17 +145,15 @@ const SystemInfo = (props: any) => {
                             </Grid>
                             <Grid>
                                 <Typography>
-                                    {props.state === 6
-                                        ? "20KB"
-                                        : props.state === 7
-                                        ? "87KB"
-                                        : props.state === 8
-                                        ? "173KB"
-                                        : props.state === 9
-                                        ? "837KM"
-                                        : props.state === 10
-                                        ? "1.1MB"
-                                        : "2.0MB"}
+                                    {
+                                        // prettier-ignore
+                                        props.state === 6 ? "20KB" : 
+                                        props.state === 7 ? "87KB" :
+                                        props.state === 8 ? "173KB" : 
+                                        props.state === 9 ? "837KM" : 
+                                        props.state === 10 ? "1.1MB" : 
+                                        "2.0MB"
+                                    }
                                 </Typography>
                             </Grid>
                         </Grid>

@@ -67,8 +67,8 @@ const Terminal = (props: any, ref: any) => {
             setShowMOTD(false);
         }
         return emulatorState.getOutputs().map((content: any, key: any) => (
-            <Grid item key={key} container direction={"column"}>
-                <Grid item>
+            <Grid key={key} container direction={"column"}>
+                <Grid>
                     <OutputHeader cwd={content.cwd} {...props}>
                         {content.command}
                     </OutputHeader>
@@ -76,19 +76,15 @@ const Terminal = (props: any, ref: any) => {
                 {content.output.map((output: any, key: any) => {
                     if (output.type === "error") {
                         return (
-                            <Grid item key={key}>
+                            <Grid key={key}>
                                 <OutputError {...props}>{output.output}</OutputError>
                             </Grid>
                         );
                     } else if (output.type === "react") {
-                        return (
-                            <Grid item key={key}>
-                                {output.output}
-                            </Grid>
-                        );
+                        return <Grid key={key}>{output.output}</Grid>;
                     } else {
                         return (
-                            <Grid item key={key}>
+                            <Grid key={key}>
                                 <OutputText {...props}>{output.output}</OutputText>
                             </Grid>
                         );
@@ -102,7 +98,7 @@ const Terminal = (props: any, ref: any) => {
 
     const MOTDText = `
 		Welcome To Rosoff OS BETA v4.1.2
-			* Documentation: ~https://github.com/mrrosoff~
+			* Documentation: ~https://github.com/mrrosoff/Personal-Website~
 			* Management: ~https://linkedin.com/in/max-rosoff~
 			* Support: me@maxrosoff.com
 		0 packages can be updated.
@@ -157,7 +153,7 @@ const Terminal = (props: any, ref: any) => {
             )}
             <Grid container direction={"column"} justifyContent={"flex-start"} spacing={1}>
                 {outputs}
-                <Grid item key={outputs.length}>
+                <Grid key={outputs.length}>
                     <CommandInput
                         ref={ref}
                         value={input}

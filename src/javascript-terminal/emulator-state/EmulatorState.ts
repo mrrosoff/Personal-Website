@@ -10,80 +10,80 @@ const OUTPUTS_KEY = "outputs";
 const COMMAND_MAPPING_KEY = "commandMapping";
 
 export default class EmulatorState {
-	constructor(state: any) {
-		if (!state) throw Error("Do Not Use Constructor Directly. Use create Method");
-		this.state = state;
-	}
+    constructor(state: any) {
+        if (!state) throw Error("Do Not Use Constructor Directly. Use create Method");
+        this.state = state;
+    }
 
-	static create({
-		tabCount = 0,
-		fs = { "/": FileUtil.makeEmptyDirectory() },
-		environmentVariables = { cwd: "/" },
-		history = [],
-		outputs = [],
-		commandMapping = createCommandMapping()
-	}) {
-		const stateMap = {
-			[TAB_COUNT_KEY]: tabCount,
-			[FS_KEY]: fs,
-			[ENVIRONMENT_VARIABLES_KEY]: environmentVariables,
-			[HISTORY_KEY]: history,
-			[OUTPUTS_KEY]: outputs,
-			[COMMAND_MAPPING_KEY]: commandMapping
-		};
+    static create({
+        tabCount = 0,
+        fs = { "/": FileUtil.makeEmptyDirectory() },
+        environmentVariables = { cwd: "/" },
+        history = [],
+        outputs = [],
+        commandMapping = createCommandMapping()
+    }) {
+        const stateMap = {
+            [TAB_COUNT_KEY]: tabCount,
+            [FS_KEY]: fs,
+            [ENVIRONMENT_VARIABLES_KEY]: environmentVariables,
+            [HISTORY_KEY]: history,
+            [OUTPUTS_KEY]: outputs,
+            [COMMAND_MAPPING_KEY]: commandMapping
+        };
 
-		return new EmulatorState(stateMap);
-	}
+        return new EmulatorState(stateMap);
+    }
 
-	getTabCount() {
-		return this.state[TAB_COUNT_KEY];
-	}
+    getTabCount() {
+        return this.state[TAB_COUNT_KEY];
+    }
 
-	setTabCount(newTabCount: number) {
-		this.state[TAB_COUNT_KEY] = newTabCount;
-	}
+    setTabCount(newTabCount: number) {
+        this.state[TAB_COUNT_KEY] = newTabCount;
+    }
 
-	getFileSystem() {
-		return this.state[FS_KEY];
-	}
+    getFileSystem() {
+        return this.state[FS_KEY];
+    }
 
-	setFileSystem(newFileSystem: any) {
-		this.state[FS_KEY] = newFileSystem;
-	}
+    setFileSystem(newFileSystem: any) {
+        this.state[FS_KEY] = newFileSystem;
+    }
 
-	getEnvVariables() {
-		return this.state[ENVIRONMENT_VARIABLES_KEY];
-	}
+    getEnvVariables() {
+        return this.state[ENVIRONMENT_VARIABLES_KEY];
+    }
 
-	setEnvVariables(newEnvVariables) {
-		this.state[ENVIRONMENT_VARIABLES_KEY] = newEnvVariables;
-	}
+    setEnvVariables(newEnvVariables) {
+        this.state[ENVIRONMENT_VARIABLES_KEY] = newEnvVariables;
+    }
 
-	getHistory() {
-		return this.state[HISTORY_KEY];
-	}
+    getHistory() {
+        return this.state[HISTORY_KEY];
+    }
 
-	setHistory(newHistory: any) {
-		this.state[HISTORY_KEY] = newHistory;
-	}
+    setHistory(newHistory: any) {
+        this.state[HISTORY_KEY] = newHistory;
+    }
 
-	getOutputs() {
-		return this.state[OUTPUTS_KEY];
-	}
+    getOutputs() {
+        return this.state[OUTPUTS_KEY];
+    }
 
-	setOutputs(newOutputs: any) {
-		this.state[OUTPUTS_KEY] = newOutputs;
-	}
+    setOutputs(newOutputs: any) {
+        this.state[OUTPUTS_KEY] = newOutputs;
+    }
 
-	getCommandMapping() {
-		return this.state[COMMAND_MAPPING_KEY];
-	}
+    getCommandMapping() {
+        return this.state[COMMAND_MAPPING_KEY];
+    }
 
-	setCommandMapping(newCommandMapping: any) {
-		this.state[COMMAND_MAPPING_KEY] = newCommandMapping;
-	}
+    setCommandMapping(newCommandMapping: any) {
+        this.state[COMMAND_MAPPING_KEY] = newCommandMapping;
+    }
 }
 
 export const relativeToAbsolutePath = (state: any, path: string) => {
-	return PathUtil.toAbsolutePath(path, state.getEnvVariables().cwd);
+    return PathUtil.toAbsolutePath(path, state.getEnvVariables().cwd);
 };

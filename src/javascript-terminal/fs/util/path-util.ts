@@ -1,5 +1,5 @@
 export const isTrailingPath = (path: string) => {
-	return path.endsWith("/") && path !== "/";
+    return path.endsWith("/") && path !== "/";
 };
 
 export const removeTrailingSeparator = (path: string) => {
@@ -74,13 +74,13 @@ export const toAbsolutePath = (relativePath: string, cwd: string) => {
 };
 
 export default {
-	isTrailingPath,
-	removeTrailingSeparator,
-	isAbsolutePath,
-	isRelativePath,
-	toPathParts,
-	toPath,
-	getPathParent,
-	getLastPathPart,
-	toAbsolutePath
+    isTrailingPath,
+    removeTrailingSeparator,
+    isAbsolutePath,
+    isRelativePath,
+    toPathParts,
+    toPath,
+    getPathParent,
+    getLastPathPart,
+    toAbsolutePath
 };

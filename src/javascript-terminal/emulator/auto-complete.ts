@@ -3,40 +3,40 @@ import { getCommandNames, getCommandOptDef, isCommandSet } from "../emulator-sta
 import { fsSearchAutoComplete } from "../fs/operations/base-operations";
 
 export const suggestCommands = (cmdMapping: any, partialStr: string) => {
-	const commandNameSeq = getCommandNames(cmdMapping);
-	return commandNameSeq.filter((cmd) => partialStr === cmd.substr(0, partialStr.length));
+    const commandNameSeq = getCommandNames(cmdMapping);
+    return commandNameSeq.filter((cmd) => partialStr === cmd.substr(0, partialStr.length));
 };
 
 export const suggestCommandOptions = (cmdMapping: any, commandName: string, partialStr: string) => {
-	if (!isCommandSet(cmdMapping, commandName)) {
-		return [];
-	}
+    if (!isCommandSet(cmdMapping, commandName)) {
+        return [];
+    }
 
-	const optDefSeq = Object.keys(getCommandOptDef(cmdMapping, commandName)).flatMap((opts) =>
-		opts.split(",").map((opt) => opt.trim())
-	);
-	return optDefSeq.filter((option) => partialStr === option.substr(0, partialStr.length));
+    const optDefSeq = Object.keys(getCommandOptDef(cmdMapping, commandName)).flatMap((opts) =>
+        opts.split(",").map((opt) => opt.trim())
+    );
+    return optDefSeq.filter((option) => partialStr === option.substr(0, partialStr.length));
 };
 
 export const suggestFileSystemNames = (fs: any, cwd: string, partialStr: string) => {
-	const path = PathUtil.toAbsolutePath(partialStr, cwd);
-	const fsPart = fsSearchAutoComplete(fs, path);
-	return Object.keys(fsPart)
-		.filter((suggestion) => {
-			if (partialStr.endsWith("/")) return true;
-			return (
-				PathUtil.getLastPathPart(path, false).toLowerCase() ===
-				suggestion.substr(0, PathUtil.getLastPathPart(path, false).length).toLowerCase()
-			);
-		})
-		.map((suggestion) => {
-			let pathPrefix = PathUtil.toPathParts(partialStr);
-			if (!partialStr.endsWith("/")) {
-				pathPrefix = pathPrefix.slice(0, -1);
-			}
-			if (pathPrefix.join("/")) {
-				return pathPrefix.join("/") + "/" + suggestion;
-			}
-			return suggestion;
-		});
+    const path = PathUtil.toAbsolutePath(partialStr, cwd);
+    const fsPart = fsSearchAutoComplete(fs, path);
+    return Object.keys(fsPart)
+        .filter((suggestion) => {
+            if (partialStr.endsWith("/")) return true;
+            return (
+                PathUtil.getLastPathPart(path, false).toLowerCase() ===
+                suggestion.substr(0, PathUtil.getLastPathPart(path, false).length).toLowerCase()
+            );
+        })
+        .map((suggestion) => {
+            let pathPrefix = PathUtil.toPathParts(partialStr);
+            if (!partialStr.endsWith("/")) {
+                pathPrefix = pathPrefix.slice(0, -1);
+            }
+            if (pathPrefix.join("/")) {
+                return pathPrefix.join("/") + "/" + suggestion;
+            }
+            return suggestion;
+        });
 };

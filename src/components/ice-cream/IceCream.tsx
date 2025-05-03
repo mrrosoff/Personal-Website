@@ -1,4 +1,5 @@
-import { Box, Grid2 as Grid, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Grid, Link, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { ICE_CREAM_FLAVORS } from "./flavors";
 
 const IceCream = () => {
     const theme = useTheme();
@@ -19,7 +20,18 @@ const IceCream = () => {
             </Typography>
             <Typography mt={smallScreen ? 1 : undefined} align={smallScreen ? "center" : undefined}>
                 Limited. High quality. Seattle based. Creative flavors, priced at $5 per pint.
-                Contact me on any platform to order.
+            </Typography>
+            <Typography mt={smallScreen ? 0 : -1} align={smallScreen ? "center" : undefined}>
+                Contact me to order, or{" "}
+                <Link
+                    component="button"
+                    onClick={() => {}}
+                    underline="hover"
+                    sx={{ cursor: "pointer", color: "inherit", verticalAlign: "baseline" }}
+                >
+                    add yourself to the mailing list
+                </Link>
+                .
             </Typography>
             <CurrentFlavors />
             <LastBatch />
@@ -48,28 +60,15 @@ export const CurrentFlavors = () => {
                 direction={smallScreen ? "column" : undefined}
                 sx={{ paddingTop: smallScreen ? 4 : 2 }}
             >
-                <Grid display={"flex"} justifyContent={"center"}>
-                    <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
-                        <Typography align={"center"} color={"orange"}>
-                            Orange Creamsicle 🍊
-                        </Typography>
-                    </Box>
-                </Grid>
-                <Grid display={"flex"} justifyContent={"center"}>
-                    <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
-                        <Typography align={"center"} color={"brown"}>
-                            Chocolate Gooey Brownie 🍫
-                        </Typography>
-                    </Box>
-                </Grid>
-                <Grid display={"flex"} justifyContent={"center"}>
-                    <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
-                        <Typography align={"center"} color={"yellow"}>
-                            Pina Colada 🍍
-                        </Typography>
-                    </Box>
-                </Grid>
-                
+                {ICE_CREAM_FLAVORS.currentFlavors.map((flavor, index) => (
+                    <Grid key={index} display={"flex"} justifyContent={"center"}>
+                        <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
+                            <Typography align={"center"} color={flavor.color || "white"}>
+                                {flavor.name}
+                            </Typography>
+                        </Box>
+                    </Grid>
+                ))}
             </Grid>
         </Box>
     );
@@ -95,34 +94,15 @@ export const LastBatch = () => {
                 direction={smallScreen ? "column" : undefined}
                 sx={{ paddingTop: smallScreen ? 4 : 2 }}
             >
-                <Grid display={"flex"} justifyContent={"center"}>
-                    <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
-                        <Typography align={"center"} color={"chocolate"}>
-                            Mexican Hot Chocolate ☕
-                        </Typography>
-                    </Box>
-                </Grid>
-                <Grid display={"flex"} justifyContent={"center"}>
-                    <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
-                        <Typography align={"center"} color={"lightgrey"}>
-                            👻 Ghostly Presence 😱
-                        </Typography>
-                    </Box>
-                </Grid>
-                <Grid display={"flex"} justifyContent={"center"}>
-                    <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
-                        <Typography align={"center"} color={"maroon"}>
-                            ❤️ Love Potion 💖
-                        </Typography>
-                    </Box>
-                </Grid>
-                <Grid display={"flex"} justifyContent={"center"}>
-                    <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
-                        <Typography align={"center"} color={"chocolate"}>
-                            🌰 Chestnut's Roasting...
-                        </Typography>
-                    </Box>
-                </Grid>
+                {ICE_CREAM_FLAVORS.lastBatch.map((flavor, index) => (
+                    <Grid key={index} display={"flex"} justifyContent={"center"}>
+                        <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
+                            <Typography align={"center"} color={flavor.color || "white"}>
+                                {flavor.name}
+                            </Typography>
+                        </Box>
+                    </Grid>
+                ))}
             </Grid>
         </Box>
     );
@@ -149,37 +129,15 @@ export const Schedule = () => {
                 direction={smallScreen ? "column" : undefined}
                 sx={{ paddingTop: smallScreen ? 4 : 2 }}
             >
-                <Grid display={"flex"} justifyContent={"center"}>
-                    <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
-                        <Typography align={"center"} color={"lightgreen"}>
-                            Pistachio
-                        </Typography>
-                    </Box>
-                </Grid>
-                <Grid display={"flex"} justifyContent={"center"}>
-                    <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
-                        <Typography align={"center"} color={"yellow"}>
-                            Lemon Sorbet 🍋‍🟩
-                        </Typography>
-                    </Box>
-                </Grid>
-                <Grid display={"flex"} justifyContent={"center"}>
-                    <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
-                        <Typography align={"center"}>🐎 Horseradish</Typography>
-                    </Box>
-                </Grid>
-                <Grid display={"flex"} justifyContent={"center"}>
-                    <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
-                        <Typography align={"center"} color={"greenyellow"}>
-                            Lychee 🍋‍🟩
-                        </Typography>
-                    </Box>
-                </Grid>
-                <Grid display={"flex"} justifyContent={"center"}>
-                    <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
-                        <Typography align={"center"}>Black Milk Tea Boba 🧋</Typography>
-                    </Box>
-                </Grid>
+                {ICE_CREAM_FLAVORS.upcomingFlavors.map((flavor, index) => (
+                    <Grid key={index} display={"flex"} justifyContent={"center"}>
+                        <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
+                            <Typography align={"center"} color={flavor.color || "white"}>
+                                {flavor.name}
+                            </Typography>
+                        </Box>
+                    </Grid>
+                ))}
             </Grid>
         </Box>
     );

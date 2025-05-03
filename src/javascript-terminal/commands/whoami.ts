@@ -9,7 +9,9 @@ const functionDef = (
     const { options, argv } = parseOptions(commandOptions, optDef);
 
     try {
-        return { output: state.getEnvVariables().user ? state.getEnvVariables().user : "dev" };
+        return {
+            output: state.getEnvVariables().user ? state.getEnvVariables().user : "dev"
+        };
     } catch (err: any) {
         return { output: err.message, type: "error" };
     }

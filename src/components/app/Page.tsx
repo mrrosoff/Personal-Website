@@ -14,6 +14,7 @@ const Page = (props: any) => {
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
+    // @ts-ignore
     const [bootingUp, setBootingUp] = useState(import.meta.env.PROD);
 
     const creationDate = new Date();

@@ -4,4 +4,4 @@ type ImportMetaEnv = object;
 
 type ImportMeta = {
     readonly env: ImportMetaEnv;
-}
+};

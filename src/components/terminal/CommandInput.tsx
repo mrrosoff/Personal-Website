@@ -16,17 +16,17 @@ const CommandInput = (props: any, ref: any) => {
 
     return (
         <Grid container alignItems={"center"} spacing={2}>
-            <Grid item>
+            <Grid>
                 <PromptSymbol theme={props.theme} {...props}>
                     {props.promptSymbol}
                 </PromptSymbol>
             </Grid>
-            <Grid item>
+            <Grid>
                 <Grid container justifyContent={"center"} alignItems={"center"}>
-                    <Grid item>
+                    <Grid>
                         <Typography style={{ whiteSpace: "pre" }}>{props.value}</Typography>
                     </Grid>
-                    <Grid item>
+                    <Grid>
                         <Box
                             id={"cursor"}
                             width={8}
@@ -37,7 +37,7 @@ const CommandInput = (props: any, ref: any) => {
                             }}
                         />
                     </Grid>
-                    <Grid item style={{ width: 0, height: 0 }}>
+                    <Grid style={{ width: 0, height: 0 }}>
                         <InputBase
                             autoFocus
                             inputRef={ref}
