@@ -37,7 +37,7 @@ const MailingList = () => {
                     align={smallScreen ? "center" : undefined}
                     sx={{ maxWidth: smallScreen ? 300 : undefined }}
                 >
-                    Get notified when new ice-cream flavors are available and hear about other fun
+                    Get notified when new ice cream flavors are available and hear about other fun
                     things.
                 </Typography>
                 <MailingListForm />

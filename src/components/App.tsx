@@ -106,6 +106,7 @@ const Layout = (props: { inputRef: RefObject<HTMLInputElement | null> }) => {
             height={"100vh"}
             sx={{
                 p: smallScreen ? smallScreenPadding : 8,
+                ...(smallScreen && { pt: 4, pb: 4 }),
                 overflow: "hidden"
             }}
             onClick={() => props.inputRef?.current && props.inputRef?.current.focus()}

@@ -20,7 +20,7 @@ body,
 
     * {
         font-family: "Clacon", serif !important;
-        font-display: "swap"
+        font-display: "swap";
     }
 }
 
@@ -37,4 +37,13 @@ a {
     &:hover {
         background-color: #323232 !important;
     }
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+    background-color: #121212 !important;
+    color: white !important;
+    transition: background-color 5000s ease-in-out 0s;
+    -webkit-text-fill-color: white !important;
 }

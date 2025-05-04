@@ -6,6 +6,9 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
+import IcecreamIcon from "@mui/icons-material/Icecream";
+import MarkunreadMailboxIcon from "@mui/icons-material/MarkunreadMailbox";
+import { useNavigate } from "react-router-dom";
 
 const socialList = [
     {
@@ -73,7 +76,7 @@ export const MobileSocialButtonList = () => {
             alignItems={"center"}
             alignContent={"center"}
         >
-            {socialList.map((socialDetails, index) => (
+            {socialList.slice(1).map((socialDetails, index) => (
                 <Grid key={index}>
                     <CustomIconButton
                         href={socialDetails.url}
@@ -82,20 +85,44 @@ export const MobileSocialButtonList = () => {
                     />
                 </Grid>
             ))}
+            <Grid>
+                <CustomIconButton
+                    href={"ice-cream"}
+                    icon={IcecreamIcon}
+                    text={"Ice Cream"}
+                    isLink={true}
+                />
+            </Grid>
+            <Grid>
+                <CustomIconButton
+                    href={"mailing-list"}
+                    icon={MarkunreadMailboxIcon}
+                    text={"Mailing List"}
+                    isLink={true}
+                />
+            </Grid>
         </Grid>
     );
 };
 
-const CustomIconButton = (props: { icon: any; href: string; text: string; social?: boolean }) => {
+const CustomIconButton = (props: {
+    icon: any;
+    href: string;
+    text: string;
+    social?: boolean;
+    isLink?: boolean;
+}) => {
+    const navigate = useNavigate();
     const Icon = props.icon;
     const ButtonType: React.ElementType = props.social ? IconButton : Button;
     return (
         <ButtonType
             className={"social-button"}
-            href={props.href}
-            target={"_blank"}
-            rel={"noopener"}
+            href={props.isLink ? undefined : props.href}
+            target={props.isLink ? undefined : "_blank"}
+            rel={props.isLink ? undefined : "noopener"}
             size={"large"}
+            onClick={props.isLink ? () => navigate(props.href) : undefined}
         >
             <Box sx={{ display: "flex", alignItems: "center", color: "white" }}>
                 <Icon />
