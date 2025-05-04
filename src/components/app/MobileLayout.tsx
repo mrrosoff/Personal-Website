@@ -8,7 +8,7 @@ const MobileLayout = () => {
         <Grid
             container
             direction={"column"}
-            style={{ width: "100vw", height: "100vh" }}
+            sx={{ width: "100vw", height: "100vh" }}
             justifyContent={"center"}
             alignItems={"center"}
             alignContent={"center"}

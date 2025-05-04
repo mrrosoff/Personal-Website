@@ -10,7 +10,7 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 const socialList = [
     {
         name: "Resume",
-        url: "https://bit.ly/rosoff-resume",
+        url: "https://docs.google.com/document/d/1Uo8gSufMpN4ELAqIEYm6zDiLB6f-bbuES9xcQPcX1_c/edit?usp=sharing",
         icon: DescriptionIcon
     },
     {
@@ -74,7 +74,7 @@ export const MobileSocialButtonList = () => {
             alignContent={"center"}
         >
             {socialList.map((socialDetails, index) => (
-                <Grid item key={index}>
+                <Grid key={index}>
                     <CustomIconButton
                         href={socialDetails.url}
                         icon={socialDetails.icon}
@@ -88,7 +88,7 @@ export const MobileSocialButtonList = () => {
 
 const CustomIconButton = (props: any) => {
     const Icon = props.icon;
-    const ButtonType = props.social ? IconButton : Button;
+    const ButtonType: React.ElementType = props.social ? IconButton : Button;
     return (
         <ButtonType
             className={"social-button"}

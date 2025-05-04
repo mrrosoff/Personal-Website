@@ -1,7 +1,6 @@
 import { getLastPathPart, toPathParts } from "../util/path-util";
-import { File, FileSystem } from "../../../FileSystem";
 
-export const fsSearchParent = (fs, path: string) => {
+export const fsSearchParent = (fs: any, path: string) => {
     let fsSection = fs;
     let pathParts = toPathParts(path);
 
@@ -16,7 +15,7 @@ export const fsSearchParent = (fs, path: string) => {
     return fsSection;
 };
 
-export const fsSearchAutoComplete = (fs, path: string) => {
+export const fsSearchAutoComplete = (fs: any, path: string) => {
     let fsSection = fs;
     let pathParts = toPathParts(path);
 
@@ -31,7 +30,7 @@ export const fsSearchAutoComplete = (fs, path: string) => {
     return fsSection;
 };
 
-export const fsSearch = (fs, path: string) => {
+export const fsSearch = (fs: any, path: string) => {
     let fsSection = fs;
     let pathParts = toPathParts(path);
 
@@ -46,10 +45,10 @@ export const fsSearch = (fs, path: string) => {
     return fsSection;
 };
 
-export const add = (fs, pathToAdd: string, fsElementToAdd) => {
+export const add = (fs: any, pathToAdd: string, fsElementToAdd: any) => {
     fsSearchAutoComplete(fs, pathToAdd)[getLastPathPart(pathToAdd)] = fsElementToAdd;
 };
 
-export const remove = (fs, pathToRemove: string) => {
+export const remove = (fs: any, pathToRemove: string) => {
     delete fsSearchParent(fs, pathToRemove)[getLastPathPart(pathToRemove)];
 };

@@ -1,12 +1,15 @@
+import { useNavigate } from "react-router-dom";
+
 import { Box, Grid, Link, Typography, useMediaQuery, useTheme } from "@mui/material";
+
 import { ICE_CREAM_FLAVORS } from "./flavors";
 
 const IceCream = () => {
+    const navigate = useNavigate();
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
     return (
         <Box
-            id={"ice-cream"}
             display={"flex"}
             flexDirection={"column"}
             alignItems={smallScreen ? "center" : undefined}
@@ -25,7 +28,7 @@ const IceCream = () => {
                 Contact me to order, or{" "}
                 <Link
                     component="button"
-                    onClick={() => {}}
+                    onClick={() => navigate("/mailing-list")}
                     underline="hover"
                     sx={{ cursor: "pointer", color: "inherit", verticalAlign: "baseline" }}
                 >
@@ -48,7 +51,7 @@ export const CurrentFlavors = () => {
             display={"flex"}
             flexDirection={"column"}
             alignItems={smallScreen ? "center" : undefined}
-            sx={{ paddingTop: smallScreen ? 6 : 3 }}
+            sx={{ paddingTop: smallScreen ? 6 : 2.5 }}
         >
             <Typography variant="h2">Current Flavors</Typography>
             <Typography align={smallScreen ? "center" : undefined}>
@@ -82,7 +85,7 @@ export const LastBatch = () => {
             display={"flex"}
             flexDirection={"column"}
             alignItems={smallScreen ? "center" : undefined}
-            sx={{ paddingTop: smallScreen ? 6 : 3 }}
+            sx={{ paddingTop: smallScreen ? 6 : 2.5 }}
         >
             <Typography variant="h2">Last Batch</Typography>
             <Typography align={smallScreen ? "center" : undefined}>
@@ -116,7 +119,7 @@ export const Schedule = () => {
             display={"flex"}
             flexDirection={"column"}
             alignItems={smallScreen ? "center" : undefined}
-            sx={{ paddingTop: smallScreen ? 6 : 3 }}
+            sx={{ paddingTop: smallScreen ? 6 : 2.5 }}
         >
             <Typography variant="h2">Whats Coming Up...</Typography>
             <Typography align={smallScreen ? "center" : undefined}>

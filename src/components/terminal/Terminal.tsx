@@ -100,7 +100,7 @@ const Terminal = (props: any, ref: any) => {
 		Welcome To Rosoff OS BETA v4.1.2
 			* Documentation: ~https://github.com/mrrosoff/Personal-Website~
 			* Management: ~https://linkedin.com/in/max-rosoff~
-			* Support: me@maxrosoff.com
+			* Support: ~me@maxrosoff.com~
 		0 packages can be updated.
 		0 updates are ready to be installed.
 	`;
@@ -125,11 +125,12 @@ const Terminal = (props: any, ref: any) => {
                             const backIndex = trimmedLine.indexOf("~", index + 1);
                             const middle = trimmedLine.substring(index + 1, backIndex);
                             const back = trimmedLine.substring(backIndex + 1);
+                            const href = middle.includes("@") ? "mailto:" : "";
                             outputs[outputs.length - 1] = (
                                 <Box key={"link-line"} style={{ color: props.theme.outputColor }}>
                                     {front}
                                     <a
-                                        href={middle}
+                                        href={href}
                                         target="_blank"
                                         style={{
                                             color: "#FCFCFC",

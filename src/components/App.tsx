@@ -15,6 +15,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 
 import Page, { LinksAndMenu } from "./app/Page";
 import IceCream from "./ice-cream/IceCream";
+import MailingList from "./ice-cream/MailingList";
 
 const App = () => {
     const inputRef: any = useRef(null);
@@ -22,8 +23,8 @@ const App = () => {
     const theme = createTheme({
         palette: {
             mode: "dark",
-            primary: { main: "#2BC903" },
-            secondary: { main: "#0B8AAD" }
+            primary: { main: "#FFFFFF" },
+            secondary: { main: "#2BC903" }
         },
         typography: {
             h1: {
@@ -57,6 +58,10 @@ const App = () => {
                         {
                             path: "ice-cream",
                             element: <IceCream />
+                        },
+                        {
+                            path: "mailing-list",
+                            element: <MailingList />
                         }
                     ]
                 }
@@ -98,8 +103,6 @@ const Layout = (props: { inputRef: { current: { focus: () => any } } }) => {
             height={"100vh"}
             sx={{
                 p: smallScreen && isHome ? 0 : 8,
-                width: "100%",
-                height: "100%",
                 overflow: "hidden"
             }}
             onClick={() => props.inputRef.current && props.inputRef.current.focus()}

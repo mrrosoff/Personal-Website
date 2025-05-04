@@ -1,22 +1,24 @@
-export const isFile = (obj) => {
+import { File } from "../../../FileSystem";
+
+export function isFile(obj: any): boolean {
     return obj.type === "-";
-};
+}
 
-export const isDirectory = (obj) => {
+export function isDirectory(obj: any): boolean {
     return obj.type === "d";
-};
+}
 
-export const isSymbolicLink = (obj) => {
+export function isSymbolicLink(obj: any): boolean {
     return obj.type === "l";
-};
+}
 
-export const makeEmptyFile = () => {
+export function makeEmptyFile(): File {
     return { type: "-", permissions: "rwx------", contents: "" };
-};
+}
 
-export const makeEmptyDirectory = () => {
+export function makeEmptyDirectory() {
     return { type: "d", permissions: "rwx------", contents: {} };
-};
+}
 
 export default {
     isFile,

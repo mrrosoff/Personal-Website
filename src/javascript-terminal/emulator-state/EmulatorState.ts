@@ -9,8 +9,19 @@ const HISTORY_KEY = "history";
 const OUTPUTS_KEY = "outputs";
 const COMMAND_MAPPING_KEY = "commandMapping";
 
+type EmulatorStateType = {
+    [TAB_COUNT_KEY]: number;
+    [FS_KEY]: any;
+    [ENVIRONMENT_VARIABLES_KEY]: any;
+    [HISTORY_KEY]: any;
+    [OUTPUTS_KEY]: any;
+    [COMMAND_MAPPING_KEY]: any;
+};
+
 export default class EmulatorState {
-    constructor(state: any) {
+    private state: EmulatorStateType;
+
+    constructor(state: EmulatorStateType) {
         if (!state) throw Error("Do Not Use Constructor Directly. Use create Method");
         this.state = state;
     }
@@ -55,7 +66,7 @@ export default class EmulatorState {
         return this.state[ENVIRONMENT_VARIABLES_KEY];
     }
 
-    setEnvVariables(newEnvVariables) {
+    setEnvVariables(newEnvVariables: any) {
         this.state[ENVIRONMENT_VARIABLES_KEY] = newEnvVariables;
     }
 

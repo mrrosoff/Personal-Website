@@ -7,9 +7,9 @@ import files from "../../../FileSystem";
 
 const TerminalEmbed = (_props: any, ref: any) => {
     useEffect(() => {
-        for (let form of document.getElementsByTagName("FORM")) {
+        Array.from(document.getElementsByTagName("form")).forEach((form) => {
             form.setAttribute("spellcheck", "false");
-        }
+        });
     }, []);
 
     const customState = EmulatorState.create({

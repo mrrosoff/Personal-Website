@@ -2,14 +2,14 @@ import { parseOptions } from "../parser";
 
 export const optDef = {};
 
-const functionDef = (state, commandOptions) => {
+const functionDef = (state: any, commandOptions: any) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
 
     try {
         state.setOutputs([]);
         return {};
-    } catch (err) {
-        return { output: err.message, type: "error" };
+    } catch (err: unknown) {
+        return { output: (err as any).message, type: "error" };
     }
 };
 

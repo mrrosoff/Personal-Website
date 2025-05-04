@@ -1,13 +1,13 @@
 import * as BaseOp from "./base-operations";
 import { fsSearch, fsSearchParent } from "./base-operations";
 import { getLastPathPart } from "../util/path-util";
-import { File, FileSystem } from "../../../FileSystem";
+import { FileSystem } from "../../../FileSystem";
 
 export const list = (fs: FileSystem, path: string) => {
     return Object.keys(fsSearch(fs, path));
 };
 
-export const add = (fs: FileSystem, path: string, dir) => {
+export const add = (fs: FileSystem, path: string, dir: any) => {
     BaseOp.add(fs, path, dir);
 };
 

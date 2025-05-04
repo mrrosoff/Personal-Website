@@ -15,14 +15,14 @@ export const isCommandSet = (commandMapping = commands, commandName: string) => 
 
 export const getCommandFn = (commandMapping = commands, commandName: string) => {
     if (commandName in commandMapping) {
-        return commandMapping[commandName].functionDef;
+        return (commandMapping as any)[commandName].functionDef;
     }
     return undefined;
 };
 
 export const getCommandOptDef = (commandMapping = commands, commandName: string) => {
     if (commandName in commandMapping) {
-        return commandMapping[commandName].optDef;
+        return (commandMapping as any)[commandName].optDef;
     }
     return undefined;
 };

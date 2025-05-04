@@ -57,9 +57,18 @@ const files: FileSystem = {
                         permissions: "rwx------",
                         contents: "https://www.youtube.com/embed/GG7fLOmlhYg?controls=0&autoplay=1"
                     },
+                    ...(date.month === 5 &&
+                        date.day === 16 && {
+                            "itsMyBirthday.mkv": {
+                                type: "-",
+                                permissions: "rwx------",
+                                contents:
+                                    "https://www.youtube.com/embed/nYsbt8Fo9Ow?controls=0&controls=0autoplay=1"
+                            }
+                        }),
                     ...(date.month === 9 &&
                         date.day === 21 && {
-                            "isItThatTime.mp4": {
+                            "isItThatTime.avi": {
                                 type: "-",
                                 permissions: "rwx------",
                                 contents:

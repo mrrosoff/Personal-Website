@@ -40,7 +40,7 @@ export const LinksAndMenu = (props: any) => {
             <Links open={open} setOpen={setOpen} {...props} />
             <Box sx={{ position: "absolute", top: 65, right: 0 }}>
                 {open && (
-                    <Paper style={{ width: 270 }}>
+                    <Paper sx={{ width: 270 }}>
                         <DesktopSocialButtonList />
                     </Paper>
                 )}
@@ -49,7 +49,7 @@ export const LinksAndMenu = (props: any) => {
                 alt="Max Rosoff"
                 src={SmallProfile}
                 onClick={() => setOpen(!open)}
-                style={{
+                sx={{
                     width: 55,
                     height: 55,
                     borderStyle: "solid",
@@ -74,12 +74,8 @@ const Links = (props: any) => {
             >
                 {isIceCream ? "Home" : "Ice Cream"}
             </Link>
-            <Link
-                to={"https://github.com/mrrosoff/Personal-Website"}
-                target="_blank"
-                style={{ paddingRight: 20, color: "#FCFCFC", fontSize: 22 }}
-            >
-                Source
+            <Link to={"mailing-list"} style={{ paddingRight: 20, color: "#FCFCFC", fontSize: 22 }}>
+                Mail
             </Link>
             <a
                 style={{ margin: 0, color: "#FCFCFC", fontSize: 22 }}

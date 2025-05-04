@@ -5,12 +5,12 @@ import OutputText from "./OutputText";
 
 const OutputHeader = (props: any) => (
     <Grid container alignContent={"center"} alignItems={"center"} spacing={2}>
-        <Grid item>
+        <Grid>
             <PromptSymbol theme={props.theme} {...props}>
                 {props.promptSymbol}
             </PromptSymbol>
         </Grid>
-        <Grid item>
+        <Grid>
             <OutputText {...props}>{props.children}</OutputText>
         </Grid>
     </Grid>

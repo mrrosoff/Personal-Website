@@ -5,19 +5,19 @@ import FolderIcon from "@mui/icons-material/Folder";
 const PromptSymbol = (props: any) => {
     return (
         <Grid container alignContent={"center"} alignItems={"center"} spacing={1}>
-            <Grid item>
+            <Grid>
                 <Typography style={{ color: props.theme.promptSymbolColor }}>
                     {props.children}
                 </Typography>
             </Grid>
-            <Grid item>
+            <Grid>
                 <FolderIcon
                     color={"inherit"}
                     fontSize={"small"}
                     style={{ paddingBottom: 2, paddingRight: 2, display: "block" }}
                 />
             </Grid>
-            <Grid item>
+            <Grid>
                 <Typography style={{ color: props.theme.promptSymbolColor }}>
                     {props.cwd ? props.cwd : props.emulatorState.getEnvVariables().cwd}
                 </Typography>
