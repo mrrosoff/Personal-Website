@@ -26,7 +26,9 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         const newUserId = await registerNewUser(resend, audienceId, payload);
         return buildResponse(200, `Email Registered Successfully With ID: ${newUserId}`);
     } catch (error: unknown) {
-        return buildResponse(500, "Audience Not Found");
+        console.error(error);
+        const errorMessage = (error instanceof Error) ? error.message : "Internal Server Error";
+        return buildResponse(500, errorMessage);
     }
 };
 
