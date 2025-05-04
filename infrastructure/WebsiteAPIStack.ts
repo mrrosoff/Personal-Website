@@ -3,7 +3,6 @@ import { Cors, EndpointType, LambdaIntegration, RestApi } from "aws-cdk-lib/aws-
 import { Certificate, CertificateValidation } from "aws-cdk-lib/aws-certificatemanager";
 import { Alarm, ComparisonOperator, MathExpression } from "aws-cdk-lib/aws-cloudwatch";
 import { SnsAction } from "aws-cdk-lib/aws-cloudwatch-actions";
-import { Table } from "aws-cdk-lib/aws-dynamodb";
 import { ManagedPolicy, Role, ServicePrincipal } from "aws-cdk-lib/aws-iam";
 import {
     ApplicationLogLevel,
@@ -35,23 +34,34 @@ class WebsiteAPIStack extends Stack {
         const apiRole = this.createAPILambdaRole();
         const registerLambda = this.createRegisterLambda(env, apiRole);
         const sendEmailLambda = this.createSendEmailLambda(env, apiRole);
+        const unsubscribeLambda = this.createUnsubscribeLambda(env, apiRole);
 
         const certificate = new Certificate(this, "websiteCertificate", {
             domainName: "maxrosoff.com",
             subjectAlternativeNames: ["*.maxrosoff.com"],
             validation: CertificateValidation.fromDns()
         });
-        const restApi = this.createAPI(certificate, registerLambda, sendEmailLambda);
+        const restApi = this.createAPI(
+            certificate,
+            registerLambda,
+            sendEmailLambda,
+            unsubscribeLambda
+        );
 
         const alarmTopic = this.createAlarmActions();
-        this.createLambdaErrorRateAlarms(alarmTopic, [registerLambda, sendEmailLambda]);
+        this.createLambdaErrorRateAlarms(alarmTopic, [
+            registerLambda,
+            sendEmailLambda,
+            unsubscribeLambda
+        ]);
         this.createRestAPIErrorRateAlarms(alarmTopic, restApi);
     }
 
     private createAPI(
         certificate: Certificate,
         registerLambda: LambdaFunction,
-        sendEmailLambda: LambdaFunction
+        sendEmailLambda: LambdaFunction,
+        unsubscribeLambda: LambdaFunction
     ): RestApi {
         const api = new RestApi(this, "websiteRestApi", {
             restApiName: "Website API",
@@ -70,6 +80,9 @@ class WebsiteAPIStack extends Stack {
         api.root
             .addResource("send-email")
             .addMethod("POST", new LambdaIntegration(sendEmailLambda));
+        api.root
+            .addResource("unsubscribe")
+            .addMethod("POST", new LambdaIntegration(unsubscribeLambda));
         return api;
     }
 
@@ -93,6 +106,16 @@ class WebsiteAPIStack extends Stack {
         });
     }
 
+    private createUnsubscribeLambda(env: ApplicationEnvironment, role: Role): LambdaFunction {
+        return new LambdaFunction(this, "websiteUnsubscribeLambda", {
+            functionName: "website-unsubscribe",
+            handler: "unsubscribe.handler",
+            code: Code.fromAsset("dist/lambda"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(env, role)
+        });
+    }
+
     private createLambdaParams(env: ApplicationEnvironment, role: Role): Partial<FunctionProps> {
         return {
             role,
@@ -107,7 +130,7 @@ class WebsiteAPIStack extends Stack {
         };
     }
 
-    private createAPILambdaRole(...tables: Table[]): Role {
+    private createAPILambdaRole(): Role {
         return new Role(this, "websiteApiLambdaRole", {
             roleName: "APILambdaRole",
             assumedBy: new ServicePrincipal("lambda.amazonaws.com"),

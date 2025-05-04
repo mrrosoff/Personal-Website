@@ -1,4 +1,9 @@
-export const ICE_CREAM_FLAVORS = {
+export type IceCreamFlavor = {
+    name: string;
+    color?: string;
+};
+
+export const ICE_CREAM_FLAVORS: Record<string, IceCreamFlavor[]> = {
     currentFlavors: [
         {
             name: "Orange Creamsicle 🍊",

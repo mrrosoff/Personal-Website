@@ -18,3 +18,4 @@ async function buildLambdaFunction(entrypoint, directory, watch = false) {
 
 await buildLambdaFunction("lambda/register.ts", "dist/lambda");
 await buildLambdaFunction("lambda/sendEmail.ts", "dist/lambda");
+await buildLambdaFunction("lambda/unsubscribe.ts", "dist/lambda");
