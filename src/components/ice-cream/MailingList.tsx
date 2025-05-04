@@ -4,8 +4,8 @@ import { Box, Button, TextField, Typography, useMediaQuery, useTheme } from "@mu
 import axios from "axios";
 import { validate } from "email-validator";
 
-import icecreamImage from "../../assets/images/ice-cream.png";
 import { API_URL } from "../App";
+import icecreamImage from "../../assets/images/ice-cream.png";
 
 const MailingList = () => {
     const theme = useTheme();
@@ -106,7 +106,7 @@ const MailingListForm = () => {
             <Button
                 variant={"outlined"}
                 sx={{ mt: 6, width: 532 }}
-                disabled={isSent}
+                disabled={!validate(email) || isSent}
                 onClick={async () => {
                     await axios.post(`${API_URL}/register`, { firstName, lastName, email });
                     setIsSent(true);
