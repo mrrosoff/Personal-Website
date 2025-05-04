@@ -1,4 +1,6 @@
-import { Box, Button, Grid, IconButton, Typography } from "@mui/material";
+import { JSX } from "react";
+
+import { Box, Button, Grid, IconButton, SxProps, Theme, Typography } from "@mui/material";
 
 import DescriptionIcon from "@mui/icons-material/Description";
 import EmailIcon from "@mui/icons-material/Email";
@@ -44,7 +46,7 @@ const socialList = [
     }
 ];
 
-export const DesktopSocialButtonList = (props: { sx?: any }) => {
+export const DesktopSocialButtonList = (props: { sx?: SxProps<Theme> | undefined }) => {
     return (
         <Box p={2} sx={props.sx} display={"flex"} flexWrap={"wrap"} justifyContent={"center"}>
             {socialList.map((socialDetails, index) => {
@@ -86,7 +88,7 @@ export const MobileSocialButtonList = () => {
     );
 };
 
-const CustomIconButton = (props: any) => {
+const CustomIconButton = (props: { icon: any; href: string; text: string; social?: boolean }) => {
     const Icon = props.icon;
     const ButtonType: React.ElementType = props.social ? IconButton : Button;
     return (

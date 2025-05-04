@@ -133,7 +133,7 @@ const MailingListForm = () => {
                         if (isAxiosError(error)) {
                             setRegisterError(error.response?.data);
                         }
-                        setRegisterError("Something Unexpected Happened...")
+                        setRegisterError("Something Unexpected Happened...");
                     }
                     setLoading(false);
                 }}

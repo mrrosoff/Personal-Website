@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef, Ref, useEffect, useState } from "react";
 
 import { Box, Grid } from "@mui/material";
 import { Emulator } from "../../javascript-terminal";
@@ -9,7 +9,7 @@ import OutputHeader from "./output/OutputHeader";
 import OutputText from "./output/OutputText";
 import OutputError from "./output/OutputError";
 
-const Terminal = (props: any, ref: any) => {
+const Terminal = (props: any, ref: Ref<HTMLInputElement | null>) => {
     const [showMOTD, setShowMOTD] = useState(true);
     const [input, setInput] = useState("");
     const [emulatorState, setEmulatorState] = useState(props.emulatorState);

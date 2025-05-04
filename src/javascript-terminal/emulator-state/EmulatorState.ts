@@ -10,12 +10,12 @@ const OUTPUTS_KEY = "outputs";
 const COMMAND_MAPPING_KEY = "commandMapping";
 
 type EmulatorStateType = {
-    [TAB_COUNT_KEY]: number;
-    [FS_KEY]: any;
-    [ENVIRONMENT_VARIABLES_KEY]: any;
-    [HISTORY_KEY]: any;
-    [OUTPUTS_KEY]: any;
-    [COMMAND_MAPPING_KEY]: any;
+    [TAB_COUNT_KEY]?: number;
+    [FS_KEY]?: any;
+    [ENVIRONMENT_VARIABLES_KEY]?: any;
+    [HISTORY_KEY]?: any;
+    [OUTPUTS_KEY]?: any;
+    [COMMAND_MAPPING_KEY]?: any;
 };
 
 export default class EmulatorState {
@@ -33,7 +33,7 @@ export default class EmulatorState {
         history = [],
         outputs = [],
         commandMapping = createCommandMapping()
-    }) {
+    }: EmulatorStateType) {
         const stateMap = {
             [TAB_COUNT_KEY]: tabCount,
             [FS_KEY]: fs,

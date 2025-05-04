@@ -1,11 +1,11 @@
-import { forwardRef, useEffect } from "react";
+import { forwardRef, Ref, useEffect } from "react";
 
 import { CommandMapping, DefaultCommandMapping, EmulatorState } from "../../../javascript-terminal";
 
 import Terminal from "../../terminal/Terminal";
 import files from "../../../FileSystem";
 
-const TerminalEmbed = (_props: any, ref: any) => {
+const TerminalEmbed = (_props: {}, ref: Ref<HTMLInputElement | null>) => {
     useEffect(() => {
         Array.from(document.getElementsByTagName("form")).forEach((form) => {
             form.setAttribute("spellcheck", "false");
@@ -13,7 +13,7 @@ const TerminalEmbed = (_props: any, ref: any) => {
     }, []);
 
     const customState = EmulatorState.create({
-        fs: files as any,
+        fs: files,
         commandMapping: CommandMapping.create({
             ...DefaultCommandMapping,
             exit: {

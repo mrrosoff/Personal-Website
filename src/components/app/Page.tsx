@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Dispatch, RefObject, SetStateAction, useState } from "react";
 import { Link, useMatch } from "react-router-dom";
 
 import { Avatar, Box, Paper, useMediaQuery, useTheme } from "@mui/material";
@@ -10,7 +10,7 @@ import TerminalEmbed from "./desktop/TerminalEmbed";
 import SmallProfile from "../../assets/images/small-profile.webp";
 import MobileLayout from "./MobileLayout";
 
-const Page = (props: any) => {
+const Page = (props: { inputRef: RefObject<HTMLInputElement | null> }) => {
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -33,7 +33,7 @@ const Page = (props: any) => {
     return <TerminalEmbed ref={props.inputRef} />;
 };
 
-export const LinksAndMenu = (props: any) => {
+export const LinksAndMenu = (props: {}) => {
     const [open, setOpen] = useState(false);
     return (
         <Box sx={{ position: "relative" }}>
@@ -64,7 +64,7 @@ export const LinksAndMenu = (props: any) => {
     );
 };
 
-const Links = (props: any) => {
+const Links = (props: { open: boolean; setOpen: Dispatch<SetStateAction<boolean>> }) => {
     const isIceCream = useMatch("/ice-cream");
     return (
         <Box sx={{ position: "absolute", top: 0, right: 80, display: "flex" }}>

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { JSX, RefObject, useEffect, useRef } from "react";
 import {
     createBrowserRouter,
     Navigate,
@@ -20,8 +20,7 @@ import MailingList from "./ice-cream/MailingList";
 export const API_URL = "https://api.maxrosoff.com";
 
 const App = () => {
-    const inputRef: any = useRef(null);
-
+    const inputRef = useRef<HTMLInputElement | null>(null);
     const theme = createTheme({
         palette: {
             mode: "dark",
@@ -95,7 +94,7 @@ const Router404Inject = () => {
     return <Outlet />;
 };
 
-const Layout = (props: { inputRef: { current: { focus: () => any } } }) => {
+const Layout = (props: { inputRef: RefObject<HTMLInputElement | null> }) => {
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
     const mdScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -109,7 +108,7 @@ const Layout = (props: { inputRef: { current: { focus: () => any } } }) => {
                 p: smallScreen ? smallScreenPadding : 8,
                 overflow: "hidden"
             }}
-            onClick={() => props.inputRef.current && props.inputRef.current.focus()}
+            onClick={() => props.inputRef?.current && props.inputRef?.current.focus()}
         >
             {!mdScreen && <LinksAndMenu />}
             <Box sx={{ width: "100%", height: "100%", overflowY: "scroll" }}>

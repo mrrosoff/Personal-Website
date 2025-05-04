@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 import { Box, Grid, Typography } from "@mui/material";
 
 import Logo from "../../../assets/images/logo.webp";
 
-const BootUp = (props: any) => {
+const BootUp = (props: {
+    setBootingUp: Dispatch<SetStateAction<boolean>>;
+    creationDate: string;
+}) => {
     const [state, setState] = useState(0);
 
     useEffect(() => {
@@ -86,7 +89,7 @@ const Header = () => {
     );
 };
 
-const ReleaseData = (props: any) => {
+const ReleaseData = (props: { creationDate: string }) => {
     return (
         <Grid container justifyContent={"center"} direction={"column"} style={{ height: "100%" }}>
             <Grid>
@@ -105,7 +108,7 @@ const ReleaseData = (props: any) => {
     );
 };
 
-const SystemInfo = (props: any) => {
+const SystemInfo = (props: { state: number }) => {
     return (
         <Grid container direction={"column"} style={{ paddingLeft: 20 }}>
             {props.state >= 3 ? (
@@ -164,7 +167,7 @@ const SystemInfo = (props: any) => {
     );
 };
 
-const DriveInfo = (props: any) => {
+const DriveInfo = (props: { state: number }) => {
     return (
         <Grid container direction={"column"} spacing={1}>
             {props.state >= 12 ? (

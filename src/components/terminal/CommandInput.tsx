@@ -1,10 +1,10 @@
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef, Ref, useEffect, useState } from "react";
 
 import { Box, Grid, InputBase, Typography } from "@mui/material";
 
 import PromptSymbol from "./PromptSymbol";
 
-const CommandInput = (props: any, ref: any) => {
+const CommandInput = (props: any, ref: Ref<HTMLInputElement | null>) => {
     const [visibleCursor, setVisibleCursor] = useState<boolean>(true);
 
     useEffect(() => {
