@@ -49,8 +49,12 @@ async function findUserIfAlreadyRegistered(
     resend: Resend,
     audienceId: string,
     email: string
-): Promise<string> {
+): Promise<string | null> {
     const { data, error } = await resend.contacts.get({ audienceId, email });
+    console.error(error);
+    // if (error?.message === "Contact not found") {
+    //     return null;
+    // }
     if (error || !data) {
         throw Error(`Error Fetching User: ${error?.message}`);
     }
