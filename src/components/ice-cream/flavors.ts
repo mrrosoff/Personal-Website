@@ -29,6 +29,10 @@ export const ICE_CREAM_FLAVORS = {
     ],
     upcomingFlavors: [
         {
+            name: "Chocolate Chocolate Chip",
+            color: "brown"
+        },
+        {
             name: "Pistachio",
             color: "lightgreen"
         },
