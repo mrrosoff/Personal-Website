@@ -16,6 +16,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Page, { LinksAndMenu } from "./app/Page";
 import IceCream from "./ice-cream/IceCream";
 import MailingList from "./ice-cream/MailingList";
+import Unsubscribe from "./ice-cream/Unsubscribe";
 
 export const API_URL = "https://api.maxrosoff.com";
 
@@ -59,6 +60,10 @@ const App = () => {
                         {
                             path: "ice-cream",
                             element: <IceCream />
+                        },
+                        {
+                            path: "mailing-list/unsubscribe",
+                            element: <Unsubscribe />
                         },
                         {
                             path: "mailing-list",

@@ -31,26 +31,22 @@ const MailingListEmail = () => {
                 <Container
                     style={{
                         backgroundColor: "#FFFFFF",
-                        marginTop: "8px",
-                        marginBottom: "8px",
-                        borderRadius: "8px",
                         paddingLeft: "20px",
                         paddingRight: "20px"
                     }}
                 >
                     <Section>
-                        <Heading>Max's Ice Cream Mailing List</Heading>
-                        <Link href="https://www.facebook.com/maxr.rosoff">
-                            <Text
-                                style={{
-                                    fontSize: 16,
-                                    lineHeight: "24px",
-                                    color: "rgb(107,114,128)"
-                                }}
-                            >
-                                Thanks for subscribing! Click here if you want to unsubscribe.
-                            </Text>
-                        </Link>
+                        <Heading style={{ marginBottom: 0 }}>Max's Ice Cream Mailing List</Heading>
+                        <Text
+                            style={{
+                                marginBottom: "0px",
+                                fontSize: 14,
+                                lineHeight: "24px",
+                                color: "rgb(107,114,128)"
+                            }}
+                        >
+                            We are excited to share our latest flavors with you. Only $5 per pint.
+                        </Text>
                     </Section>
                     <FlavorsList
                         title="New Flavors"
@@ -85,7 +81,6 @@ const FlavorsList = (props: { title: string; description: string; flavors: IceCr
                         style={{
                             margin: "0px",
                             fontSize: 24,
-                            lineHeight: "32px",
                             fontWeight: 600,
                             color: "rgb(17,24,39)"
                         }}
@@ -142,7 +137,7 @@ const FlavorsList = (props: { title: string; description: string; flavors: IceCr
                                     </td>
                                 </table>
                             </Column>
-                            <Column style={{ paddingLeft: 16 }}>
+                            <Column style={{ paddingLeft: 12 }}>
                                 <Text
                                     style={{
                                         margin: "0px",
@@ -186,7 +181,8 @@ const Footer = () => {
                     <Text
                         style={{
                             lineHeight: undefined,
-                            margin: undefined,
+                            marginTop: "12px",
+                            marginBottom: "0px",
                             fontSize: 12,
                             fontWeight: 600,
                             color: "rgb(17,24,39)"
@@ -196,14 +192,29 @@ const Footer = () => {
                     </Text>
                     <Text
                         style={{
+                            marginTop: "0px",
+                            marginBottom: "4px",
                             lineHeight: undefined,
-                            margin: undefined,
+                            margin: "0px",
                             fontSize: 12,
                             color: "rgb(17,24,39)"
                         }}
                     >
                         Ice Cream Factory
                     </Text>
+                    <Link href="https://maxrosoff.com/mailing-list/unsubscribe">
+                        <Text
+                            style={{
+                                margin: undefined,
+                                fontSize: 12,
+                                lineHeight: undefined,
+                                fontWeight: 600,
+                                color: "rgb(107,114,128)"
+                            }}
+                        >
+                            Unsubscribe
+                        </Text>
+                    </Link>
                 </Column>
                 <Column align="right" style={{ display: "table-cell", verticalAlign: "bottom" }}>
                     <Row
@@ -236,17 +247,33 @@ const Footer = () => {
                     <Row>
                         <Text
                             style={{
-                                margin: undefined,
+                                marginTop: "12px",
+                                marginBottom: "0px",
+                                textAlign: "right",
                                 fontSize: 12,
                                 lineHeight: undefined,
                                 fontWeight: 600,
                                 color: "rgb(107,114,128)"
                             }}
                         >
-                            200 Belmont Ave E #613 Seattle, WA 98102
+                            200 Belmont Ave E
                         </Text>
                         <Text
                             style={{
+                                marginTop: "0px",
+                                marginBottom: "4px",
+                                textAlign: "right",
+                                fontSize: 12,
+                                lineHeight: undefined,
+                                fontWeight: 600,
+                                color: "rgb(107,114,128)"
+                            }}
+                        >
+                            Seattle, WA 98102
+                        </Text>
+                        <Text
+                            style={{
+                                textAlign: "right",
                                 margin: undefined,
                                 fontSize: 12,
                                 lineHeight: undefined,
@@ -254,7 +281,7 @@ const Footer = () => {
                                 color: "rgb(107,114,128)"
                             }}
                         >
-                            me@maxrosoff.com +18588880918
+                            me@maxrosoff.com
                         </Text>
                     </Row>
                 </Column>
