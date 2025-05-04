@@ -47,29 +47,24 @@ const App = () => {
     const router = createBrowserRouter([
         {
             path: "/",
-            element: <Router404Inject />,
+            element: <Layout inputRef={inputRef} />,
             errorElement: <Navigate to="/" replace={true} />,
             children: [
                 {
-                    element: <Layout inputRef={inputRef} />,
-                    children: [
-                        {
-                            index: true,
-                            element: <Page inputRef={inputRef} />
-                        },
-                        {
-                            path: "ice-cream",
-                            element: <IceCream />
-                        },
-                        {
-                            path: "mailing-list/unsubscribe",
-                            element: <Unsubscribe />
-                        },
-                        {
-                            path: "mailing-list",
-                            element: <MailingList />
-                        }
-                    ]
+                    index: true,
+                    element: <Page inputRef={inputRef} />
+                },
+                {
+                    path: "ice-cream",
+                    element: <IceCream />
+                },
+                {
+                    path: "mailing-list/unsubscribe",
+                    element: <Unsubscribe />
+                },
+                {
+                    path: "mailing-list",
+                    element: <MailingList />
                 }
             ]
         }
@@ -83,20 +78,6 @@ const App = () => {
             </ThemeProvider>
         </StyledEngineProvider>
     );
-};
-
-const Router404Inject = () => {
-    const navigate = useNavigate();
-    const location = useLocation();
-
-    useEffect(() => {
-        const splitPath = location.search.split("/");
-        if (splitPath[0] === "?") {
-            navigate(splitPath[1]);
-        }
-    }, [location]);
-
-    return <Outlet />;
 };
 
 const Layout = (props: { inputRef: RefObject<HTMLInputElement | null> }) => {
