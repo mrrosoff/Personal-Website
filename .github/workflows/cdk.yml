@@ -48,6 +48,7 @@ jobs:
                   file-path: ".env"
               env:
                   WEBSITE_RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+                  WEBSITE_RESEND_AUDIENCE_ID: ${{ secrets.RESEND_AUDIENCE_ID }}
                   WEBSITE_NODE_ENV: "production"
 
             - name: Build

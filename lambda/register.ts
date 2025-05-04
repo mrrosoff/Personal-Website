@@ -18,7 +18,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     const resend = new Resend(process.env.RESEND_API_KEY);
     try {
         const payload: RegisterPayload = JSON.parse(event.body);
-        const audienceId = await findAudienceId(resend);
+        const audienceId = process.env.RESEND_AUDIENCE_ID as string;
         const userId = await findUserIfAlreadyRegistered(resend, audienceId, payload.email);
         if (userId) {
             return buildResponse(200, "Email Already Registered");
@@ -31,19 +31,6 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         return buildResponse(500, errorMessage);
     }
 };
-
-async function findAudienceId(resend: Resend): Promise<string> {
-    const { data, error } = await resend.audiences.list();
-    if (error || !data) {
-        throw Error(`Error Fetching Audiences: ${error?.message}`);
-    }
-    const { data: audiences } = data;
-    const audienceId = audiences[0]?.id;
-    if (!audienceId) {
-        throw Error("No Audience Found");
-    }
-    return audienceId;
-}
 
 async function findUserIfAlreadyRegistered(
     resend: Resend,
