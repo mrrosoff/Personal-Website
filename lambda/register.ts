@@ -12,20 +12,14 @@ config();
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     if (!event.body) {
-        return {
-            statusCode: 400,
-            body: JSON.stringify({ error: "Missing Request Body" })
-        };
+        return buildResponse(400, "Missing Request Body");
     }
 
     const resend = new Resend(process.env.RESEND_API_KEY);
 
     const audienceId = await findAudienceId(resend);
     if (!audienceId) {
-        return {
-            statusCode: 500,
-            body: JSON.stringify({ error: "Audience Not Found" })
-        };
+        return buildResponse(500, "Audience Not Found");
     }
 
     const payload: RegisterPayload = JSON.parse(event.body);
@@ -38,17 +32,12 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     });
 
     if (error) {
-        console.error("Error Creating Contact", error);
-        return {
-            statusCode: 500,
-            body: JSON.stringify({ error })
-        };
+        const message = "Error Creating Contact";
+        console.error(message, error);
+        return buildResponse(500, message);
     }
 
-    return {
-        statusCode: 200,
-        body: "Email Registered Successfully"
-    };
+    return buildResponse(200, "Email Registered Successfully");
 };
 
 async function findAudienceId(resend: Resend): Promise<string | null> {
@@ -59,4 +48,16 @@ async function findAudienceId(resend: Resend): Promise<string | null> {
     }
     const { data: audiences } = data;
     return audiences[0]?.id || null;
+}
+
+function buildResponse(statusCode: number, body: string): APIGatewayProxyResult {
+    return {
+        statusCode,
+        headers: {
+            "Access-Control-Allow-Origin": "https://maxrosoff.com",
+            "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Allow-Methods": "OPTIONS,POST"
+        },
+        body
+    };
 }
