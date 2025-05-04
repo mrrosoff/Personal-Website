@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { Box, Button, TextField, Typography, useMediaQuery, useTheme } from "@mui/material";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import axios, { isAxiosError } from "axios";
 import { validate } from "email-validator";
 
@@ -119,8 +120,9 @@ const MailingListForm = () => {
             />
             <Button
                 variant={"outlined"}
-                sx={{ mt: smallScreen ? 5 : 6, width: smallScreen ? 300 : 532 }}
+                sx={{ mt: smallScreen ? 5 : 6, width: smallScreen ? 300 : 532, fontSize: 18 }}
                 disabled={!firstName || !lastName || !validate(email) || success}
+                endIcon={success ? <ThumbUpIcon /> : undefined}
                 loading={loading}
                 onClick={async () => {
                     try {
@@ -131,13 +133,14 @@ const MailingListForm = () => {
                         if (isAxiosError(error)) {
                             setRegisterError(error.response?.data);
                         }
+                        setRegisterError("Something Unexpected Happened...")
                     }
                     setLoading(false);
                 }}
             >
                 Sign Up
             </Button>
-            <Typography mt={1} fontSize={16} color={"error"}>
+            <Typography mt={smallScreen ? 0.5 : 1} fontSize={16} color={"error"}>
                 {registerError}
             </Typography>
         </Box>

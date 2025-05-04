@@ -97,9 +97,10 @@ const Router404Inject = () => {
 
 const Layout = (props: { inputRef: { current: { focus: () => any } } }) => {
     const theme = useTheme();
-    const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
+    const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+    const mdScreen = useMediaQuery(theme.breakpoints.down("md"));
     const isHome = useMatch("/");
-    const smallScreenPadding = isHome ? 0 : 4;
+    const smallScreenPadding = isHome ? 0 : 3;
     return (
         <Box
             width={"100vw"}
@@ -110,7 +111,7 @@ const Layout = (props: { inputRef: { current: { focus: () => any } } }) => {
             }}
             onClick={() => props.inputRef.current && props.inputRef.current.focus()}
         >
-            {!smallScreen && <LinksAndMenu />}
+            {!mdScreen && <LinksAndMenu />}
             <Box sx={{ width: "100%", height: "100%", overflowY: "scroll" }}>
                 <Outlet />
             </Box>
