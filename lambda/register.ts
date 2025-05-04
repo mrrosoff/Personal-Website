@@ -21,7 +21,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         const audienceId = await findAudienceId(resend);
         const userId = await findUserIfAlreadyRegistered(resend, audienceId, payload.email);
         if (userId) {
-            return buildResponse(400, "Email Already Registered");
+            return buildResponse(200, "Email Already Registered");
         }
         const newUserId = await registerNewUser(resend, audienceId, payload);
         return buildResponse(200, `Email Registered Successfully With ID: ${newUserId}`);
