@@ -4,7 +4,6 @@ import { Certificate, CertificateValidation } from "aws-cdk-lib/aws-certificatem
 import { Alarm, ComparisonOperator, MathExpression } from "aws-cdk-lib/aws-cloudwatch";
 import { SnsAction } from "aws-cdk-lib/aws-cloudwatch-actions";
 import { AttributeType, BillingMode, Table } from "aws-cdk-lib/aws-dynamodb";
-import { IVpc } from "aws-cdk-lib/aws-ec2";
 import {
     ManagedPolicy,
     PolicyDocument,
@@ -32,7 +31,7 @@ import { ApplicationEnvironment } from "./app";
 
 export const USERS_TABLE = "website-users";
 
-class APIStack extends Stack {
+class WebsiteAPIStack extends Stack {
     constructor(scope: Construct, id: string, props: StackProps) {
         super(scope, id, props);
 
@@ -47,8 +46,8 @@ class APIStack extends Stack {
         const sendEmailLambda = this.createSendEmailLambda(env, apiRole);
 
         const certificate = new Certificate(this, "websiteCertificate", {
-            domainName: "api.maxrosoff.com",
-            subjectAlternativeNames: ["*.api.maxrosoff.com"],
+            domainName: "maxrosoff.com",
+            subjectAlternativeNames: ["*.maxrosoff.com"],
             validation: CertificateValidation.fromDns()
         });
         const restApi = this.createAPI(certificate, registerLambda, sendEmailLambda);
@@ -69,8 +68,8 @@ class APIStack extends Stack {
 
     private createAPI(
         certificate: Certificate,
-        graphqlLambda: LambdaFunction,
-        jwksLambda: LambdaFunction
+        registerLambda: LambdaFunction,
+        sendEmailLambda: LambdaFunction
     ): RestApi {
         const api = new RestApi(this, "websiteRestApi", {
             restApiName: "Website API",
@@ -85,7 +84,10 @@ class APIStack extends Stack {
             defaultCorsPreflightOptions: { allowOrigins: Cors.ALL_ORIGINS },
             endpointExportName: "WebsiteApiEndpoint"
         });
-        api.root.addResource("graphql").addMethod("POST", new LambdaIntegration(graphqlLambda));
+        api.root.addResource("register").addMethod("POST", new LambdaIntegration(registerLambda));
+        api.root
+            .addResource("send-email")
+            .addMethod("POST", new LambdaIntegration(sendEmailLambda));
         return api;
     }
 
@@ -205,4 +207,4 @@ class APIStack extends Stack {
     }
 }
 
-export default APIStack;
+export default WebsiteAPIStack;

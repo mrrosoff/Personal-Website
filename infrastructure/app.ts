@@ -1,5 +1,5 @@
 import { App, Environment } from "aws-cdk-lib";
-import APIStack from "./APIStack";
+import WebsiteAPIStack from "./WebsiteAPIStack";
 
 export type ApplicationEnvironment = {
     readonly NODE_ENV: string;
@@ -11,4 +11,4 @@ const env: Environment = {
     region: process.env.CDK_DEFAULT_REGION
 };
 
-new APIStack(app, "APIStack", { env });
+new WebsiteAPIStack(app, "WebsiteAPIStack", { env });
