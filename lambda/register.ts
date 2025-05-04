@@ -27,7 +27,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         return buildResponse(200, `Email Registered Successfully With ID: ${newUserId}`);
     } catch (error: unknown) {
         console.error(error);
-        const errorMessage = (error instanceof Error) ? error.message : "Internal Server Error";
+        const errorMessage = error instanceof Error ? error.message : "Internal Server Error";
         return buildResponse(500, errorMessage);
     }
 };
@@ -51,10 +51,9 @@ async function findUserIfAlreadyRegistered(
     email: string
 ): Promise<string | null> {
     const { data, error } = await resend.contacts.get({ audienceId, email });
-    console.error(error);
-    // if (error?.message === "Contact not found") {
-    //     return null;
-    // }
+    if (error?.name === "not_found") {
+        return null;
+    }
     if (error || !data) {
         throw Error(`Error Fetching User: ${error?.message}`);
     }
