@@ -1,4 +1,4 @@
-import { JSX, RefObject, useEffect, useRef } from "react";
+import { RefObject, useEffect, useRef } from "react";
 import {
     createBrowserRouter,
     Navigate,

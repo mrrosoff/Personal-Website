@@ -1,5 +1,3 @@
-import { JSX } from "react";
-
 import { Box, Button, Grid, IconButton, SxProps, Theme, Typography } from "@mui/material";
 
 import DescriptionIcon from "@mui/icons-material/Description";

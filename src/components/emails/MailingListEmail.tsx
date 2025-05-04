@@ -9,7 +9,7 @@ const MailingListEmail = () => {
             <Body>
                 <Preview>Here's this month's new flavors...</Preview>
                 <Container>
-                    <Heading>Current Flavors</Heading>
+                    <Heading>New Flavors</Heading>
                     {ICE_CREAM_FLAVORS.currentFlavors.map((flavor, index) => (
                         <Text key={index}>{flavor.name}</Text>
                     ))}
@@ -21,7 +21,7 @@ const MailingListEmail = () => {
                     ))}
                 </Container>
                 <Container>
-                    <Heading>Current Flavors</Heading>
+                    <Heading>Coming Soon</Heading>
                     {ICE_CREAM_FLAVORS.upcomingFlavors.map((flavor, index) => (
                         <Text key={index}>{flavor.name}</Text>
                     ))}
