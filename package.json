@@ -16,6 +16,11 @@
     "author": "Max Rosoff",
     "license": "MIT",
     "dependencies": {
+        "@aws-sdk/client-dynamodb": "^3.799.0",
+        "@aws-sdk/client-s3": "^3.802.0",
+        "@aws-sdk/credential-providers": "^3.799.0",
+        "@aws-sdk/lib-dynamodb": "^3.799.0",
+        "@aws-sdk/lib-storage": "^3.802.0",
         "@emotion/react": "^11.14.0",
         "@emotion/styled": "^11.14.0",
         "@mui/icons-material": "^7.0.2",
@@ -32,6 +37,7 @@
     },
     "devDependencies": {
         "@tsconfig/node22": "^22.0.1",
+        "@types/aws-lambda": "^8.10.149",
         "@types/luxon": "^3.6.2",
         "@types/node": "^22.15.3",
         "@types/react": "^19.1.2",
@@ -39,8 +45,10 @@
         "@vitejs/plugin-react": "^4.4.1",
         "aws-cdk": "^2.1013.0",
         "dotenv": "^16.5.0",
+        "esbuild": "^0.25.3",
         "prettier": "^3.5.3",
         "sass": "^1.87.0",
+        "ts-node": "^10.9.2",
         "typescript": "^5.8.3",
         "vite": "^6.3.4"
     }

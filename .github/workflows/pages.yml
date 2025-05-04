@@ -6,8 +6,7 @@ on:
             - master
 
 permissions:
-    id-token: write
-    contents: read
+    contents: write
 
 jobs:
     build-and-deploy:
@@ -45,7 +44,6 @@ jobs:
               run: npm run build-website
 
             - name: Deploy Site
-              uses: JamesIves/github-pages-deploy-action@v4.2.5
+              uses: JamesIves/github-pages-deploy-action@v4
               with:
-                  branch: gh-pages
                   folder: dist
