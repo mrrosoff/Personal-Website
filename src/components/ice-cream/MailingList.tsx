@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 
 import { Box, Button, TextField, Typography, useMediaQuery, useTheme } from "@mui/material";
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import { validate } from "email-validator";
 
 import { API_URL } from "../App";
+``;
 import icecreamImage from "../../assets/images/ice-cream.png";
 
 const MailingList = () => {
@@ -16,13 +17,12 @@ const MailingList = () => {
             flexDirection={"column"}
             justifyContent={"space-between"}
             alignItems={smallScreen ? "center" : undefined}
-            height={"100%"}
-            overflow={"hidden"}
         >
             <Box
                 display={"flex"}
                 flexDirection={"column"}
                 alignItems={smallScreen ? "center" : undefined}
+                mb={smallScreen ? 4 : 6}
             >
                 <Typography
                     variant="h1"
@@ -34,18 +34,21 @@ const MailingList = () => {
                 <Typography
                     mt={smallScreen ? 1 : undefined}
                     align={smallScreen ? "center" : undefined}
+                    sx={{ maxWidth: smallScreen ? 300 : undefined }}
                 >
                     Get notified when new ice-cream flavors are available and hear about other fun
                     things.
                 </Typography>
                 <MailingListForm />
             </Box>
-            <img
-                src={icecreamImage}
-                alt="Ice Cream"
-                width={smallScreen ? 200 : 300}
-                style={{ transform: "rotate(15deg)" }}
-            />
+            <Box height={smallScreen ? 150 : 250} overflow={"hidden"}>
+                <img
+                    src={icecreamImage}
+                    alt="Ice Cream"
+                    width={smallScreen ? 150 : 250}
+                    style={{ transform: "rotate(15deg)" }}
+                />
+            </Box>
         </Box>
     );
 };
@@ -57,8 +60,11 @@ const MailingListForm = () => {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
+
     const [emailIsValid, setEmailIsValid] = useState(true);
-    const [isSent, setIsSent] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [registerError, setRegisterError] = useState("");
+    const [success, setSuccess] = useState(false);
 
     useEffect(() => {
         const isValid = !email || validate(email);
@@ -78,7 +84,11 @@ const MailingListForm = () => {
             justifyContent={"center"}
             sx={{ paddingTop: smallScreen ? 6 : 4 }}
         >
-            <Box display={"flex"}>
+            <Box
+                display={"flex"}
+                flexDirection={smallScreen ? "column" : "row"}
+                alignItems={smallScreen ? "center" : undefined}
+            >
                 <TextField
                     label="First Name"
                     variant="standard"
@@ -91,7 +101,11 @@ const MailingListForm = () => {
                     variant="standard"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
-                    sx={{ ml: 4, width: smallScreen ? 300 : 250 }}
+                    sx={{
+                        ml: smallScreen ? 0 : 4,
+                        mt: smallScreen ? 1 : 0,
+                        width: smallScreen ? 300 : 250
+                    }}
                 />
             </Box>
             <TextField
@@ -101,19 +115,31 @@ const MailingListForm = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 error={!emailIsValid}
-                sx={{ mt: 2, width: smallScreen ? 300 : 532 }}
+                sx={{ mt: smallScreen ? 1 : 2, width: smallScreen ? 300 : 532 }}
             />
             <Button
                 variant={"outlined"}
-                sx={{ mt: 6, width: 532 }}
-                disabled={!validate(email) || isSent}
+                sx={{ mt: smallScreen ? 5 : 6, width: smallScreen ? 300 : 532 }}
+                disabled={!firstName || !lastName || !validate(email) || success}
+                loading={loading}
                 onClick={async () => {
-                    await axios.post(`${API_URL}/register`, { firstName, lastName, email });
-                    setIsSent(true);
+                    try {
+                        setLoading(true);
+                        await axios.post(`${API_URL}/registe`, { firstName, lastName, email });
+                        setSuccess(true);
+                    } catch (error: unknown) {
+                        if (isAxiosError(error)) {
+                            setRegisterError(error.response?.data);
+                        }
+                    }
+                    setLoading(false);
                 }}
             >
                 Sign Up
             </Button>
+            <Typography mt={1} fontSize={16} color={"error"}>
+                {registerError}
+            </Typography>
         </Box>
     );
 };

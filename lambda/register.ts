@@ -11,6 +11,7 @@ type RegisterPayload = {
 config();
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
+    return buildResponse(500, "test error");
     if (!event.body) {
         return buildResponse(400, "Missing Request Body");
     }

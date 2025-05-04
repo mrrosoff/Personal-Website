@@ -17,7 +17,7 @@ import Page, { LinksAndMenu } from "./app/Page";
 import IceCream from "./ice-cream/IceCream";
 import MailingList from "./ice-cream/MailingList";
 
-export const API_URL = "https://api.maxrosoff.com"
+export const API_URL = "https://api.maxrosoff.com";
 
 const App = () => {
     const inputRef: any = useRef(null);
@@ -99,12 +99,13 @@ const Layout = (props: { inputRef: { current: { focus: () => any } } }) => {
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
     const isHome = useMatch("/");
+    const smallScreenPadding = isHome ? 0 : 4;
     return (
         <Box
             width={"100vw"}
             height={"100vh"}
             sx={{
-                p: smallScreen && isHome ? 0 : 8,
+                p: smallScreen ? smallScreenPadding : 8,
                 overflow: "hidden"
             }}
             onClick={() => props.inputRef.current && props.inputRef.current.focus()}
