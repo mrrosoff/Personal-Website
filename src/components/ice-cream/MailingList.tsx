@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 
-import { Box, IconButton, TextField, Typography, useMediaQuery, useTheme } from "@mui/material";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import DoneIcon from "@mui/icons-material/Done";
+import { Box, Button, TextField, Typography, useMediaQuery, useTheme } from "@mui/material";
+import axios from "axios";
 import { validate } from "email-validator";
 
 import icecreamImage from "../../assets/images/ice-cream.png";
+import { API_URL } from "../App";
 
 const MailingList = () => {
     const theme = useTheme();
@@ -43,7 +43,7 @@ const MailingList = () => {
             <img
                 src={icecreamImage}
                 alt="Ice Cream"
-                width={smallScreen ? 200 : 400}
+                width={smallScreen ? 200 : 300}
                 style={{ transform: "rotate(15deg)" }}
             />
         </Box>
@@ -54,6 +54,8 @@ const MailingListForm = () => {
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [emailIsValid, setEmailIsValid] = useState(true);
     const [isSent, setIsSent] = useState(false);
@@ -72,21 +74,46 @@ const MailingListForm = () => {
     return (
         <Box
             display={"flex"}
-            flexDirection={smallScreen ? "column" : "row"}
-            alignItems={"center"}
+            flexDirection={"column"}
+            justifyContent={"center"}
             sx={{ paddingTop: smallScreen ? 6 : 4 }}
         >
+            <Box display={"flex"}>
+                <TextField
+                    label="First Name"
+                    variant="standard"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    sx={{ width: smallScreen ? 300 : 250 }}
+                />
+                <TextField
+                    label="Last Name"
+                    variant="standard"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    sx={{ ml: 4, width: smallScreen ? 300 : 250 }}
+                />
+            </Box>
             <TextField
                 label="Email"
                 variant="standard"
+                type={"email"}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 error={!emailIsValid}
-                sx={{ width: smallScreen ? 300 : 500 }}
+                sx={{ mt: 2, width: smallScreen ? 300 : 532 }}
             />
-            <IconButton sx={{ ml: 2, mt: 2 }} disabled={isSent} onClick={() => setIsSent(true)}>
-                {isSent ? <DoneIcon /> : <KeyboardArrowRightIcon />}
-            </IconButton>
+            <Button
+                variant={"outlined"}
+                sx={{ mt: 6, width: 532 }}
+                disabled={isSent}
+                onClick={async () => {
+                    await axios.post(`${API_URL}/register`, { firstName, lastName, email });
+                    setIsSent(true);
+                }}
+            >
+                Sign Up
+            </Button>
         </Box>
     );
 };

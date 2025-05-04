@@ -1,16 +1,10 @@
-import { Duration, RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
+import { Duration, Stack, StackProps } from "aws-cdk-lib";
 import { Cors, EndpointType, LambdaIntegration, RestApi } from "aws-cdk-lib/aws-apigateway";
 import { Certificate, CertificateValidation } from "aws-cdk-lib/aws-certificatemanager";
 import { Alarm, ComparisonOperator, MathExpression } from "aws-cdk-lib/aws-cloudwatch";
 import { SnsAction } from "aws-cdk-lib/aws-cloudwatch-actions";
-import { AttributeType, BillingMode, Table } from "aws-cdk-lib/aws-dynamodb";
-import {
-    ManagedPolicy,
-    PolicyDocument,
-    PolicyStatement,
-    Role,
-    ServicePrincipal
-} from "aws-cdk-lib/aws-iam";
+import { Table } from "aws-cdk-lib/aws-dynamodb";
+import { ManagedPolicy, Role, ServicePrincipal } from "aws-cdk-lib/aws-iam";
 import {
     ApplicationLogLevel,
     Code,
@@ -29,8 +23,6 @@ import { config } from "dotenv";
 
 import { ApplicationEnvironment } from "./app";
 
-export const USERS_TABLE = "website-users";
-
 class WebsiteAPIStack extends Stack {
     constructor(scope: Construct, id: string, props: StackProps) {
         super(scope, id, props);
@@ -40,8 +32,7 @@ class WebsiteAPIStack extends Stack {
             throw new Error("Environment variables not found");
         }
 
-        const usersTable = this.createUsersTable();
-        const apiRole = this.createAPILambdaRole(usersTable);
+        const apiRole = this.createAPILambdaRole();
         const registerLambda = this.createRegisterLambda(env, apiRole);
         const sendEmailLambda = this.createSendEmailLambda(env, apiRole);
 
@@ -55,15 +46,6 @@ class WebsiteAPIStack extends Stack {
         const alarmTopic = this.createAlarmActions();
         this.createLambdaErrorRateAlarms(alarmTopic, [registerLambda, sendEmailLambda]);
         this.createRestAPIErrorRateAlarms(alarmTopic, restApi);
-    }
-
-    private createUsersTable(): Table {
-        return new Table(this, "websiteUsersTable", {
-            tableName: USERS_TABLE,
-            partitionKey: { name: "email", type: AttributeType.STRING },
-            billingMode: BillingMode.PAY_PER_REQUEST,
-            removalPolicy: RemovalPolicy.DESTROY
-        });
     }
 
     private createAPI(
@@ -132,26 +114,7 @@ class WebsiteAPIStack extends Stack {
             managedPolicies: [
                 ManagedPolicy.fromAwsManagedPolicyName("service-role/AWSLambdaBasicExecutionRole"),
                 ManagedPolicy.fromAwsManagedPolicyName("AWSXrayWriteOnlyAccess")
-            ],
-            inlinePolicies: {
-                TableAccessPolicy: new PolicyDocument({
-                    statements: [
-                        new PolicyStatement({
-                            actions: [
-                                "dynamodb:GetItem",
-                                "dynamodb:DeleteItem",
-                                "dynamodb:PutItem",
-                                "dynamodb:Query",
-                                "dynamodb:UpdateItem"
-                            ],
-                            resources: tables.flatMap((table) => [
-                                table.tableArn,
-                                table.tableArn + "/index/*"
-                            ])
-                        })
-                    ]
-                })
-            }
+            ]
         });
     }
 

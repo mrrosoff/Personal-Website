@@ -17,6 +17,8 @@ import Page, { LinksAndMenu } from "./app/Page";
 import IceCream from "./ice-cream/IceCream";
 import MailingList from "./ice-cream/MailingList";
 
+export const API_URL = "https://api.maxrosoff.com"
+
 const App = () => {
     const inputRef: any = useRef(null);
 
