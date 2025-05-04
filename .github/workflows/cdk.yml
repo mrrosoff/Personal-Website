@@ -40,7 +40,7 @@ jobs:
                   WEBSITE_NODE_ENV: "production"
 
             - name: Build
-              run: npm run build
+              run: npm run build-cdk
 
             - name: Bootstrap
               run: npm run bootstrap
