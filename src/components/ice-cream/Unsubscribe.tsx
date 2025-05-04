@@ -7,7 +7,7 @@ import { validate } from "email-validator";
 
 import { API_URL } from "../App";
 ``;
-import icecreamImage from "../../assets/images/ice-cream.png";
+import icecreamImage from "../../assets/images/ice-cream.webp";
 
 const Unsubscribe = () => {
     const theme = useTheme();
