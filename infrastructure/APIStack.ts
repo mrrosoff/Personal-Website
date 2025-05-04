@@ -93,7 +93,7 @@ class APIStack extends Stack {
         return new LambdaFunction(this, "websiteRegisterLambda", {
             functionName: "website-register",
             handler: "register.handler",
-            code: Code.fromAsset("dist/register"),
+            code: Code.fromAsset("dist/lambda"),
             runtime: Runtime.NODEJS_22_X,
             ...this.createLambdaParams(env, role)
         });
@@ -103,7 +103,7 @@ class APIStack extends Stack {
         return new LambdaFunction(this, "websiteSendEmailLambda", {
             functionName: "website-send-email",
             handler: "sendEmail.handler",
-            code: Code.fromAsset("dist/sendEmail"),
+            code: Code.fromAsset("dist/lambda"),
             runtime: Runtime.NODEJS_22_X,
             ...this.createLambdaParams(env, role)
         });
