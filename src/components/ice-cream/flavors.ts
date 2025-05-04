@@ -34,11 +34,15 @@ export const ICE_CREAM_FLAVORS: Record<string, IceCreamFlavor[]> = {
     ],
     upcomingFlavors: [
         {
-            name: "Chocolate Chocolate Chip",
+            name: "Carrot Cake 🥕",
+            color: "orange"
+        },
+        {
+            name: "Chocolate Chocolate Chip 🍪",
             color: "brown"
         },
         {
-            name: "Pistachio",
+            name: "Pistachio 🍦",
             color: "lightgreen"
         },
         {
@@ -47,10 +51,6 @@ export const ICE_CREAM_FLAVORS: Record<string, IceCreamFlavor[]> = {
         },
         {
             name: "🐎 Horseradish"
-        },
-        {
-            name: "Lychee 🍋‍🟩",
-            color: "greenyellow"
         },
         {
             name: "Black Milk Tea Boba 🧋"
