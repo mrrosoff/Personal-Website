@@ -16,38 +16,61 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     }
 
     const resend = new Resend(process.env.RESEND_API_KEY);
-
-    const audienceId = await findAudienceId(resend);
-    if (!audienceId) {
+    try {
+        const payload: RegisterPayload = JSON.parse(event.body);
+        const audienceId = await findAudienceId(resend);
+        const userId = await findUserIfAlreadyRegistered(resend, audienceId, payload.email);
+        if (userId) {
+            return buildResponse(400, "Email Already Registered");
+        }
+        const newUserId = await registerNewUser(resend, audienceId, payload);
+        return buildResponse(200, `Email Registered Successfully With ID: ${newUserId}`);
+    } catch (error: unknown) {
         return buildResponse(500, "Audience Not Found");
     }
+};
 
-    const payload: RegisterPayload = JSON.parse(event.body);
-    const { error } = await resend.contacts.create({
+async function findAudienceId(resend: Resend): Promise<string> {
+    const { data, error } = await resend.audiences.list();
+    if (error || !data) {
+        throw Error(`Error Fetching Audiences: ${error?.message}`);
+    }
+    const { data: audiences } = data;
+    const audienceId = audiences[0]?.id;
+    if (!audienceId) {
+        throw Error("No Audience Found");
+    }
+    return audienceId;
+}
+
+async function findUserIfAlreadyRegistered(
+    resend: Resend,
+    audienceId: string,
+    email: string
+): Promise<string> {
+    const { data, error } = await resend.contacts.get({ audienceId, email });
+    if (error || !data) {
+        throw Error(`Error Fetching User: ${error?.message}`);
+    }
+    return data.id;
+}
+
+async function registerNewUser(
+    resend: Resend,
+    audienceId: string,
+    payload: RegisterPayload
+): Promise<string> {
+    const { data, error } = await resend.contacts.create({
         email: payload.email,
         firstName: payload.firstName,
         lastName: payload.lastName,
         unsubscribed: false,
         audienceId: audienceId
     });
-
-    if (error) {
-        const message = "Error Creating Contact";
-        console.error(message, error);
-        return buildResponse(500, message);
-    }
-
-    return buildResponse(200, "Email Registered Successfully");
-};
-
-async function findAudienceId(resend: Resend): Promise<string | null> {
-    const { data, error } = await resend.audiences.list();
     if (error || !data) {
-        console.error("Error Fetching Audiences", error);
-        return null;
+        throw Error(`Error Creating Contact: ${error?.message}`);
     }
-    const { data: audiences } = data;
-    return audiences[0]?.id || null;
+    return data.id;
 }
 
 function buildResponse(statusCode: number, body: string): APIGatewayProxyResult {
