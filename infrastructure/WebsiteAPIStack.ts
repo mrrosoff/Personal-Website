@@ -1,7 +1,12 @@
 import { Duration, Stack, StackProps } from "aws-cdk-lib";
 import { Cors, EndpointType, LambdaIntegration, RestApi } from "aws-cdk-lib/aws-apigateway";
 import { Certificate, CertificateValidation } from "aws-cdk-lib/aws-certificatemanager";
-import { Alarm, ComparisonOperator, MathExpression } from "aws-cdk-lib/aws-cloudwatch";
+import {
+    Alarm,
+    ComparisonOperator,
+    MathExpression,
+    TreatMissingData
+} from "aws-cdk-lib/aws-cloudwatch";
 import { SnsAction } from "aws-cdk-lib/aws-cloudwatch-actions";
 import { ManagedPolicy, Role, ServicePrincipal } from "aws-cdk-lib/aws-iam";
 import {
@@ -21,6 +26,7 @@ import { Construct } from "constructs";
 import { config } from "dotenv";
 
 import { ApplicationEnvironment } from "./app";
+import { EmailSubscription } from "aws-cdk-lib/aws-sns-subscriptions";
 
 class WebsiteAPIStack extends Stack {
     constructor(scope: Construct, id: string, props: StackProps) {
@@ -156,7 +162,8 @@ class WebsiteAPIStack extends Stack {
                 }),
                 threshold: 0.99,
                 comparisonOperator: ComparisonOperator.LESS_THAN_THRESHOLD,
-                evaluationPeriods: 5
+                evaluationPeriods: 5,
+                treatMissingData: TreatMissingData.NOT_BREACHING
             });
             alarm.addAlarmAction(new SnsAction(alarmTopic));
             return alarm;
@@ -179,7 +186,8 @@ class WebsiteAPIStack extends Stack {
                 }),
                 threshold: 0.99,
                 comparisonOperator: ComparisonOperator.LESS_THAN_THRESHOLD,
-                evaluationPeriods: 5
+                evaluationPeriods: 5,
+                treatMissingData: TreatMissingData.NOT_BREACHING
             });
             alarm.addAlarmAction(new SnsAction(alarmTopic));
             return alarm;
@@ -187,9 +195,11 @@ class WebsiteAPIStack extends Stack {
     }
 
     private createAlarmActions() {
-        return new Topic(this, "websiteAlarmTopic", {
+        const topic = new Topic(this, "websiteAlarmTopic", {
             topicName: "website-alarms"
         });
+        topic.addSubscription(new EmailSubscription("me@maxrosoff.com"));
+        return topic;
     }
 }
 
