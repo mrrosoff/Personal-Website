@@ -74,9 +74,6 @@ const Links = (props: { open: boolean; setOpen: Dispatch<SetStateAction<boolean>
             >
                 {isIceCream ? "Home" : "Ice Cream"}
             </Link>
-            <Link to={"mailing-list"} style={{ paddingRight: 20, color: "#FCFCFC", fontSize: 22 }}>
-                Mail
-            </Link>
             <a
                 style={{ margin: 0, color: "#FCFCFC", fontSize: 22 }}
                 onClick={() => props.setOpen(!props.open)}
