@@ -1,10 +1,21 @@
-import { forwardRef, Ref, useEffect, useState } from "react";
+import { ChangeEvent, KeyboardEvent, forwardRef, Ref, useEffect, useState } from "react";
 
 import { Box, Grid, InputBase, Typography } from "@mui/material";
 
+import { EmulatorState } from "../../javascript-terminal";
 import PromptSymbol from "./PromptSymbol";
 
-const CommandInput = (props: any, ref: Ref<HTMLInputElement | null>) => {
+const CommandInput = (
+    props: {
+        theme: any;
+        emulatorState: EmulatorState;
+        promptSymbol: string;
+        value: string;
+        onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+        onKeyDown: (e: KeyboardEvent<HTMLInputElement>) => void;
+    },
+    ref: Ref<HTMLInputElement | null>
+) => {
     const [visibleCursor, setVisibleCursor] = useState<boolean>(true);
 
     useEffect(() => {
@@ -17,9 +28,7 @@ const CommandInput = (props: any, ref: Ref<HTMLInputElement | null>) => {
     return (
         <Grid container alignItems={"center"} spacing={2}>
             <Grid>
-                <PromptSymbol theme={props.theme} {...props}>
-                    {props.promptSymbol}
-                </PromptSymbol>
+                <PromptSymbol {...props}>{props.promptSymbol}</PromptSymbol>
             </Grid>
             <Grid>
                 <Grid container justifyContent={"center"} alignItems={"center"}>

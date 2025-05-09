@@ -1,7 +1,7 @@
-import { forwardRef, Ref, useEffect, useState } from "react";
+import { ChangeEvent, KeyboardEvent, forwardRef, Ref, useEffect, useState } from "react";
 
 import { Box, Grid } from "@mui/material";
-import { Emulator } from "../../javascript-terminal";
+import { Emulator, EmulatorState } from "../../javascript-terminal";
 
 import CommandInput from "./CommandInput";
 
@@ -9,7 +9,10 @@ import OutputHeader from "./output/OutputHeader";
 import OutputText from "./output/OutputText";
 import OutputError from "./output/OutputError";
 
-const Terminal = (props: any, ref: Ref<HTMLInputElement | null>) => {
+const Terminal = (
+    props: { emulatorState: EmulatorState; errorStr: string; theme: any; promptSymbol: string },
+    ref: Ref<HTMLInputElement | null>
+) => {
     const [showMOTD, setShowMOTD] = useState(true);
     const [input, setInput] = useState("");
     const [emulatorState, setEmulatorState] = useState(props.emulatorState);
@@ -18,7 +21,7 @@ const Terminal = (props: any, ref: Ref<HTMLInputElement | null>) => {
 
     let emulator = new Emulator();
 
-    const onKeyDown = (e: any) => {
+    const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
         switch (e.key) {
             case "ArrowUp":
                 e.preventDefault();
@@ -66,25 +69,25 @@ const Terminal = (props: any, ref: Ref<HTMLInputElement | null>) => {
         if (showMOTD && emulatorState.getHistory().includes("clear")) {
             setShowMOTD(false);
         }
-        return emulatorState.getOutputs().map((content: any, key: any) => (
-            <Grid key={key} container direction={"column"}>
+        return emulatorState.getOutputs().map((content: any, index: number) => (
+            <Grid key={index} container direction={"column"}>
                 <Grid>
                     <OutputHeader cwd={content.cwd} {...props}>
                         {content.command}
                     </OutputHeader>
                 </Grid>
-                {content.output.map((output: any, key: any) => {
+                {content.output.map((output: any, index: number) => {
                     if (output.type === "error") {
                         return (
-                            <Grid key={key}>
+                            <Grid key={index}>
                                 <OutputError {...props}>{output.output}</OutputError>
                             </Grid>
                         );
                     } else if (output.type === "react") {
-                        return <Grid key={key}>{output.output}</Grid>;
+                        return <Grid key={index}>{output.output}</Grid>;
                     } else {
                         return (
-                            <Grid key={key}>
+                            <Grid key={index}>
                                 <OutputText {...props}>{output.output}</OutputText>
                             </Grid>
                         );
@@ -158,10 +161,11 @@ const Terminal = (props: any, ref: Ref<HTMLInputElement | null>) => {
                     <CommandInput
                         ref={ref}
                         value={input}
-                        onChange={(e: any) => setInput(e.target.value)}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
                         onKeyDown={onKeyDown}
+                        promptSymbol={props.promptSymbol}
+                        theme={props.theme}
                         emulatorState={emulatorState}
-                        {...props}
                     />
                 </Grid>
             </Grid>

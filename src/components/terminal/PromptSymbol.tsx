@@ -2,7 +2,14 @@ import { Grid, Typography } from "@mui/material";
 
 import FolderIcon from "@mui/icons-material/Folder";
 
-const PromptSymbol = (props: any) => {
+import { EmulatorState } from "../../javascript-terminal";
+
+const PromptSymbol = (props: {
+    theme: any;
+    emulatorState: EmulatorState;
+    cwd?: string;
+    children: string;
+}) => {
     return (
         <Grid container alignContent={"center"} alignItems={"center"} spacing={1}>
             <Grid>
