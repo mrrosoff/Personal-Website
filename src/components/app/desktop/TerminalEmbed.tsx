@@ -17,7 +17,10 @@ const TerminalEmbed = (_props: {}, ref: Ref<HTMLInputElement | null>) => {
         commandMapping: CommandMapping.create({
             ...DefaultCommandMapping,
             exit: {
-                functionDef: () => close(),
+                functionDef: () => {
+                    close();
+                    return { output: "Can't Close Window", type: "error" };
+                },
                 optDef: {}
             }
         } as any)
