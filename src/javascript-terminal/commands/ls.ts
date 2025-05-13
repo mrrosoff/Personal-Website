@@ -1,6 +1,7 @@
 import { parseOptions } from "../parser";
 import * as PathUtil from "../fs/util/path-util";
 import * as DirOp from "../fs/operations/directory-operations";
+import EmulatorState from "../emulator-state/EmulatorState";
 
 const IMPLIED_DIRECTORY_ENTRIES = [".", ".."];
 
@@ -20,10 +21,7 @@ const makeSortedReturn = (listing: any[]) => {
 
 export const optDef = { "-a, --all": "", "-A, --almost-all": "" };
 
-const functionDef = (
-    state: { getEnvVariables: () => any; getFileSystem: () => any },
-    commandOptions: string[]
-) => {
+const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
 
     try {

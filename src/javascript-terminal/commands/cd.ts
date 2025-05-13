@@ -1,11 +1,11 @@
 import { parseOptions } from "../parser";
-import { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
+import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import { fsSearchParent } from "../fs/operations/base-operations";
 import { getLastPathPart } from "../fs/util/path-util";
 
 export const optDef = {};
 
-const functionDef = (state: any, commandOptions: string[]) => {
+const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
 
     try {

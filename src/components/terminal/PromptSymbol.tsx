@@ -5,7 +5,7 @@ import FolderIcon from "@mui/icons-material/Folder";
 import { EmulatorState } from "../../javascript-terminal";
 
 const PromptSymbol = (props: {
-    theme: any;
+    theme: Record<string, any>;
     emulatorState: EmulatorState;
     cwd?: string;
     children: string;

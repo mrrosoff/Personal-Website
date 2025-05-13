@@ -111,7 +111,7 @@ const FlavorsList = (props: { title: string; description: string; flavors: IceCr
             />
             {props.flavors.map((flavor, index) => (
                 <>
-                    <Section key={index}>
+                    <Section key={flavor.name}>
                         <Row>
                             <Column style={{ verticalAlign: "baseline", width: 35 }}>
                                 <table style={{ textAlign: "center" }}>

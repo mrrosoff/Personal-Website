@@ -1,3 +1,4 @@
+import EmulatorState from "../emulator-state/EmulatorState";
 import { parseOptions } from "../parser";
 
 const VARIABLE_GROUP_REGEX = /\$(\w+)/g;
@@ -12,10 +13,7 @@ const substituteEnvVariables = (environmentVariables: { [x: string]: any }, inpu
 
 export const optDef = {};
 
-const functionDef = (
-    state: { getEnvVariables: () => { [x: string]: any } },
-    commandOptions: string[]
-) => {
+const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
 
     try {

@@ -1,10 +1,8 @@
-import { parseOptions } from "../parser";
+import EmulatorState from "../emulator-state/EmulatorState";
 
 export const optDef = {};
 
-const functionDef = (state: { getHistory: () => any[] }, commandOptions: string[]) => {
-    const { options, argv } = parseOptions(commandOptions, optDef);
-
+const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
     try {
         return { output: state.getHistory().join("\n") };
     } catch (err: any) {

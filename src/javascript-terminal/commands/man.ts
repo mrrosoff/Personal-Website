@@ -1,8 +1,9 @@
+import EmulatorState from "../emulator-state/EmulatorState";
 import { parseOptions } from "../parser";
 
 export const optDef = {};
 
-const functionDef = (_state: any, commandOptions: string[]) => {
+const functionDef = (_state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length !== 1) {

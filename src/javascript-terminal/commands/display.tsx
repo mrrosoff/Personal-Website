@@ -1,5 +1,5 @@
 import { parseOptions } from "../parser";
-import { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
+import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import * as FileOp from "../fs/operations/file-operations";
 
 const fileToImageOutput = (fs: any, filePath: string) => {
@@ -26,7 +26,7 @@ const fileToImageOutput = (fs: any, filePath: string) => {
 
 export const optDef = {};
 
-const functionDef = (state: { getFileSystem: () => any }, commandOptions: string[]) => {
+const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length === 0) {

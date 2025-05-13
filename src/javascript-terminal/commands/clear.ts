@@ -1,15 +1,13 @@
-import { parseOptions } from "../parser";
+import EmulatorState from "../emulator-state/EmulatorState";
 
 export const optDef = {};
 
-const functionDef = (state: any, commandOptions: any) => {
-    const { options, argv } = parseOptions(commandOptions, optDef);
-
+const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
     try {
         state.setOutputs([]);
         return {};
-    } catch (err: unknown) {
-        return { output: (err as any).message, type: "error" };
+    } catch (err: any) {
+        return { output: err.message, type: "error" };
     }
 };
 

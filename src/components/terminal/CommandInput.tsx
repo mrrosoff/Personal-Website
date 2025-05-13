@@ -7,7 +7,7 @@ import PromptSymbol from "./PromptSymbol";
 
 const CommandInput = (
     props: {
-        theme: any;
+        theme: Record<string, any>;
         emulatorState: EmulatorState;
         promptSymbol: string;
         value: string;

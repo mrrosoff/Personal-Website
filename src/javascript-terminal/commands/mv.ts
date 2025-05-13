@@ -1,10 +1,10 @@
 import { parseOptions } from "../parser";
-import { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
+import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import * as DirOp from "../fs/operations/directory-operations";
 
 export const optDef = {};
 
-const functionDef = (state: { getFileSystem: () => any }, commandOptions: string[]) => {
+const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length < 2) {
