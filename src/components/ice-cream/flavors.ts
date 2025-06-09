@@ -6,23 +6,31 @@ export type IceCreamFlavor = {
 export const ICE_CREAM_FLAVORS: Record<string, IceCreamFlavor[]> = {
     currentFlavors: [
         {
-            name: "Carrot Cake 🥕 Ice Cream Sandwiches",
-            color: "coral"
+            name: "Strawberry Cucumber 🥒",
+            color: "salmon"
         },
+        {
+            name: "Lemon Zest & Vanilla Meringues 🍋",
+            color: "lemonchiffon"
+        },
+        {
+            name: "Carmelized Pineapple 🍍",
+            color: "gold"
+        },
+        {
+            name: "Black Pepper Goat Chesse Ganache 🍨",
+            color: "oldlace"
+        }
+    ],
+    lastBatch: [
         {
             name: "Orange Creamsicle 🍊",
             color: "orange"
         },
         {
-            name: "Black Pepper Goat Chesse Ganache 🍨",
-            color: "oldlace"
-        },
-        {
             name: "Chocolate Gooey Brownie 🍫",
             color: "sienna"
-        }
-    ],
-    lastBatch: [
+        },
         {
             name: "Mexican Hot Chocolate ☕",
             color: "tomato"
@@ -30,24 +38,20 @@ export const ICE_CREAM_FLAVORS: Record<string, IceCreamFlavor[]> = {
         {
             name: "👻 Ghostly Presence 😱",
             color: "lightgrey"
-        },
-        {
-            name: "Chestnut 🌰",
-            color: "chocolate"
         }
     ],
     upcomingFlavors: [
         {
-            name: "Strawberry Cucumber Sorbet 🥒",
-            color: "salmon"
-        },
-        {
-            name: "Cocao Nib French Press Sherbet ☕",
+            name: "Coffee + Chocolate Tres Leches ☕",
             color: "chocolate"
         },
         {
-            name: "Pistachio 🍦",
-            color: "lightgreen"
+            name: "Salted Pretzel 🥨",
+            color: "linen"
+        },
+        {
+            name: "Mango Pistacio 🥭",
+            color: "orangered"
         },
         {
             name: "Black Milk Tea Boba 🧋",
