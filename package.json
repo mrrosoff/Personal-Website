@@ -17,6 +17,7 @@
     "author": "Max Rosoff",
     "license": "MIT",
     "dependencies": {
+        "@aws-cdk/aws-servicecatalogappregistry-alpha": "^2.201.0-alpha.0",
         "@aws-sdk/client-dynamodb": "^3.799.0",
         "@aws-sdk/client-s3": "^3.802.0",
         "@aws-sdk/credential-providers": "^3.799.0",
