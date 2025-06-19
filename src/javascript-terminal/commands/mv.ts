@@ -1,3 +1,5 @@
+import assert from "assert";
+
 import { parseOptions } from "../parser";
 import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import * as DirOp from "../fs/operations/directory-operations";
@@ -22,7 +24,8 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         DirOp.rename(state.getFileSystem(), srcPath, destPath);
 
         return { output: "" };
-    } catch (err: any) {
+    } catch (err: unknown) {
+        assert(err instanceof Error);
         return { output: err.message, type: "error" };
     }
 };

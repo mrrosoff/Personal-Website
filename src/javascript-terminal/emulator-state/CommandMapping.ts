@@ -1,6 +1,18 @@
+import { JSX } from "react";
 import commands from "../commands.js";
+import EmulatorState from "./EmulatorState.js";
 
-export const create = (commandMapping = commands): any => {
+type CommandMapping = {
+    [key: string]: {
+        functionDef: (
+            state: EmulatorState,
+            _commandOptions: string[]
+        ) => { output?: JSX.Element | JSX.Element[] | string; type?: string };
+        optDef: { [key: string]: string };
+    };
+};
+
+export const create = (commandMapping: CommandMapping = commands): any => {
     for (const [commandName, command] of Object.entries(commandMapping) as any) {
         if (!command.functionDef || !command.optDef) {
             throw Error(`Failed To Initialize Terminal: Invalid Command (${commandName})`);

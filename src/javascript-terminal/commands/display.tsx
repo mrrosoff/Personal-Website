@@ -1,3 +1,5 @@
+import assert from "assert";
+
 import { parseOptions } from "../parser";
 import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import * as FileOp from "../fs/operations/file-operations";
@@ -43,7 +45,8 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
             output: filePaths.map((path) => fileToImageOutput(state.getFileSystem(), path)),
             type: "react"
         };
-    } catch (err: any) {
+    } catch (err: unknown) {
+        assert(err instanceof Error);
         return { output: err.message, type: "error" };
     }
 };

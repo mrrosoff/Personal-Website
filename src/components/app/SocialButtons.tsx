@@ -106,7 +106,7 @@ export const MobileSocialButtonList = () => {
 };
 
 const CustomIconButton = (props: {
-    icon: any;
+    icon: React.ElementType;
     href: string;
     text: string;
     social?: boolean;

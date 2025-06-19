@@ -1,3 +1,5 @@
+import assert from "assert";
+
 import { parseOptions } from "../parser";
 import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import { makeEmptyDirectory } from "../fs/util/file-util";
@@ -17,7 +19,8 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         DirOp.add(state.getFileSystem(), newFolderPath, makeEmptyDirectory());
 
         return { output: "" };
-    } catch (err: any) {
+    } catch (err: unknown) {
+        assert(err instanceof Error);
         return { output: err.message, type: "error" };
     }
 };

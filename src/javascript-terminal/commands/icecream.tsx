@@ -1,3 +1,5 @@
+import assert from "assert";
+
 import { Navigate } from "react-router-dom";
 import EmulatorState from "../emulator-state/EmulatorState";
 
@@ -9,7 +11,8 @@ const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
             output: <Navigate to="/ice-cream" replace={true} />,
             type: "react"
         };
-    } catch (err: any) {
+    } catch (err: unknown) {
+        assert(err instanceof Error);
         return { output: err.message, type: "error" };
     }
 };

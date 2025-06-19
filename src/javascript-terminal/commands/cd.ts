@@ -1,3 +1,5 @@
+import assert from "assert";
+
 import { parseOptions } from "../parser";
 import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import { fsSearchParent } from "../fs/operations/base-operations";
@@ -23,7 +25,8 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
 
         state.setEnvVariables({ ...state.getEnvVariables(), cwd: newCwdPath });
         return { output: "", type: "cwd", oldCwdPath: oldCwdPath };
-    } catch (err: any) {
+    } catch (err: unknown) {
+        assert(err instanceof Error);
         return { output: err.message, type: "error" };
     }
 };

@@ -1,3 +1,5 @@
+import assert from "assert";
+
 import EmulatorState from "../emulator-state/EmulatorState";
 import { parseOptions } from "../parser";
 
@@ -109,7 +111,8 @@ const functionDef = (_state: EmulatorState, commandOptions: string[]) => {
                     output: ""
                 };
         }
-    } catch (err: any) {
+    } catch (err: unknown) {
+        assert(err instanceof Error);
         return { output: err.message, type: "error" };
     }
 };

@@ -1,10 +1,12 @@
+import assert from "assert";
+
 import EmulatorState from "../emulator-state/EmulatorState";
 import { parseOptions } from "../parser";
 
 const VARIABLE_GROUP_REGEX = /\$(\w+)/g;
 const DOUBLE_SPACE_REGEX = /\s\s+/g;
 
-const substituteEnvVariables = (environmentVariables: { [x: string]: any }, inputStr: string) => {
+const substituteEnvVariables = (environmentVariables: { [x: string]: string }, inputStr: string) => {
     return inputStr.replace(
         VARIABLE_GROUP_REGEX,
         (match, varName) => environmentVariables[varName] || ""
@@ -26,7 +28,8 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         }
 
         return { output: cleanStr };
-    } catch (err: any) {
+    } catch (err: unknown) {
+        assert(err instanceof Error);
         return { output: err.message, type: "error" };
     }
 };

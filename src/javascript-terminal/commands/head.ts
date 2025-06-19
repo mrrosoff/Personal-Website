@@ -1,3 +1,5 @@
+import assert from "assert";
+
 import { parseOptions } from "../parser";
 import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import * as FileOp from "../fs/operations/file-operations";
@@ -17,7 +19,8 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         const lineCount = options.lines ? options.lines : 10;
 
         return { output: file.split("\n").slice(0, lineCount).join("\n") };
-    } catch (err: any) {
+    } catch (err: unknown) {
+        assert(err instanceof Error);
         return { output: err.message, type: "error" };
     }
 };

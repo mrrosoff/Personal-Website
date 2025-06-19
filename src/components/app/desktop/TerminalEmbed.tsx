@@ -23,7 +23,7 @@ const TerminalEmbed = (_props: {}, ref: Ref<HTMLInputElement | null>) => {
                 },
                 optDef: {}
             }
-        } as any)
+        })
     });
 
     return (

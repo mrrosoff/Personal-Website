@@ -1,3 +1,5 @@
+import assert from "assert";
+
 import { parseOptions } from "../parser";
 import * as PathUtil from "../fs/util/path-util";
 import * as DirOp from "../fs/operations/directory-operations";
@@ -5,7 +7,7 @@ import EmulatorState from "../emulator-state/EmulatorState";
 
 const IMPLIED_DIRECTORY_ENTRIES = [".", ".."];
 
-const resolveDirectoryToList = (envVariables: { cwd: any }, argv: string | any[]) => {
+const resolveDirectoryToList = (envVariables: { cwd: string }, argv: string | any[]) => {
     const cwd = envVariables.cwd;
 
     if (argv.length > 0) {
@@ -15,7 +17,7 @@ const resolveDirectoryToList = (envVariables: { cwd: any }, argv: string | any[]
     return cwd;
 };
 
-const makeSortedReturn = (listing: any[]) => {
+const makeSortedReturn = (listing: string[]) => {
     return { output: listing.sort().join("\n") };
 };
 
@@ -35,7 +37,8 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         }
 
         return makeSortedReturn(dirList.filter((record) => !record.startsWith(".")));
-    } catch (err: any) {
+    } catch (err: unknown) {
+        assert(err instanceof Error);
         return { output: err.message, type: "error" };
     }
 };

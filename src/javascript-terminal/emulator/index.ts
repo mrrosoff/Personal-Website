@@ -3,9 +3,10 @@ import { suggestCommandOptions, suggestCommands, suggestFileSystemNames } from "
 import * as CommandMappingUtil from "../emulator-state/CommandMapping";
 import * as PathUtil from "../fs/util/path-util";
 import { fsSearchParent } from "../fs/operations/base-operations";
+import EmulatorState from "../emulator-state/EmulatorState";
 
 export default class Emulator {
-    autocomplete(state: any, partialStr: string) {
+    autocomplete(state: EmulatorState, partialStr: string) {
         try {
             const suggestions = this.suggest(state, partialStr);
             if (suggestions.length > 1) {
@@ -28,7 +29,7 @@ export default class Emulator {
         }
     }
 
-    suggest(state: any, partialStr: string) {
+    suggest(state: EmulatorState, partialStr: string) {
         partialStr = partialStr.replace(/^\s+/g, "");
 
         const lastPartialChar = partialStr.slice(-1);
@@ -62,7 +63,7 @@ export default class Emulator {
         ];
     }
 
-    execute(state: any, str: string, errorString: string) {
+    execute(state: EmulatorState, str: string, errorString: string) {
         this.addCommandToHistory(state, str);
 
         if (str.trim() === "") {
@@ -75,7 +76,7 @@ export default class Emulator {
         return state;
     }
 
-    updateStateByExecution(state: any, commandStrToExecute: string, errorString: string) {
+    updateStateByExecution(state: EmulatorState, commandStrToExecute: string, errorString: string) {
         let commandResults = [];
 
         for (const { commandName, commandOptions } of parseCommands(commandStrToExecute)) {
@@ -116,11 +117,11 @@ export default class Emulator {
         }
     }
 
-    addCommandToHistory(state: any, command: string) {
+    addCommandToHistory(state: EmulatorState, command: string) {
         state.setHistory([...state.getHistory(), command]);
     }
 
-    addCommandOutput(state: any, outputs: any[], cwd = state.getEnvVariables().cwd) {
+    addCommandOutput(state: EmulatorState, outputs: any[], cwd = state.getEnvVariables().cwd) {
         state.setOutputs([
             ...state.getOutputs(),
             {

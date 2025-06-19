@@ -46,8 +46,8 @@ export default class EmulatorState {
         return new EmulatorState(stateMap);
     }
 
-    getTabCount() {
-        return this.state[TAB_COUNT_KEY];
+    getTabCount(): number {
+        return this.state[TAB_COUNT_KEY] || 0;
     }
 
     setTabCount(newTabCount: number) {
