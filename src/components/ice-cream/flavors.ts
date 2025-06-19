@@ -10,19 +10,23 @@ export const ICE_CREAM_FLAVORS: Record<string, IceCreamFlavor[]> = {
             color: "salmon"
         },
         {
+            name: "Honey Roasted Banana 🍌",
+            color: "yellow"
+        },
+        {
             name: "Lemon Zest & Vanilla Meringues 🍋",
             color: "lemonchiffon"
         },
         {
-            name: "Carmelized Pineapple 🍍",
+            name: "Coconut + Caramelized Pineapple 🍍",
             color: "gold"
-        },
-        {
-            name: "Black Pepper Goat Chesse Ganache 🍨",
-            color: "oldlace"
         }
     ],
     lastBatch: [
+        {
+            name: "Black Pepper Goat Cheese Ganache 🍨",
+            color: "oldlace"
+        },
         {
             name: "Orange Creamsicle 🍊",
             color: "orange"
@@ -32,18 +36,22 @@ export const ICE_CREAM_FLAVORS: Record<string, IceCreamFlavor[]> = {
             color: "sienna"
         },
         {
-            name: "Mexican Hot Chocolate ☕",
-            color: "tomato"
-        },
-        {
             name: "👻 Ghostly Presence 😱",
             color: "lightgrey"
         }
     ],
     upcomingFlavors: [
         {
+            name: "Matcha Matcha Man 🍵",
+            color: "lightgreen"
+        },
+        {
             name: "Coffee + Chocolate Tres Leches ☕",
             color: "chocolate"
+        },
+        {
+            name: "Chocolate Gooey Brownie 🍫",
+            color: "sienna"
         },
         {
             name: "Salted Pretzel 🥨",
@@ -52,10 +60,6 @@ export const ICE_CREAM_FLAVORS: Record<string, IceCreamFlavor[]> = {
         {
             name: "Mango Pistacio 🥭",
             color: "orangered"
-        },
-        {
-            name: "Black Milk Tea Boba 🧋",
-            color: "lightgrey"
         }
     ]
 };
