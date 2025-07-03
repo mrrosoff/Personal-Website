@@ -160,10 +160,10 @@ class WebsiteAPIStack extends Stack {
         const invocationSumExpr = totalInvocations.map((_, i) => `i${i}`).join(" + ");
         const successRateExpr = `(1 - (${errorSumExpr}) / (${invocationSumExpr})) * 100`;
 
-        const alarm = new Alarm(this, `WebsiteLambdaSuccessRateAlarm`, {
-            alarmName: "Website Lambda Success Rate",
+        const alarm = new Alarm(this, `WebsiteLambdasSuccessRateAlarm`, {
+            alarmName: "Website Lambdas Success Rate",
             metric: new MathExpression({
-                label: "Website Lambda Success Rate",
+                label: "Website Lambdas Success Rate",
                 expression: successRateExpr,
                 usingMetrics: metricMap,
                 period: Duration.minutes(5)
