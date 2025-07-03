@@ -5,6 +5,7 @@ import {
     Alarm,
     ComparisonOperator,
     MathExpression,
+    Metric,
     TreatMissingData
 } from "aws-cdk-lib/aws-cloudwatch";
 import { SnsAction } from "aws-cdk-lib/aws-cloudwatch-actions";
@@ -55,12 +56,12 @@ class WebsiteAPIStack extends Stack {
         );
 
         const alarmTopic = this.createAlarmActions();
-        this.createLambdaErrorRateAlarms(alarmTopic, [
+        this.createLambdaErrorRateAlarm(alarmTopic, [
             registerLambda,
             sendEmailLambda,
             unsubscribeLambda
         ]);
-        this.createRestAPIErrorRateAlarms(alarmTopic, restApi);
+        this.createRestAPIErrorRateAlarm(alarmTopic, restApi);
     }
 
     private createAPI(
@@ -147,51 +148,59 @@ class WebsiteAPIStack extends Stack {
         });
     }
 
-    private createLambdaErrorRateAlarms(alarmTopic: Topic, lambdas: LambdaFunction[]): Alarm[] {
-        return lambdas.map((lambda) => {
-            const alarm = new Alarm(this, `${lambda.node.id}-sucessRate`, {
-                alarmName: `${lambda.functionName} Success Rate`,
-                metric: new MathExpression({
-                    label: "Success Rate",
-                    expression: "1 - errors / invocations",
-                    usingMetrics: {
-                        errors: lambda.metricErrors(),
-                        invocations: lambda.metricInvocations()
-                    },
-                    period: Duration.minutes(1)
-                }),
-                threshold: 0.99,
-                comparisonOperator: ComparisonOperator.LESS_THAN_THRESHOLD,
-                evaluationPeriods: 5,
-                treatMissingData: TreatMissingData.NOT_BREACHING
-            });
-            alarm.addAlarmAction(new SnsAction(alarmTopic));
-            return alarm;
+    private createLambdaErrorRateAlarm(alarmTopic: Topic, lambdas: LambdaFunction[]): Alarm {
+        const totalErrors = lambdas.map((lambda) => lambda.metricErrors());
+        const totalInvocations = lambdas.map((lambda) => lambda.metricInvocations());
+
+        const metricMap: Record<string, Metric> = {};
+        totalErrors.forEach((metric, i) => (metricMap[`e${i}`] = metric));
+        totalInvocations.forEach((metric, i) => (metricMap[`i${i}`] = metric));
+
+        const errorSumExpr = totalErrors.map((_, i) => `e${i}`).join(" + ");
+        const invocationSumExpr = totalInvocations.map((_, i) => `i${i}`).join(" + ");
+        const successRateExpr = `(1 - (${errorSumExpr}) / (${invocationSumExpr})) * 100`;
+
+        const alarm = new Alarm(this, `WebsiteLambdaSuccessRateAlarm`, {
+            alarmName: "Website Lambda Success Rate",
+            metric: new MathExpression({
+                label: "Website Lambda Success Rate",
+                expression: successRateExpr,
+                usingMetrics: metricMap,
+                period: Duration.minutes(5)
+            }),
+            threshold: 99.99,
+            comparisonOperator: ComparisonOperator.LESS_THAN_THRESHOLD,
+            evaluationPeriods: 1,
+            treatMissingData: TreatMissingData.NOT_BREACHING
         });
+
+        alarm.addAlarmAction(new SnsAction(alarmTopic));
+        return alarm;
     }
 
-    private createRestAPIErrorRateAlarms(alarmTopic: Topic, api: RestApi): Alarm[] {
-        const errorRateMetrics = [api.metricClientError(), api.metricServerError()];
-        return errorRateMetrics.map((metric) => {
-            const alarm = new Alarm(this, `${api.node.id}-${metric.metricName}`, {
-                alarmName: `website-${metric.metricName}`,
-                metric: new MathExpression({
-                    label: "Success Rate",
-                    expression: "1 - errors / invocations",
-                    usingMetrics: {
-                        errors: metric,
-                        invocations: api.metricCount()
-                    },
-                    period: Duration.minutes(1)
-                }),
-                threshold: 0.99,
-                comparisonOperator: ComparisonOperator.LESS_THAN_THRESHOLD,
-                evaluationPeriods: 5,
-                treatMissingData: TreatMissingData.NOT_BREACHING
-            });
-            alarm.addAlarmAction(new SnsAction(alarmTopic));
-            return alarm;
+    private createRestAPIErrorRateAlarm(alarmTopic: Topic, api: RestApi): Alarm {
+        const errorRateExpression = new MathExpression({
+            label: "Website API Success Rate",
+            expression: "(1 - (clientErrors + serverErrors) / invocations) * 100",
+            usingMetrics: {
+                clientErrors: api.metricClientError(),
+                serverErrors: api.metricServerError(),
+                invocations: api.metricCount()
+            },
+            period: Duration.minutes(5)
         });
+
+        const alarm = new Alarm(this, `WebsiteRestApiSuccessRateAlarm`, {
+            alarmName: "Website Rest API Success Rate",
+            metric: errorRateExpression,
+            threshold: 99.99,
+            comparisonOperator: ComparisonOperator.LESS_THAN_THRESHOLD,
+            evaluationPeriods: 1,
+            treatMissingData: TreatMissingData.NOT_BREACHING
+        });
+
+        alarm.addAlarmAction(new SnsAction(alarmTopic));
+        return alarm;
     }
 
     private createAlarmActions() {
