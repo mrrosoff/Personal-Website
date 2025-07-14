@@ -15,7 +15,7 @@ const env: Environment = {
     region: process.env.CDK_DEFAULT_REGION
 };
 
-new ApplicationAssociator(app, "WebsiteAssociatedApplication", {
+const application = new ApplicationAssociator(app, "WebsiteAssociatedApplication", {
     applications: [
         TargetApplication.createApplicationStack({
             applicationName: "Personal-Website",
@@ -24,5 +24,6 @@ new ApplicationAssociator(app, "WebsiteAssociatedApplication", {
         })
     ]
 });
+const tags = { awsApplication: application.appRegistryApplication.applicationArn };
 
-new WebsiteAPIStack(app, "WebsiteAPIStack", { env });
+new WebsiteAPIStack(app, "WebsiteAPIStack", { env, tags });
