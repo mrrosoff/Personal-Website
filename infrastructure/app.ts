@@ -15,7 +15,7 @@ const env: Environment = {
     region: process.env.CDK_DEFAULT_REGION
 };
 
-const application = new ApplicationAssociator(app, "WebsiteAssociatedApplication", {
+new ApplicationAssociator(app, "WebsiteAssociatedApplication", {
     applications: [
         TargetApplication.createApplicationStack({
             applicationName: "Personal-Website",
