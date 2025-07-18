@@ -25,9 +25,4 @@ new ApplicationAssociator(app, "WebsiteAssociatedApplication", {
     ]
 });
 
-// Have to hardcode for now, but this should be application.appRegistryApplication.applicationArn
-const applicationArn =
-    "arn:aws:resource-groups:us-east-1:170267588697:group/Personal-Website/0abs35le8462l8rrusswjgo1x8";
-const tags = { awsApplication: applicationArn };
-
-new WebsiteAPIStack(app, "WebsiteAPIStack", { env, tags });
+new WebsiteAPIStack(app, "WebsiteAPIStack", { env });
