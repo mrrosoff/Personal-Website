@@ -6,7 +6,10 @@ import { parseOptions } from "../parser";
 const VARIABLE_GROUP_REGEX = /\$(\w+)/g;
 const DOUBLE_SPACE_REGEX = /\s\s+/g;
 
-const substituteEnvVariables = (environmentVariables: { [x: string]: string }, inputStr: string) => {
+const substituteEnvVariables = (
+    environmentVariables: { [x: string]: string },
+    inputStr: string
+) => {
     return inputStr.replace(
         VARIABLE_GROUP_REGEX,
         (match, varName) => environmentVariables[varName] || ""

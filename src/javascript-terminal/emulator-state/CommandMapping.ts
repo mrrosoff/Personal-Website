@@ -12,8 +12,8 @@ type CommandMapping = {
     };
 };
 
-export const create = (commandMapping: CommandMapping = commands): any => {
-    for (const [commandName, command] of Object.entries(commandMapping) as any) {
+export const create = (commandMapping: CommandMapping = commands): CommandMapping => {
+    for (const [commandName, command] of Object.entries(commandMapping)) {
         if (!command.functionDef || !command.optDef) {
             throw Error(`Failed To Initialize Terminal: Invalid Command (${commandName})`);
         }
