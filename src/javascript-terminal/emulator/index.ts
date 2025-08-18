@@ -4,6 +4,7 @@ import * as CommandMappingUtil from "../emulator-state/CommandMapping";
 import * as PathUtil from "../fs/util/path-util";
 import { fsSearchParent } from "../fs/operations/base-operations";
 import EmulatorState from "../emulator-state/EmulatorState";
+import { CommandMapping } from "../emulator-state/CommandMapping";
 
 export default class Emulator {
     autocomplete(state: EmulatorState, partialStr: string) {
@@ -86,6 +87,7 @@ export default class Emulator {
             const {
                 output: output,
                 type: type = "output",
+                // @ts-ignore
                 oldCwdPath
             } = this.runCommand(commandMapping, commandName, commandArgs, errorString);
 
@@ -133,20 +135,20 @@ export default class Emulator {
     }
 
     runCommand(
-        commandMapping: any,
+        commandMapping: CommandMapping,
         commandName: string,
         commandArgs: any,
         errorString = "Command not found"
     ) {
         const notFoundCallback = () => ({ output: errorString, type: "error" });
 
-        if (!CommandMappingUtil.isCommandSet(commandMapping, commandName)) {
+        const command = CommandMappingUtil.getCommandFn(commandMapping, commandName);
+        if (!command) {
             return notFoundCallback();
         }
 
-        const command = CommandMappingUtil.getCommandFn(commandMapping, commandName);
-
         try {
+            // @ts-ignore
             return command(...commandArgs);
         } catch (fatalCommandError: unknown) {
             console.error(fatalCommandError);

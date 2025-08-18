@@ -2,7 +2,7 @@ import { JSX } from "react";
 import commands from "../commands.js";
 import EmulatorState from "./EmulatorState.js";
 
-type CommandMapping = {
+export type CommandMapping = {
     [key: string]: {
         functionDef: (
             state: EmulatorState,
@@ -21,25 +21,28 @@ export const create = (commandMapping: CommandMapping = commands): CommandMappin
     return commandMapping;
 };
 
-export const isCommandSet = (commandMapping = commands, commandName: string) => {
+export const isCommandSet = (commandMapping: CommandMapping = commands, commandName: string) => {
     return commandName in commandMapping;
 };
 
-export const getCommandFn = (commandMapping = commands, commandName: string) => {
+export const getCommandFn = (commandMapping: CommandMapping = commands, commandName: string) => {
     if (commandName in commandMapping) {
-        return (commandMapping as any)[commandName].functionDef;
+        return commandMapping[commandName].functionDef;
     }
     return undefined;
 };
 
-export const getCommandOptDef = (commandMapping = commands, commandName: string) => {
+export const getCommandOptDef = (
+    commandMapping: CommandMapping = commands,
+    commandName: string
+): Record<string, string> | undefined => {
     if (commandName in commandMapping) {
-        return (commandMapping as any)[commandName].optDef;
+        return commandMapping[commandName].optDef;
     }
     return undefined;
 };
 
-export const getCommandNames = (commandMapping = commands) => {
+export const getCommandNames = (commandMapping: CommandMapping = commands) => {
     return Object.keys(commandMapping);
 };
 

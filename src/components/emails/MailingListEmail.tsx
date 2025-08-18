@@ -73,6 +73,10 @@ const MailingListEmail = () => {
 };
 
 const FlavorsList = (props: { title: string; description: string; flavors: IceCreamFlavor[] }) => {
+    if (props.flavors.length === 0) {
+        return null;
+    }
+
     return (
         <Section style={{ marginTop: 16, marginBottom: 16 }}>
             <Section>
