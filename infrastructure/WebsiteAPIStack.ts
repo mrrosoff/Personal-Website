@@ -160,8 +160,8 @@ class WebsiteAPIStack extends Stack {
 
     private createLambdaErrorAlarms(alarmTopic: Topic, lambdas: LambdaFunction[]): Alarm[] {
         return lambdas.map((lambda) => {
-            const alarm = new Alarm(this, `Website${lambda.node.id}ErrorsAlarm`, {
-                alarmName: `Website ${lambda.functionName} Errors`,
+            const alarm = new Alarm(this, `${lambda.node.id}-ErrorsAlarm`, {
+                alarmName: `${lambda.functionName} Errors`,
                 metric: lambda.metricErrors(),
                 threshold: 0,
                 comparisonOperator: ComparisonOperator.GREATER_THAN_THRESHOLD,
