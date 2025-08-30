@@ -88,7 +88,7 @@ class WebsiteAPIStack extends Stack {
             deployOptions: {
                 stageName: "production",
                 tracingEnabled: true,
-                loggingLevel: MethodLoggingLevel.ERROR
+                loggingLevel: MethodLoggingLevel.INFO
             },
             defaultCorsPreflightOptions: { allowOrigins: Cors.ALL_ORIGINS },
             endpointExportName: "WebsiteApiEndpoint"
