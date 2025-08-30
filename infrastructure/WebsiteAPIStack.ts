@@ -62,12 +62,12 @@ class WebsiteAPIStack extends Stack {
         );
 
         const alarmTopic = this.createAlarmActions();
-        this.createLambdaErrorRateAlarm(alarmTopic, [
+        this.createLambdaErrorAlarms(alarmTopic, [
             registerLambda,
             sendEmailLambda,
             unsubscribeLambda
         ]);
-        this.createRestAPIErrorRateAlarm(alarmTopic, restApi);
+        this.createRestAPIErrorsAlarm(alarmTopic, restApi);
     }
 
     private createAPI(
@@ -158,53 +158,38 @@ class WebsiteAPIStack extends Stack {
         });
     }
 
-    private createLambdaErrorRateAlarm(alarmTopic: Topic, lambdas: LambdaFunction[]): Alarm {
-        const totalErrors = lambdas.map((lambda) => lambda.metricErrors());
-        const totalInvocations = lambdas.map((lambda) => lambda.metricInvocations());
+    private createLambdaErrorAlarms(alarmTopic: Topic, lambdas: LambdaFunction[]): Alarm[] {
+        return lambdas.map((lambda) => {
+            const alarm = new Alarm(this, `Website${lambda.functionName}ErrorsAlarm`, {
+                alarmName: `Website ${lambda.functionName} Errors`,
+                metric: lambda.metricErrors(),
+                threshold: 0,
+                comparisonOperator: ComparisonOperator.GREATER_THAN_THRESHOLD,
+                evaluationPeriods: 1,
+                treatMissingData: TreatMissingData.NOT_BREACHING
+            });
 
-        const metricMap: Record<string, Metric> = {};
-        totalErrors.forEach((metric, i) => (metricMap[`e${i}`] = metric));
-        totalInvocations.forEach((metric, i) => (metricMap[`i${i}`] = metric));
-
-        const errorSumExpr = totalErrors.map((_, i) => `e${i}`).join(" + ");
-        const invocationSumExpr = totalInvocations.map((_, i) => `i${i}`).join(" + ");
-        const successRateExpr = `(1 - (${errorSumExpr}) / (${invocationSumExpr})) * 100`;
-
-        const alarm = new Alarm(this, `WebsiteLambdasSuccessRateAlarm`, {
-            alarmName: "Website Lambdas Success Rate",
-            metric: new MathExpression({
-                label: "Website Lambdas Success Rate",
-                expression: successRateExpr,
-                usingMetrics: metricMap,
-                period: Duration.minutes(5)
-            }),
-            threshold: 99.99,
-            comparisonOperator: ComparisonOperator.LESS_THAN_THRESHOLD,
-            evaluationPeriods: 1,
-            treatMissingData: TreatMissingData.NOT_BREACHING
+            alarm.addAlarmAction(new SnsAction(alarmTopic));
+            return alarm;
         });
-
-        alarm.addAlarmAction(new SnsAction(alarmTopic));
-        return alarm;
     }
 
-    private createRestAPIErrorRateAlarm(alarmTopic: Topic, api: RestApi): Alarm {
+    private createRestAPIErrorsAlarm(alarmTopic: Topic, api: RestApi): Alarm {
         const errorRateExpression = new MathExpression({
-            label: "Website API Success Rate",
-            expression: "(1 - (clientErrors + serverErrors) / invocations) * 100",
+            label: "Website API Errors",
+            expression: "clientErrors + serverErrors",
             usingMetrics: {
                 clientErrors: api.metricClientError(),
-                serverErrors: api.metricServerError(),
-                invocations: api.metricCount()
+                serverErrors: api.metricServerError()
             },
             period: Duration.minutes(5)
         });
 
-        const alarm = new Alarm(this, `WebsiteRestApiSuccessRateAlarm`, {
-            alarmName: "Website Rest API Success Rate",
+        const alarm = new Alarm(this, `WebsiteRestApiErrorsAlarm`, {
+            alarmName: "Website Rest API Errors",
             metric: errorRateExpression,
-            threshold: 99.99,
-            comparisonOperator: ComparisonOperator.LESS_THAN_THRESHOLD,
+            threshold: 0,
+            comparisonOperator: ComparisonOperator.GREATER_THAN_THRESHOLD,
             evaluationPeriods: 1,
             treatMissingData: TreatMissingData.NOT_BREACHING
         });
