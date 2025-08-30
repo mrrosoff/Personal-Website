@@ -168,7 +168,6 @@ class WebsiteAPIStack extends Stack {
                 evaluationPeriods: 1,
                 treatMissingData: TreatMissingData.NOT_BREACHING
             });
-
             alarm.addAlarmAction(new SnsAction(alarmTopic));
             return alarm;
         });
@@ -176,7 +175,7 @@ class WebsiteAPIStack extends Stack {
 
     private createRestAPIErrorsAlarm(alarmTopic: Topic, api: RestApi): Alarm {
         const errorRateExpression = new MathExpression({
-            label: "Website API Errors",
+            label: "Errors",
             expression: "clientErrors + serverErrors",
             usingMetrics: {
                 clientErrors: api.metricClientError(),
