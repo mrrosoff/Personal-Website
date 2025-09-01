@@ -1,11 +1,5 @@
 import { Duration, Stack, StackProps } from "aws-cdk-lib";
-import {
-    Cors,
-    EndpointType,
-    LambdaIntegration,
-    MethodLoggingLevel,
-    RestApi
-} from "aws-cdk-lib/aws-apigateway";
+import { Cors, EndpointType, LambdaIntegration, RestApi } from "aws-cdk-lib/aws-apigateway";
 import { Certificate, CertificateValidation } from "aws-cdk-lib/aws-certificatemanager";
 import { Alarm, ComparisonOperator, TreatMissingData } from "aws-cdk-lib/aws-cloudwatch";
 import { SnsAction } from "aws-cdk-lib/aws-cloudwatch-actions";
