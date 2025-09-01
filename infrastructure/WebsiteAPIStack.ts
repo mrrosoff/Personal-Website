@@ -7,12 +7,7 @@ import {
     RestApi
 } from "aws-cdk-lib/aws-apigateway";
 import { Certificate, CertificateValidation } from "aws-cdk-lib/aws-certificatemanager";
-import {
-    Alarm,
-    ComparisonOperator,
-    MathExpression,
-    TreatMissingData
-} from "aws-cdk-lib/aws-cloudwatch";
+import { Alarm, ComparisonOperator, TreatMissingData } from "aws-cdk-lib/aws-cloudwatch";
 import { SnsAction } from "aws-cdk-lib/aws-cloudwatch-actions";
 import { ManagedPolicy, Role, ServicePrincipal } from "aws-cdk-lib/aws-iam";
 import {
@@ -86,8 +81,7 @@ class WebsiteAPIStack extends Stack {
             disableExecuteApiEndpoint: true,
             deployOptions: {
                 stageName: "production",
-                tracingEnabled: true,
-                loggingLevel: MethodLoggingLevel.INFO
+                tracingEnabled: true
             },
             defaultCorsPreflightOptions: { allowOrigins: Cors.ALL_ORIGINS },
             endpointExportName: "WebsiteApiEndpoint"
@@ -173,19 +167,9 @@ class WebsiteAPIStack extends Stack {
     }
 
     private createRestAPIErrorsAlarm(alarmTopic: Topic, api: RestApi): Alarm {
-        const errorRateExpression = new MathExpression({
-            label: "Errors",
-            expression: "clientErrors + serverErrors",
-            usingMetrics: {
-                clientErrors: api.metricClientError(),
-                serverErrors: api.metricServerError()
-            },
-            period: Duration.minutes(5)
-        });
-
-        const alarm = new Alarm(this, `WebsiteRestApiErrorsAlarm`, {
-            alarmName: "Website Rest API Errors",
-            metric: errorRateExpression,
+        const alarm = new Alarm(this, `WebsiteApiServerErrorsAlarm`, {
+            alarmName: "Website API Server Errors",
+            metric: api.metricServerError(),
             threshold: 0,
             comparisonOperator: ComparisonOperator.GREATER_THAN_THRESHOLD,
             evaluationPeriods: 1,
