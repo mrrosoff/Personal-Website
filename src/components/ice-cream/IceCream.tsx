@@ -22,7 +22,7 @@ const IceCream = () => {
                 Small Batch Ice Cream
             </Typography>
             <Typography mt={smallScreen ? 1 : undefined} align={smallScreen ? "center" : undefined}>
-                Limited. High quality. Seattle based. Creative flavors, priced at $5 per pint.
+                Limited. High quality. San Francisco based. Creative flavors, priced at $5 per pint.
             </Typography>
             <Typography mt={smallScreen ? 0 : -1} align={smallScreen ? "center" : undefined}>
                 Contact me to order, or{" "}
