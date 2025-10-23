@@ -33,6 +33,7 @@ class WebsiteAPIStack extends Stack {
         }
 
         const apiRole = this.createAPILambdaRole();
+        const receiveLambda = this.createReceiveLambda(env, apiRole);
         const registerLambda = this.createRegisterLambda(env, apiRole);
         const sendEmailLambda = this.createSendEmailLambda(env, apiRole);
         const unsubscribeLambda = this.createUnsubscribeLambda(env, apiRole);
@@ -44,6 +45,7 @@ class WebsiteAPIStack extends Stack {
         });
         const restApi = this.createAPI(
             certificate,
+            receiveLambda,
             registerLambda,
             sendEmailLambda,
             unsubscribeLambda
@@ -60,6 +62,7 @@ class WebsiteAPIStack extends Stack {
 
     private createAPI(
         certificate: Certificate,
+        receiveLambda: LambdaFunction,
         registerLambda: LambdaFunction,
         sendEmailLambda: LambdaFunction,
         unsubscribeLambda: LambdaFunction
@@ -80,6 +83,7 @@ class WebsiteAPIStack extends Stack {
             defaultCorsPreflightOptions: { allowOrigins: Cors.ALL_ORIGINS },
             endpointExportName: "WebsiteApiEndpoint"
         });
+        api.root.addResource("receive").addMethod("POST", new LambdaIntegration(receiveLambda));
         api.root.addResource("register").addMethod("POST", new LambdaIntegration(registerLambda));
         api.root
             .addResource("send-email")
@@ -88,6 +92,16 @@ class WebsiteAPIStack extends Stack {
             .addResource("unsubscribe")
             .addMethod("POST", new LambdaIntegration(unsubscribeLambda));
         return api;
+    }
+
+    private createReceiveLambda(env: ApplicationEnvironment, role: Role): LambdaFunction {
+        return new LambdaFunction(this, "websiteReceiveLambda", {
+            functionName: "website-receive",
+            handler: "receive.handler",
+            code: Code.fromAsset("dist/lambda"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(env, role)
+        });
     }
 
     private createRegisterLambda(env: ApplicationEnvironment, role: Role): LambdaFunction {

@@ -39,7 +39,7 @@
         "react": "19.2.0",
         "react-dom": "19.2.0",
         "react-router-dom": "^7.9.4",
-        "resend": "^6.2.2"
+        "resend": "^6.3.0-canary.3"
     },
     "devDependencies": {
         "@react-email/preview-server": "^4.3.1",

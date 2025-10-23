@@ -1,5 +1,4 @@
 import esbuild from "esbuild";
-import { copyFile } from "fs/promises";
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -16,6 +15,7 @@ async function buildLambdaFunction(entrypoint, directory, watch = false) {
     return await build(options);
 }
 
+await buildLambdaFunction("lambda/receive.ts", "dist/lambda");
 await buildLambdaFunction("lambda/register.ts", "dist/lambda");
 await buildLambdaFunction("lambda/sendEmail.ts", "dist/lambda");
 await buildLambdaFunction("lambda/unsubscribe.ts", "dist/lambda");
