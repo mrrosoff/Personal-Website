@@ -1,4 +1,4 @@
-import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
+import { APIGatewayEvent, APIGatewayProxyEventHeaders, APIGatewayProxyResult } from "aws-lambda";
 import { config } from "dotenv";
 import { GetInboundEmailResponseSuccess, Resend } from "resend";
 
@@ -31,6 +31,14 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     }
 
     const resend = new Resend(process.env.RESEND_API_KEY);
+
+    try {
+        await verifyWebhookSignature(resend, event.headers, event.body);
+    } catch (error: unknown) {
+        console.error("Webhook Signature Verification Failed:", error);
+        return buildResponse(400, "Invalid Webhook Signature");
+    }
+
     try {
         const { data }: WebhookPayload = JSON.parse(event.body);
         const email = await retrieveEmailData(resend, data.email_id);
@@ -43,6 +51,22 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         return buildResponse(500, errorMessage);
     }
 };
+
+async function verifyWebhookSignature(
+    resend: Resend,
+    headers: APIGatewayProxyEventHeaders,
+    requestBody: string
+): Promise<void> {
+    resend.webhooks.verify({
+        payload: requestBody,
+        headers: {
+            id: headers["svix-id"]!,
+            timestamp: headers["svix-timestamp"]!,
+            signature: headers["svix-signature"]!
+        },
+        webhookSecret: process.env.RESEND_WEBHOOK_SECRET as string
+    });
+}
 
 async function retrieveEmailData(
     resend: Resend,
