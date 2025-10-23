@@ -3,9 +3,10 @@ import { Grid, Typography } from "@mui/material";
 import FolderIcon from "@mui/icons-material/Folder";
 
 import { EmulatorState } from "../../javascript-terminal";
+import { TerminalTheme } from "./Terminal";
 
 const PromptSymbol = (props: {
-    theme: Record<string, any>;
+    theme: TerminalTheme;
     emulatorState: EmulatorState;
     cwd?: string;
     children: string;

@@ -1,8 +1,43 @@
 import { useNavigate } from "react-router-dom";
 
 import { Box, Grid, Link, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { keyframes } from "@mui/system";
 
 import { ICE_CREAM_FLAVORS } from "./flavors";
+
+const createSparkleAnimation = (color: string) => keyframes`
+    0%, 100% {
+        box-shadow: 2px -2px 4px color-mix(in srgb, ${color} 70%, transparent);
+    }
+    25% {
+        box-shadow: 2px 2px 4px color-mix(in srgb, ${color} 70%, transparent);
+    }
+    50% {
+        box-shadow: -2px 2px 4px color-mix(in srgb, ${color} 70%, transparent);
+    }
+    75% {
+        box-shadow: -2px -2px 4px color-mix(in srgb, ${color} 70%, transparent);
+    }
+`;
+
+const getSparkleStyles = (color: string, index: number) => {
+    const sparkleAnimation = createSparkleAnimation(color);
+    const delay = -(index * 0.37); // Negative delay to start at different points
+    return {
+        position: "relative",
+        "&::before": {
+            content: '""',
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            borderRadius: 1,
+            pointerEvents: "none",
+            animation: `${sparkleAnimation} 4s ease-in-out infinite ${delay}s`
+        }
+    };
+};
 
 const IceCream = () => {
     const navigate = useNavigate();
@@ -65,7 +100,16 @@ export const CurrentFlavors = () => {
             >
                 {ICE_CREAM_FLAVORS.currentFlavors.map((flavor, index) => (
                     <Grid key={index} display={"flex"} justifyContent={"center"}>
-                        <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
+                        <Box
+                            display={"flex"}
+                            sx={{
+                                border: 1,
+                                padding: 2.5,
+                                borderRadius: 1,
+                                ...(flavor.sparkle &&
+                                    getSparkleStyles(flavor.color || "white", index))
+                            }}
+                        >
                             <Typography align={"center"} color={flavor.color || "white"}>
                                 {flavor.name}
                             </Typography>
@@ -99,7 +143,16 @@ export const LastBatch = () => {
             >
                 {ICE_CREAM_FLAVORS.lastBatch.map((flavor, index) => (
                     <Grid key={index} display={"flex"} justifyContent={"center"}>
-                        <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
+                        <Box
+                            display={"flex"}
+                            sx={{
+                                border: 1,
+                                padding: 2.5,
+                                borderRadius: 1,
+                                ...(flavor.sparkle &&
+                                    getSparkleStyles(flavor.color || "white", index))
+                            }}
+                        >
                             <Typography align={"center"} color={flavor.color || "white"}>
                                 {flavor.name}
                             </Typography>
@@ -134,7 +187,16 @@ export const Schedule = () => {
             >
                 {ICE_CREAM_FLAVORS.upcomingFlavors.map((flavor, index) => (
                     <Grid key={index} display={"flex"} justifyContent={"center"}>
-                        <Box display={"flex"} sx={{ border: 1, padding: 2.5, borderRadius: 1 }}>
+                        <Box
+                            display={"flex"}
+                            sx={{
+                                border: 1,
+                                padding: 2.5,
+                                borderRadius: 1,
+                                ...(flavor.sparkle &&
+                                    getSparkleStyles(flavor.color || "white", index))
+                            }}
+                        >
                             <Typography align={"center"} color={flavor.color || "white"}>
                                 {flavor.name}
                             </Typography>

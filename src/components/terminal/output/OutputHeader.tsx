@@ -2,13 +2,18 @@ import { Grid } from "@mui/material";
 
 import PromptSymbol from "../PromptSymbol";
 import OutputText from "./OutputText";
+import { TerminalTheme } from "../Terminal";
+import { EmulatorState } from "../../../javascript-terminal";
 
-const OutputHeader = (props: any) => (
+const OutputHeader = (props: {
+    theme: TerminalTheme;
+    promptSymbol: string;
+    emulatorState: EmulatorState;
+    children: string;
+}) => (
     <Grid container alignContent={"center"} alignItems={"center"} spacing={2}>
         <Grid>
-            <PromptSymbol theme={props.theme} {...props}>
-                {props.promptSymbol}
-            </PromptSymbol>
+            <PromptSymbol {...props}>{props.promptSymbol}</PromptSymbol>
         </Grid>
         <Grid>
             <OutputText {...props}>{props.children}</OutputText>

@@ -9,8 +9,23 @@ import OutputHeader from "./output/OutputHeader";
 import OutputText from "./output/OutputText";
 import OutputError from "./output/OutputError";
 
+export type TerminalTheme = {
+    background: string;
+    promptSymbolColor: string;
+    commandColor: string;
+    outputColor: string;
+    errorColor: string;
+    width: string | number;
+    height: string | number;
+};
+
 const Terminal = (
-    props: { emulatorState: EmulatorState; errorStr: string; theme: any; promptSymbol: string },
+    props: {
+        emulatorState: EmulatorState;
+        errorStr: string;
+        theme: TerminalTheme;
+        promptSymbol: string;
+    },
     ref: Ref<HTMLInputElement | null>
 ) => {
     const [showMOTD, setShowMOTD] = useState(true);
@@ -72,9 +87,7 @@ const Terminal = (
         return emulatorState.getOutputs().map((content: any, index: number) => (
             <Grid key={index} container direction={"column"}>
                 <Grid>
-                    <OutputHeader cwd={content.cwd} {...props}>
-                        {content.command}
-                    </OutputHeader>
+                    <OutputHeader {...props}>{content.command}</OutputHeader>
                 </Grid>
                 {content.output.map((output: any, index: number) => {
                     if (output.type === "error") {

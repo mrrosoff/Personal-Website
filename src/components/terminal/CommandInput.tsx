@@ -4,10 +4,11 @@ import { Box, Grid, InputBase, Typography } from "@mui/material";
 
 import { EmulatorState } from "../../javascript-terminal";
 import PromptSymbol from "./PromptSymbol";
+import { TerminalTheme } from "./Terminal";
 
 const CommandInput = (
     props: {
-        theme: Record<string, any>;
+        theme: TerminalTheme;
         emulatorState: EmulatorState;
         promptSymbol: string;
         value: string;

@@ -5,7 +5,7 @@ import EmulatorState from "../emulator-state/EmulatorState";
 
 export const optDef = {};
 
-const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
+const functionDef = (_state: EmulatorState, _commandOptions: string[]) => {
     try {
         return {
             output: <Navigate to="/ice-cream" replace={true} />,
