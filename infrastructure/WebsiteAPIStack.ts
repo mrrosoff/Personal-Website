@@ -53,6 +53,7 @@ class WebsiteAPIStack extends Stack {
 
         const alarmTopic = this.createAlarmActions();
         this.createLambdaErrorAlarms(alarmTopic, [
+            receiveLambda,
             registerLambda,
             sendEmailLambda,
             unsubscribeLambda
