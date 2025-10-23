@@ -1,6 +1,6 @@
 import { APIGatewayEvent, APIGatewayProxyEventHeaders, APIGatewayProxyResult } from "aws-lambda";
 import { config } from "dotenv";
-import { GetInboundEmailResponseSuccess, Resend } from "resend";
+import { CreateEmailOptions, GetInboundEmailResponseSuccess, Resend } from "resend";
 
 type WebhookPayload = {
     type: string;
@@ -104,7 +104,10 @@ async function forwardEmail(
     email: GetInboundEmailResponseSuccess,
     attachments: { content: string }[]
 ): Promise<void> {
-    const { data, error } = await resend.emails.send({ ...email, attachments });
+    const { data, error } = await resend.emails.send({
+        ...(email as CreateEmailOptions),
+        attachments
+    });
     if (error || !data) {
         throw Error(`Error Forwarding Email: ${error?.message}`);
     }
