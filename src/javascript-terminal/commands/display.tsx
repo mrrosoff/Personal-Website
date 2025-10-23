@@ -3,8 +3,9 @@ import assert from "assert";
 import { parseOptions } from "../parser";
 import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import * as FileOp from "../fs/operations/file-operations";
+import { FileSystem } from "../../FileSystem";
 
-const fileToImageOutput = (fs: any, filePath: string) => {
+const fileToImageOutput = (fs: FileSystem, filePath: string) => {
     const file = FileOp.read(fs, filePath);
 
     let jsxElement = (

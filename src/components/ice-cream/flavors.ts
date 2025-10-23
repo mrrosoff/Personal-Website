@@ -40,7 +40,7 @@ export const ICE_CREAM_FLAVORS: Record<string, IceCreamFlavor[]> = {
             color: "peru"
         },
         {
-            name: "Chocolate Caramel Potato Chip Cupcake 🥔",
+            name: "Chocolate Potato Chip Cupcake 🥔",
             color: "burlywood"
         },
         {

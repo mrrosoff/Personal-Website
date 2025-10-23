@@ -260,7 +260,7 @@ const Footer = () => {
                                 color: "rgb(107,114,128)"
                             }}
                         >
-                            200 Belmont Ave E
+                            4122 17th Street
                         </Text>
                         <Text
                             style={{
@@ -273,7 +273,7 @@ const Footer = () => {
                                 color: "rgb(107,114,128)"
                             }}
                         >
-                            Seattle, WA 98102
+                            San Fransisco, CA 94114
                         </Text>
                         <Text
                             style={{

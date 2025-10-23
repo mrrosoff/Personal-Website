@@ -137,7 +137,7 @@ export default class Emulator {
     runCommand(
         commandMapping: CommandMapping,
         commandName: string,
-        commandArgs: any,
+        commandArgs: (EmulatorState | string[])[],
         errorString = "Command not found"
     ) {
         const notFoundCallback = () => ({ output: errorString, type: "error" });
