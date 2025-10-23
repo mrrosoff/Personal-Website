@@ -4,8 +4,8 @@
     "description": "My Personal Website",
     "scripts": {
         "clean": "rm -rf coverage dist",
-        "check-format": "prettier --check \"src/**/*.ts*\"",
-        "format": "prettier --write \"src/**/*.ts*\"",
+        "check-format": "prettier --check \"lambda/**/*.ts*\" \"src/**/*.ts*\"",
+        "format": "prettier --write \"lambda/**/*.ts*\" \"src/**/*.ts*\"",
         "types": "tsc --noEmit",
         "start": "vite",
         "build-website": "npm run types && vite build",

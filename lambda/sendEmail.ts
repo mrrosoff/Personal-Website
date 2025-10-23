@@ -19,7 +19,7 @@ async function createBroadcast(resend: Resend): Promise<string> {
         audienceId: process.env.RESEND_AUDIENCE_ID as string,
         from: "Max and Josette <drops@ice-cream.maxrosoff.com>",
         subject: "New Ice Cream Flavor Drop!",
-        react: MailingListEmail(),
+        react: MailingListEmail()
     });
     if (error || !data) {
         throw Error(`Error Creating Broadcast: ${error?.message}`);

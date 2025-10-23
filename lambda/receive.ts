@@ -27,16 +27,15 @@ config();
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     if (!event.body) {
-        return buildResponse(400, "Missing Request Body");
+        return { statusCode: 400, body: "Missing Request Body" };
     }
 
     const resend = new Resend(process.env.RESEND_API_KEY);
-
     try {
         await verifyWebhookSignature(resend, event.headers, event.body);
     } catch (error: unknown) {
         console.error("Webhook Signature Verification Failed:", error);
-        return buildResponse(400, "Invalid Webhook Signature");
+        return { statusCode: 400, body: "Invalid Webhook Signature" };
     }
 
     try {
@@ -44,11 +43,13 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         const email = await retrieveEmailData(resend, data.email_id);
         const attachments = await retrieveEmailAttachments(resend, data.email_id);
         await forwardEmail(resend, email, attachments);
-        return buildResponse(200, `Email Successfully Forwarded With ID: ${data.email_id}`);
+        return { statusCode: 200, body: `Email Successfully Forwarded With ID: ${data.email_id}` };
     } catch (error: unknown) {
         console.error(error);
-        const errorMessage = error instanceof Error ? error.message : "Internal Server Error";
-        return buildResponse(500, errorMessage);
+        return {
+            statusCode: 500,
+            body: error instanceof Error ? error.message : "Internal Server Error"
+        };
     }
 };
 
@@ -106,21 +107,10 @@ async function forwardEmail(
 ): Promise<void> {
     const { data, error } = await resend.emails.send({
         ...(email as CreateEmailOptions),
+        to: ["ice-cream@maxrosoff.com"],
         attachments
     });
     if (error || !data) {
         throw Error(`Error Forwarding Email: ${error?.message}`);
     }
-}
-
-function buildResponse(statusCode: number, body: string): APIGatewayProxyResult {
-    return {
-        statusCode,
-        headers: {
-            "Access-Control-Allow-Origin": "https://maxrosoff.com",
-            "Access-Control-Allow-Headers": "Content-Type",
-            "Access-Control-Allow-Methods": "OPTIONS,POST"
-        },
-        body
-    };
 }
