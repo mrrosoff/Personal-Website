@@ -18,7 +18,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     const resend = new Resend(process.env.RESEND_API_KEY);
     try {
         const payload: RegisterPayload = JSON.parse(event.body);
-        const audienceId = process.env.RESEND_AUDIENCE_ID as string;
+        const audienceId = process.env.RESEND_AUDIENCE_ID!;
         const userId = await findUserIfAlreadyRegistered(resend, audienceId, payload.email);
         if (userId) {
             return buildResponse(200, "Email Already Registered");

@@ -16,7 +16,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     const resend = new Resend(process.env.RESEND_API_KEY);
     try {
         const payload: UnsubscribePayload = JSON.parse(event.body);
-        const audienceId = process.env.RESEND_AUDIENCE_ID as string;
+        const audienceId = process.env.RESEND_AUDIENCE_ID!;
         const removed = await unsubscribeUser(resend, audienceId, payload.email);
         if (!removed) {
             return buildResponse(200, "User Doesn't Exist");

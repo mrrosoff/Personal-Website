@@ -65,7 +65,7 @@ async function verifyWebhookSignature(
             timestamp: headers["svix-timestamp"]!,
             signature: headers["svix-signature"]!
         },
-        webhookSecret: process.env.RESEND_WEBHOOK_SECRET as string
+        webhookSecret: process.env.RESEND_WEBHOOK_SECRET!
     });
 }
 
