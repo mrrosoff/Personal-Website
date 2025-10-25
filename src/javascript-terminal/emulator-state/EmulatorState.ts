@@ -12,11 +12,11 @@ const COMMAND_MAPPING_KEY = "commandMapping";
 
 type EmulatorStateType = {
     [TAB_COUNT_KEY]?: number;
-    [FS_KEY]?: FileSystem;
+    [FS_KEY]: FileSystem;
     [ENVIRONMENT_VARIABLES_KEY]?: any;
     [HISTORY_KEY]?: any;
     [OUTPUTS_KEY]?: any;
-    [COMMAND_MAPPING_KEY]?: CommandMapping;
+    [COMMAND_MAPPING_KEY]: CommandMapping;
 };
 
 export default class EmulatorState {
