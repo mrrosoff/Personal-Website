@@ -49,7 +49,7 @@ jobs:
               env:
                   WEBSITE_RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
                   WEBSITE_RESEND_AUDIENCE_ID: ${{ secrets.RESEND_AUDIENCE_ID }}
-                  RESEND_WEBHOOK_SECRET: ${{ secrets.RESEND_WEBHOOK_SECRET }}
+                  WEBSITE_RESEND_WEBHOOK_SECRET: ${{ secrets.RESEND_WEBHOOK_SECRET }}
                   WEBSITE_NODE_ENV: "production"
 
             - name: Build

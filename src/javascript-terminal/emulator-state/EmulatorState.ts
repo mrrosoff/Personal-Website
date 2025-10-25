@@ -1,6 +1,7 @@
-import { create as createCommandMapping } from "./CommandMapping";
+import { CommandMapping, create as createCommandMapping } from "./CommandMapping";
 import * as FileUtil from "../fs/util/file-util";
 import * as PathUtil from "../fs/util/path-util";
+import { FileSystem } from "../../FileSystem";
 
 const TAB_COUNT_KEY = "tabCount";
 const FS_KEY = "fs";
@@ -11,11 +12,11 @@ const COMMAND_MAPPING_KEY = "commandMapping";
 
 type EmulatorStateType = {
     [TAB_COUNT_KEY]?: number;
-    [FS_KEY]?: any;
+    [FS_KEY]?: FileSystem;
     [ENVIRONMENT_VARIABLES_KEY]?: any;
     [HISTORY_KEY]?: any;
     [OUTPUTS_KEY]?: any;
-    [COMMAND_MAPPING_KEY]?: any;
+    [COMMAND_MAPPING_KEY]?: CommandMapping;
 };
 
 export default class EmulatorState {
@@ -58,7 +59,7 @@ export default class EmulatorState {
         return this.state[FS_KEY];
     }
 
-    setFileSystem(newFileSystem: any) {
+    setFileSystem(newFileSystem: FileSystem) {
         this.state[FS_KEY] = newFileSystem;
     }
 
@@ -90,11 +91,11 @@ export default class EmulatorState {
         return this.state[COMMAND_MAPPING_KEY];
     }
 
-    setCommandMapping(newCommandMapping: any) {
+    setCommandMapping(newCommandMapping: CommandMapping) {
         this.state[COMMAND_MAPPING_KEY] = newCommandMapping;
     }
 }
 
-export const relativeToAbsolutePath = (state: any, path: string) => {
+export const relativeToAbsolutePath = (state: EmulatorState, path: string) => {
     return PathUtil.toAbsolutePath(path, state.getEnvVariables().cwd);
 };
