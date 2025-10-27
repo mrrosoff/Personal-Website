@@ -13,7 +13,7 @@ const COMMAND_MAPPING_KEY = "commandMapping";
 type EmulatorStateType = {
     [TAB_COUNT_KEY]?: number;
     [FS_KEY]: FileSystem;
-    [ENVIRONMENT_VARIABLES_KEY]?: any;
+    [ENVIRONMENT_VARIABLES_KEY]: Record<string, string>;
     [HISTORY_KEY]?: any;
     [OUTPUTS_KEY]?: any;
     [COMMAND_MAPPING_KEY]: CommandMapping;
@@ -67,7 +67,7 @@ export default class EmulatorState {
         return this.state[ENVIRONMENT_VARIABLES_KEY];
     }
 
-    setEnvVariables(newEnvVariables: any) {
+    setEnvVariables(newEnvVariables: Record<string, string>) {
         this.state[ENVIRONMENT_VARIABLES_KEY] = newEnvVariables;
     }
 
