@@ -101,6 +101,11 @@ async function forwardEmail(
     email: GetInboundEmailResponseSuccess,
     attachments: { content: string }[]
 ): Promise<void> {
+    console.error(JSON.stringify({
+        ...(email as CreateEmailOptions),
+        to: ["ice-cream@maxrosoff.com"],
+        attachments
+    }));
     const { data, error } = await resend.emails.send({
         ...(email as CreateEmailOptions),
         to: ["ice-cream@maxrosoff.com"],
