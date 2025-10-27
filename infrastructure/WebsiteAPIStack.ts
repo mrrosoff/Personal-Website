@@ -33,6 +33,7 @@ class WebsiteAPIStack extends Stack {
         }
 
         const apiRole = this.createAPILambdaRole();
+        const receiveLambda = this.createReceiveLambda(env, apiRole);
         const registerLambda = this.createRegisterLambda(env, apiRole);
         const sendEmailLambda = this.createSendEmailLambda(env, apiRole);
         const unsubscribeLambda = this.createUnsubscribeLambda(env, apiRole);
@@ -44,6 +45,7 @@ class WebsiteAPIStack extends Stack {
         });
         const restApi = this.createAPI(
             certificate,
+            receiveLambda,
             registerLambda,
             sendEmailLambda,
             unsubscribeLambda
@@ -51,6 +53,7 @@ class WebsiteAPIStack extends Stack {
 
         const alarmTopic = this.createAlarmActions();
         this.createLambdaErrorAlarms(alarmTopic, [
+            receiveLambda,
             registerLambda,
             sendEmailLambda,
             unsubscribeLambda
@@ -60,6 +63,7 @@ class WebsiteAPIStack extends Stack {
 
     private createAPI(
         certificate: Certificate,
+        receiveLambda: LambdaFunction,
         registerLambda: LambdaFunction,
         sendEmailLambda: LambdaFunction,
         unsubscribeLambda: LambdaFunction
@@ -80,6 +84,7 @@ class WebsiteAPIStack extends Stack {
             defaultCorsPreflightOptions: { allowOrigins: Cors.ALL_ORIGINS },
             endpointExportName: "WebsiteApiEndpoint"
         });
+        api.root.addResource("receive").addMethod("POST", new LambdaIntegration(receiveLambda));
         api.root.addResource("register").addMethod("POST", new LambdaIntegration(registerLambda));
         api.root
             .addResource("send-email")
@@ -90,11 +95,21 @@ class WebsiteAPIStack extends Stack {
         return api;
     }
 
+    private createReceiveLambda(env: ApplicationEnvironment, role: Role): LambdaFunction {
+        const functionName = "website-receive";
+        return new LambdaFunction(this, "websiteReceiveLambda", {
+            handler: "receive.handler",
+            code: Code.fromAsset("dist/lambda/receive"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(env, functionName, role)
+        });
+    }
+
     private createRegisterLambda(env: ApplicationEnvironment, role: Role): LambdaFunction {
         const functionName = "website-register";
         return new LambdaFunction(this, "websiteRegisterLambda", {
             handler: "register.handler",
-            code: Code.fromAsset("dist/lambda"),
+            code: Code.fromAsset("dist/lambda/register"),
             runtime: Runtime.NODEJS_22_X,
             ...this.createLambdaParams(env, functionName, role)
         });
@@ -105,7 +120,7 @@ class WebsiteAPIStack extends Stack {
         return new LambdaFunction(this, "websiteSendEmailLambda", {
             functionName,
             handler: "sendEmail.handler",
-            code: Code.fromAsset("dist/lambda"),
+            code: Code.fromAsset("dist/lambda/sendEmail"),
             runtime: Runtime.NODEJS_22_X,
             ...this.createLambdaParams(env, functionName, role)
         });
@@ -116,7 +131,7 @@ class WebsiteAPIStack extends Stack {
         return new LambdaFunction(this, "websiteUnsubscribeLambda", {
             functionName,
             handler: "unsubscribe.handler",
-            code: Code.fromAsset("dist/lambda"),
+            code: Code.fromAsset("dist/lambda/unsubscribe"),
             runtime: Runtime.NODEJS_22_X,
             ...this.createLambdaParams(env, functionName, role)
         });
@@ -132,7 +147,7 @@ class WebsiteAPIStack extends Stack {
             memorySize: 2048,
             timeout: Duration.seconds(29),
             tracing: Tracing.ACTIVE,
-            logGroup: new LogGroup(this, "websiteApiLambdaLogGroup", {
+            logGroup: new LogGroup(this, `${functionName}LambdaLogGroup`, {
                 logGroupName: `/aws/lambda/${functionName}`,
                 retention: RetentionDays.ONE_MONTH,
                 removalPolicy: RemovalPolicy.DESTROY
