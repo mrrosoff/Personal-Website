@@ -15,7 +15,6 @@ async function buildLambdaFunction(entrypoint, directory, watch = false) {
     return await build(options);
 }
 
-await buildLambdaFunction("lambda/receive.ts", "dist/lambda");
 await buildLambdaFunction("lambda/register.ts", "dist/lambda");
 await buildLambdaFunction("lambda/sendEmail.ts", "dist/lambda");
 await buildLambdaFunction("lambda/unsubscribe.ts", "dist/lambda");

@@ -1,4 +1,4 @@
-import { Duration, Stack, StackProps } from "aws-cdk-lib";
+import { Duration, RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
 import { Cors, EndpointType, LambdaIntegration, RestApi } from "aws-cdk-lib/aws-apigateway";
 import { Certificate, CertificateValidation } from "aws-cdk-lib/aws-certificatemanager";
 import { Alarm, ComparisonOperator, TreatMissingData } from "aws-cdk-lib/aws-cloudwatch";
@@ -14,7 +14,7 @@ import {
     SystemLogLevel,
     Tracing
 } from "aws-cdk-lib/aws-lambda";
-import { RetentionDays } from "aws-cdk-lib/aws-logs";
+import { LogGroup, RetentionDays } from "aws-cdk-lib/aws-logs";
 import { Topic } from "aws-cdk-lib/aws-sns";
 
 import { Construct } from "constructs";
@@ -33,7 +33,6 @@ class WebsiteAPIStack extends Stack {
         }
 
         const apiRole = this.createAPILambdaRole();
-        const receiveLambda = this.createReceiveLambda(env, apiRole);
         const registerLambda = this.createRegisterLambda(env, apiRole);
         const sendEmailLambda = this.createSendEmailLambda(env, apiRole);
         const unsubscribeLambda = this.createUnsubscribeLambda(env, apiRole);
@@ -45,7 +44,6 @@ class WebsiteAPIStack extends Stack {
         });
         const restApi = this.createAPI(
             certificate,
-            receiveLambda,
             registerLambda,
             sendEmailLambda,
             unsubscribeLambda
@@ -53,7 +51,6 @@ class WebsiteAPIStack extends Stack {
 
         const alarmTopic = this.createAlarmActions();
         this.createLambdaErrorAlarms(alarmTopic, [
-            receiveLambda,
             registerLambda,
             sendEmailLambda,
             unsubscribeLambda
@@ -63,7 +60,6 @@ class WebsiteAPIStack extends Stack {
 
     private createAPI(
         certificate: Certificate,
-        receiveLambda: LambdaFunction,
         registerLambda: LambdaFunction,
         sendEmailLambda: LambdaFunction,
         unsubscribeLambda: LambdaFunction
@@ -84,7 +80,6 @@ class WebsiteAPIStack extends Stack {
             defaultCorsPreflightOptions: { allowOrigins: Cors.ALL_ORIGINS },
             endpointExportName: "WebsiteApiEndpoint"
         });
-        api.root.addResource("receive").addMethod("POST", new LambdaIntegration(receiveLambda));
         api.root.addResource("register").addMethod("POST", new LambdaIntegration(registerLambda));
         api.root
             .addResource("send-email")
@@ -95,53 +90,53 @@ class WebsiteAPIStack extends Stack {
         return api;
     }
 
-    private createReceiveLambda(env: ApplicationEnvironment, role: Role): LambdaFunction {
-        return new LambdaFunction(this, "websiteReceiveLambda", {
-            functionName: "website-receive",
-            handler: "receive.handler",
-            code: Code.fromAsset("dist/lambda"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(env, role)
-        });
-    }
-
     private createRegisterLambda(env: ApplicationEnvironment, role: Role): LambdaFunction {
+        const functionName = "website-register";
         return new LambdaFunction(this, "websiteRegisterLambda", {
-            functionName: "website-register",
             handler: "register.handler",
             code: Code.fromAsset("dist/lambda"),
             runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(env, role)
+            ...this.createLambdaParams(env, functionName, role)
         });
     }
 
     private createSendEmailLambda(env: ApplicationEnvironment, role: Role): LambdaFunction {
+        const functionName = "website-send-email";
         return new LambdaFunction(this, "websiteSendEmailLambda", {
-            functionName: "website-send-email",
+            functionName,
             handler: "sendEmail.handler",
             code: Code.fromAsset("dist/lambda"),
             runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(env, role)
+            ...this.createLambdaParams(env, functionName, role)
         });
     }
 
     private createUnsubscribeLambda(env: ApplicationEnvironment, role: Role): LambdaFunction {
+        const functionName = "website-unsubscribe";
         return new LambdaFunction(this, "websiteUnsubscribeLambda", {
-            functionName: "website-unsubscribe",
+            functionName,
             handler: "unsubscribe.handler",
             code: Code.fromAsset("dist/lambda"),
             runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(env, role)
+            ...this.createLambdaParams(env, functionName, role)
         });
     }
 
-    private createLambdaParams(env: ApplicationEnvironment, role: Role): Partial<FunctionProps> {
+    private createLambdaParams(
+        env: ApplicationEnvironment,
+        functionName: string,
+        role: Role
+    ): Partial<FunctionProps> {
         return {
             role,
             memorySize: 2048,
             timeout: Duration.seconds(29),
             tracing: Tracing.ACTIVE,
-            logRetention: RetentionDays.ONE_MONTH,
+            logGroup: new LogGroup(this, "websiteApiLambdaLogGroup", {
+                logGroupName: `/aws/lambda/${functionName}`,
+                retention: RetentionDays.ONE_MONTH,
+                removalPolicy: RemovalPolicy.DESTROY
+            }),
             loggingFormat: LoggingFormat.JSON,
             applicationLogLevelV2: ApplicationLogLevel.WARN,
             systemLogLevelV2: SystemLogLevel.WARN,
