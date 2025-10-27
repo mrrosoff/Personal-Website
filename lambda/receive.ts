@@ -31,42 +31,38 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     }
 
     const resend = new Resend(process.env.RESEND_API_KEY);
-    try {
-        await verifyWebhookSignature(resend, event.headers, event.body);
-    } catch (error: unknown) {
-        console.error("Webhook Signature Verification Failed:", error);
+    const result = await verifyWebhookSignature(resend, event.headers, event.body);
+    if (!result) {
         return { statusCode: 400, body: "Invalid Webhook Signature" };
     }
 
-    try {
-        const { data }: WebhookPayload = JSON.parse(event.body);
-        const email = await retrieveEmailData(resend, data.email_id);
-        const attachments = await retrieveEmailAttachments(resend, data.email_id);
-        await forwardEmail(resend, email, attachments);
-        return { statusCode: 200, body: `Email Successfully Forwarded With ID: ${data.email_id}` };
-    } catch (error: unknown) {
-        console.error(error);
-        return {
-            statusCode: 500,
-            body: error instanceof Error ? error.message : "Internal Server Error"
-        };
-    }
+    const { data }: WebhookPayload = JSON.parse(event.body);
+    const email = await retrieveEmailData(resend, data.email_id);
+    const attachments = await retrieveEmailAttachments(resend, data.email_id);
+    await forwardEmail(resend, email, attachments);
+    return { statusCode: 200, body: `Email Successfully Forwarded With ID: ${data.email_id}` };
 };
 
 async function verifyWebhookSignature(
     resend: Resend,
     headers: APIGatewayProxyEventHeaders,
     requestBody: string
-): Promise<void> {
-    resend.webhooks.verify({
-        payload: requestBody,
-        headers: {
-            id: headers["svix-id"]!,
-            timestamp: headers["svix-timestamp"]!,
-            signature: headers["svix-signature"]!
-        },
-        webhookSecret: process.env.RESEND_WEBHOOK_SECRET!
-    });
+): Promise<boolean> {
+    try {
+        resend.webhooks.verify({
+            payload: requestBody,
+            headers: {
+                id: headers["svix-id"]!,
+                timestamp: headers["svix-timestamp"]!,
+                signature: headers["svix-signature"]!
+            },
+            webhookSecret: process.env.RESEND_WEBHOOK_SECRET!
+        });
+        return true;
+    } catch (error: unknown) {
+        console.error("Webhook Signature Verification Failed", error);
+        return false;
+    }
 }
 
 async function retrieveEmailData(

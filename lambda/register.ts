@@ -16,20 +16,15 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     }
 
     const resend = new Resend(process.env.RESEND_API_KEY);
-    try {
-        const payload: RegisterPayload = JSON.parse(event.body);
-        const audienceId = process.env.RESEND_AUDIENCE_ID!;
-        const userId = await findUserIfAlreadyRegistered(resend, audienceId, payload.email);
-        if (userId) {
-            return buildResponse(200, "Email Already Registered");
-        }
-        const newUserId = await registerNewUser(resend, audienceId, payload);
-        return buildResponse(200, `Email Registered Successfully With ID: ${newUserId}`);
-    } catch (error: unknown) {
-        console.error(error);
-        const errorMessage = error instanceof Error ? error.message : "Internal Server Error";
-        return buildResponse(500, errorMessage);
+
+    const payload: RegisterPayload = JSON.parse(event.body);
+    const audienceId = process.env.RESEND_AUDIENCE_ID!;
+    const userId = await findUserIfAlreadyRegistered(resend, audienceId, payload.email);
+    if (userId) {
+        return buildResponse(200, "Email Already Registered");
     }
+    const newUserId = await registerNewUser(resend, audienceId, payload);
+    return buildResponse(200, `Email Registered Successfully With ID: ${newUserId}`);
 };
 
 async function findUserIfAlreadyRegistered(

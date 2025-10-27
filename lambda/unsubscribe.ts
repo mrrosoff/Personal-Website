@@ -14,19 +14,13 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     }
 
     const resend = new Resend(process.env.RESEND_API_KEY);
-    try {
-        const payload: UnsubscribePayload = JSON.parse(event.body);
-        const audienceId = process.env.RESEND_AUDIENCE_ID!;
-        const removed = await unsubscribeUser(resend, audienceId, payload.email);
-        if (!removed) {
-            return buildResponse(200, "User Doesn't Exist");
-        }
-        return buildResponse(200, "Email Unsubscribed Successfully");
-    } catch (error: unknown) {
-        console.error(error);
-        const errorMessage = error instanceof Error ? error.message : "Internal Server Error";
-        return buildResponse(500, errorMessage);
+    const payload: UnsubscribePayload = JSON.parse(event.body);
+    const audienceId = process.env.RESEND_AUDIENCE_ID!;
+    const removed = await unsubscribeUser(resend, audienceId, payload.email);
+    if (!removed) {
+        return buildResponse(200, "User Doesn't Exist");
     }
+    return buildResponse(200, "Email Unsubscribed Successfully");
 };
 
 async function unsubscribeUser(
