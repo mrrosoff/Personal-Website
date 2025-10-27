@@ -7,7 +7,7 @@ import EmulatorState from "../emulator-state/EmulatorState";
 
 const IMPLIED_DIRECTORY_ENTRIES = [".", ".."];
 
-const resolveDirectoryToList = (envVariables: { cwd: string }, argv: string | string[]) => {
+const resolveDirectoryToList = (envVariables: Record<string, string>, argv: string | string[]) => {
     const cwd = envVariables.cwd;
 
     if (argv.length > 0) {

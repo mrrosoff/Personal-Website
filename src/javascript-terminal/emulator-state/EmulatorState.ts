@@ -34,7 +34,7 @@ export default class EmulatorState {
         history = [],
         outputs = [],
         commandMapping = createCommandMapping()
-    }: EmulatorStateType) {
+    }: Partial<EmulatorStateType>) {
         const stateMap = {
             [TAB_COUNT_KEY]: tabCount,
             [FS_KEY]: fs,
