@@ -18,6 +18,7 @@ async function createBroadcast(resend: Resend): Promise<string> {
         name: "Ice Cream Flavor Drop",
         audienceId: process.env.RESEND_AUDIENCE_ID!,
         from: "Max and Josette <drops@ice-cream.maxrosoff.com>",
+        replyTo: "me@maxrosoff.com",
         subject: "New Ice Cream Flavor Drop!",
         react: MailingListEmail()
     });
