@@ -33,6 +33,8 @@ class WebsiteAPIStack extends Stack {
         }
 
         const apiRole = this.createAPILambdaRole();
+        const checkoutLambda = this.createCheckoutLambda(env, apiRole);
+        const checkoutReturnLambda = this.createCheckoutReturnLambda(env, apiRole);
         const receiveLambda = this.createReceiveLambda(env, apiRole);
         const registerLambda = this.createRegisterLambda(env, apiRole);
         const sendEmailLambda = this.createSendEmailLambda(env, apiRole);
@@ -45,6 +47,8 @@ class WebsiteAPIStack extends Stack {
         });
         const restApi = this.createAPI(
             certificate,
+            checkoutLambda,
+            checkoutReturnLambda,
             receiveLambda,
             registerLambda,
             sendEmailLambda,
@@ -53,6 +57,8 @@ class WebsiteAPIStack extends Stack {
 
         const alarmTopic = this.createAlarmActions();
         this.createLambdaErrorAlarms(alarmTopic, [
+            checkoutLambda,
+            checkoutReturnLambda,
             receiveLambda,
             registerLambda,
             sendEmailLambda,
@@ -63,6 +69,8 @@ class WebsiteAPIStack extends Stack {
 
     private createAPI(
         certificate: Certificate,
+        checkoutLambda: LambdaFunction,
+        checkoutReturnLambda: LambdaFunction,
         receiveLambda: LambdaFunction,
         registerLambda: LambdaFunction,
         sendEmailLambda: LambdaFunction,
@@ -84,6 +92,10 @@ class WebsiteAPIStack extends Stack {
             defaultCorsPreflightOptions: { allowOrigins: Cors.ALL_ORIGINS },
             endpointExportName: "WebsiteApiEndpoint"
         });
+        api.root.addResource("checkout").addMethod("POST", new LambdaIntegration(checkoutLambda));
+        api.root
+            .addResource("checkout-return")
+            .addMethod("POST", new LambdaIntegration(checkoutReturnLambda));
         api.root.addResource("receive").addMethod("POST", new LambdaIntegration(receiveLambda));
         api.root.addResource("register").addMethod("POST", new LambdaIntegration(registerLambda));
         api.root
@@ -93,6 +105,26 @@ class WebsiteAPIStack extends Stack {
             .addResource("unsubscribe")
             .addMethod("POST", new LambdaIntegration(unsubscribeLambda));
         return api;
+    }
+
+    private createCheckoutLambda(env: ApplicationEnvironment, role: Role): LambdaFunction {
+        const functionName = "website-checkout";
+        return new LambdaFunction(this, "websiteCheckoutLambda", {
+            handler: "checkout.handler",
+            code: Code.fromAsset("dist/lambda/checkout"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(env, functionName, role)
+        });
+    }
+
+    private createCheckoutReturnLambda(env: ApplicationEnvironment, role: Role): LambdaFunction {
+        const functionName = "website-checkout-return";
+        return new LambdaFunction(this, "websiteCheckoutReturnLambda", {
+            handler: "checkoutSessionStatus.handler",
+            code: Code.fromAsset("dist/lambda/checkoutSessionStatus"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(env, functionName, role)
+        });
     }
 
     private createReceiveLambda(env: ApplicationEnvironment, role: Role): LambdaFunction {

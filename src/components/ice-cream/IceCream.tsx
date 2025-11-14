@@ -63,7 +63,7 @@ const IceCream = () => {
                 Contact me to order, or{" "}
                 <Link
                     component="button"
-                    onClick={() => navigate("/mailing-list")}
+                    onClick={() => navigate("/ice-cream/mailing-list")}
                     underline="hover"
                     sx={{ cursor: "pointer", color: "inherit", verticalAlign: "baseline" }}
                 >

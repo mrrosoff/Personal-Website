@@ -9,6 +9,8 @@ import Page, { LinksAndMenu } from "./app/Page";
 import IceCream from "./ice-cream/IceCream";
 import MailingList from "./ice-cream/MailingList";
 import Unsubscribe from "./ice-cream/Unsubscribe";
+import Checkout from "./ice-cream/checkout/Checkout";
+import Return from "./ice-cream/checkout/Return";
 
 export const API_URL = "https://api.maxrosoff.com";
 
@@ -51,11 +53,19 @@ const App = () => {
                     element: <IceCream />
                 },
                 {
-                    path: "mailing-list/unsubscribe",
+                    path: "ice-cream/checkout",
+                    element: <Checkout />
+                },
+                {
+                    path: "ice-cream/checkout/return",
+                    element: <Return />
+                },
+                {
+                    path: "ice-cream/mailing-list/unsubscribe",
                     element: <Unsubscribe />
                 },
                 {
-                    path: "mailing-list",
+                    path: "ice-cream/mailing-list",
                     element: <MailingList />
                 }
             ]

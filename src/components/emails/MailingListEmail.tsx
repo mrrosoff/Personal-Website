@@ -206,7 +206,7 @@ const Footer = () => {
                     >
                         Ice Cream Factory
                     </Text>
-                    <Link href="https://maxrosoff.com/mailing-list/unsubscribe">
+                    <Link href="https://maxrosoff.com/ice-cream/mailing-list/unsubscribe">
                         <Text
                             style={{
                                 margin: undefined,

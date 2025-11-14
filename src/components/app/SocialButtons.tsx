@@ -95,7 +95,7 @@ export const MobileSocialButtonList = () => {
             </Grid>
             <Grid>
                 <CustomIconButton
-                    href={"mailing-list"}
+                    href={"ice-cream/mailing-list"}
                     icon={MarkunreadMailboxIcon}
                     text={"Mailing List"}
                     isLink={true}

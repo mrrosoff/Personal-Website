@@ -7,10 +7,10 @@
         "check-format": "prettier --check \"lambda/**/*.ts*\" \"src/**/*.ts*\"",
         "format": "prettier --write \"lambda/**/*.ts*\" \"src/**/*.ts*\"",
         "types": "tsc --noEmit",
-        "start": "vite",
+        "start": "NODE_ENV=development vite",
+        "start-email": "NODE_ENV=development email dev --dir src/components/emails --port 4000",
         "build-website": "npm run types && vite build",
-        "start-email": "email dev --dir src/components/emails --port 4000",
-        "build-cdk": "npm run types && NODE_ENV=production node esbuild.mjs",
+        "build-cdk": "npm run types && ts-node esbuild.mts",
         "bootstrap": "cdk bootstrap",
         "deploy": "cdk deploy --require-approval=never --all"
     },
