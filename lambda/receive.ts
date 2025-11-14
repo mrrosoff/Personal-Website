@@ -1,6 +1,6 @@
 import { APIGatewayEvent, APIGatewayProxyEventHeaders, APIGatewayProxyResult } from "aws-lambda";
 import { config } from "dotenv";
-import { CreateEmailOptions, GetInboundEmailResponseSuccess, Resend } from "resend";
+import { CreateEmailOptions, GetReceivingEmailResponseSuccess, Resend } from "resend";
 
 type WebhookPayload = {
     type: string;
@@ -68,7 +68,7 @@ async function verifyWebhookSignature(
 async function retrieveEmailData(
     resend: Resend,
     email_id: string
-): Promise<GetInboundEmailResponseSuccess> {
+): Promise<GetReceivingEmailResponseSuccess> {
     const { data, error } = await resend.emails.receiving.get(email_id);
     if (error || !data) {
         throw Error(`Error Fetching Email: ${error?.message}`);
@@ -80,7 +80,7 @@ async function retrieveEmailAttachments(
     resend: Resend,
     emailId: string
 ): Promise<{ content: string }[]> {
-    const { data: attachments, error } = await resend.attachments.receiving.list({
+    const { data: attachments, error } = await resend.emails.attachments.list({
         emailId
     });
     if (error || !attachments) {
@@ -98,7 +98,7 @@ async function retrieveEmailAttachments(
 
 async function forwardEmail(
     resend: Resend,
-    email: GetInboundEmailResponseSuccess,
+    email: GetReceivingEmailResponseSuccess,
     attachments: { content: string }[]
 ): Promise<void> {
     const { data, error } = await resend.emails.send({
