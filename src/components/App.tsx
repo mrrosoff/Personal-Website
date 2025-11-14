@@ -1,13 +1,5 @@
 import { RefObject, useEffect, useRef } from "react";
-import {
-    createBrowserRouter,
-    Navigate,
-    Outlet,
-    RouterProvider,
-    useLocation,
-    useMatch,
-    useNavigate
-} from "react-router-dom";
+import { createBrowserRouter, Navigate, Outlet, RouterProvider, useMatch } from "react-router-dom";
 
 import { Box, useMediaQuery } from "@mui/material";
 import { createTheme, ThemeProvider, StyledEngineProvider, useTheme } from "@mui/material/styles";
@@ -67,6 +59,10 @@ const App = () => {
                     element: <MailingList />
                 }
             ]
+        },
+        {
+            path: "*",
+            element: <Navigate to="/" replace={true} />
         }
     ]);
 
