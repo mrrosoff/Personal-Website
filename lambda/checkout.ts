@@ -2,22 +2,18 @@ import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import { config } from "dotenv";
 import Stripe from "stripe";
 
-type CreateCheckoutSessionPayload = {
-    lineItems: string[];
-};
-
 config();
 
-export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
-    if (!event.body) {
-        return { statusCode: 400, body: "Missing Request Body" };
-    }
-
+export const handler = async (_event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     const stripe = new Stripe(process.env.STRIPE_API_KEY!);
-    const payload: CreateCheckoutSessionPayload = JSON.parse(event.body);
     const session = await stripe.checkout.sessions.create({
         ui_mode: "embedded",
-        line_items: payload.lineItems.map((item) => ({ price: item, quantity: 1 })),
+        line_items: [
+            {
+                price: "price_1SSnBwGuaTF0ltS95XV8Q46k",
+                quantity: 1
+            }
+        ],
         mode: "payment",
         return_url: `https://maxrosoff.com/return?session_id={CHECKOUT_SESSION_ID}`
     });
