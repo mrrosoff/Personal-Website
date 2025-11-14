@@ -1,0 +1,6 @@
+{
+    "$schema": "./node_modules/wrangler/config-schema.json",
+    "assets": {
+        "not_found_handling": "single-page-application"
+    }
+}
