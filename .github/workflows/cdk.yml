@@ -47,6 +47,7 @@ jobs:
                   input-prefix: "WEBSITE_" # Needed To Prevent GitHub Variables From Propagating To Lambda
                   file-path: ".env"
               env:
+                  WEBSITE_STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY }}
                   WEBSITE_RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
                   WEBSITE_RESEND_AUDIENCE_ID: ${{ secrets.RESEND_AUDIENCE_ID }}
                   WEBSITE_RESEND_WEBHOOK_SECRET: ${{ secrets.RESEND_WEBHOOK_SECRET }}
