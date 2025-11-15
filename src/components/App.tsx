@@ -1,5 +1,5 @@
-import { RefObject, useEffect, useRef } from "react";
-import { createBrowserRouter, Navigate, Outlet, RouterProvider, useMatch } from "react-router-dom";
+import { RefObject, useRef } from "react";
+import { BrowserRouter, Navigate, Outlet, Route, useMatch } from "react-router-dom";
 
 import { Box, useMediaQuery } from "@mui/material";
 import { createTheme, ThemeProvider, StyledEngineProvider, useTheme } from "@mui/material/styles";
@@ -38,49 +38,24 @@ const App = () => {
         }
     });
 
-    const router = createBrowserRouter([
-        {
-            path: "/",
-            element: <Layout inputRef={inputRef} />,
-            errorElement: <Navigate to="/" replace={true} />,
-            children: [
-                {
-                    index: true,
-                    element: <Page inputRef={inputRef} />
-                },
-                {
-                    path: "ice-cream",
-                    element: <IceCream />
-                },
-                {
-                    path: "ice-cream/checkout",
-                    element: <Checkout />
-                },
-                {
-                    path: "ice-cream/checkout/return",
-                    element: <Return />
-                },
-                {
-                    path: "ice-cream/mailing-list/unsubscribe",
-                    element: <Unsubscribe />
-                },
-                {
-                    path: "ice-cream/mailing-list",
-                    element: <MailingList />
-                }
-            ]
-        },
-        {
-            path: "*",
-            element: <Navigate to="/" replace={true} />
-        }
-    ]);
-
     return (
         <StyledEngineProvider injectFirst>
             <ThemeProvider theme={theme}>
                 <CssBaseline />
-                <RouterProvider router={router} />
+                <BrowserRouter>
+                    <Route path="/" element={<Layout inputRef={inputRef} />}>
+                        <Route index element={<Page inputRef={inputRef} />} />
+                        <Route path="ice-cream" element={<IceCream />} />
+                        <Route path="ice-cream/checkout" element={<Checkout />} />
+                        <Route path="ice-cream/checkout/return" element={<Return />} />
+                        <Route
+                            path="ice-cream/mailing-list/unsubscribe"
+                            element={<Unsubscribe />}
+                        />
+                        <Route path="ice-cream/mailing-list" element={<MailingList />} />
+                    </Route>
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                </BrowserRouter>
             </ThemeProvider>
         </StyledEngineProvider>
     );
