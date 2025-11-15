@@ -21,7 +21,7 @@ const Return = () => {
     }, []);
 
     if (status === "open") {
-        return <Navigate to="/checkout" />;
+        return <Navigate to="/ice-cream/checkout" />;
     }
 
     if (status === "complete") {
@@ -30,12 +30,11 @@ const Return = () => {
                 <p>
                     We appreciate your business! A confirmation email will be sent to{" "}
                     {customerEmail}. If you have any questions, please email{" "}
-                    <a href="mailto:orders@example.com">orders@example.com</a>.
+                    <a href="mailto:help@ice-cream.maxrosoff.com">help@ice-cream.maxrosoff.com</a>.
                 </p>
             </section>
         );
     }
-
     return null;
 };
 
