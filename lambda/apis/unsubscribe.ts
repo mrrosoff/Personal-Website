@@ -2,7 +2,7 @@ import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import { config } from "dotenv";
 import { Resend } from "resend";
 
-import { buildResponse } from "../common";
+import { buildErrorResponse, buildResponse } from "../common";
 
 type UnsubscribePayload = {
     email: string;
@@ -12,7 +12,7 @@ config();
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     if (!event.body) {
-        return buildResponse(400, "Missing Request Body");
+        return buildErrorResponse(400, "Missing Request Body");
     }
 
     const resend = new Resend(process.env.RESEND_API_KEY);
@@ -20,9 +20,9 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     const audienceId = process.env.RESEND_AUDIENCE_ID!;
     const removed = await unsubscribeUser(resend, audienceId, payload.email);
     if (!removed) {
-        return buildResponse(200, "User Doesn't Exist");
+        return buildResponse(200, {});
     }
-    return buildResponse(200, "Email Unsubscribed Successfully");
+    return buildResponse(200, {});
 };
 
 async function unsubscribeUser(

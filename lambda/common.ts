@@ -1,6 +1,13 @@
 import { APIGatewayProxyResult } from "aws-lambda";
 
-export function buildResponse(statusCode: number, body: string): APIGatewayProxyResult {
+export function buildErrorResponse(statusCode: number, message: string): APIGatewayProxyResult {
+    return buildResponse(statusCode, { message });
+}
+
+export function buildResponse(
+    statusCode: number,
+    body: Record<string, any>
+): APIGatewayProxyResult {
     return {
         statusCode,
         headers: {
@@ -8,6 +15,6 @@ export function buildResponse(statusCode: number, body: string): APIGatewayProxy
             "Access-Control-Allow-Headers": "Content-Type",
             "Access-Control-Allow-Methods": "OPTIONS,POST"
         },
-        body
+        body: JSON.stringify(body)
     };
 }

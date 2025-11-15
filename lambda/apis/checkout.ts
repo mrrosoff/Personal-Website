@@ -18,5 +18,5 @@ export const handler = async (_event: APIGatewayEvent): Promise<APIGatewayProxyR
         mode: "payment",
         return_url: `https://maxrosoff.com/ice-cream/checkout/return?session_id={CHECKOUT_SESSION_ID}`
     });
-    return buildResponse(200, `Created Checkout Session With Secret: ${session.client_secret}`);
+    return buildResponse(200, session);
 };

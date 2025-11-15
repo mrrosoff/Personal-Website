@@ -8,7 +8,7 @@ export const handler = async (_event: APIGatewayEvent): Promise<APIGatewayProxyR
     const resend = new Resend(process.env.RESEND_API_KEY);
     const broadcastId = await createBroadcast(resend);
     const sendBroadcastId = await sendBroadcast(resend, broadcastId);
-    return buildResponse(200, `Emails Sent Successfully With ID: ${sendBroadcastId}`);
+    return buildResponse(200, { broadcastId: sendBroadcastId });
 };
 
 async function createBroadcast(resend: Resend): Promise<string> {
