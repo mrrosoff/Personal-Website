@@ -8,7 +8,7 @@ config();
 export const handler = async (_event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     const stripe = new Stripe(process.env.STRIPE_API_KEY!);
     const session = await stripe.checkout.sessions.create({
-        ui_mode: "embedded",
+        ui_mode: "custom",
         line_items: [
             {
                 price: "price_1STmV8GZZEzkLsbiuQIZaVwK",

@@ -11,7 +11,7 @@ export function buildResponse(
     return {
         statusCode,
         headers: {
-            "Access-Control-Allow-Origin": "https://maxrosoff.com",
+            "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Headers": "Content-Type",
             "Access-Control-Allow-Methods": "OPTIONS,POST"
         },
