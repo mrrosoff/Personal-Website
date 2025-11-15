@@ -1,5 +1,5 @@
 import { RefObject, useRef } from "react";
-import { BrowserRouter, Navigate, Outlet, Route, useMatch } from "react-router-dom";
+import { BrowserRouter, Navigate, Outlet, Route, Routes, useMatch } from "react-router-dom";
 
 import { Box, useMediaQuery } from "@mui/material";
 import { createTheme, ThemeProvider, StyledEngineProvider, useTheme } from "@mui/material/styles";
@@ -43,18 +43,20 @@ const App = () => {
             <ThemeProvider theme={theme}>
                 <CssBaseline />
                 <BrowserRouter>
-                    <Route path="/" element={<Layout inputRef={inputRef} />}>
-                        <Route index element={<Page inputRef={inputRef} />} />
-                        <Route path="ice-cream" element={<IceCream />} />
-                        <Route path="ice-cream/checkout" element={<Checkout />} />
-                        <Route path="ice-cream/checkout/return" element={<Return />} />
-                        <Route
-                            path="ice-cream/mailing-list/unsubscribe"
-                            element={<Unsubscribe />}
-                        />
-                        <Route path="ice-cream/mailing-list" element={<MailingList />} />
-                    </Route>
-                    <Route path="*" element={<Navigate to="/" replace />} />
+                    <Routes>
+                        <Route path="/" element={<Layout inputRef={inputRef} />}>
+                            <Route index element={<Page inputRef={inputRef} />} />
+                            <Route path="ice-cream" element={<IceCream />} />
+                            <Route path="ice-cream/checkout" element={<Checkout />} />
+                            <Route path="ice-cream/checkout/return" element={<Return />} />
+                            <Route
+                                path="ice-cream/mailing-list/unsubscribe"
+                                element={<Unsubscribe />}
+                            />
+                            <Route path="ice-cream/mailing-list" element={<MailingList />} />
+                        </Route>
+                        <Route path="*" element={<Navigate to="/" replace />} />
+                    </Routes>
                 </BrowserRouter>
             </ThemeProvider>
         </StyledEngineProvider>
