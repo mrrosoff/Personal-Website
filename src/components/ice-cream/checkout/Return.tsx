@@ -1,21 +1,23 @@
 import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
+import { API_URL } from "../../App";
+import axios from "axios";
 
 const Return = () => {
     const [status, setStatus] = useState(null);
     const [customerEmail, setCustomerEmail] = useState("");
 
     useEffect(() => {
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        const sessionId = urlParams.get("session_id");
+        const fetchSessionStatus = async () => {
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const sessionId = urlParams.get("session_id");
 
-        fetch(`/session-status?session_id=${sessionId}`)
-            .then((res) => res.json())
-            .then((data) => {
-                setStatus(data.status);
-                setCustomerEmail(data.customer_email);
-            });
+            const result = await axios.post(`${API_URL}/checkout-return`, { sessionId });
+            setStatus(result.data.status);
+            setCustomerEmail(result.data.customer_email);
+        };
+        void fetchSessionStatus();
     }, []);
 
     if (status === "open") {

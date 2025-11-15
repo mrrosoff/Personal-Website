@@ -110,6 +110,7 @@ class WebsiteAPIStack extends Stack {
     private createCheckoutLambda(env: ApplicationEnvironment, role: Role): LambdaFunction {
         const functionName = "website-checkout";
         return new LambdaFunction(this, "websiteCheckoutLambda", {
+            functionName,
             handler: "checkout.handler",
             code: Code.fromAsset("dist/lambda/checkout"),
             runtime: Runtime.NODEJS_22_X,
@@ -120,6 +121,7 @@ class WebsiteAPIStack extends Stack {
     private createCheckoutReturnLambda(env: ApplicationEnvironment, role: Role): LambdaFunction {
         const functionName = "website-checkout-return";
         return new LambdaFunction(this, "websiteCheckoutReturnLambda", {
+            functionName,
             handler: "checkoutSessionStatus.handler",
             code: Code.fromAsset("dist/lambda/checkoutSessionStatus"),
             runtime: Runtime.NODEJS_22_X,
@@ -130,6 +132,7 @@ class WebsiteAPIStack extends Stack {
     private createReceiveLambda(env: ApplicationEnvironment, role: Role): LambdaFunction {
         const functionName = "website-receive";
         return new LambdaFunction(this, "websiteReceiveLambda", {
+            functionName,
             handler: "receive.handler",
             code: Code.fromAsset("dist/lambda/receive"),
             runtime: Runtime.NODEJS_22_X,
@@ -140,6 +143,7 @@ class WebsiteAPIStack extends Stack {
     private createRegisterLambda(env: ApplicationEnvironment, role: Role): LambdaFunction {
         const functionName = "website-register";
         return new LambdaFunction(this, "websiteRegisterLambda", {
+            functionName,
             handler: "register.handler",
             code: Code.fromAsset("dist/lambda/register"),
             runtime: Runtime.NODEJS_22_X,

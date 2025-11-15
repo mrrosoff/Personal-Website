@@ -11,9 +11,7 @@ const stripeLoader = loadStripe(stripePublishableApiKey);
 
 const Checkout = () => {
     const fetchClientSecret = useCallback(async () => {
-        const result = await axios.post(`${API_URL}/checkout`, {
-            lineItems: ["price_1SSn4jGZZEzkLsbif1Yq1p2K"]
-        });
+        const result = await axios.post(`${API_URL}/checkout`);
         return result.data.clientSecret;
     }, []);
 

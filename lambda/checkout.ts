@@ -10,12 +10,12 @@ export const handler = async (_event: APIGatewayEvent): Promise<APIGatewayProxyR
         ui_mode: "embedded",
         line_items: [
             {
-                price: "price_1SSnBwGuaTF0ltS95XV8Q46k",
+                price: "price_1STmV8GZZEzkLsbiuQIZaVwK",
                 quantity: 1
             }
         ],
         mode: "payment",
-        return_url: `https://maxrosoff.com/return?session_id={CHECKOUT_SESSION_ID}`
+        return_url: `https://maxrosoff.com/ice-cream/checkout/return?session_id={CHECKOUT_SESSION_ID}`
     });
     return {
         statusCode: 200,
