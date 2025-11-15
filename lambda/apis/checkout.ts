@@ -1,6 +1,7 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import { config } from "dotenv";
 import Stripe from "stripe";
+import { buildResponse } from "../common";
 
 config();
 
@@ -17,8 +18,5 @@ export const handler = async (_event: APIGatewayEvent): Promise<APIGatewayProxyR
         mode: "payment",
         return_url: `https://maxrosoff.com/ice-cream/checkout/return?session_id={CHECKOUT_SESSION_ID}`
     });
-    return {
-        statusCode: 200,
-        body: `Created Checkout Session With Secret: ${session.client_secret}`
-    };
+    return buildResponse(200, `Created Checkout Session With Secret: ${session.client_secret}`);
 };

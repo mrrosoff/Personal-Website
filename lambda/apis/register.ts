@@ -2,6 +2,8 @@ import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import { config } from "dotenv";
 import { Resend } from "resend";
 
+import { buildResponse } from "../common";
+
 type RegisterPayload = {
     firstName: string;
     lastName: string;
@@ -58,16 +60,4 @@ async function registerNewUser(
         throw Error(`Error Creating Contact: ${error?.message}`);
     }
     return data.id;
-}
-
-function buildResponse(statusCode: number, body: string): APIGatewayProxyResult {
-    return {
-        statusCode,
-        headers: {
-            "Access-Control-Allow-Origin": "https://maxrosoff.com",
-            "Access-Control-Allow-Headers": "Content-Type",
-            "Access-Control-Allow-Methods": "OPTIONS,POST"
-        },
-        body
-    };
 }

@@ -1,16 +1,14 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import { Resend } from "resend";
 
-import MailingListEmail from "../src/components/emails/MailingListEmail";
+import MailingListEmail from "../../src/components/emails/MailingListEmail";
+import { buildResponse } from "../common";
 
 export const handler = async (_event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     const resend = new Resend(process.env.RESEND_API_KEY);
     const broadcastId = await createBroadcast(resend);
     const sendBroadcastId = await sendBroadcast(resend, broadcastId);
-    return {
-        statusCode: 200,
-        body: "Emails Sent Successfully With ID: " + sendBroadcastId
-    };
+    return buildResponse(200, `Emails Sent Successfully With ID: ${sendBroadcastId}`);
 };
 
 async function createBroadcast(resend: Resend): Promise<string> {
