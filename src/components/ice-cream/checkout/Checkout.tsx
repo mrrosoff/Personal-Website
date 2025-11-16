@@ -1,7 +1,7 @@
-import { FormEvent, MouseEventHandler, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import axios from "axios";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { Appearance, loadStripe } from "@stripe/stripe-js";
 import { LinkAuthenticationElement, PaymentElement } from "@stripe/react-stripe-js";
 import { CheckoutProvider, useCheckout } from "@stripe/react-stripe-js/checkout";
@@ -14,6 +14,9 @@ const stripePublishableApiKey =
 const stripeLoader = loadStripe(stripePublishableApiKey);
 
 const CheckoutForm = () => {
+    const theme = useTheme();
+    const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
+
     const [message, setMessage] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -42,7 +45,14 @@ const CheckoutForm = () => {
             <Typography variant={"h2"}>Contact Info</Typography>
             <LinkAuthenticationElement />
             <Typography variant={"h2"}>Payment</Typography>
-            <PaymentElement />
+            <PaymentElement
+                options={{
+                    layout: {
+                        type: smallScreen ? "auto" : "tabs",
+                        defaultCollapsed: false
+                    }
+                }}
+            />
             <Button
                 color={"primary"}
                 variant={"contained"}
