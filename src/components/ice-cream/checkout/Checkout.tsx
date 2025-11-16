@@ -1,10 +1,9 @@
 import { useMemo, useState } from "react";
 
 import axios from "axios";
-import { Box, Button, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Button, TextField, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { Appearance, loadStripe } from "@stripe/stripe-js";
-import { LinkAuthenticationElement, PaymentElement } from "@stripe/react-stripe-js";
-import { CheckoutProvider, useCheckout } from "@stripe/react-stripe-js/checkout";
+import { CheckoutProvider, useCheckout, PaymentElement } from "@stripe/react-stripe-js/checkout";
 
 import ClaconFont from "../../../assets/fonts/clacon.ttf";
 import { API_URL } from "../../App";
@@ -42,9 +41,13 @@ const CheckoutForm = () => {
     return (
         <Box>
             <Typography variant={"h1"}>Checkout</Typography>
-            <Typography variant={"h2"}>Contact Info</Typography>
-            <LinkAuthenticationElement />
-            <Typography variant={"h2"}>Payment</Typography>
+            <Typography variant={"h2"} mt={4} mb={2}>
+                Contact Info
+            </Typography>
+            <TextField variant={"filled"} label={"Email"} />
+            <Typography variant={"h2"} mt={4} mb={2}>
+                Payment
+            </Typography>
             <PaymentElement
                 options={{
                     layout: {
@@ -57,7 +60,7 @@ const CheckoutForm = () => {
                 color={"primary"}
                 variant={"contained"}
                 disabled={isLoading || state.type === "loading"}
-                sx={{ width: "100%", mt: 2 }}
+                sx={{ width: "100%", mt: 4 }}
                 type="submit"
                 loading={isLoading || state.type === "loading"}
                 onClick={handleSubmit}
@@ -79,7 +82,9 @@ const Checkout = () => {
         theme: "night",
         variables: {
             fontFamily: "Clacon",
-            fontSizeBase: "22px"
+            fontSizeBase: "22px",
+            fontWeightNormal: "200",
+            fontWeightMedium: "400"
         }
     };
 
