@@ -42,8 +42,8 @@ const CheckoutForm = () => {
     return (
         <Box>
             <Typography variant={"h1"}>Checkout</Typography>
-            <Typography variant={"h2"}>Contact Info</Typography>
-            <LinkAuthenticationElement />
+            {/* <Typography variant={"h2"}>Contact Info</Typography>
+            <LinkAuthenticationElement /> */}
             <Typography variant={"h2"}>Payment</Typography>
             <PaymentElement
                 options={{
