@@ -3,7 +3,12 @@ import { useMemo, useState } from "react";
 import axios from "axios";
 import { Box, Button, TextField, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { Appearance, loadStripe } from "@stripe/stripe-js";
-import { CheckoutProvider, useCheckout, PaymentElement } from "@stripe/react-stripe-js/checkout";
+import {
+    CheckoutProvider,
+    useCheckout,
+    PaymentElement,
+    StripeCheckoutValue
+} from "@stripe/react-stripe-js/checkout";
 
 import ClaconFont from "../../../assets/fonts/clacon.ttf";
 import { API_URL } from "../../App";
@@ -16,10 +21,19 @@ const CheckoutForm = () => {
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
-    const [message, setMessage] = useState<string | null>(null);
+    const [email, setEmail] = useState("");
+    const [emailError, setEmailError] = useState<string | null>(null);
+
     const [isLoading, setIsLoading] = useState(false);
 
     const state = useCheckout();
+
+    const validateEmail = async (email: string, checkout: StripeCheckoutValue) => {
+        const updateResult = await checkout.updateEmail(email);
+        const isValid = updateResult.type !== "error";
+
+        return { isValid, message: !isValid ? updateResult.error.message : null };
+    };
 
     const handleSubmit = async () => {
         if (state.type === "loading" || state.type === "error") {
@@ -27,15 +41,21 @@ const CheckoutForm = () => {
         }
 
         setIsLoading(true);
+        const { checkout } = state;
+        const { isValid, message } = await validateEmail(email, checkout);
+        if (!isValid) {
+            setEmailError(message);
+        }
+
         const confirmResult = await state.checkout.confirm();
         if (confirmResult.type === "error") {
-            setMessage(confirmResult.error.message);
+            alert(`Payment Error: ${confirmResult.error.message}`);
         }
         setIsLoading(false);
     };
 
     if (state.type === "error") {
-        return <div>Error: {state.error.message}</div>;
+        return <Box>Error: {state.error.message}</Box>;
     }
 
     return (
@@ -47,13 +67,11 @@ const CheckoutForm = () => {
             <TextField
                 variant={"filled"}
                 label={"Email"}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                error={!!emailError}
+                helperText={emailError}
                 fullWidth
-                sx={{
-                    backgroundColor: "#30313D",
-                    borderRadius: 1.5,
-                    borderColor: "#424353",
-                    border: 1
-                }}
             />
             <Typography variant={"h2"} mt={4} mb={2}>
                 Payment
@@ -77,7 +95,6 @@ const CheckoutForm = () => {
             >
                 Pay {state.type === "success" ? state.checkout.total.total.amount : ""}
             </Button>
-            {message && <Box>{message}</Box>}
         </Box>
     );
 };
