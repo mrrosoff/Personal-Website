@@ -131,7 +131,11 @@ const CheckoutForm = () => {
             <ExpressCheckoutElement
                 options={{
                     buttonHeight: 44,
-                    buttonTheme: {},
+                    buttonTheme: {
+                        applePay: "white-outline",
+                        googlePay: "white",
+                        paypal: "white"
+                    },
                     buttonType: {},
                     layout: {},
                     paymentMethods: {
