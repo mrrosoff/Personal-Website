@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import {
     Appearance,
     loadStripe,
@@ -9,6 +9,7 @@ import {
     CheckoutProvider,
     ExpressCheckoutElement,
     PaymentElement,
+    StripeCheckoutValue,
     useCheckout
 } from "@stripe/react-stripe-js/checkout";
 
@@ -19,14 +20,21 @@ const stripePublishableApiKey =
     "pk_live_51SSn4jGZZEzkLsbifOmvMvPB5xo33fgFS19ejvNuOibMMPHFu3ixt00c2nbCn4EPiIXWXvJvH1t3AZLXJE3dIrKz00aPsF6Dt2";
 const stripeLoader = loadStripe(stripePublishableApiKey);
 
-const validateEmail = async (email, checkout) => {
+const validateEmail = async (email: string, checkout: StripeCheckoutValue) => {
     const updateResult = await checkout.updateEmail(email);
     const isValid = updateResult.type !== "error";
 
     return { isValid, message: !isValid ? updateResult.error.message : null };
 };
 
-const EmailInput = ({ email, setEmail, error, setError }) => {
+type EmailInputProps = {
+    email: string;
+    setEmail: Dispatch<SetStateAction<string>>;
+    error: string | null;
+    setError: Dispatch<SetStateAction<string | null>>;
+};
+
+const EmailInput = (props: EmailInputProps) => {
     const checkoutState = useCheckout();
     if (checkoutState.type === "loading") {
         return <div>Loading...</div>;
@@ -36,19 +44,19 @@ const EmailInput = ({ email, setEmail, error, setError }) => {
     const { checkout } = checkoutState;
 
     const handleBlur = async () => {
-        if (!email) {
+        if (!props.email) {
             return;
         }
 
-        const { isValid, message } = await validateEmail(email, checkout);
+        const { isValid, message } = await validateEmail(props.email, checkout);
         if (!isValid) {
-            setError(message);
+            props.setError(message);
         }
     };
 
-    const handleChange = (e) => {
-        setError(null);
-        setEmail(e.target.value);
+    const handleChange = (e: any) => {
+        props.setError(null);
+        props.setEmail(e.target.value);
     };
 
     return (
@@ -58,21 +66,21 @@ const EmailInput = ({ email, setEmail, error, setError }) => {
                 <input
                     id="email"
                     type="text"
-                    value={email}
+                    value={props.email}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    className={error ? "error" : ""}
+                    className={props.error ? "error" : ""}
                 />
             </label>
-            {error && <div id="email-errors">{error}</div>}
+            {props.error && <div id="email-errors">{props.error}</div>}
         </>
     );
 };
 
 const CheckoutForm = () => {
     const [email, setEmail] = useState("");
-    const [emailError, setEmailError] = useState(null);
-    const [message, setMessage] = useState(null);
+    const [emailError, setEmailError] = useState<string | null>(null);
+    const [message, setMessage] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
     const checkoutState = useCheckout();
@@ -80,8 +88,12 @@ const CheckoutForm = () => {
         return <div>Error: {checkoutState.error.message}</div>;
     }
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
+
+        if (checkoutState.type === "loading") {
+            return;
+        }
 
         const { checkout } = checkoutState;
         setIsLoading(true);
@@ -171,7 +183,7 @@ const Checkout = () => {
                 clientSecret: fetchClientSecret,
                 elementsOptions: {
                     appearance,
-                    fonts: [{ family: "Clacon", src: `url(${ClaconFont})`, format: "truetype" }]
+                    fonts: [{ family: "Clacon", src: `url(${ClaconFont})` }]
                 }
             }}
         >
