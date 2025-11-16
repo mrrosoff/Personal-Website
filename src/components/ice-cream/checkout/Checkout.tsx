@@ -1,5 +1,7 @@
+import { ChangeEvent, Dispatch, FormEvent, SetStateAction, useMemo, useState } from "react";
+
 import axios from "axios";
-import { Dispatch, SetStateAction, useMemo, useState } from "react";
+import { Box, TextField, Typography } from "@mui/material";
 import {
     Appearance,
     loadStripe,
@@ -35,45 +37,39 @@ type EmailInputProps = {
 };
 
 const EmailInput = (props: EmailInputProps) => {
-    const checkoutState = useCheckout();
-    if (checkoutState.type === "loading") {
-        return <div>Loading...</div>;
-    } else if (checkoutState.type === "error") {
-        return <div>Error: {checkoutState.error.message}</div>;
+    const state = useCheckout();
+    if (state.type === "loading" || state.type === "error") {
+        return;
     }
-    const { checkout } = checkoutState;
 
     const handleBlur = async () => {
         if (!props.email) {
             return;
         }
 
-        const { isValid, message } = await validateEmail(props.email, checkout);
+        const { isValid, message } = await validateEmail(props.email, state.checkout);
         if (!isValid) {
             props.setError(message);
         }
     };
 
-    const handleChange = (e: any) => {
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         props.setError(null);
         props.setEmail(e.target.value);
     };
 
     return (
-        <>
-            <label>
-                Email
-                <input
-                    id="email"
-                    type="text"
-                    value={props.email}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={props.error ? "error" : ""}
-                />
-            </label>
-            {props.error && <div id="email-errors">{props.error}</div>}
-        </>
+        <Box display={"flex"}>
+            <Typography>Email</Typography>
+            <TextField
+                type="text"
+                value={props.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={!!props.error}
+            />
+            {props.error && <Typography>{props.error}</Typography>}
+        </Box>
     );
 };
 
@@ -83,22 +79,18 @@ const CheckoutForm = () => {
     const [message, setMessage] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    const checkoutState = useCheckout();
-    if (checkoutState.type === "error") {
-        return <div>Error: {checkoutState.error.message}</div>;
-    }
+    const state = useCheckout();
 
-    const handleSubmit = async (e: any) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (checkoutState.type === "loading") {
+        if (state.type === "loading" || state.type === "error") {
             return;
         }
 
-        const { checkout } = checkoutState;
         setIsLoading(true);
 
-        const { isValid, message } = await validateEmail(email, checkout);
+        const { isValid, message } = await validateEmail(email, state.checkout);
         if (!isValid) {
             setEmailError(message);
             setMessage(message);
@@ -106,7 +98,7 @@ const CheckoutForm = () => {
             return;
         }
 
-        const confirmResult = await checkout.confirm();
+        const confirmResult = await state.checkout.confirm();
 
         // This point will only be reached if there is an immediate error when
         // confirming the payment. Otherwise, your customer will be redirected to
@@ -120,14 +112,13 @@ const CheckoutForm = () => {
         setIsLoading(false);
     };
 
+    if (state.type === "error") {
+        return <div>Error: {state.error.message}</div>;
+    }
+
     return (
         <>
-            <EmailInput
-                email={email}
-                setEmail={setEmail}
-                error={emailError}
-                setError={setEmailError}
-            />
+            <h2>Checkout</h2>
             <ExpressCheckoutElement
                 options={{
                     buttonHeight: 44,
@@ -136,7 +127,11 @@ const CheckoutForm = () => {
                         googlePay: "white",
                         paypal: "white"
                     },
-                    buttonType: {},
+                    buttonType: {
+                        applePay: "plain",
+                        googlePay: "plain",
+                        paypal: "pay"
+                    },
                     layout: {},
                     paymentMethods: {
                         applePay: "always",
@@ -148,15 +143,20 @@ const CheckoutForm = () => {
                     throw new Error("Function not implemented.");
                 }}
             />
+            <Typography>Or</Typography>
             <form onSubmit={handleSubmit}>
-                <h4>Payment</h4>
-                <PaymentElement id="payment-element" />
-
+                <EmailInput
+                    email={email}
+                    setEmail={setEmail}
+                    error={emailError}
+                    setError={setEmailError}
+                />
+                <PaymentElement />
                 <button disabled={isLoading} id="submit">
-                    {isLoading || checkoutState.type === "loading" ? (
+                    {isLoading || state.type === "loading" ? (
                         <div className="spinner"></div>
                     ) : (
-                        `Pay ${checkoutState.checkout.total.total.amount} now`
+                        `Pay ${state.checkout.total.total.amount} now`
                     )}
                 </button>
                 {/* Show any error or success messages */}
@@ -174,9 +174,9 @@ const Checkout = () => {
 
     const appearance: Appearance = {
         theme: "night",
-
         variables: {
-            fontFamily: "Clacon"
+            fontFamily: "Clacon",
+            fontSizeBase: "22px"
         }
     };
 
