@@ -2,7 +2,7 @@ import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import { config } from "dotenv";
 import Stripe from "stripe";
 
-import { buildErrorResponse, buildResponse } from "../common";
+import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../common";
 
 type GetCheckoutSessionStatusPayload = {
     session_id: string;
@@ -12,11 +12,11 @@ config();
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     if (!event.body) {
-        return buildErrorResponse(400, "Missing Request Body");
+        return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Request Body");
     }
 
     const stripe = new Stripe(process.env.STRIPE_API_KEY!);
     const payload: GetCheckoutSessionStatusPayload = JSON.parse(event.body);
     const session = await stripe.checkout.sessions.retrieve(payload.session_id);
-    return buildResponse(200, session);
+    return buildResponse(event, 200, session);
 };

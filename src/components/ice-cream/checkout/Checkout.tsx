@@ -1,9 +1,9 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import axios from "axios";
 import { Box, Button, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { Appearance, loadStripe } from "@stripe/stripe-js";
-import { LinkAuthenticationElement, PaymentElement } from "@stripe/react-stripe-js";
+import { Elements, LinkAuthenticationElement, PaymentElement } from "@stripe/react-stripe-js";
 import { CheckoutProvider, useCheckout } from "@stripe/react-stripe-js/checkout";
 
 import ClaconFont from "../../../assets/fonts/clacon.ttf";
@@ -20,30 +20,24 @@ const CheckoutForm = () => {
     const [message, setMessage] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    const state = useCheckout();
-
     const handleSubmit = async () => {
-        if (state.type === "loading" || state.type === "error") {
-            return;
-        }
-
         setIsLoading(true);
-        const confirmResult = await state.checkout.confirm();
-        if (confirmResult.type === "error") {
-            setMessage(confirmResult.error.message);
-        }
+        // const confirmResult = await state.checkout.confirm();
+        // if (confirmResult.type === "error") {
+        //     setMessage(confirmResult.error.message);
+        // }
         setIsLoading(false);
     };
 
-    if (state.type === "error") {
-        return <div>Error: {state.error.message}</div>;
-    }
+    // if (state.type === "error") {
+    //     return <div>Error: {state.error.message}</div>;
+    // }
 
     return (
         <Box>
             <Typography variant={"h1"}>Checkout</Typography>
-            {/* <Typography variant={"h2"}>Contact Info</Typography>
-            <LinkAuthenticationElement /> */}
+            <Typography variant={"h2"}>Contact Info</Typography>
+            <LinkAuthenticationElement />
             <Typography variant={"h2"}>Payment</Typography>
             <PaymentElement
                 options={{
@@ -56,13 +50,13 @@ const CheckoutForm = () => {
             <Button
                 color={"primary"}
                 variant={"contained"}
-                disabled={isLoading || state.type === "loading"}
+                // disabled={isLoading || state.type === "loading"}
                 sx={{ width: "100%", mt: 2 }}
                 type="submit"
-                loading={isLoading || state.type === "loading"}
+                // loading={isLoading || state.type === "loading"}
                 onClick={handleSubmit}
             >
-                Pay {state.type === "success" ? state.checkout.total.total.amount : ""}
+                {/* Pay {state.type === "success" ? state.checkout.total.total.amount : ""} */}
             </Button>
             {message && <Box>{message}</Box>}
         </Box>
@@ -70,9 +64,14 @@ const CheckoutForm = () => {
 };
 
 const Checkout = () => {
-    const fetchClientSecret = useMemo(async () => {
-        const result = await axios.post(`${API_URL}/checkout`);
-        return result.data.client_secret;
+    const [clientSecret, setClientSecret] = useState<string>();
+
+    useEffect(() => {
+        const fetchClientSecret = async () => {
+            const result = await axios.post(`${API_URL}/checkout`);
+            setClientSecret(result.data.client_secret);
+        };
+        fetchClientSecret();
     }, []);
 
     const appearance: Appearance = {
@@ -84,18 +83,16 @@ const Checkout = () => {
     };
 
     return (
-        <CheckoutProvider
+        <Elements
             stripe={stripeLoader}
             options={{
-                clientSecret: fetchClientSecret,
-                elementsOptions: {
-                    appearance,
-                    fonts: [{ family: "Clacon", src: `url(${ClaconFont})` }]
-                }
+                clientSecret,
+                appearance,
+                fonts: [{ family: "Clacon", src: `url(${ClaconFont})` }]
             }}
         >
             <CheckoutForm />
-        </CheckoutProvider>
+        </Elements>
     );
 };
 

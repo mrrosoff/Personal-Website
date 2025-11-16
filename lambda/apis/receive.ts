@@ -2,7 +2,7 @@ import { APIGatewayEvent, APIGatewayProxyEventHeaders, APIGatewayProxyResult } f
 import { config } from "dotenv";
 import { CreateEmailOptions, GetReceivingEmailResponseSuccess, Resend } from "resend";
 
-import { buildErrorResponse, buildResponse } from "../common";
+import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../common";
 
 type WebhookPayload = {
     type: string;
@@ -29,20 +29,24 @@ config();
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     if (!event.body) {
-        return buildErrorResponse(400, "Missing Request Body");
+        return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Request Body");
     }
 
     const resend = new Resend(process.env.RESEND_API_KEY);
     const result = await verifyWebhookSignature(resend, event.headers, event.body);
     if (!result) {
-        return buildErrorResponse(400, "Invalid Webhook Signature");
+        return buildErrorResponse(
+            event,
+            HttpResponseStatus.BAD_REQUEST,
+            "Invalid Webhook Signature"
+        );
     }
 
     const { data }: WebhookPayload = JSON.parse(event.body);
     const email = await retrieveEmailData(resend, data.email_id);
     const attachments = await retrieveEmailAttachments(resend, data.email_id);
     await forwardEmail(resend, email, attachments);
-    return buildResponse(200, data);
+    return buildResponse(event, HttpResponseStatus.OK, data);
 };
 
 async function verifyWebhookSignature(
