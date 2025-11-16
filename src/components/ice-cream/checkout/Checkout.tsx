@@ -79,7 +79,7 @@ const CheckoutForm = () => {
             <PaymentElement
                 options={{
                     layout: {
-                        type: smallScreen ? "auto" : "tabs",
+                        type: smallScreen ? "accordion" : "tabs",
                         defaultCollapsed: false
                     }
                 }}
