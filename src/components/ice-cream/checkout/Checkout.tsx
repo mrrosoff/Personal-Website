@@ -1,7 +1,7 @@
 import { ChangeEvent, Dispatch, FormEvent, SetStateAction, useMemo, useState } from "react";
 
 import axios from "axios";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, TextField, Typography } from "@mui/material";
 import { Appearance, loadStripe } from "@stripe/stripe-js";
 import {
     CheckoutProvider,
@@ -115,19 +115,18 @@ const CheckoutForm = () => {
         <Box>
             <h2>Checkout</h2>
             <form onSubmit={handleSubmit}>
-                <PaymentElement
-                    options={{
-                        layout: { type: "tabs", defaultCollapsed: false }
-                    }}
-                />
-                <Button disabled={isLoading} id="submit">
-                    {isLoading || state.type === "loading" ? (
-                        <div className="spinner"></div>
-                    ) : (
-                        `Pay ${state.checkout.total.total.amount} now`
-                    )}
+                <PaymentElement />
+                <Button
+                    color={"primary"}
+                    variant={"contained"}
+                    disabled={isLoading || state.type === "loading"}
+                    sx={{ width: "100%", mt: 2 }}
+                    type="submit"
+                    loading={isLoading || state.type === "loading"}
+                >
+                    Pay {state.type === "success" ? state.checkout.total.total.amount : ""}
                 </Button>
-                {message && <div id="payment-message">{message}</div>}
+                {message && <Box>{message}</Box>}
             </form>
         </Box>
     );
