@@ -44,7 +44,17 @@ const CheckoutForm = () => {
             <Typography variant={"h2"} mt={4} mb={2}>
                 Contact Info
             </Typography>
-            <TextField variant={"filled"} label={"Email"} />
+            <TextField
+                variant={"filled"}
+                label={"Email"}
+                fullWidth
+                sx={{
+                    backgroundColor: "#30313D",
+                    borderRadius: 1.5,
+                    borderColor: "#424353",
+                    border: 1
+                }}
+            />
             <Typography variant={"h2"} mt={4} mb={2}>
                 Payment
             </Typography>
@@ -84,7 +94,8 @@ const Checkout = () => {
             fontFamily: "Clacon",
             fontSizeBase: "22px",
             fontWeightNormal: "200",
-            fontWeightMedium: "400"
+            fontWeightMedium: "400",
+            colorPrimary: "#F9F9F9"
         }
     };
 
