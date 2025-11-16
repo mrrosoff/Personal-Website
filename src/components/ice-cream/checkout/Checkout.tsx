@@ -151,7 +151,11 @@ const CheckoutForm = () => {
                     error={emailError}
                     setError={setEmailError}
                 />
-                <PaymentElement />
+                <PaymentElement
+                    options={{
+                        layout: { type: "tabs", defaultCollapsed: false }
+                    }}
+                />
                 <button disabled={isLoading} id="submit">
                     {isLoading || state.type === "loading" ? (
                         <div className="spinner"></div>
