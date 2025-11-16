@@ -1,15 +1,10 @@
 import { ChangeEvent, Dispatch, FormEvent, SetStateAction, useMemo, useState } from "react";
 
 import axios from "axios";
-import { Box, TextField, Typography } from "@mui/material";
-import {
-    Appearance,
-    loadStripe,
-    StripeExpressCheckoutElementConfirmEvent
-} from "@stripe/stripe-js";
+import { Box, Button, TextField, Typography } from "@mui/material";
+import { Appearance, loadStripe } from "@stripe/stripe-js";
 import {
     CheckoutProvider,
-    ExpressCheckoutElement,
     PaymentElement,
     StripeCheckoutValue,
     useCheckout
@@ -117,56 +112,24 @@ const CheckoutForm = () => {
     }
 
     return (
-        <>
+        <Box>
             <h2>Checkout</h2>
-            <ExpressCheckoutElement
-                options={{
-                    buttonHeight: 44,
-                    buttonTheme: {
-                        applePay: "white-outline",
-                        googlePay: "white",
-                        paypal: "white"
-                    },
-                    buttonType: {
-                        applePay: "plain",
-                        googlePay: "plain",
-                        paypal: "pay"
-                    },
-                    layout: {},
-                    paymentMethods: {
-                        applePay: "always",
-                        googlePay: "always"
-                    },
-                    paymentMethodOrder: []
-                }}
-                onConfirm={(event: StripeExpressCheckoutElementConfirmEvent) => {
-                    throw new Error("Function not implemented.");
-                }}
-            />
-            <Typography>Or</Typography>
             <form onSubmit={handleSubmit}>
-                <EmailInput
-                    email={email}
-                    setEmail={setEmail}
-                    error={emailError}
-                    setError={setEmailError}
-                />
                 <PaymentElement
                     options={{
                         layout: { type: "tabs", defaultCollapsed: false }
                     }}
                 />
-                <button disabled={isLoading} id="submit">
+                <Button disabled={isLoading} id="submit">
                     {isLoading || state.type === "loading" ? (
                         <div className="spinner"></div>
                     ) : (
                         `Pay ${state.checkout.total.total.amount} now`
                     )}
-                </button>
-                {/* Show any error or success messages */}
+                </Button>
                 {message && <div id="payment-message">{message}</div>}
             </form>
-        </>
+        </Box>
     );
 };
 
