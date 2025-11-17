@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import axios from "axios";
 import { Box, Button, TextField, Typography, useMediaQuery, useTheme } from "@mui/material";
@@ -100,10 +101,13 @@ const CheckoutForm = () => {
 };
 
 const Checkout = () => {
+    const [searchParams] = useSearchParams();
+    const priceIds = searchParams.get("priceIds") || "";
+
     const fetchClientSecret = useMemo(async () => {
-        const result = await axios.post(`${API_URL}/checkout`);
+        const result = await axios.post(`${API_URL}/checkout?priceIds=${priceIds}`);
         return result.data.client_secret;
-    }, []);
+    }, [priceIds]);
 
     const appearance: Appearance = {
         theme: "night",

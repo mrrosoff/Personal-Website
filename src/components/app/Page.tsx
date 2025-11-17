@@ -1,11 +1,12 @@
 import { Dispatch, RefObject, SetStateAction, useState } from "react";
-import { Link, useMatch } from "react-router-dom";
+import { Link, useMatch, useNavigate } from "react-router-dom";
 
-import { Avatar, Box, Paper, useMediaQuery, useTheme } from "@mui/material";
+import { Avatar, Badge, Box, Paper, useMediaQuery, useTheme } from "@mui/material";
 
 import { DesktopSocialButtonList } from "./SocialButtons";
 import BootUp from "./desktop/BootUp";
 import TerminalEmbed from "./desktop/TerminalEmbed";
+import { useIceCreamCart } from "../ice-cream/IceCreamCartContext";
 
 import SmallProfile from "../../assets/images/small-profile.webp";
 import MobileLayout from "./MobileLayout";
@@ -65,17 +66,30 @@ export const LinksAndMenu = (props: {}) => {
 };
 
 const Links = (props: { open: boolean; setOpen: Dispatch<SetStateAction<boolean>> }) => {
+    const navigate = useNavigate();
     const isIceCream = useMatch("/ice-cream");
+    const { selectedPriceIds } = useIceCreamCart();
+
+    const handleCartClick = () => {
+        const priceIdsParam = selectedPriceIds.join(",");
+        navigate(`/ice-cream/checkout?priceIds=${priceIdsParam}`);
+    };
+
     return (
-        <Box sx={{ position: "absolute", top: 0, right: 80, display: "flex" }}>
-            <Link
-                to={isIceCream ? "/" : "ice-cream"}
-                style={{ paddingRight: 20, color: "#FCFCFC", fontSize: 22 }}
-            >
+        <Box sx={{ position: "absolute", top: 0, right: 80, display: "flex", gap: 2.5 }}>
+            <Link to={isIceCream ? "/" : "ice-cream"} style={{ color: "#FCFCFC", fontSize: 22 }}>
                 {isIceCream ? "Home" : "Ice Cream"}
             </Link>
+            {isIceCream && (
+                <a
+                    style={{ margin: 0, color: "#FCFCFC", fontSize: 22, cursor: "pointer" }}
+                    onClick={handleCartClick}
+                >
+                    Cart ({selectedPriceIds.length})
+                </a>
+            )}
             <a
-                style={{ margin: 0, color: "#FCFCFC", fontSize: 22 }}
+                style={{ margin: 0, color: "#FCFCFC", fontSize: 22, cursor: "pointer" }}
                 onClick={() => props.setOpen(!props.open)}
             >
                 More

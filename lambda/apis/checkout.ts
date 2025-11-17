@@ -8,14 +8,27 @@ config();
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     const stripe = new Stripe(process.env.STRIPE_API_KEY!);
+
+    // Get priceIds from query string parameters
+    const priceIdsParam = event.queryStringParameters?.priceIds || "";
+    const priceIds = priceIdsParam.split(",").filter((id) => id.trim() !== "");
+
+    // If no priceIds provided, return error
+    if (priceIds.length === 0) {
+        return buildResponse(event, HttpResponseStatus.BAD_REQUEST, {
+            error: "No priceIds provided"
+        });
+    }
+
+    // Create line items for each priceId
+    const lineItems = priceIds.map((priceId) => ({
+        price: priceId.trim(),
+        quantity: 1
+    }));
+
     const session = await stripe.checkout.sessions.create({
         ui_mode: "custom",
-        line_items: [
-            {
-                price: "price_1STmV8GZZEzkLsbiuQIZaVwK",
-                quantity: 1
-            }
-        ],
+        line_items: lineItems,
         mode: "payment",
         return_url: `https://maxrosoff.com/ice-cream/checkout/return?session_id={CHECKOUT_SESSION_ID}`
     });

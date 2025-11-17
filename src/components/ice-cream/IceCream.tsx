@@ -4,6 +4,7 @@ import { Box, Grid, Link, Typography, useMediaQuery, useTheme } from "@mui/mater
 import { keyframes } from "@mui/system";
 
 import { ICE_CREAM_FLAVORS } from "./flavors";
+import { useIceCreamCart } from "./IceCreamCartContext";
 
 const createSparkleAnimation = (color: string) => keyframes`
     0%, 100% {
@@ -20,11 +21,14 @@ const createSparkleAnimation = (color: string) => keyframes`
     }
 `;
 
-const getSparkleStyles = (color: string, index: number) => {
+const getSparkleStyles = (color: string, index: number, isSelected: boolean) => {
     const sparkleAnimation = createSparkleAnimation(color);
     const delay = -(index * 0.37); // Negative delay to start at different points
     return {
         position: "relative",
+        cursor: "pointer",
+        boxShadow: isSelected ? `0 0 12px color-mix(in srgb, ${color} 80%, transparent)` : "none",
+        transition: "box-shadow 0.3s ease-in-out",
         "&::before": {
             content: '""',
             position: "absolute",
@@ -34,6 +38,11 @@ const getSparkleStyles = (color: string, index: number) => {
             bottom: 0,
             borderRadius: 1,
             pointerEvents: "none",
+            animation: "none",
+            opacity: 0
+        },
+        "&:hover::before": {
+            opacity: 1,
             animation: `${sparkleAnimation} 4s ease-in-out infinite ${delay}s`
         }
     };
@@ -43,6 +52,8 @@ const IceCream = () => {
     const navigate = useNavigate();
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+    const { selectedPriceIds, toggleFlavor } = useIceCreamCart();
+
     return (
         <Box
             display={"flex"}
@@ -60,25 +71,30 @@ const IceCream = () => {
                 Limited. High quality. San Francisco based. Creative flavors, priced at $5 per pint.
             </Typography>
             <Typography mt={smallScreen ? 0 : -1} align={smallScreen ? "center" : undefined}>
-                Contact me to order, or{" "}
+                Want to stay updated?{" "}
                 <Link
                     component="button"
                     onClick={() => navigate("/ice-cream/mailing-list")}
                     underline="hover"
                     sx={{ cursor: "pointer", color: "inherit", verticalAlign: "baseline" }}
                 >
-                    add yourself to the mailing list
-                </Link>
-                .
+                    Join our mailing list
+                </Link>{" "}
+                for new flavor announcements.
             </Typography>
-            <CurrentFlavors />
-            <LastBatch />
+            <CurrentFlavors selectedPriceIds={selectedPriceIds} toggleFlavor={toggleFlavor} />
+            <LastBatch selectedPriceIds={selectedPriceIds} toggleFlavor={toggleFlavor} />
             <Schedule />
         </Box>
     );
 };
 
-export const CurrentFlavors = () => {
+type FlavorSectionProps = {
+    selectedPriceIds: string[];
+    toggleFlavor: (priceId: string | undefined) => void;
+};
+
+export const CurrentFlavors = ({ selectedPriceIds, toggleFlavor }: FlavorSectionProps) => {
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
     return (
@@ -98,30 +114,42 @@ export const CurrentFlavors = () => {
                 direction={smallScreen ? "column" : undefined}
                 sx={{ paddingTop: smallScreen ? 4 : 2 }}
             >
-                {ICE_CREAM_FLAVORS.currentFlavors.map((flavor, index) => (
-                    <Grid key={index} display={"flex"} justifyContent={"center"}>
-                        <Box
-                            display={"flex"}
-                            sx={{
-                                border: 1,
-                                padding: 2.5,
-                                borderRadius: 1,
-                                ...(flavor.sparkle &&
-                                    getSparkleStyles(flavor.color || "white", index))
-                            }}
-                        >
-                            <Typography align={"center"} color={flavor.color || "white"}>
-                                {flavor.name}
-                            </Typography>
-                        </Box>
-                    </Grid>
-                ))}
+                {ICE_CREAM_FLAVORS.currentFlavors.map((flavor, index) => {
+                    const isSelected = flavor.priceId
+                        ? selectedPriceIds.includes(flavor.priceId)
+                        : false;
+                    const sparkleStyles = getSparkleStyles(
+                        flavor.color || "white",
+                        index,
+                        isSelected
+                    );
+                    return (
+                        <Grid key={index} display={"flex"} justifyContent={"center"}>
+                            <Box
+                                display={"flex"}
+                                onClick={() => toggleFlavor(flavor.priceId)}
+                                // @ts-expect-error sx type issue with keyframes
+                                sx={{
+                                    ...sparkleStyles,
+                                    border: 1,
+                                    borderColor: isSelected ? flavor.color || "white" : undefined,
+                                    padding: 2.5,
+                                    borderRadius: 1
+                                }}
+                            >
+                                <Typography align={"center"} color={flavor.color || "white"}>
+                                    {flavor.name}
+                                </Typography>
+                            </Box>
+                        </Grid>
+                    );
+                })}
             </Grid>
         </Box>
     );
 };
 
-export const LastBatch = () => {
+export const LastBatch = ({ selectedPriceIds, toggleFlavor }: FlavorSectionProps) => {
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
     return (
@@ -141,24 +169,36 @@ export const LastBatch = () => {
                 direction={smallScreen ? "column" : undefined}
                 sx={{ paddingTop: smallScreen ? 4 : 2 }}
             >
-                {ICE_CREAM_FLAVORS.lastBatch.map((flavor, index) => (
-                    <Grid key={index} display={"flex"} justifyContent={"center"}>
-                        <Box
-                            display={"flex"}
-                            sx={{
-                                border: 1,
-                                padding: 2.5,
-                                borderRadius: 1,
-                                ...(flavor.sparkle &&
-                                    getSparkleStyles(flavor.color || "white", index))
-                            }}
-                        >
-                            <Typography align={"center"} color={flavor.color || "white"}>
-                                {flavor.name}
-                            </Typography>
-                        </Box>
-                    </Grid>
-                ))}
+                {ICE_CREAM_FLAVORS.lastBatch.map((flavor, index) => {
+                    const isSelected = flavor.priceId
+                        ? selectedPriceIds.includes(flavor.priceId)
+                        : false;
+                    const sparkleStyles = getSparkleStyles(
+                        flavor.color || "white",
+                        index,
+                        isSelected
+                    );
+                    return (
+                        <Grid key={index} display={"flex"} justifyContent={"center"}>
+                            <Box
+                                display={"flex"}
+                                onClick={() => toggleFlavor(flavor.priceId)}
+                                // @ts-expect-error sx type issue with keyframes
+                                sx={{
+                                    ...sparkleStyles,
+                                    border: 1,
+                                    borderColor: isSelected ? flavor.color || "white" : undefined,
+                                    padding: 2.5,
+                                    borderRadius: 1
+                                }}
+                            >
+                                <Typography align={"center"} color={flavor.color || "white"}>
+                                    {flavor.name}
+                                </Typography>
+                            </Box>
+                        </Grid>
+                    );
+                })}
             </Grid>
         </Box>
     );
@@ -192,9 +232,7 @@ export const Schedule = () => {
                             sx={{
                                 border: 1,
                                 padding: 2.5,
-                                borderRadius: 1,
-                                ...(flavor.sparkle &&
-                                    getSparkleStyles(flavor.color || "white", index))
+                                borderRadius: 1
                             }}
                         >
                             <Typography align={"center"} color={flavor.color || "white"}>
