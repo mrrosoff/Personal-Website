@@ -104,15 +104,16 @@ const CheckoutForm = () => {
 const Checkout = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
+    const priceIds = searchParams.get("priceIds") || "";
 
     const fetchClientSecret = useMemo(async () => {
-        const priceIds = searchParams.get("priceIds") || "";
-        if (!priceIds) {
-            return navigate("/ice-cream");
-        }
         const result = await axios.post(`${API_URL}/checkout?priceIds=${priceIds}`);
         return result.data.client_secret;
     }, []);
+
+    if (!priceIds) {
+        return navigate("/ice-cream");
+    }
 
     const appearance: Appearance = {
         theme: "night",
