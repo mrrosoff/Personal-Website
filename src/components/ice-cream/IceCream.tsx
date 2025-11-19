@@ -29,6 +29,9 @@ const getSparkleStyles = (color: string, index: number, isSelected: boolean) => 
         cursor: "pointer",
         boxShadow: isSelected ? `0 0 12px color-mix(in srgb, ${color} 80%, transparent)` : "none",
         transition: "box-shadow 0.3s ease-in-out",
+        "&:hover": {
+            boxShadow: `0 0 12px color-mix(in srgb, ${color} 80%, transparent)`
+        },
         "&::before": {
             content: '""',
             position: "absolute",
@@ -134,7 +137,10 @@ export const CurrentFlavors = ({ selectedPriceIds, toggleFlavor }: FlavorSection
                                     border: 1,
                                     borderColor: isSelected ? flavor.color || "white" : undefined,
                                     padding: 2.5,
-                                    borderRadius: 1
+                                    borderRadius: 1,
+                                    "&:hover": {
+                                        borderColor: flavor.color || "white"
+                                    }
                                 }}
                             >
                                 <Typography align={"center"} color={flavor.color || "white"}>
@@ -189,7 +195,10 @@ export const LastBatch = ({ selectedPriceIds, toggleFlavor }: FlavorSectionProps
                                     border: 1,
                                     borderColor: isSelected ? flavor.color || "white" : undefined,
                                     padding: 2.5,
-                                    borderRadius: 1
+                                    borderRadius: 1,
+                                    "&:hover": {
+                                        borderColor: flavor.color || "white"
+                                    }
                                 }}
                             >
                                 <Typography align={"center"} color={flavor.color || "white"}>

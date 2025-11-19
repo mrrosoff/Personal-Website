@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import axios from "axios";
 import { Box, Button, TextField, Typography, useMediaQuery, useTheme } from "@mui/material";
@@ -88,11 +88,12 @@ const CheckoutForm = () => {
             <Button
                 color={"primary"}
                 variant={"contained"}
-                disabled={isLoading || state.type === "loading"}
-                sx={{ width: "100%", mt: 4 }}
+                fullWidth
                 type="submit"
+                disabled={isLoading || state.type === "loading"}
                 loading={isLoading || state.type === "loading"}
                 onClick={handleSubmit}
+                sx={{ mt: 4, fontSize: 20 }}
             >
                 Pay {state.type === "success" ? state.checkout.total.total.amount : ""}
             </Button>
@@ -101,13 +102,17 @@ const CheckoutForm = () => {
 };
 
 const Checkout = () => {
+    const navigate = useNavigate();
     const [searchParams] = useSearchParams();
-    const priceIds = searchParams.get("priceIds") || "";
 
     const fetchClientSecret = useMemo(async () => {
+        const priceIds = searchParams.get("priceIds") || "";
+        if (!priceIds) {
+            return navigate("/ice-cream");
+        }
         const result = await axios.post(`${API_URL}/checkout?priceIds=${priceIds}`);
         return result.data.client_secret;
-    }, [priceIds]);
+    }, []);
 
     const appearance: Appearance = {
         theme: "night",

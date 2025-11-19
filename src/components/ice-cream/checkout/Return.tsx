@@ -1,7 +1,8 @@
+import axios from "axios";
 import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
+
 import { API_URL } from "../../App";
-import axios from "axios";
 
 const Return = () => {
     const [status, setStatus] = useState(null);
