@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Navigate, useSearchParams } from "react-router-dom";
 
 import axios from "axios";
 import { Box, Button, TextField, Typography, useMediaQuery, useTheme } from "@mui/material";
@@ -102,7 +102,6 @@ const CheckoutForm = () => {
 };
 
 const Checkout = () => {
-    const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const priceIds = searchParams.get("priceIds") || "";
 
@@ -112,7 +111,7 @@ const Checkout = () => {
     }, []);
 
     if (!priceIds) {
-        return navigate("/ice-cream");
+        return <Navigate to={"/ice-cream"} replace />;
     }
 
     const appearance: Appearance = {

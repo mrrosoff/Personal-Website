@@ -22,7 +22,7 @@ const Return = () => {
     }, []);
 
     if (status === "open") {
-        return <Navigate to="/ice-cream/checkout" />;
+        return <Navigate to="/ice-cream" replace />;
     }
 
     if (status === "complete") {
