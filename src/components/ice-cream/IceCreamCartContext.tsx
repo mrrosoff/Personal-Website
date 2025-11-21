@@ -1,24 +1,39 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode, useEffect, useRef } from "react";
 
 type IceCreamCartContextType = {
     selectedPriceIds: string[];
     toggleFlavor: (priceId: string | undefined) => void;
+    showCartIndicator: boolean;
 };
 
 const IceCreamCartContext = createContext<IceCreamCartContextType | undefined>(undefined);
 
 export const IceCreamCartProvider = ({ children }: { children: ReactNode }) => {
     const [selectedPriceIds, setSelectedPriceIds] = useState<string[]>([]);
+    const [showCartIndicator, setShowCartIndicator] = useState(false);
 
     const toggleFlavor = (priceId: string | undefined) => {
         if (!priceId) return;
-        setSelectedPriceIds((prev) =>
-            prev.includes(priceId) ? prev.filter((id) => id !== priceId) : [...prev, priceId]
-        );
+        setSelectedPriceIds((prev) => {
+            const isAdding = !prev.includes(priceId);
+            const newIds = isAdding ? [...prev, priceId] : prev.filter((id) => id !== priceId);
+
+            if (isAdding) {
+                setShowCartIndicator(true);
+            }
+            return newIds;
+        });
     };
 
+    // Hide indicator when cart is empty
+    useEffect(() => {
+        if (selectedPriceIds.length === 0) {
+            setShowCartIndicator(false);
+        }
+    }, [selectedPriceIds]);
+
     return (
-        <IceCreamCartContext.Provider value={{ selectedPriceIds, toggleFlavor }}>
+        <IceCreamCartContext.Provider value={{ selectedPriceIds, toggleFlavor, showCartIndicator }}>
             {children}
         </IceCreamCartContext.Provider>
     );

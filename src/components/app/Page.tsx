@@ -67,8 +67,10 @@ export const LinksAndMenu = (props: {}) => {
 
 const Links = (props: { open: boolean; setOpen: Dispatch<SetStateAction<boolean>> }) => {
     const navigate = useNavigate();
+    const theme = useTheme();
+    const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
     const isIceCream = useMatch("/ice-cream");
-    const { selectedPriceIds } = useIceCreamCart();
+    const { selectedPriceIds, showCartIndicator } = useIceCreamCart();
 
     const handleCartClick = () => {
         const priceIdsParam = selectedPriceIds.join(",");
@@ -81,12 +83,51 @@ const Links = (props: { open: boolean; setOpen: Dispatch<SetStateAction<boolean>
                 {isIceCream ? "Home" : "Ice Cream"}
             </Link>
             {isIceCream && (
-                <a
-                    style={{ margin: 0, color: "#FCFCFC", fontSize: 22, cursor: "pointer" }}
-                    onClick={handleCartClick}
+                <Box
+                    sx={{
+                        position: "relative",
+                        "&:hover .elastic-underline": {
+                            display: "none"
+                        }
+                    }}
                 >
-                    Cart ({selectedPriceIds.length})
-                </a>
+                    <a
+                        style={{
+                            margin: 0,
+                            color: selectedPriceIds.length === 0 ? "rgba(252, 252, 252, 0.5)" : "#FCFCFC",
+                            fontSize: 22,
+                            cursor: selectedPriceIds.length === 0 ? "default" : "pointer"
+                        }}
+                        onClick={selectedPriceIds.length > 0 ? handleCartClick : undefined}
+                    >
+                        Cart ({selectedPriceIds.length})
+                    </a>
+                    {!smallScreen && showCartIndicator && (
+                        <Box
+                            sx={{
+                                position: "absolute",
+                                top: -4,
+                                right: -4,
+                                width: 8,
+                                height: 8,
+                                borderRadius: "50%",
+                                backgroundColor: theme.palette.secondary.main,
+                                border: "1px solid white",
+                                animation: "pulse 2s ease-in-out infinite",
+                                "@keyframes pulse": {
+                                    "0%, 100%": {
+                                        opacity: 1,
+                                        transform: "scale(0.8)"
+                                    },
+                                    "50%": {
+                                        opacity: 0.7,
+                                        transform: "scale(1)"
+                                    }
+                                }
+                            }}
+                        />
+                    )}
+                </Box>
             )}
             <a
                 style={{ margin: 0, color: "#FCFCFC", fontSize: 22, cursor: "pointer" }}

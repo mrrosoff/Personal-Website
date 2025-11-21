@@ -1,53 +1,35 @@
 import { useNavigate } from "react-router-dom";
 
-import { Box, Grid, Link, Typography, useMediaQuery, useTheme } from "@mui/material";
-import { keyframes } from "@mui/system";
+import { Box, Fab, Grid, Link, Typography, useMediaQuery, useTheme } from "@mui/material";
+import LaunchIcon from "@mui/icons-material/Launch";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 import { ICE_CREAM_FLAVORS } from "./flavors";
 import { useIceCreamCart } from "./IceCreamCartContext";
 
-const createSparkleAnimation = (color: string) => keyframes`
-    0%, 100% {
-        box-shadow: 2px -2px 4px color-mix(in srgb, ${color} 70%, transparent);
-    }
-    25% {
-        box-shadow: 2px 2px 4px color-mix(in srgb, ${color} 70%, transparent);
-    }
-    50% {
-        box-shadow: -2px 2px 4px color-mix(in srgb, ${color} 70%, transparent);
-    }
-    75% {
-        box-shadow: -2px -2px 4px color-mix(in srgb, ${color} 70%, transparent);
-    }
-`;
-
-const getSparkleStyles = (color: string, index: number, isSelected: boolean) => {
-    const sparkleAnimation = createSparkleAnimation(color);
-    const delay = -(index * 0.37); // Negative delay to start at different points
+const getFlavorStyles = (color: string, isSelected: boolean) => {
     return {
-        position: "relative",
         cursor: "pointer",
-        boxShadow: isSelected ? `0 0 12px color-mix(in srgb, ${color} 80%, transparent)` : "none",
-        transition: "box-shadow 0.3s ease-in-out",
+        border: 1,
+        borderColor: isSelected ? color : "rgba(255, 255, 255, 0.5)",
+        backgroundColor: isSelected ? `color-mix(in srgb, ${color} 8%, transparent)` : "transparent",
+        padding: 2.5,
+        borderRadius: 1,
+        transition: "all 0.2s ease",
         "&:hover": {
-            boxShadow: `0 0 12px color-mix(in srgb, ${color} 80%, transparent)`
-        },
-        "&::before": {
-            content: '""',
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            borderRadius: 1,
-            pointerEvents: "none",
-            animation: "none",
-            opacity: 0
-        },
-        "&:hover::before": {
-            opacity: 1,
-            animation: `${sparkleAnimation} 4s ease-in-out infinite ${delay}s`
+            borderColor: color,
+            backgroundColor: `color-mix(in srgb, ${color} 5%, transparent)`
         }
+    };
+};
+
+const getUpcomingFlavorStyles = () => {
+    return {
+        border: 1,
+        borderColor: "rgba(255, 255, 255, 0.5)",
+        backgroundColor: "transparent",
+        padding: 2.5,
+        borderRadius: 1
     };
 };
 
@@ -57,38 +39,69 @@ const IceCream = () => {
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
     const { selectedPriceIds, toggleFlavor } = useIceCreamCart();
 
+    const handleCartClick = () => {
+        const priceIdsParam = selectedPriceIds.join(",");
+        navigate(`/ice-cream/checkout?priceIds=${priceIdsParam}`);
+    };
+
     return (
         <Box
             display={"flex"}
             flexDirection={"column"}
-            alignItems={smallScreen ? "center" : undefined}
-            pb={4}
+            alignItems={smallScreen ? undefined : undefined}
+            pb={smallScreen ? 10 : 4}
         >
-            <Typography
-                variant="h1"
-                align={smallScreen ? "center" : undefined}
-                sx={{ maxWidth: smallScreen ? 300 : undefined }}
-            >
-                Small Batch Ice Cream
-            </Typography>
-            <Typography mt={smallScreen ? 1 : undefined} align={smallScreen ? "center" : undefined}>
+            {smallScreen ? (
+                <>
+                    <Typography variant="h1" sx={{ lineHeight: 0.85 }}>Small Batch</Typography>
+                    <Typography variant="h1" sx={{ ml: -0.5, lineHeight: 0.85 }}>Ice Cream</Typography>
+                </>
+            ) : (
+                <Typography variant="h1">Small Batch Ice Cream</Typography>
+            )}
+            <Typography mt={smallScreen ? 2 : undefined}>
                 Limited. High quality. San Francisco based. Creative flavors, priced at $5 per pint.
             </Typography>
-            <Typography mt={smallScreen ? 0 : -1} align={smallScreen ? "center" : undefined}>
+            <Typography mt={smallScreen ? 0 : -1}>
                 Want to stay updated?{" "}
                 <Link
                     component="button"
                     onClick={() => navigate("/ice-cream/mailing-list")}
                     underline="hover"
-                    sx={{ cursor: "pointer", color: "inherit", verticalAlign: "baseline" }}
+                    sx={{
+                        cursor: "pointer",
+                        color: "inherit",
+                        verticalAlign: "baseline",
+                        position: "relative",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 0.3
+                    }}
                 >
                     Join our mailing list
+                    <LaunchIcon sx={{ fontSize: 10, position: "relative", top: -4 }} />
                 </Link>{" "}
                 for new flavor announcements.
             </Typography>
             <CurrentFlavors selectedPriceIds={selectedPriceIds} toggleFlavor={toggleFlavor} />
             <LastBatch selectedPriceIds={selectedPriceIds} toggleFlavor={toggleFlavor} />
             <Schedule />
+            {smallScreen && selectedPriceIds.length > 0 && (
+                <Fab
+                    color="primary"
+                    onClick={handleCartClick}
+                    sx={{
+                        position: "fixed",
+                        bottom: 24,
+                        right: 24,
+                        backgroundColor: "#52535F",
+                        color: "white",
+                        ":hover": { backgroundColor: "#5F6272" }
+                    }}
+                >
+                    <ShoppingCartIcon />
+                </Fab>
+            )}
         </Box>
     );
 };
@@ -105,13 +118,11 @@ export const CurrentFlavors = ({ selectedPriceIds, toggleFlavor }: FlavorSection
         <Box
             display={"flex"}
             flexDirection={"column"}
-            alignItems={smallScreen ? "center" : undefined}
+            alignItems={smallScreen ? undefined : undefined}
             sx={{ paddingTop: smallScreen ? 6 : 2.5 }}
         >
             <Typography variant="h2">Current Flavors</Typography>
-            <Typography align={smallScreen ? "center" : undefined}>
-                Our current rotation of flavors.
-            </Typography>
+            <Typography>Our current rotation of flavors.</Typography>
             <Grid
                 container
                 spacing={3}
@@ -122,29 +133,24 @@ export const CurrentFlavors = ({ selectedPriceIds, toggleFlavor }: FlavorSection
                     const isSelected = flavor.priceId
                         ? selectedPriceIds.includes(flavor.priceId)
                         : false;
-                    const sparkleStyles = getSparkleStyles(
-                        flavor.color || "white",
-                        index,
-                        isSelected
-                    );
+                    const flavorStyles = getFlavorStyles(flavor.color || "white", isSelected);
                     return (
-                        <Grid key={index} display={"flex"} justifyContent={"center"}>
+                        <Grid
+                            key={index}
+                            display={"flex"}
+                            justifyContent={"center"}
+                            sx={{ width: smallScreen ? "100%" : undefined }}
+                        >
                             <Box
                                 display={"flex"}
                                 onClick={() => toggleFlavor(flavor.priceId)}
-                                // @ts-expect-error sx type issue with keyframes
                                 sx={{
-                                    ...sparkleStyles,
-                                    border: 1,
-                                    borderColor: isSelected ? flavor.color || "white" : undefined,
-                                    padding: 2.5,
-                                    borderRadius: 1,
-                                    "&:hover": {
-                                        borderColor: flavor.color || "white"
-                                    }
+                                    ...flavorStyles,
+                                    width: smallScreen ? "100%" : undefined,
+                                    justifyContent: smallScreen ? "flex-start" : "center"
                                 }}
                             >
-                                <Typography align={"center"} color={flavor.color || "white"}>
+                                <Typography color={flavor.color || "white"}>
                                     {flavor.name}
                                 </Typography>
                             </Box>
@@ -163,13 +169,11 @@ export const LastBatch = ({ selectedPriceIds, toggleFlavor }: FlavorSectionProps
         <Box
             display={"flex"}
             flexDirection={"column"}
-            alignItems={smallScreen ? "center" : undefined}
+            alignItems={smallScreen ? undefined : undefined}
             sx={{ paddingTop: smallScreen ? 6 : 2.5 }}
         >
             <Typography variant="h2">Last Batch</Typography>
-            <Typography align={smallScreen ? "center" : undefined}>
-                Get them before they are gone! Limited quantities available.
-            </Typography>
+            <Typography>Get them before they are gone! Limited quantities available.</Typography>
             <Grid
                 container
                 spacing={3}
@@ -180,29 +184,24 @@ export const LastBatch = ({ selectedPriceIds, toggleFlavor }: FlavorSectionProps
                     const isSelected = flavor.priceId
                         ? selectedPriceIds.includes(flavor.priceId)
                         : false;
-                    const sparkleStyles = getSparkleStyles(
-                        flavor.color || "white",
-                        index,
-                        isSelected
-                    );
+                    const flavorStyles = getFlavorStyles(flavor.color || "white", isSelected);
                     return (
-                        <Grid key={index} display={"flex"} justifyContent={"center"}>
+                        <Grid
+                            key={index}
+                            display={"flex"}
+                            justifyContent={"center"}
+                            sx={{ width: smallScreen ? "100%" : undefined }}
+                        >
                             <Box
                                 display={"flex"}
                                 onClick={() => toggleFlavor(flavor.priceId)}
-                                // @ts-expect-error sx type issue with keyframes
                                 sx={{
-                                    ...sparkleStyles,
-                                    border: 1,
-                                    borderColor: isSelected ? flavor.color || "white" : undefined,
-                                    padding: 2.5,
-                                    borderRadius: 1,
-                                    "&:hover": {
-                                        borderColor: flavor.color || "white"
-                                    }
+                                    ...flavorStyles,
+                                    width: smallScreen ? "100%" : undefined,
+                                    justifyContent: smallScreen ? "flex-start" : "center"
                                 }}
                             >
-                                <Typography align={"center"} color={flavor.color || "white"}>
+                                <Typography color={flavor.color || "white"}>
                                     {flavor.name}
                                 </Typography>
                             </Box>
@@ -221,11 +220,11 @@ export const Schedule = () => {
         <Box
             display={"flex"}
             flexDirection={"column"}
-            alignItems={smallScreen ? "center" : undefined}
+            alignItems={smallScreen ? undefined : undefined}
             sx={{ paddingTop: smallScreen ? 6 : 2.5 }}
         >
             <Typography variant="h2">Whats Coming Up...</Typography>
-            <Typography align={smallScreen ? "center" : undefined}>
+            <Typography>
                 The following is a list of possible upcoming flavors. Actual availability may vary
                 by seasonal produce and other factors.
             </Typography>
@@ -235,22 +234,28 @@ export const Schedule = () => {
                 direction={smallScreen ? "column" : undefined}
                 sx={{ paddingTop: smallScreen ? 4 : 2 }}
             >
-                {ICE_CREAM_FLAVORS.upcomingFlavors.map((flavor, index) => (
-                    <Grid key={index} display={"flex"} justifyContent={"center"}>
-                        <Box
+                {ICE_CREAM_FLAVORS.upcomingFlavors.map((flavor, index) => {
+                    const upcomingStyles = getUpcomingFlavorStyles();
+                    return (
+                        <Grid
+                            key={index}
                             display={"flex"}
-                            sx={{
-                                border: 1,
-                                padding: 2.5,
-                                borderRadius: 1
-                            }}
+                            justifyContent={"center"}
+                            sx={{ width: smallScreen ? "100%" : undefined }}
                         >
-                            <Typography align={"center"} color={flavor.color || "white"}>
-                                {flavor.name}
-                            </Typography>
-                        </Box>
-                    </Grid>
-                ))}
+                            <Box
+                                display={"flex"}
+                                sx={{
+                                    ...upcomingStyles,
+                                    width: smallScreen ? "100%" : undefined,
+                                    justifyContent: smallScreen ? "flex-start" : "center"
+                                }}
+                            >
+                                <Typography color={flavor.color || "white"}>{flavor.name}</Typography>
+                            </Box>
+                        </Grid>
+                    );
+                })}
             </Grid>
         </Box>
     );
