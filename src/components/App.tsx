@@ -21,7 +21,7 @@ const App = () => {
         palette: {
             mode: "dark",
             primary: { main: "#FFFFFF" },
-            secondary: { main: "#2BC903" }
+            secondary: { main: "#5F6272" }
         },
         typography: {
             h1: {
@@ -35,6 +35,54 @@ const App = () => {
             },
             body1: {
                 fontSize: 22
+            }
+        },
+        components: {
+            MuiFilledInput: {
+                styleOverrides: {
+                    root: {
+                        backgroundColor: "#30313d",
+                        border: "1px solid rgba(255, 255, 255, 0.1)",
+                        borderRadius: "6px",
+                        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25)",
+                        transition: "background 0.15s ease, border 0.15s ease, box-shadow 0.15s ease, color 0.15s ease, outline 0.15s ease",
+                        overflow: "hidden",
+                        outline: "0px solid transparent",
+                        "&:hover": {
+                            backgroundColor: "#30313d",
+                            border: "1px solid rgba(255, 255, 255, 0.15)"
+                        },
+                        "&.Mui-focused": {
+                            backgroundColor: "#30313d",
+                            borderColor: "#F9F9F9",
+                            outline: "2.5px solid rgba(249, 249, 249, 0.20)",
+                            boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25), 0 0 0 3px rgba(249, 249, 249, 0.1)"
+                        },
+                        "&::before, &::after": {
+                            display: "none"
+                        }
+                    },
+                    input: {
+                        padding: "16px 16px",
+                        lineHeight: "1.5",
+                        color: "#F9F9F9"
+                    }
+                }
+            },
+            MuiInputLabel: {
+                styleOverrides: {
+                    filled: {
+                        color: "rgba(249, 249, 249, 0.7)",
+                        transform: "translate(17px, 16px) scale(1)",
+                        "&.Mui-focused": {
+                            color: "rgba(249, 249, 249, 0.7)"
+                        },
+                        "&.MuiInputLabel-shrink": {
+                            opacity: 0,
+                            transform: "translate(17px, 16px) scale(1)"
+                        }
+                    }
+                }
             }
         }
     });
@@ -71,7 +119,6 @@ const Layout = (props: { inputRef: RefObject<HTMLInputElement | null> }) => {
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
     const mdScreen = useMediaQuery(theme.breakpoints.down("md"));
     const isHome = useMatch("/");
-    const isIceCream = useMatch("/ice-cream");
     const smallScreenPadding = isHome ? 0 : 3;
     return (
         <Box
@@ -81,7 +128,7 @@ const Layout = (props: { inputRef: RefObject<HTMLInputElement | null> }) => {
                 p: smallScreen ? smallScreenPadding : 8,
                 ...(smallScreen && { pt: 4, pb: 4 }),
                 boxSizing: "border-box",
-                overflow: !isIceCream ? "hidden" : undefined
+                overflow: isHome ? "hidden" : undefined
             }}
             onClick={() => props.inputRef?.current && props.inputRef?.current.focus()}
         >
@@ -90,7 +137,7 @@ const Layout = (props: { inputRef: RefObject<HTMLInputElement | null> }) => {
                 sx={{
                     width: "100%",
                     height: "100%",
-                    overflowY: !isIceCream ? "scroll" : undefined
+                    overflowY: isHome ? "scroll" : undefined
                 }}
             >
                 <Outlet />

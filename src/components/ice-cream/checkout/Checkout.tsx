@@ -24,6 +24,7 @@ const CheckoutForm = () => {
 
     const [email, setEmail] = useState("");
     const [emailError, setEmailError] = useState<string | null>(null);
+    const [message, setMessage] = useState<string | null>(null);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -50,7 +51,7 @@ const CheckoutForm = () => {
 
         const confirmResult = await state.checkout.confirm();
         if (confirmResult.type === "error") {
-            alert(`Payment Error: ${confirmResult.error.message}`);
+            setMessage(confirmResult.error.message);
         }
         setIsLoading(false);
     };
@@ -60,7 +61,7 @@ const CheckoutForm = () => {
     }
 
     return (
-        <Box>
+        <Box pb={4}>
             <Typography variant={"h1"}>Checkout</Typography>
             <Typography variant={"h2"} mt={4} mb={2}>
                 Contact Info
@@ -73,6 +74,8 @@ const CheckoutForm = () => {
                 error={!!emailError}
                 helperText={emailError}
                 fullWidth
+                InputLabelProps={{ shrink: !!email }}
+                sx={{ width: smallScreen ? "100%" : 600 }}
             />
             <Typography variant={"h2"} mt={4} mb={2}>
                 Payment
@@ -93,10 +96,17 @@ const CheckoutForm = () => {
                 disabled={isLoading || state.type === "loading"}
                 loading={isLoading || state.type === "loading"}
                 onClick={handleSubmit}
-                sx={{ mt: 4, fontSize: 20 }}
+                sx={{
+                    mt: 4,
+                    fontSize: 20,
+                    backgroundColor: "#52535F",
+                    color: "white",
+                    ":hover": { backgroundColor: "#5F6272" }
+                }}
             >
                 Pay {state.type === "success" ? state.checkout.total.total.amount : ""}
             </Button>
+            {message && <Typography>{message}</Typography>}
         </Box>
     );
 };

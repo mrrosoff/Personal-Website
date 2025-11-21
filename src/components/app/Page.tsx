@@ -39,7 +39,7 @@ export const LinksAndMenu = (props: {}) => {
     return (
         <Box sx={{ position: "relative" }}>
             <Links open={open} setOpen={setOpen} {...props} />
-            <Box sx={{ position: "absolute", top: 65, right: 0 }}>
+            <Box sx={{ position: "absolute", top: 65, right: 0, zIndex: 10 }}>
                 {open && (
                     <Paper sx={{ width: 270 }}>
                         <DesktopSocialButtonList />

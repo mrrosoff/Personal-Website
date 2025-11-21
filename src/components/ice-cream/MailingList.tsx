@@ -92,14 +92,15 @@ const MailingListForm = () => {
             >
                 <TextField
                     label="First Name"
-                    variant="standard"
+                    variant="filled"
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     sx={{ width: smallScreen ? 300 : 250 }}
+                    InputLabelProps={{ shrink: !!firstName }}
                 />
                 <TextField
                     label="Last Name"
-                    variant="standard"
+                    variant="filled"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                     sx={{
@@ -107,16 +108,18 @@ const MailingListForm = () => {
                         mt: smallScreen ? 1 : 0,
                         width: smallScreen ? 300 : 250
                     }}
+                    InputLabelProps={{ shrink: !!lastName }}
                 />
             </Box>
             <TextField
                 label="Email"
-                variant="standard"
+                variant="filled"
                 type={"email"}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 error={!emailIsValid}
                 sx={{ mt: smallScreen ? 1 : 2, width: smallScreen ? 300 : 532 }}
+                InputLabelProps={{ shrink: !!email }}
             />
             <Button
                 variant={"outlined"}

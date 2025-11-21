@@ -62,6 +62,7 @@ const IceCream = () => {
             display={"flex"}
             flexDirection={"column"}
             alignItems={smallScreen ? "center" : undefined}
+            pb={4}
         >
             <Typography
                 variant="h1"
