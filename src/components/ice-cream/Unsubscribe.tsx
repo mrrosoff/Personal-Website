@@ -84,7 +84,7 @@ const UnsubscribeForm = () => {
         >
             <TextField
                 label="Email"
-                variant="standard"
+                variant="filled"
                 type={"email"}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
