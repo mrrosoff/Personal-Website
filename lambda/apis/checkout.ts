@@ -30,7 +30,6 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         ui_mode: "custom",
         line_items: lineItems,
         mode: "payment",
-        cancel_url: "https://maxrosoff.com/ice-cream",
         return_url: `https://maxrosoff.com/ice-cream/checkout/return?sessionId={CHECKOUT_SESSION_ID}`
     });
     return buildResponse(event, HttpResponseStatus.OK, session);
