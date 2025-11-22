@@ -8,25 +8,17 @@ const MobileLayout = () => {
         <Grid
             container
             direction={"column"}
-            sx={{ width: "100vw", height: "100vh" }}
-            justifyContent={"center"}
+            justifyContent={"space-betweeen"}
             alignItems={"center"}
-            alignContent={"center"}
+            sx={{ width: "100vw", height: "100vh" }}
+            spacing={6}
         >
-            <Grid
-                container
-                direction={"column"}
-                spacing={6}
-                justifyContent={"center"}
-                alignItems={"center"}
-                alignContent={"center"}
-            >
-                <Grid>
-                    <Avatar alt="Max Rosoff" src={SmallProfile} sx={{ width: 200, height: 200 }} />
-                </Grid>
-                <Grid>
-                    <MobileSocialButtonList />
-                </Grid>
+            <Grid></Grid>
+            <Grid>
+                <Avatar alt="Max Rosoff" src={SmallProfile} sx={{ width: 200, height: 200 }} />
+            </Grid>
+            <Grid>
+                <MobileSocialButtonList />
             </Grid>
         </Grid>
     );
