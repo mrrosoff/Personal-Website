@@ -19,7 +19,7 @@ export function buildResponse(
     body: Record<string, any>
 ): APIGatewayProxyResult {
     const alternativeAllowedOrigins = ["http://localhost:3000"];
-    const originHeader = event.headers.Origin || event.headers.origin;
+    const originHeader = event.headers?.Origin || event.headers?.origin;
     const otherOrigin = alternativeAllowedOrigins.find((origin) => origin === originHeader);
     return {
         statusCode,
