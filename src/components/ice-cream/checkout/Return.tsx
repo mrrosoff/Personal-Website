@@ -15,6 +15,9 @@ const Return = () => {
             const sessionId = urlParams.get("sessionId");
 
             const result = await axios.post(`${API_URL}/checkout-status`, { sessionId });
+            if (result.status !== 200) {
+                return <Navigate to="/ice-cream" replace />;
+            }
             setStatus(result.data.status);
             setCustomerEmail(result.data.customer_email);
         };
@@ -31,7 +34,7 @@ const Return = () => {
                 <p>
                     We appreciate your business! A confirmation email will be sent to{" "}
                     {customerEmail}. If you have any questions, please email{" "}
-                    <a href="mailto:help@ice-cream.maxrosoff.com">help@ice-cream.maxrosoff.com</a>.
+                    <a href="mailto:help@maxrosoff.com">help@maxrosoff.com</a>.
                 </p>
             </section>
         );
