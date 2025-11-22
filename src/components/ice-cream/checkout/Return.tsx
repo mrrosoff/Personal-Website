@@ -1,8 +1,10 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+
 import { Box, Link, Typography, useMediaQuery, useTheme } from "@mui/material";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import LaunchIcon from "@mui/icons-material/Launch";
 
 import { API_URL } from "../../App";
 import Stripe from "stripe";
@@ -105,6 +107,27 @@ const OrderConfirmation = ({ customerEmail }: { customerEmail: string | null }) 
                         help@maxrosoff.com
                     </Link>
                     .
+                </Typography>
+                <Typography mt={2} align={smallScreen ? "center" : undefined}>
+                    Or even better, head
+                    <Link
+                        component="button"
+                        onClick={() => navigate("mailto:help@maxrosoff.com")}
+                        underline="hover"
+                        sx={{
+                            cursor: "pointer",
+                            color: "inherit",
+                            verticalAlign: "baseline",
+                            position: "relative",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 0.3
+                        }}
+                    >
+                        here
+                        <LaunchIcon sx={{ fontSize: 10, position: "relative", top: -4 }} />
+                    </Link>
+                    to buy more ice cream.
                 </Typography>
             </Box>
             <Box height={smallScreen ? 320 : 320} overflow="hidden">
