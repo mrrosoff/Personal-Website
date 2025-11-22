@@ -34,7 +34,7 @@ class WebsiteAPIStack extends Stack {
 
         const apiRole = this.createAPILambdaRole();
         const checkoutLambda = this.createCheckoutLambda(env, apiRole);
-        const checkoutReturnLambda = this.createCheckoutReturnLambda(env, apiRole);
+        const checkoutStatusLambda = this.createCheckoutStatusLambda(env, apiRole);
         const receiveLambda = this.createReceiveLambda(env, apiRole);
         const registerLambda = this.createRegisterLambda(env, apiRole);
         const sendEmailLambda = this.createSendEmailLambda(env, apiRole);
@@ -48,7 +48,7 @@ class WebsiteAPIStack extends Stack {
         const restApi = this.createAPI(
             certificate,
             checkoutLambda,
-            checkoutReturnLambda,
+            checkoutStatusLambda,
             receiveLambda,
             registerLambda,
             sendEmailLambda,
@@ -58,7 +58,7 @@ class WebsiteAPIStack extends Stack {
         const alarmTopic = this.createAlarmActions();
         this.createLambdaErrorAlarms(alarmTopic, [
             checkoutLambda,
-            checkoutReturnLambda,
+            checkoutStatusLambda,
             receiveLambda,
             registerLambda,
             sendEmailLambda,
@@ -94,7 +94,7 @@ class WebsiteAPIStack extends Stack {
         });
         api.root.addResource("checkout").addMethod("POST", new LambdaIntegration(checkoutLambda));
         api.root
-            .addResource("checkout-return")
+            .addResource("checkout-status")
             .addMethod("POST", new LambdaIntegration(checkoutReturnLambda));
         api.root.addResource("receive").addMethod("POST", new LambdaIntegration(receiveLambda));
         api.root.addResource("register").addMethod("POST", new LambdaIntegration(registerLambda));
@@ -118,9 +118,9 @@ class WebsiteAPIStack extends Stack {
         });
     }
 
-    private createCheckoutReturnLambda(env: ApplicationEnvironment, role: Role): LambdaFunction {
-        const functionName = "website-checkout-return";
-        return new LambdaFunction(this, "websiteCheckoutReturnLambda", {
+    private createCheckoutStatusLambda(env: ApplicationEnvironment, role: Role): LambdaFunction {
+        const functionName = "website-checkout-status";
+        return new LambdaFunction(this, "websiteCheckoutStatusLambda", {
             functionName,
             handler: "checkoutSessionStatus.handler",
             code: Code.fromAsset("dist/lambda/checkoutSessionStatus"),

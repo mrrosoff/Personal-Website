@@ -93,7 +93,7 @@ const CheckoutForm = () => {
                 variant={"contained"}
                 fullWidth
                 type="submit"
-                disabled={isLoading || state.type === "loading"}
+                disabled={isLoading || state.type === "loading" || !email}
                 loading={isLoading || state.type === "loading"}
                 onClick={handleSubmit}
                 sx={{

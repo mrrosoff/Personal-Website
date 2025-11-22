@@ -12,9 +12,9 @@ const Return = () => {
         const fetchSessionStatus = async () => {
             const queryString = window.location.search;
             const urlParams = new URLSearchParams(queryString);
-            const sessionId = urlParams.get("session_id");
+            const sessionId = urlParams.get("sessionId");
 
-            const result = await axios.post(`${API_URL}/checkout-return`, { sessionId });
+            const result = await axios.post(`${API_URL}/checkout-status`, { sessionId });
             setStatus(result.data.status);
             setCustomerEmail(result.data.customer_email);
         };
