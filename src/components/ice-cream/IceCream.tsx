@@ -1,25 +1,29 @@
 import { useNavigate } from "react-router-dom";
 
-import { Box, Fab, Grid, Link, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Fab, Grid, Link, Typography, useMediaQuery, useTheme, Zoom } from "@mui/material";
 import LaunchIcon from "@mui/icons-material/Launch";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 
 import { ICE_CREAM_FLAVORS } from "./flavors";
 import { useIceCreamCart } from "./IceCreamCartContext";
 
-const getFlavorStyles = (color: string, isSelected: boolean) => {
+const getFlavorStyles = (color: string, isSelected: boolean, isSmallScreen: boolean) => {
     return {
         cursor: "pointer",
         border: 1,
         borderColor: isSelected ? color : "rgba(255, 255, 255, 0.5)",
-        backgroundColor: isSelected ? `color-mix(in srgb, ${color} 8%, transparent)` : "transparent",
+        backgroundColor: isSelected
+            ? `color-mix(in srgb, ${color} 8%, transparent)`
+            : "transparent",
         padding: 2.5,
         borderRadius: 1,
         transition: "all 0.2s ease",
-        "&:hover": {
-            borderColor: color,
-            backgroundColor: `color-mix(in srgb, ${color} 5%, transparent)`
-        }
+        ...(!isSmallScreen && {
+            "&:hover": {
+                borderColor: color,
+                backgroundColor: `color-mix(in srgb, ${color} 5%, transparent)`
+            }
+        })
     };
 };
 
@@ -53,8 +57,12 @@ const IceCream = () => {
         >
             {smallScreen ? (
                 <>
-                    <Typography variant="h1" sx={{ lineHeight: 0.85 }}>Small Batch</Typography>
-                    <Typography variant="h1" sx={{ ml: -0.5, lineHeight: 0.85 }}>Ice Cream</Typography>
+                    <Typography variant="h1" sx={{ lineHeight: 0.85 }}>
+                        Small Batch
+                    </Typography>
+                    <Typography variant="h1" sx={{ ml: -0.5, lineHeight: 0.85 }}>
+                        Ice Cream
+                    </Typography>
                 </>
             ) : (
                 <Typography variant="h1">Small Batch Ice Cream</Typography>
@@ -87,20 +95,29 @@ const IceCream = () => {
             <LastBatch selectedPriceIds={selectedPriceIds} toggleFlavor={toggleFlavor} />
             <Schedule />
             {smallScreen && selectedPriceIds.length > 0 && (
-                <Fab
-                    color="primary"
-                    onClick={handleCartClick}
-                    sx={{
-                        position: "fixed",
-                        bottom: 24,
-                        right: 24,
-                        backgroundColor: "#52535F",
-                        color: "white",
-                        ":hover": { backgroundColor: "#5F6272" }
+                <Zoom
+                    in={true}
+                    timeout={theme.transitions.duration.enteringScreen}
+                    style={{
+                        transitionDelay: `${theme.transitions.duration.leavingScreen}ms`
                     }}
+                    unmountOnExit
                 >
-                    <ShoppingCartIcon />
-                </Fab>
+                    <Fab
+                        color="primary"
+                        onClick={handleCartClick}
+                        sx={{
+                            position: "fixed",
+                            bottom: 24,
+                            right: 24,
+                            backgroundColor: "#52535F",
+                            color: "white",
+                            ":hover": { backgroundColor: "#5F6272" }
+                        }}
+                    >
+                        <ShoppingCartOutlinedIcon />
+                    </Fab>
+                </Zoom>
             )}
         </Box>
     );
@@ -133,7 +150,11 @@ export const CurrentFlavors = ({ selectedPriceIds, toggleFlavor }: FlavorSection
                     const isSelected = flavor.priceId
                         ? selectedPriceIds.includes(flavor.priceId)
                         : false;
-                    const flavorStyles = getFlavorStyles(flavor.color || "white", isSelected);
+                    const flavorStyles = getFlavorStyles(
+                        flavor.color || "white",
+                        isSelected,
+                        smallScreen
+                    );
                     return (
                         <Grid
                             key={index}
@@ -184,7 +205,11 @@ export const LastBatch = ({ selectedPriceIds, toggleFlavor }: FlavorSectionProps
                     const isSelected = flavor.priceId
                         ? selectedPriceIds.includes(flavor.priceId)
                         : false;
-                    const flavorStyles = getFlavorStyles(flavor.color || "white", isSelected);
+                    const flavorStyles = getFlavorStyles(
+                        flavor.color || "white",
+                        isSelected,
+                        smallScreen
+                    );
                     return (
                         <Grid
                             key={index}
@@ -251,7 +276,9 @@ export const Schedule = () => {
                                     justifyContent: smallScreen ? "flex-start" : "center"
                                 }}
                             >
-                                <Typography color={flavor.color || "white"}>{flavor.name}</Typography>
+                                <Typography color={flavor.color || "white"}>
+                                    {flavor.name}
+                                </Typography>
                             </Box>
                         </Grid>
                     );
