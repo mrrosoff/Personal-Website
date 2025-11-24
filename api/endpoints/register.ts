@@ -5,8 +5,8 @@ import { Resend } from "resend";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../common";
 
 type RegisterPayload = {
-    firstName: string;
-    lastName: string;
+    firstName?: string;
+    lastName?: string;
     email: string;
 };
 
@@ -17,17 +17,21 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Request Body");
     }
 
+    const payload: RegisterPayload = JSON.parse(event.body);
+    const userId = await registerNewMailingListUser(payload);
+    return buildResponse(event, HttpResponseStatus.OK, { userId });
+};
+
+export async function registerNewMailingListUser(payload: RegisterPayload) {
     const resend = new Resend(process.env.RESEND_API_KEY);
 
-    const payload: RegisterPayload = JSON.parse(event.body);
     const audienceId = process.env.RESEND_AUDIENCE_ID!;
     const userId = await findUserIfAlreadyRegistered(resend, audienceId, payload.email);
     if (userId) {
-        return buildResponse(event, HttpResponseStatus.OK, {});
+        return userId;
     }
-    const newUserId = await registerNewUser(resend, audienceId, payload);
-    return buildResponse(event, HttpResponseStatus.OK, { userId: newUserId });
-};
+    return await registerNewUser(resend, audienceId, payload);
+}
 
 async function findUserIfAlreadyRegistered(
     resend: Resend,

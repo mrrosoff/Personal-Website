@@ -3,6 +3,7 @@ import { config } from "dotenv";
 import Stripe from "stripe";
 
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../common";
+import { registerNewMailingListUser } from "./register";
 
 type GetCheckoutSessionStatusPayload = {
     sessionId: string;
@@ -19,9 +20,12 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     const payload: GetCheckoutSessionStatusPayload = JSON.parse(event.body);
     try {
         const session = await stripe.checkout.sessions.retrieve(payload.sessionId);
+        if (session.customer_email) {
+            await registerNewMailingListUser({ email: session.customer_email });
+        }
         return buildResponse(event, HttpResponseStatus.OK, session);
     } catch (error) {
-        let message = "An unknown error occurred";
+        let message = "An Unknown Error Occurred";
         if (error instanceof Error) {
             message = error.message;
         }

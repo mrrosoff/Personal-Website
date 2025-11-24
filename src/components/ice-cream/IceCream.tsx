@@ -16,7 +16,10 @@ import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 
 import { ICE_CREAM_FLAVORS } from "./flavors";
 import { useIceCreamCart } from "./IceCreamCartContext";
-import { useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { API_URL } from "../App";
+import axios from "axios";
+import { DatabaseFlavor } from "../../../api/types";
 
 const getFlavorStyles = (color: string, isSelected: boolean, isSmallScreen: boolean) => {
     return {
@@ -54,6 +57,19 @@ const IceCream = () => {
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
     const { selectedPriceIds, toggleFlavor } = useIceCreamCart();
+    const [zeroInventoryFlavors, setZeroInventoryFlavors] = useState<string[] | undefined>();
+
+    useEffect(() => {
+        async function fetchInventory() {
+            const { data } = await axios.post<{ inventory: DatabaseFlavor[] }>(
+                `${API_URL}/inventory`
+            );
+            const zeroInventoryFlavors = data.inventory
+                .filter((flavor) => flavor.count <= 0)
+                .map((flavor) => flavor.priceId);
+            setZeroInventoryFlavors(zeroInventoryFlavors);
+        }
+    }, []);
 
     useEffect(() => {
         const flavorPriceId = params.get("flavor");
@@ -115,8 +131,16 @@ const IceCream = () => {
                 </Link>{" "}
                 for new flavor announcements.
             </Typography>
-            <CurrentFlavors selectedPriceIds={selectedPriceIds} toggleFlavor={toggleFlavor} />
-            <LastBatch selectedPriceIds={selectedPriceIds} toggleFlavor={toggleFlavor} />
+            <CurrentFlavors
+                selectedPriceIds={selectedPriceIds}
+                toggleFlavor={toggleFlavor}
+                zeroInventoryFlavors={zeroInventoryFlavors}
+            />
+            <LastBatch
+                selectedPriceIds={selectedPriceIds}
+                toggleFlavor={toggleFlavor}
+                zeroInventoryFlavors={zeroInventoryFlavors}
+            />
             <Schedule />
             {smallScreen && selectedPriceIds.length > 0 && (
                 <Zoom
@@ -152,11 +176,29 @@ const IceCream = () => {
 type FlavorSectionProps = {
     selectedPriceIds: string[];
     toggleFlavor: (priceId: string | undefined) => void;
+    zeroInventoryFlavors?: string[];
 };
 
-export const CurrentFlavors = ({ selectedPriceIds, toggleFlavor }: FlavorSectionProps) => {
+export const CurrentFlavors = ({
+    selectedPriceIds,
+    toggleFlavor,
+    zeroInventoryFlavors
+}: FlavorSectionProps) => {
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
+    const [seenFlavors, setSeenFlavors] = useState(ICE_CREAM_FLAVORS.currentFlavors);
+
+    useEffect(() => {
+        if (!zeroInventoryFlavors) {
+            return;
+        }
+        const zeroInventoryRemoved = ICE_CREAM_FLAVORS.currentFlavors.filter(
+            (flavor) => !zeroInventoryFlavors.includes(flavor.priceId!)
+        );
+        setSeenFlavors(zeroInventoryRemoved);
+    }, []);
+
     return (
         <Box
             display={"flex"}
@@ -172,7 +214,7 @@ export const CurrentFlavors = ({ selectedPriceIds, toggleFlavor }: FlavorSection
                 direction={smallScreen ? "column" : undefined}
                 sx={{ paddingTop: smallScreen ? 4 : 2 }}
             >
-                {ICE_CREAM_FLAVORS.currentFlavors.map((flavor, index) => {
+                {seenFlavors.map((flavor, index) => {
                     const isSelected = flavor.priceId
                         ? selectedPriceIds.includes(flavor.priceId)
                         : false;
@@ -209,9 +251,26 @@ export const CurrentFlavors = ({ selectedPriceIds, toggleFlavor }: FlavorSection
     );
 };
 
-export const LastBatch = ({ selectedPriceIds, toggleFlavor }: FlavorSectionProps) => {
+export const LastBatch = ({
+    selectedPriceIds,
+    toggleFlavor,
+    zeroInventoryFlavors
+}: FlavorSectionProps) => {
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
+    const [seenFlavors, setSeenFlavors] = useState(ICE_CREAM_FLAVORS.lastBatch);
+
+    useEffect(() => {
+        if (!zeroInventoryFlavors) {
+            return;
+        }
+        const zeroInventoryRemoved = ICE_CREAM_FLAVORS.lastBatch.filter(
+            (flavor) => !zeroInventoryFlavors.includes(flavor.priceId!)
+        );
+        setSeenFlavors(zeroInventoryRemoved);
+    }, []);
+
     return (
         <Box
             display={"flex"}
@@ -227,7 +286,7 @@ export const LastBatch = ({ selectedPriceIds, toggleFlavor }: FlavorSectionProps
                 direction={smallScreen ? "column" : undefined}
                 sx={{ paddingTop: smallScreen ? 4 : 2 }}
             >
-                {ICE_CREAM_FLAVORS.lastBatch.map((flavor, index) => {
+                {seenFlavors.map((flavor, index) => {
                     const isSelected = flavor.priceId
                         ? selectedPriceIds.includes(flavor.priceId)
                         : false;

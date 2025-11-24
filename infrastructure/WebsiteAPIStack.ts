@@ -3,7 +3,13 @@ import { Cors, EndpointType, LambdaIntegration, RestApi } from "aws-cdk-lib/aws-
 import { Certificate, CertificateValidation } from "aws-cdk-lib/aws-certificatemanager";
 import { Alarm, ComparisonOperator, TreatMissingData } from "aws-cdk-lib/aws-cloudwatch";
 import { SnsAction } from "aws-cdk-lib/aws-cloudwatch-actions";
-import { ManagedPolicy, Role, ServicePrincipal } from "aws-cdk-lib/aws-iam";
+import {
+    ManagedPolicy,
+    PolicyDocument,
+    PolicyStatement,
+    Role,
+    ServicePrincipal
+} from "aws-cdk-lib/aws-iam";
 import {
     ApplicationLogLevel,
     Code,
@@ -22,6 +28,9 @@ import { config } from "dotenv";
 
 import { ApplicationEnvironment } from "./app";
 import { EmailSubscription } from "aws-cdk-lib/aws-sns-subscriptions";
+import { AttributeType, BillingMode, StreamViewType, Table } from "aws-cdk-lib/aws-dynamodb";
+
+export const FLAVORS_TABLE = "website-flavors";
 
 class WebsiteAPIStack extends Stack {
     constructor(scope: Construct, id: string, props: StackProps) {
@@ -32,7 +41,10 @@ class WebsiteAPIStack extends Stack {
             throw new Error("Environment variables not found");
         }
 
-        const apiRole = this.createAPILambdaRole();
+        const flavorsTable = this.createFlavorsTable();
+
+        const apiRole = this.createAPILambdaRole(flavorsTable);
+        const inventoryLambda = this.createInventoryLambda(env, apiRole);
         const checkoutLambda = this.createCheckoutLambda(env, apiRole);
         const checkoutStatusLambda = this.createCheckoutStatusLambda(env, apiRole);
         const receiveLambda = this.createReceiveLambda(env, apiRole);
@@ -47,6 +59,7 @@ class WebsiteAPIStack extends Stack {
         });
         const restApi = this.createAPI(
             certificate,
+            inventoryLambda,
             checkoutLambda,
             checkoutStatusLambda,
             receiveLambda,
@@ -57,6 +70,7 @@ class WebsiteAPIStack extends Stack {
 
         const alarmTopic = this.createAlarmActions();
         this.createLambdaErrorAlarms(alarmTopic, [
+            inventoryLambda,
             checkoutLambda,
             checkoutStatusLambda,
             receiveLambda,
@@ -67,8 +81,19 @@ class WebsiteAPIStack extends Stack {
         this.createRestAPIErrorsAlarm(alarmTopic, restApi);
     }
 
+    private createFlavorsTable(): Table {
+        return new Table(this, "cantaloupePartiesTable", {
+            tableName: FLAVORS_TABLE,
+            partitionKey: { name: "priceId", type: AttributeType.STRING },
+            billingMode: BillingMode.PAY_PER_REQUEST,
+            removalPolicy: RemovalPolicy.DESTROY,
+            deletionProtection: true
+        });
+    }
+
     private createAPI(
         certificate: Certificate,
+        inventoryLambda: LambdaFunction,
         checkoutLambda: LambdaFunction,
         checkoutReturnLambda: LambdaFunction,
         receiveLambda: LambdaFunction,
@@ -92,6 +117,7 @@ class WebsiteAPIStack extends Stack {
             defaultCorsPreflightOptions: { allowOrigins: Cors.ALL_ORIGINS },
             endpointExportName: "WebsiteApiEndpoint"
         });
+        api.root.addResource("inventory").addMethod("POST", new LambdaIntegration(inventoryLambda));
         api.root.addResource("checkout").addMethod("POST", new LambdaIntegration(checkoutLambda));
         api.root
             .addResource("checkout-status")
@@ -105,6 +131,17 @@ class WebsiteAPIStack extends Stack {
             .addResource("unsubscribe")
             .addMethod("POST", new LambdaIntegration(unsubscribeLambda));
         return api;
+    }
+
+    private createInventoryLambda(env: ApplicationEnvironment, role: Role): LambdaFunction {
+        const functionName = "website-inventory";
+        return new LambdaFunction(this, "websiteInventoryLambda", {
+            functionName,
+            handler: "inventory.handler",
+            code: Code.fromAsset("dist/lambda/inventory"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(env, functionName, role)
+        });
     }
 
     private createCheckoutLambda(env: ApplicationEnvironment, role: Role): LambdaFunction {
@@ -122,8 +159,8 @@ class WebsiteAPIStack extends Stack {
         const functionName = "website-checkout-status";
         return new LambdaFunction(this, "websiteCheckoutStatusLambda", {
             functionName,
-            handler: "checkoutSessionStatus.handler",
-            code: Code.fromAsset("dist/lambda/checkoutSessionStatus"),
+            handler: "checkoutStatus.handler",
+            code: Code.fromAsset("dist/lambda/checkoutStatus"),
             runtime: Runtime.NODEJS_22_X,
             ...this.createLambdaParams(env, functionName, role)
         });
@@ -195,14 +232,36 @@ class WebsiteAPIStack extends Stack {
         };
     }
 
-    private createAPILambdaRole(): Role {
+    private createAPILambdaRole(...tables: Table[]): Role {
         return new Role(this, "websiteApiLambdaRole", {
             roleName: "APILambdaRole",
             assumedBy: new ServicePrincipal("lambda.amazonaws.com"),
             managedPolicies: [
                 ManagedPolicy.fromAwsManagedPolicyName("service-role/AWSLambdaBasicExecutionRole"),
                 ManagedPolicy.fromAwsManagedPolicyName("AWSXrayWriteOnlyAccess")
-            ]
+            ],
+            inlinePolicies: {
+                TableAccessPolicy: new PolicyDocument({
+                    statements: [
+                        new PolicyStatement({
+                            actions: [
+                                "dynamodb:DeleteItem",
+                                "dynamodb:DescribeStream",
+                                "dynamodb:GetItem",
+                                "dynamodb:GetShardIterator",
+                                "dynamodb:ListStreams",
+                                "dynamodb:PutItem",
+                                "dynamodb:Query",
+                                "dynamodb:UpdateItem"
+                            ],
+                            resources: tables.flatMap((table) => [
+                                table.tableArn,
+                                table.tableArn + "/index/*"
+                            ])
+                        })
+                    ]
+                })
+            }
         });
     }
 

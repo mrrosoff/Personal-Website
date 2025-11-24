@@ -2,25 +2,20 @@ import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import { config } from "dotenv";
 import Stripe from "stripe";
 
-import { buildResponse, HttpResponseStatus } from "../common";
+import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../common";
 
 config();
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     const stripe = new Stripe(process.env.STRIPE_API_KEY!);
 
-    // Get priceIds from query string parameters
     const priceIdsParam = event.queryStringParameters?.priceIds || "";
     const priceIds = priceIdsParam.split(",").filter((id) => id.trim() !== "");
 
-    // If no priceIds provided, return error
     if (priceIds.length === 0) {
-        return buildResponse(event, HttpResponseStatus.BAD_REQUEST, {
-            error: "No priceIds provided"
-        });
+        return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "No priceIds Provided");
     }
 
-    // Create line items for each priceId
     const lineItems = priceIds.map((priceId) => ({
         price: priceId.trim(),
         quantity: 1
