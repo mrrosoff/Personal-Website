@@ -17,10 +17,10 @@ async function buildLambdaFunction(entrypoint: string, directory: string, watch 
     return await build(options);
 }
 
-await buildLambdaFunction("lambda/apis/inventory.ts", "dist/lambda/inventory");
-await buildLambdaFunction("lambda/apis/checkoutStatus.ts", "dist/lambda/checkoutStatus");
-await buildLambdaFunction("lambda/apis/checkout.ts", "dist/lambda/checkout");
-await buildLambdaFunction("lambda/apis/receive.ts", "dist/lambda/receive");
-await buildLambdaFunction("lambda/apis/register.ts", "dist/lambda/register");
-await buildLambdaFunction("lambda/apis/sendEmail.ts", "dist/lambda/sendEmail");
-await buildLambdaFunction("lambda/apis/unsubscribe.ts", "dist/lambda/unsubscribe");
+await buildLambdaFunction("api/endpoints/inventory.ts", "dist/lambda/inventory");
+await buildLambdaFunction("api/endpoints/checkoutStatus.ts", "dist/lambda/checkoutStatus");
+await buildLambdaFunction("api/endpoints/checkout.ts", "dist/lambda/checkout");
+await buildLambdaFunction("api/endpoints/receive.ts", "dist/lambda/receive");
+await buildLambdaFunction("api/endpoints/register.ts", "dist/lambda/register");
+await buildLambdaFunction("api/endpoints/sendEmail.ts", "dist/lambda/sendEmail");
+await buildLambdaFunction("api/endpoints/unsubscribe.ts", "dist/lambda/unsubscribe");
