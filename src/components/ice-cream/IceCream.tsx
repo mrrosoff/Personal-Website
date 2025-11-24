@@ -69,6 +69,7 @@ const IceCream = () => {
                 .map((flavor) => flavor.priceId);
             setZeroInventoryFlavors(zeroInventoryFlavors);
         }
+        void fetchInventory();
     }, []);
 
     useEffect(() => {
