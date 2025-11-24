@@ -244,20 +244,8 @@ class WebsiteAPIStack extends Stack {
                 TableAccessPolicy: new PolicyDocument({
                     statements: [
                         new PolicyStatement({
-                            actions: [
-                                "dynamodb:DeleteItem",
-                                "dynamodb:DescribeStream",
-                                "dynamodb:GetItem",
-                                "dynamodb:GetShardIterator",
-                                "dynamodb:ListStreams",
-                                "dynamodb:PutItem",
-                                "dynamodb:Query",
-                                "dynamodb:UpdateItem"
-                            ],
-                            resources: tables.flatMap((table) => [
-                                table.tableArn,
-                                table.tableArn + "/index/*"
-                            ])
+                            actions: ["dynamodb:PutItem", "dynamodb:UpdateItem", "dynamodb:Scan"],
+                            resources: tables.flatMap((table) => [table.tableArn])
                         })
                     ]
                 })

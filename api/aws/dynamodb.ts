@@ -1,5 +1,5 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocument, UpdateCommand, PutCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocument, UpdateCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
 
 import { FLAVORS_TABLE } from "../../infrastructure/WebsiteAPIStack";
 import { DatabaseFlavor, DynamoDBFieldValue } from "../types";
@@ -41,16 +41,6 @@ export async function getAllItems<T extends Table>(table: T): Promise<TableObjec
         return [];
     }
     return itemOutput.Items as TableObject<T>[];
-}
-
-export async function putItem<T extends Table>(
-    table: T,
-    item: Partial<TableObject<T>>
-): Promise<TableObject<T>> {
-    console.debug(`Putting item into ${table}`);
-    const putItemRequest = new PutCommand({ TableName: table, Item: item });
-    await documentClient.send(putItemRequest);
-    return item as TableObject<T>;
 }
 
 export async function updateItem<T extends Table>(
