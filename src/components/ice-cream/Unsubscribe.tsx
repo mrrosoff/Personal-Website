@@ -90,6 +90,7 @@ const UnsubscribeForm = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 error={!emailIsValid}
                 sx={{ mt: smallScreen ? 1 : 2, width: smallScreen ? 300 : 532 }}
+                slotProps={{ inputLabel: { shrink: !!email } }}
                 autoComplete="email"
             />
             <Button

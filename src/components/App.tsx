@@ -41,7 +41,7 @@ const App = () => {
             MuiFilledInput: {
                 styleOverrides: {
                     root: {
-                        backgroundColor: "#30313d",
+                        backgroundColor: "#30313D",
                         border: "1px solid rgba(255, 255, 255, 0.1)",
                         borderRadius: "6px",
                         boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25)",
@@ -49,11 +49,11 @@ const App = () => {
                         overflow: "hidden",
                         outline: "0px solid transparent",
                         "&:hover": {
-                            backgroundColor: "#30313d",
+                            backgroundColor: "#30313D",
                             border: "1px solid rgba(255, 255, 255, 0.15)"
                         },
                         "&.Mui-focused": {
-                            backgroundColor: "#30313d",
+                            backgroundColor: "#30313D",
                             borderColor: "#F9F9F9",
                             outline: "2.5px solid rgba(249, 249, 249, 0.20)",
                             boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25), 0 0 0 3px rgba(249, 249, 249, 0.1)"

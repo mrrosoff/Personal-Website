@@ -42,9 +42,12 @@ a {
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
-    background-color: #121212 !important;
-    color: white !important;
-    transition: background-color 5000s ease-in-out 0s;
     -webkit-text-fill-color: white !important;
-    -webkit-box-shadow: 0 0 0px 1000px #121212 inset !important;
+    -webkit-box-shadow: 0 0 0px 1000px #30313D inset !important;
+    -webkit-font-smoothing: antialiased !important;
+}
+
+.MuiTextField-root:has(input:-webkit-autofill) .MuiInputLabel-root,
+.MuiFormControl-root:has(input:-webkit-autofill) .MuiInputLabel-root {
+    opacity: 0 !important;
 }

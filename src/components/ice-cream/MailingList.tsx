@@ -96,7 +96,7 @@ const MailingListForm = () => {
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     sx={{ width: smallScreen ? 300 : 250 }}
-                    InputLabelProps={{ shrink: !!firstName }}
+                    slotProps={{ inputLabel: { shrink: !!firstName } }}
                     autoComplete="given-name"
                 />
                 <TextField
@@ -109,7 +109,7 @@ const MailingListForm = () => {
                         mt: smallScreen ? 1 : 0,
                         width: smallScreen ? 300 : 250
                     }}
-                    InputLabelProps={{ shrink: !!lastName }}
+                    slotProps={{ inputLabel: { shrink: !!lastName } }}
                     autoComplete="family-name"
                 />
             </Box>
@@ -121,7 +121,7 @@ const MailingListForm = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 error={!emailIsValid}
                 sx={{ mt: smallScreen ? 1 : 2, width: smallScreen ? 300 : 532 }}
-                InputLabelProps={{ shrink: !!email }}
+                slotProps={{ inputLabel: { shrink: !!email } }}
                 autoComplete="email"
             />
             <Button

@@ -74,7 +74,7 @@ const CheckoutForm = () => {
                 error={!!emailError}
                 helperText={emailError}
                 fullWidth
-                InputLabelProps={{ shrink: !!email }}
+                slotProps={{ inputLabel: { shrink: !!email } }}
                 sx={{ width: smallScreen ? "100%" : 600 }}
             />
             <Typography variant={"h2"} mt={4} mb={2}>
