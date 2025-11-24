@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import {
     Badge,
     Box,
+    Collapse,
     Fab,
     Grid,
     Link,
@@ -70,7 +71,7 @@ const IceCream = () => {
             setZeroInventoryFlavors(zeroInventoryFlavors);
         }
         void fetchInventory();
-    }, []);
+    }, [setZeroInventoryFlavors]);
 
     useEffect(() => {
         const flavorPriceId = params.get("flavor");
@@ -188,18 +189,6 @@ export const CurrentFlavors = ({
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
-    const [seenFlavors, setSeenFlavors] = useState(ICE_CREAM_FLAVORS.currentFlavors);
-
-    useEffect(() => {
-        if (!zeroInventoryFlavors) {
-            return;
-        }
-        const zeroInventoryRemoved = ICE_CREAM_FLAVORS.currentFlavors.filter(
-            (flavor) => !zeroInventoryFlavors.includes(flavor.priceId!)
-        );
-        setSeenFlavors(zeroInventoryRemoved);
-    }, []);
-
     return (
         <Box
             display={"flex"}
@@ -215,7 +204,7 @@ export const CurrentFlavors = ({
                 direction={smallScreen ? "column" : undefined}
                 sx={{ paddingTop: smallScreen ? 4 : 2 }}
             >
-                {seenFlavors.map((flavor, index) => {
+                {ICE_CREAM_FLAVORS.currentFlavors.map((flavor, index) => {
                     const isSelected = flavor.priceId
                         ? selectedPriceIds.includes(flavor.priceId)
                         : false;
@@ -225,26 +214,31 @@ export const CurrentFlavors = ({
                         smallScreen
                     );
                     return (
-                        <Grid
-                            key={index}
-                            display={"flex"}
-                            justifyContent={"center"}
-                            sx={{ width: smallScreen ? "100%" : undefined }}
+                        <Collapse
+                            in={!(zeroInventoryFlavors ?? []).includes(flavor.priceId!)}
+                            timeout={300}
                         >
-                            <Box
+                            <Grid
+                                key={index}
                                 display={"flex"}
-                                onClick={() => toggleFlavor(flavor.priceId)}
-                                sx={{
-                                    ...flavorStyles,
-                                    width: smallScreen ? "100%" : undefined,
-                                    justifyContent: smallScreen ? "flex-start" : "center"
-                                }}
+                                justifyContent={"center"}
+                                sx={{ width: smallScreen ? "100%" : undefined }}
                             >
-                                <Typography color={flavor.color || "white"}>
-                                    {flavor.name}
-                                </Typography>
-                            </Box>
-                        </Grid>
+                                <Box
+                                    display={"flex"}
+                                    onClick={() => toggleFlavor(flavor.priceId)}
+                                    sx={{
+                                        ...flavorStyles,
+                                        width: smallScreen ? "100%" : undefined,
+                                        justifyContent: smallScreen ? "flex-start" : "center"
+                                    }}
+                                >
+                                    <Typography color={flavor.color || "white"}>
+                                        {flavor.name}
+                                    </Typography>
+                                </Box>
+                            </Grid>
+                        </Collapse>
                     );
                 })}
             </Grid>
@@ -259,18 +253,6 @@ export const LastBatch = ({
 }: FlavorSectionProps) => {
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-
-    const [seenFlavors, setSeenFlavors] = useState(ICE_CREAM_FLAVORS.lastBatch);
-
-    useEffect(() => {
-        if (!zeroInventoryFlavors) {
-            return;
-        }
-        const zeroInventoryRemoved = ICE_CREAM_FLAVORS.lastBatch.filter(
-            (flavor) => !zeroInventoryFlavors.includes(flavor.priceId!)
-        );
-        setSeenFlavors(zeroInventoryRemoved);
-    }, []);
 
     return (
         <Box
@@ -287,7 +269,7 @@ export const LastBatch = ({
                 direction={smallScreen ? "column" : undefined}
                 sx={{ paddingTop: smallScreen ? 4 : 2 }}
             >
-                {seenFlavors.map((flavor, index) => {
+                {ICE_CREAM_FLAVORS.lastBatch.map((flavor, index) => {
                     const isSelected = flavor.priceId
                         ? selectedPriceIds.includes(flavor.priceId)
                         : false;
@@ -297,26 +279,31 @@ export const LastBatch = ({
                         smallScreen
                     );
                     return (
-                        <Grid
-                            key={index}
-                            display={"flex"}
-                            justifyContent={"center"}
-                            sx={{ width: smallScreen ? "100%" : undefined }}
+                        <Collapse
+                            in={!(zeroInventoryFlavors ?? []).includes(flavor.priceId!)}
+                            timeout={300}
                         >
-                            <Box
+                            <Grid
+                                key={index}
                                 display={"flex"}
-                                onClick={() => toggleFlavor(flavor.priceId)}
-                                sx={{
-                                    ...flavorStyles,
-                                    width: smallScreen ? "100%" : undefined,
-                                    justifyContent: smallScreen ? "flex-start" : "center"
-                                }}
+                                justifyContent={"center"}
+                                sx={{ width: smallScreen ? "100%" : undefined }}
                             >
-                                <Typography color={flavor.color || "white"}>
-                                    {flavor.name}
-                                </Typography>
-                            </Box>
-                        </Grid>
+                                <Box
+                                    display={"flex"}
+                                    onClick={() => toggleFlavor(flavor.priceId)}
+                                    sx={{
+                                        ...flavorStyles,
+                                        width: smallScreen ? "100%" : undefined,
+                                        justifyContent: smallScreen ? "flex-start" : "center"
+                                    }}
+                                >
+                                    <Typography color={flavor.color || "white"}>
+                                        {flavor.name}
+                                    </Typography>
+                                </Box>
+                            </Grid>
+                        </Collapse>
                     );
                 })}
             </Grid>
