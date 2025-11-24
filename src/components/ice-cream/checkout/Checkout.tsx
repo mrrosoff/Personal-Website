@@ -91,6 +91,7 @@ const CheckoutForm = () => {
             <Button
                 color={"primary"}
                 variant={"contained"}
+                size={"large"}
                 fullWidth
                 type="submit"
                 disabled={isLoading || state.type === "loading" || !email}
