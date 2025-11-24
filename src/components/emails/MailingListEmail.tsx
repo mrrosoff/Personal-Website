@@ -47,6 +47,19 @@ const MailingListEmail = () => {
                         >
                             We are excited to share our latest flavors with you. Only $5 per pint.
                         </Text>
+                        <Text
+                            style={{
+                                marginTop: "5px",
+                                fontSize: 14,
+                                lineHeight: "10px",
+                                color: "rgb(107,114,128)"
+                            }}
+                        >
+                            If you are in San Fransisco, buy online at{" "}
+                            <a target={"_blank"} href="https://maxrosoff.com/ice-cream">
+                                maxrosoff.com/ice-cream
+                            </a>
+                        </Text>
                     </Section>
                     <FlavorsList
                         title="New Flavors"
@@ -151,7 +164,17 @@ const FlavorsList = (props: { title: string; description: string; flavors: IceCr
                                         color: "rgb(17,24,39)"
                                     }}
                                 >
-                                    {flavor.name}
+                                    {flavor.priceId ? (
+                                        <a
+                                            target={"_blank"}
+                                            style={{ color: "black", textDecoration: "none" }}
+                                            href={`https://maxrosoff.com/ice-cream?flavor=${flavor.priceId}`}
+                                        >
+                                            {flavor.name}
+                                        </a>
+                                    ) : (
+                                        flavor.name
+                                    )}
                                 </Text>
                             </Column>
                         </Row>

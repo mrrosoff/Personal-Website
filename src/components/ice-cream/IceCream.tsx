@@ -1,11 +1,22 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
-import { Box, Fab, Grid, Link, Typography, useMediaQuery, useTheme, Zoom } from "@mui/material";
+import {
+    Badge,
+    Box,
+    Fab,
+    Grid,
+    Link,
+    Typography,
+    useMediaQuery,
+    useTheme,
+    Zoom
+} from "@mui/material";
 import LaunchIcon from "@mui/icons-material/Launch";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 
 import { ICE_CREAM_FLAVORS } from "./flavors";
 import { useIceCreamCart } from "./IceCreamCartContext";
+import { useEffect } from "react";
 
 const getFlavorStyles = (color: string, isSelected: boolean, isSmallScreen: boolean) => {
     return {
@@ -39,9 +50,19 @@ const getUpcomingFlavorStyles = () => {
 
 const IceCream = () => {
     const navigate = useNavigate();
+    const [params, _] = useSearchParams();
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
     const { selectedPriceIds, toggleFlavor } = useIceCreamCart();
+
+    useEffect(() => {
+        const flavorPriceId = params.get("flavor");
+        if (!flavorPriceId) {
+            return;
+        }
+        toggleFlavor(flavorPriceId);
+        return () => toggleFlavor(flavorPriceId);
+    }, [params]);
 
     const handleCartClick = () => {
         const priceIdsParam = selectedPriceIds.join(",");
@@ -69,6 +90,9 @@ const IceCream = () => {
             )}
             <Typography mt={smallScreen ? 2 : undefined}>
                 Limited. High quality. San Francisco based. Creative flavors, priced at $5 per pint.
+            </Typography>
+            <Typography mt={smallScreen ? 0 : -1}>
+                In SF? Come stop by! Outside SF? Don't buy anything you can't carry home.
             </Typography>
             <Typography mt={smallScreen ? 0 : -1}>
                 Want to stay updated?{" "}
@@ -115,7 +139,9 @@ const IceCream = () => {
                             ":hover": { backgroundColor: "#5F6272" }
                         }}
                     >
-                        <ShoppingCartOutlinedIcon />
+                        <Badge badgeContent={selectedPriceIds.length} sx={{ p: 0.25 }}>
+                            <ShoppingCartOutlinedIcon sx={{ ml: -0.4, mb: -0.4 }} />
+                        </Badge>
                     </Fab>
                 </Zoom>
             )}
