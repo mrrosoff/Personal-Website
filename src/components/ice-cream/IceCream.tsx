@@ -94,20 +94,10 @@ const IceCream = () => {
             alignItems={smallScreen ? undefined : undefined}
             pb={smallScreen ? 10 : 4}
         >
-            {smallScreen ? (
-                <>
-                    <Typography variant="h1" sx={{ lineHeight: 0.85 }}>
-                        Small Batch
-                    </Typography>
-                    <Typography variant="h1" sx={{ ml: -0.5, lineHeight: 0.85 }}>
-                        Ice Cream
-                    </Typography>
-                </>
-            ) : (
-                <Typography variant="h1">Small Batch Ice Cream</Typography>
-            )}
+            <Typography variant="h1">Max's Freezer Stash</Typography>
             <Typography mt={smallScreen ? 2 : undefined}>
-                Limited. High quality. San Francisco based. Creative flavors, priced at $5 per pint.
+                High quality. Small batch.  San Francisco based creative flavors, priced at
+                $5 per pint.
             </Typography>
             <Typography mt={smallScreen ? 0 : -1}>
                 In SF? Come stop by! Outside SF? Don't buy anything you can't carry home.
