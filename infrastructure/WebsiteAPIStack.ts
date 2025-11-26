@@ -28,7 +28,7 @@ import { config } from "dotenv";
 
 import { ApplicationEnvironment } from "./app";
 import { EmailSubscription } from "aws-cdk-lib/aws-sns-subscriptions";
-import { AttributeType, BillingMode, StreamViewType, Table } from "aws-cdk-lib/aws-dynamodb";
+import { AttributeType, BillingMode, Table } from "aws-cdk-lib/aws-dynamodb";
 
 export const FLAVORS_TABLE = "website-flavors";
 
@@ -47,6 +47,7 @@ class WebsiteAPIStack extends Stack {
         const inventoryLambda = this.createInventoryLambda(env, apiRole);
         const checkoutLambda = this.createCheckoutLambda(env, apiRole);
         const checkoutStatusLambda = this.createCheckoutStatusLambda(env, apiRole);
+        const checkoutSuccessLambda = this.createCheckoutSuccessLambda(env, apiRole);
         const receiveLambda = this.createReceiveLambda(env, apiRole);
         const registerLambda = this.createRegisterLambda(env, apiRole);
         const sendEmailLambda = this.createSendEmailLambda(env, apiRole);
@@ -62,6 +63,7 @@ class WebsiteAPIStack extends Stack {
             inventoryLambda,
             checkoutLambda,
             checkoutStatusLambda,
+            checkoutSuccessLambda,
             receiveLambda,
             registerLambda,
             sendEmailLambda,
@@ -73,6 +75,7 @@ class WebsiteAPIStack extends Stack {
             inventoryLambda,
             checkoutLambda,
             checkoutStatusLambda,
+            checkoutSuccessLambda,
             receiveLambda,
             registerLambda,
             sendEmailLambda,
@@ -95,7 +98,8 @@ class WebsiteAPIStack extends Stack {
         certificate: Certificate,
         inventoryLambda: LambdaFunction,
         checkoutLambda: LambdaFunction,
-        checkoutReturnLambda: LambdaFunction,
+        checkoutStatusLambda: LambdaFunction,
+        checkoutSuccessLambda: LambdaFunction,
         receiveLambda: LambdaFunction,
         registerLambda: LambdaFunction,
         sendEmailLambda: LambdaFunction,
@@ -121,7 +125,10 @@ class WebsiteAPIStack extends Stack {
         api.root.addResource("checkout").addMethod("POST", new LambdaIntegration(checkoutLambda));
         api.root
             .addResource("checkout-status")
-            .addMethod("POST", new LambdaIntegration(checkoutReturnLambda));
+            .addMethod("POST", new LambdaIntegration(checkoutStatusLambda));
+        api.root
+            .addResource("checkout-success")
+            .addMethod("POST", new LambdaIntegration(checkoutSuccessLambda));
         api.root.addResource("receive").addMethod("POST", new LambdaIntegration(receiveLambda));
         api.root.addResource("register").addMethod("POST", new LambdaIntegration(registerLambda));
         api.root
@@ -161,6 +168,17 @@ class WebsiteAPIStack extends Stack {
             functionName,
             handler: "checkoutStatus.handler",
             code: Code.fromAsset("dist/lambda/checkoutStatus"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(env, functionName, role)
+        });
+    }
+
+    private createCheckoutSuccessLambda(env: ApplicationEnvironment, role: Role): LambdaFunction {
+        const functionName = "website-checkout-success";
+        return new LambdaFunction(this, "websiteCheckoutSuccessLambda", {
+            functionName,
+            handler: "checkoutSuccess.handler",
+            code: Code.fromAsset("dist/lambda/checkoutSuccess"),
             runtime: Runtime.NODEJS_22_X,
             ...this.createLambdaParams(env, functionName, role)
         });

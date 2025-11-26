@@ -18,8 +18,9 @@ async function buildLambdaFunction(entrypoint: string, directory: string, watch 
 }
 
 await buildLambdaFunction("api/endpoints/inventory.ts", "dist/lambda/inventory");
-await buildLambdaFunction("api/endpoints/checkoutStatus.ts", "dist/lambda/checkoutStatus");
 await buildLambdaFunction("api/endpoints/checkout.ts", "dist/lambda/checkout");
+await buildLambdaFunction("api/endpoints/checkoutStatus.ts", "dist/lambda/checkoutStatus");
+await buildLambdaFunction("api/endpoints/checkoutSuccess.ts", "dist/lambda/checkoutSuccess");
 await buildLambdaFunction("api/endpoints/receive.ts", "dist/lambda/receive");
 await buildLambdaFunction("api/endpoints/register.ts", "dist/lambda/register");
 await buildLambdaFunction("api/endpoints/sendEmail.ts", "dist/lambda/sendEmail");

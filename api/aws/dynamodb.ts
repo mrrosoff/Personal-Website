@@ -43,50 +43,26 @@ export async function getAllItems<T extends Table>(table: T): Promise<TableObjec
     return itemOutput.Items as TableObject<T>[];
 }
 
-export async function updateItem<T extends Table>(
-    table: T,
-    id: ItemKeyInput<T>,
-    key: ValuesOfType<TableObject<T>, DynamoDBFieldValue>,
-    value: DynamoDBFieldValue
-): Promise<TableObject<T>> {
-    return updateItemFields(table, id, { [key]: value } as UpdateItemInput<T>);
-}
-
-export async function updateItemFields<T extends Table>(
+export async function decrementPropertyCount<T extends Table>(
     table: T,
     key: ItemKeyInput<T>,
-    fields: UpdateItemInput<T>
+    propertyName: ValuesOfType<TableObject<T>, number>
 ): Promise<TableObject<T>> {
     console.debug(
-        `Updating item in ${table} with id ${JSON.stringify(key)}. New data: ${JSON.stringify(fields)}`
+        `Decrementing ${String(propertyName)} by 1 for item in ${table} with id ${JSON.stringify(key)}`
     );
     const compositeKey = { [primaryKeys[table]]: key };
-    const setExpressions: string[] = [];
-    const removeExpressions: string[] = [];
-    const dynamoAttributeNames: Record<string, string> = {};
-    const dynamoAttributeValues: Record<string, DynamoDBFieldValue> = {};
-    Object.entries<DynamoDBFieldValue>(fields).forEach(([key, value], i) => {
-        dynamoAttributeNames[`#${key}`] = key;
-        if (value === undefined) {
-            removeExpressions.push(`#${key}`);
-        } else {
-            dynamoAttributeValues[`:${i}`] = value;
-            setExpressions.push(`#${key} = :${i}`);
-        }
-    });
-    const expressionParts = [
-        setExpressions.length && `SET ${setExpressions.join(", ")}`,
-        removeExpressions.length && `REMOVE ${removeExpressions.join(", ")}`
-    ];
 
     const updateItemRequest = new UpdateCommand({
         TableName: table,
         Key: compositeKey,
-        UpdateExpression: expressionParts.filter(Boolean).join(" "),
-        ExpressionAttributeNames: dynamoAttributeNames,
-        ...(Object.keys(dynamoAttributeValues).length && {
-            ExpressionAttributeValues: dynamoAttributeValues
-        }),
+        UpdateExpression: `SET #prop = #prop - :dec`,
+        ExpressionAttributeNames: {
+            "#prop": propertyName
+        },
+        ExpressionAttributeValues: {
+            ":dec": 1
+        },
         ReturnValues: "ALL_NEW"
     });
     const itemOutput = await documentClient.send(updateItemRequest);
