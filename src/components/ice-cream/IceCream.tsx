@@ -92,17 +92,17 @@ const IceCream = () => {
             display={"flex"}
             flexDirection={"column"}
             alignItems={smallScreen ? undefined : undefined}
-            pb={smallScreen ? 10 : 4}
+            pb={4}
         >
             <Typography variant="h1">Max's Freezer Stash</Typography>
             <Typography mt={smallScreen ? 2 : undefined}>
                 High quality. Small batch.  San Francisco based creative flavors, priced at
                 $5 per pint.
             </Typography>
-            <Typography mt={smallScreen ? 0 : -1}>
+            <Typography mt={smallScreen ? 2 : -1}>
                 In SF? Come stop by! Outside SF? Don't buy anything you can't carry home.
             </Typography>
-            <Typography mt={smallScreen ? 0 : -1}>
+            <Typography mt={smallScreen ? 2 : -1}>
                 Want to stay updated?{" "}
                 <Link
                     component="button"
@@ -184,7 +184,7 @@ export const CurrentFlavors = ({
             display={"flex"}
             flexDirection={"column"}
             alignItems={smallScreen ? undefined : undefined}
-            sx={{ paddingTop: smallScreen ? 6 : 2.5 }}
+            sx={{ paddingTop: smallScreen ? 4 : 2.5 }}
         >
             <Typography variant="h2">Current Flavors</Typography>
             <Typography>Our current rotation of flavors.</Typography>
@@ -249,7 +249,7 @@ export const LastBatch = ({
             display={"flex"}
             flexDirection={"column"}
             alignItems={smallScreen ? undefined : undefined}
-            sx={{ paddingTop: smallScreen ? 6 : 2.5 }}
+            sx={{ paddingTop: smallScreen ? 4 : 2.5 }}
         >
             <Typography variant="h2">Last Batch</Typography>
             <Typography>Get them before they are gone! Limited quantities available.</Typography>
@@ -309,7 +309,7 @@ export const Schedule = () => {
             display={"flex"}
             flexDirection={"column"}
             alignItems={smallScreen ? undefined : undefined}
-            sx={{ paddingTop: smallScreen ? 6 : 2.5 }}
+            sx={{ paddingTop: smallScreen ? 4 : 2.5 }}
         >
             <Typography variant="h2">Whats Coming Up...</Typography>
             <Typography>
