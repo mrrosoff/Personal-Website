@@ -36,9 +36,10 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         });
     }
 
-    const priceIds = (session.line_items?.data ?? []).map((item) => item.price!.id);
+    const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
+    const priceIds = lineItems.data.map((item) => item.price!.id);
     await Promise.all(
         priceIds.map((priceId) => decrementPropertyCount(FLAVORS_TABLE, priceId, "count"))
     );
-    return buildResponse(event, HttpResponseStatus.OK, stripeEvent);
+    return buildResponse(event, HttpResponseStatus.OK, { received: true });
 };
