@@ -71,16 +71,6 @@ class WebsiteAPIStack extends Stack {
         );
 
         const alarmTopic = this.createAlarmActions();
-        this.createLambdaErrorAlarms(alarmTopic, [
-            inventoryLambda,
-            checkoutLambda,
-            checkoutStatusLambda,
-            checkoutSuccessLambda,
-            receiveLambda,
-            registerLambda,
-            sendEmailLambda,
-            unsubscribeLambda
-        ]);
         this.createRestAPIErrorsAlarm(alarmTopic, restApi);
     }
 
@@ -268,21 +258,6 @@ class WebsiteAPIStack extends Stack {
                     ]
                 })
             }
-        });
-    }
-
-    private createLambdaErrorAlarms(alarmTopic: Topic, lambdas: LambdaFunction[]): Alarm[] {
-        return lambdas.map((lambda) => {
-            const alarm = new Alarm(this, `${lambda.node.id}-ErrorsAlarm`, {
-                alarmName: `${lambda.functionName} Errors`,
-                metric: lambda.metricErrors(),
-                threshold: 0,
-                comparisonOperator: ComparisonOperator.GREATER_THAN_THRESHOLD,
-                evaluationPeriods: 1,
-                treatMissingData: TreatMissingData.NOT_BREACHING
-            });
-            alarm.addAlarmAction(new SnsAction(alarmTopic));
-            return alarm;
         });
     }
 
