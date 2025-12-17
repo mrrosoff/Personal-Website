@@ -2,7 +2,7 @@
 
 /*
  * This script generates the keys used to sign and verify JWTs for
- * Project-Cantaloupe. The keys are stored in the jwks/keys.json file.
+ * the website. The keys are stored in the jwks/keys.json file.
  * Once used in production, the keys cannot be regenerated, as this
  * would invalidate all existing JWTs.
  *

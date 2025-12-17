@@ -52,7 +52,7 @@ class WebsiteAPIStack extends Stack {
     }
 
     private createFlavorsTable(): Table {
-        return new Table(this, "cantaloupeFlavorsTable", {
+        return new Table(this, "websiteFlavorsTable", {
             tableName: FLAVORS_TABLE,
             partitionKey: { name: "productId", type: AttributeType.STRING },
             billingMode: BillingMode.PAY_PER_REQUEST,
