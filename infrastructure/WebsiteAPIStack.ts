@@ -276,6 +276,11 @@ class WebsiteAPIStack extends Stack {
                 ManagedPolicy.fromAwsManagedPolicyName("AWSXrayWriteOnlyAccess")
             ],
             inlinePolicies: {
+                SSMAccessPolicy: new PolicyDocument({
+                    statements: [
+                        new PolicyStatement({ actions: ["ssm:*"], resources: ["*"] })
+                    ]
+                }),
                 TableAccessPolicy: new PolicyDocument({
                     statements: [
                         new PolicyStatement({
