@@ -45,4 +45,5 @@ await buildLambdaFunction(
     "dist/lambda/admin/updateInventory"
 );
 
+await buildLambdaFunction("api/jwks/jwks.ts", "dist/lambda/jwks");
 await buildLambdaFunction("api/endpoints/auth/login.ts", "dist/lambda/auth/login");
