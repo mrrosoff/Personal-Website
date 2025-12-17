@@ -17,11 +17,32 @@ async function buildLambdaFunction(entrypoint: string, directory: string, watch 
     return await build(options);
 }
 
-await buildLambdaFunction("api/endpoints/inventory.ts", "dist/lambda/inventory");
-await buildLambdaFunction("api/endpoints/checkout.ts", "dist/lambda/checkout");
-await buildLambdaFunction("api/endpoints/checkoutStatus.ts", "dist/lambda/checkoutStatus");
-await buildLambdaFunction("api/endpoints/checkoutSuccess.ts", "dist/lambda/checkoutSuccess");
-await buildLambdaFunction("api/endpoints/receive.ts", "dist/lambda/receive");
-await buildLambdaFunction("api/endpoints/register.ts", "dist/lambda/register");
-await buildLambdaFunction("api/endpoints/sendEmail.ts", "dist/lambda/sendEmail");
-await buildLambdaFunction("api/endpoints/unsubscribe.ts", "dist/lambda/unsubscribe");
+await buildLambdaFunction(
+    "api/endpoints/ice-cream/inventory.ts",
+    "dist/lambda/ice-cream/inventory"
+);
+await buildLambdaFunction("api/endpoints/ice-cream/checkout.ts", "dist/lambda/ice-cream/checkout");
+await buildLambdaFunction(
+    "api/endpoints/ice-cream/checkoutStatus.ts",
+    "dist/lambda/ice-cream/checkoutStatus"
+);
+await buildLambdaFunction(
+    "api/endpoints/ice-cream/checkoutSuccess.ts",
+    "dist/lambda/ice-cream/checkoutSuccess"
+);
+
+await buildLambdaFunction("api/endpoints/email/receive.ts", "dist/lambda/email/receive");
+await buildLambdaFunction("api/endpoints/email/register.ts", "dist/lambda/email/register");
+await buildLambdaFunction("api/endpoints/email/sendEmail.ts", "dist/lambda/email/sendEmail");
+await buildLambdaFunction("api/endpoints/email/unsubscribe.ts", "dist/lambda/email/unsubscribe");
+
+await buildLambdaFunction(
+    "api/endpoints/admin/provisionFlavor.ts",
+    "dist/lambda/admin/provisionFlavor"
+);
+await buildLambdaFunction(
+    "api/endpoints/admin/updateInventory.ts",
+    "dist/lambda/admin/updateInventory"
+);
+
+await buildLambdaFunction("api/endpoints/auth/login.ts", "dist/lambda/auth/login");

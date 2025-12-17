@@ -1,20 +1,23 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import { Resend } from "resend";
 
-import MailingListEmail from "../../src/components/emails/MailingListEmail";
-import { buildResponse, HttpResponseStatus } from "../common";
+import MailingListEmail from "../../../src/components/emails/MailingListEmail";
+import { buildResponse, HttpResponseStatus } from "../../common";
+import { getParameter } from "../../aws/services/parameterStore";
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
-    const resend = new Resend(process.env.RESEND_API_KEY);
+    const apiKey = await getParameter("/website/resend/api-key",);
+    const resend = new Resend(apiKey);
     const broadcastId = await createBroadcast(resend);
     const sendBroadcastId = await sendBroadcast(resend, broadcastId);
     return buildResponse(event, HttpResponseStatus.OK, { broadcastId: sendBroadcastId });
 };
 
 async function createBroadcast(resend: Resend): Promise<string> {
+    const id = await getParameter("/website/resend/audience-id");
     const { data, error } = await resend.broadcasts.create({
         name: "Ice Cream Flavor Drop",
-        audienceId: process.env.RESEND_AUDIENCE_ID!,
+        audienceId: id,
         from: "Max and Josette <drops@ice-cream.maxrosoff.com>",
         replyTo: "me@maxrosoff.com",
         subject: "New Ice Cream Flavor Drop!",

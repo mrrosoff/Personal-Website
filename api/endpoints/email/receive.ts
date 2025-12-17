@@ -1,8 +1,8 @@
 import { APIGatewayEvent, APIGatewayProxyEventHeaders, APIGatewayProxyResult } from "aws-lambda";
-import { config } from "dotenv";
 import { CreateEmailOptions, GetReceivingEmailResponseSuccess, Resend } from "resend";
 
-import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../common";
+import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
+import { getParameter } from "../../aws/services/parameterStore";
 
 type WebhookPayload = {
     type: string;
@@ -25,14 +25,13 @@ type EmailReceivedWebhookData = {
     }[];
 };
 
-config();
-
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     if (!event.body) {
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Request Body");
     }
 
-    const resend = new Resend(process.env.RESEND_API_KEY);
+    const apiKey = await getParameter("/website/resend/api-key");
+    const resend = new Resend(apiKey);
     const result = await verifyWebhookSignature(resend, event.headers, event.body);
     if (!result) {
         return buildErrorResponse(
@@ -54,6 +53,7 @@ async function verifyWebhookSignature(
     headers: APIGatewayProxyEventHeaders,
     requestBody: string
 ): Promise<boolean> {
+    const secret = await getParameter("/website/resend/webhook",);
     try {
         resend.webhooks.verify({
             payload: requestBody,
@@ -62,7 +62,7 @@ async function verifyWebhookSignature(
                 timestamp: headers["svix-timestamp"]!,
                 signature: headers["svix-signature"]!
             },
-            webhookSecret: process.env.RESEND_WEBHOOK_SECRET!
+            webhookSecret: secret
         });
         return true;
     } catch (error: unknown) {

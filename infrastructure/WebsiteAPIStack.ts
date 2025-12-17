@@ -24,9 +24,7 @@ import { LogGroup, RetentionDays } from "aws-cdk-lib/aws-logs";
 import { Topic } from "aws-cdk-lib/aws-sns";
 
 import { Construct } from "constructs";
-import { config } from "dotenv";
 
-import { ApplicationEnvironment } from "./app";
 import { EmailSubscription } from "aws-cdk-lib/aws-sns-subscriptions";
 import { AttributeType, BillingMode, Table } from "aws-cdk-lib/aws-dynamodb";
 
@@ -36,38 +34,17 @@ class WebsiteAPIStack extends Stack {
     constructor(scope: Construct, id: string, props: StackProps) {
         super(scope, id, props);
 
-        const env = config().parsed as ApplicationEnvironment | undefined;
-        if (!env) {
-            throw new Error("Environment variables not found");
-        }
-
         const flavorsTable = this.createFlavorsTable();
-
-        const apiRole = this.createAPILambdaRole(flavorsTable);
-        const inventoryLambda = this.createInventoryLambda(env, apiRole);
-        const checkoutLambda = this.createCheckoutLambda(env, apiRole);
-        const checkoutStatusLambda = this.createCheckoutStatusLambda(env, apiRole);
-        const checkoutSuccessLambda = this.createCheckoutSuccessLambda(env, apiRole);
-        const receiveLambda = this.createReceiveLambda(env, apiRole);
-        const registerLambda = this.createRegisterLambda(env, apiRole);
-        const sendEmailLambda = this.createSendEmailLambda(env, apiRole);
-        const unsubscribeLambda = this.createUnsubscribeLambda(env, apiRole);
 
         const certificate = new Certificate(this, "websiteCertificate", {
             domainName: "maxrosoff.com",
             subjectAlternativeNames: ["*.maxrosoff.com"],
             validation: CertificateValidation.fromDns()
         });
+        const apiRole = this.createAPILambdaRole(flavorsTable);
         const restApi = this.createAPI(
             certificate,
-            inventoryLambda,
-            checkoutLambda,
-            checkoutStatusLambda,
-            checkoutSuccessLambda,
-            receiveLambda,
-            registerLambda,
-            sendEmailLambda,
-            unsubscribeLambda
+            apiRole,
         );
 
         const alarmTopic = this.createAlarmActions();
@@ -75,9 +52,9 @@ class WebsiteAPIStack extends Stack {
     }
 
     private createFlavorsTable(): Table {
-        return new Table(this, "cantaloupePartiesTable", {
+        return new Table(this, "cantaloupeFlavorsTable", {
             tableName: FLAVORS_TABLE,
-            partitionKey: { name: "priceId", type: AttributeType.STRING },
+            partitionKey: { name: "productId", type: AttributeType.STRING },
             billingMode: BillingMode.PAY_PER_REQUEST,
             removalPolicy: RemovalPolicy.DESTROY,
             deletionProtection: true
@@ -86,15 +63,23 @@ class WebsiteAPIStack extends Stack {
 
     private createAPI(
         certificate: Certificate,
-        inventoryLambda: LambdaFunction,
-        checkoutLambda: LambdaFunction,
-        checkoutStatusLambda: LambdaFunction,
-        checkoutSuccessLambda: LambdaFunction,
-        receiveLambda: LambdaFunction,
-        registerLambda: LambdaFunction,
-        sendEmailLambda: LambdaFunction,
-        unsubscribeLambda: LambdaFunction
+        apiRole: Role
     ): RestApi {
+        const inventoryLambda = this.createInventoryLambda(apiRole);
+        const checkoutLambda = this.createCheckoutLambda(apiRole);
+        const checkoutStatusLambda = this.createCheckoutStatusLambda(apiRole);
+        const checkoutSuccessLambda = this.createCheckoutSuccessLambda(apiRole);
+
+        const receiveLambda = this.createReceiveLambda(apiRole);
+        const registerLambda = this.createRegisterLambda(apiRole);
+        const sendEmailLambda = this.createSendEmailLambda(apiRole);
+        const unsubscribeLambda = this.createUnsubscribeLambda(apiRole);
+
+        const jwksLambda = this.createJWKLambda(apiRole);
+        const loginLambda = this.createLoginLambda(apiRole);
+        const provisionFlavorLambda = this.createProvisionFlavorLambda(apiRole);
+        const updateInventoryLambda = this.createUpdateInventoryLambda(apiRole);
+
         const api = new RestApi(this, "websiteRestApi", {
             restApiName: "Website API",
             description: "The service endpoint for Personal Website API",
@@ -127,99 +112,157 @@ class WebsiteAPIStack extends Stack {
         api.root
             .addResource("unsubscribe")
             .addMethod("POST", new LambdaIntegration(unsubscribeLambda));
+
+        api.root
+            .addResource("jwks")
+            .addMethod("GET", new LambdaIntegration(jwksLambda));
+        api.root
+            .addResource("login")
+            .addMethod("POST", new LambdaIntegration(loginLambda));
+
+        const adminResource = api.root.addResource("admin");
+        adminResource
+            .addResource("provision-flavor")
+            .addMethod("POST", new LambdaIntegration(provisionFlavorLambda));
+        adminResource
+            .addResource("update-inventory")
+            .addMethod("POST", new LambdaIntegration(updateInventoryLambda));
         return api;
     }
 
-    private createInventoryLambda(env: ApplicationEnvironment, role: Role): LambdaFunction {
+    private createInventoryLambda(role: Role): LambdaFunction {
         const functionName = "website-inventory";
         return new LambdaFunction(this, "websiteInventoryLambda", {
             functionName,
             handler: "inventory.handler",
-            code: Code.fromAsset("dist/lambda/inventory"),
+            code: Code.fromAsset("dist/lambda/ice-cream/inventory"),
             runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(env, functionName, role)
+            ...this.createLambdaParams(functionName, role)
         });
     }
 
-    private createCheckoutLambda(env: ApplicationEnvironment, role: Role): LambdaFunction {
+    private createCheckoutLambda(role: Role): LambdaFunction {
         const functionName = "website-checkout";
         return new LambdaFunction(this, "websiteCheckoutLambda", {
             functionName,
             handler: "checkout.handler",
-            code: Code.fromAsset("dist/lambda/checkout"),
+            code: Code.fromAsset("dist/lambda/ice-cream/checkout"),
             runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(env, functionName, role)
+            ...this.createLambdaParams(functionName, role)
         });
     }
 
-    private createCheckoutStatusLambda(env: ApplicationEnvironment, role: Role): LambdaFunction {
+    private createCheckoutStatusLambda(role: Role): LambdaFunction {
         const functionName = "website-checkout-status";
         return new LambdaFunction(this, "websiteCheckoutStatusLambda", {
             functionName,
             handler: "checkoutStatus.handler",
-            code: Code.fromAsset("dist/lambda/checkoutStatus"),
+            code: Code.fromAsset("dist/lambda/ice-cream/checkoutStatus"),
             runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(env, functionName, role)
+            ...this.createLambdaParams(functionName, role)
         });
     }
 
-    private createCheckoutSuccessLambda(env: ApplicationEnvironment, role: Role): LambdaFunction {
+    private createCheckoutSuccessLambda(role: Role): LambdaFunction {
         const functionName = "website-checkout-success";
         return new LambdaFunction(this, "websiteCheckoutSuccessLambda", {
             functionName,
             handler: "checkoutSuccess.handler",
-            code: Code.fromAsset("dist/lambda/checkoutSuccess"),
+            code: Code.fromAsset("dist/lambda/ice-cream/checkoutSuccess"),
             runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(env, functionName, role)
+            ...this.createLambdaParams(functionName, role)
         });
     }
 
-    private createReceiveLambda(env: ApplicationEnvironment, role: Role): LambdaFunction {
+    private createReceiveLambda(role: Role): LambdaFunction {
         const functionName = "website-receive";
         return new LambdaFunction(this, "websiteReceiveLambda", {
             functionName,
             handler: "receive.handler",
-            code: Code.fromAsset("dist/lambda/receive"),
+            code: Code.fromAsset("dist/lambda/email/receive"),
             runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(env, functionName, role)
+            ...this.createLambdaParams(functionName, role)
         });
     }
 
-    private createRegisterLambda(env: ApplicationEnvironment, role: Role): LambdaFunction {
+    private createRegisterLambda(role: Role): LambdaFunction {
         const functionName = "website-register";
         return new LambdaFunction(this, "websiteRegisterLambda", {
             functionName,
             handler: "register.handler",
-            code: Code.fromAsset("dist/lambda/register"),
+            code: Code.fromAsset("dist/lambda/email/register"),
             runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(env, functionName, role)
+            ...this.createLambdaParams(functionName, role)
         });
     }
 
-    private createSendEmailLambda(env: ApplicationEnvironment, role: Role): LambdaFunction {
+    private createSendEmailLambda(role: Role): LambdaFunction {
         const functionName = "website-send-email";
         return new LambdaFunction(this, "websiteSendEmailLambda", {
             functionName,
             handler: "sendEmail.handler",
-            code: Code.fromAsset("dist/lambda/sendEmail"),
+            code: Code.fromAsset("dist/lambda/email/sendEmail"),
             runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(env, functionName, role)
+            ...this.createLambdaParams(functionName, role)
         });
     }
 
-    private createUnsubscribeLambda(env: ApplicationEnvironment, role: Role): LambdaFunction {
+    private createUnsubscribeLambda(role: Role): LambdaFunction {
         const functionName = "website-unsubscribe";
         return new LambdaFunction(this, "websiteUnsubscribeLambda", {
             functionName,
             handler: "unsubscribe.handler",
-            code: Code.fromAsset("dist/lambda/unsubscribe"),
+            code: Code.fromAsset("dist/lambda/email/unsubscribe"),
             runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(env, functionName, role)
+            ...this.createLambdaParams(functionName, role)
+        });
+    }
+
+    private createProvisionFlavorLambda(role: Role): LambdaFunction {
+        const functionName = "website-provision-flavor";
+        return new LambdaFunction(this, "websiteProvisionFlavorLambda", {
+            functionName,
+            handler: "provisionFlavor.handler",
+            code: Code.fromAsset("dist/lambda/admin/provisionFlavor"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(functionName, role)
+        });
+    }
+
+    private createUpdateInventoryLambda(role: Role): LambdaFunction {
+        const functionName = "website-update-inventory";
+        return new LambdaFunction(this, "websiteUpdateInventoryLambda", {
+            functionName,
+            handler: "updateInventory.handler",
+            code: Code.fromAsset("dist/lambda/admin/updateInventory"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(functionName, role)
+        });
+    }
+
+    private createJWKLambda(role: Role): LambdaFunction {
+        const functionName = "website-jwks";
+        return new LambdaFunction(this, "websiteJWKsLambda", {
+            functionName,
+            handler: "jwks.handler",
+            code: Code.fromAsset("dist/jwks"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(functionName, role)
+        });
+    }
+
+    private createLoginLambda(role: Role): LambdaFunction {
+        const functionName = "website-login";
+        return new LambdaFunction(this, "websiteLoginLambda", {
+            functionName,
+            handler: "login.handler",
+            code: Code.fromAsset("dist/lambda/auth/login"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(functionName, role)
         });
     }
 
     private createLambdaParams(
-        env: ApplicationEnvironment,
         functionName: string,
         role: Role
     ): Partial<FunctionProps> {
@@ -236,7 +279,7 @@ class WebsiteAPIStack extends Stack {
             loggingFormat: LoggingFormat.JSON,
             applicationLogLevelV2: ApplicationLogLevel.WARN,
             systemLogLevelV2: SystemLogLevel.WARN,
-            environment: { ...env, NODE_OPTIONS: "--enable-source-maps" }
+            environment: { NODE_ENV: "production", NODE_OPTIONS: "--enable-source-maps" }
         };
     }
 

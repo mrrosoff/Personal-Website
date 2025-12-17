@@ -1,8 +1,8 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 
-import { buildResponse, HttpResponseStatus } from "../common";
-import { getAllItems } from "../aws/dynamodb";
-import { FLAVORS_TABLE } from "../../infrastructure/WebsiteAPIStack";
+import { buildResponse, HttpResponseStatus } from "../../common";
+import { getAllItems } from "../../aws/services/dynamodb";
+import { FLAVORS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     const inventory = await getAllItems(FLAVORS_TABLE);

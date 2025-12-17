@@ -1,24 +1,22 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
-import { config } from "dotenv";
 import { Resend } from "resend";
 
-import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../common";
+import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
+import { getParameters } from "../../aws/services/parameterStore";
 
 type UnsubscribePayload = {
     email: string;
 };
-
-config();
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     if (!event.body) {
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Request Body");
     }
 
-    const resend = new Resend(process.env.RESEND_API_KEY);
+    const resendKeys = await getParameters("/website/resend/api-key", "/website/resend/audience-id");
+    const resend = new Resend(resendKeys["/website/resend/api-key"]);
     const payload: UnsubscribePayload = JSON.parse(event.body);
-    const audienceId = process.env.RESEND_AUDIENCE_ID!;
-    const removed = await unsubscribeUser(resend, audienceId, payload.email);
+    const removed = await unsubscribeUser(resend, resendKeys["/website/resend/audience-id"], payload.email);
     if (!removed) {
         return buildResponse(event, HttpResponseStatus.OK, {});
     }

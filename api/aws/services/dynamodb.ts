@@ -1,8 +1,8 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocument, UpdateCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocument, UpdateCommand, ScanCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
 
-import { FLAVORS_TABLE } from "../../infrastructure/WebsiteAPIStack";
-import { DatabaseFlavor, DynamoDBFieldValue } from "../types";
+import { FLAVORS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
+import { DatabaseFlavor, DynamoDBFieldValue } from "../../types";
 
 export type Table = typeof FLAVORS_TABLE;
 
@@ -29,7 +29,7 @@ const dynamodbClient = new DynamoDBClient();
 export const documentClient = DynamoDBDocument.from(dynamodbClient);
 
 const primaryKeys: Record<Table, string> = {
-    [FLAVORS_TABLE]: "priceId"
+    [FLAVORS_TABLE]: "productId"
 };
 
 export async function getAllItems<T extends Table>(table: T): Promise<TableObject<T>[]> {
@@ -71,4 +71,14 @@ export async function decrementPropertyCount<T extends Table>(
         throw new Error("Called DynamoDB Without Validating Item Exists");
     }
     return object;
+}
+
+export async function putItem<T extends Table>(
+    table: T,
+    item: Partial<TableObject<T>>
+): Promise<TableObject<T>> {
+    console.debug(`Putting item into ${table}`);
+    const putItemRequest = new PutCommand({ TableName: table, Item: item });
+    await documentClient.send(putItemRequest);
+    return item as TableObject<T>;
 }

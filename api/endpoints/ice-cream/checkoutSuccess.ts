@@ -1,24 +1,24 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
-import { config } from "dotenv";
 import Stripe from "stripe";
 
-import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../common";
-import { registerNewMailingListUser } from "./register";
-import { decrementPropertyCount } from "../aws/dynamodb";
-import { FLAVORS_TABLE } from "../../infrastructure/WebsiteAPIStack";
-
-config();
+import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
+import { registerNewMailingListUser } from "../email/register";
+import { decrementPropertyCount } from "../../aws/services/dynamodb";
+import { FLAVORS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
+import { getParameters } from "../../aws/services/parameterStore";
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     if (!event.body) {
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Request Body");
     }
 
-    const stripe = new Stripe(process.env.STRIPE_API_KEY!);
+    const stripeKeys = await getParameters("/website/stripe/api-key", "/website/stripe/webhook");
+
+    const stripe = new Stripe(stripeKeys["/website/stripe/api-key"]);
     const stripeEvent = await stripe.webhooks.constructEventAsync(
         event.body,
         event.headers["stripe-signature"]!,
-        process.env.STRIPE_WEBHOOK_SECRET!
+        stripeKeys["/website/stripe/webhook"]
     );
 
     if (stripeEvent.type !== "checkout.session.completed") {

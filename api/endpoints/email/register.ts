@@ -1,16 +1,14 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
-import { config } from "dotenv";
 import { Resend } from "resend";
 
-import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../common";
+import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
+import { getParameters } from "../../aws/services/parameterStore";
 
 type RegisterPayload = {
     firstName?: string;
     lastName?: string;
     email: string;
 };
-
-config();
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     if (!event.body) {
@@ -23,9 +21,10 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 };
 
 export async function registerNewMailingListUser(payload: RegisterPayload) {
-    const resend = new Resend(process.env.RESEND_API_KEY);
+    const resendKeys = await getParameters("/website/resend/api-key", "/website/resend/audience-id");
+    const resend = new Resend(resendKeys["/website/resend/api-key"]);
 
-    const audienceId = process.env.RESEND_AUDIENCE_ID!;
+    const audienceId = resendKeys["/website/resend/audience-id"];
     const userId = await findUserIfAlreadyRegistered(resend, audienceId, payload.email);
     if (userId) {
         return userId;

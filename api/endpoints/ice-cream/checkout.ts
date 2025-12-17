@@ -1,13 +1,11 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
-import { config } from "dotenv";
 import Stripe from "stripe";
 
-import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../common";
-
-config();
+import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
+import { getParameter } from "../../aws/services/parameterStore";
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
-    const stripe = new Stripe(process.env.STRIPE_API_KEY!);
+    const stripe = new Stripe(await getParameter("/website/stripe/api-key"));
 
     const priceIdsParam = event.queryStringParameters?.priceIds || "";
     const priceIds = priceIdsParam.split(",").filter((id) => id.trim() !== "");
