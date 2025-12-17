@@ -7,22 +7,27 @@ export type IceCreamFlavor = {
 export const ICE_CREAM_FLAVORS: Record<string, IceCreamFlavor[]> = {
     currentFlavors: [
         {
+            name: "Chili Chocolate Peanut Butter Cup 🌶️",
+            color: "lightsalmon",
+            priceId: "price_1SUGeTGZZEzkLsbi3r1AXTZr"
+        },
+        {
+            name: "Gingerbread Cookie Dough 🎄",
+            color: "peru",
+            priceId: "price_1Sf9NgGZZEzkLsbiqEv2v75q"
+        },
+        {
+            name: "Chocolate Chip Cookie Dough 🍪",
+            color: "navajowhite",
+            priceId: "price_1Sf9P2GZZEzkLsbilYjBh3Ii"
+        }
+    ],
+    lastBatch: [
+        {
             name: "Pumpkin Spice Latte 🎃",
             color: "coral",
             priceId: "price_1SUGdnGZZEzkLsbi5Wbv7U8t"
         },
-        {
-            name: "Mint Chocolate Chip 🍃",
-            color: "mediumspringgreen",
-            priceId: "price_1SUGeKGZZEzkLsbie8XG9ORR"
-        },
-        {
-            name: "Chili Chocolate Peanut Butter Cup 🌶️",
-            color: "lightsalmon",
-            priceId: "price_1SUGeTGZZEzkLsbi3r1AXTZr"
-        }
-    ],
-    lastBatch: [
         {
             name: "Chocolate Gooey Brownie 🍫",
             color: "chocolate",
@@ -33,24 +38,19 @@ export const ICE_CREAM_FLAVORS: Record<string, IceCreamFlavor[]> = {
             color: "moccasin",
             priceId: "price_1SUGejGZZEzkLsbiLGFK1HIo"
         },
-        {
-            name: "Strawberry 🍓",
-            color: "lightpink",
-            priceId: "price_1SUGdUGZZEzkLsbiQjZzrNJD"
-        }
     ],
     upcomingFlavors: [
         {
-            name: "Gingerbread Cookie Dough 🍪",
-            color: "peru"
+            name: "Champagne Sorbet 🥂",
+            color: "beige"
         },
         {
             name: "Chocolate Potato Chip Cupcake 🥔",
             color: "burlywood"
         },
         {
-            name: "Champagne Sorbet 🥂",
-            color: "beige"
+            name: "Lemon Sorbet 🍋",
+            color: "lightyellow"
         }
     ]
 };
