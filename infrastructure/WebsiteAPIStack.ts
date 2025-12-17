@@ -75,8 +75,6 @@ class WebsiteAPIStack extends Stack {
         const sendEmailLambda = this.createSendEmailLambda(apiRole);
         const unsubscribeLambda = this.createUnsubscribeLambda(apiRole);
 
-        const jwksLambda = this.createJWKLambda(apiRole);
-        const loginLambda = this.createLoginLambda(apiRole);
         const provisionFlavorLambda = this.createProvisionFlavorLambda(apiRole);
         const updateInventoryLambda = this.createUpdateInventoryLambda(apiRole);
 
@@ -112,13 +110,6 @@ class WebsiteAPIStack extends Stack {
         api.root
             .addResource("unsubscribe")
             .addMethod("POST", new LambdaIntegration(unsubscribeLambda));
-
-        api.root
-            .addResource("jwks")
-            .addMethod("GET", new LambdaIntegration(jwksLambda));
-        api.root
-            .addResource("login")
-            .addMethod("POST", new LambdaIntegration(loginLambda));
 
         const adminResource = api.root.addResource("admin");
         adminResource
@@ -235,28 +226,6 @@ class WebsiteAPIStack extends Stack {
             functionName,
             handler: "updateInventory.handler",
             code: Code.fromAsset("dist/lambda/admin/updateInventory"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
-    private createJWKLambda(role: Role): LambdaFunction {
-        const functionName = "website-jwks";
-        return new LambdaFunction(this, "websiteJWKsLambda", {
-            functionName,
-            handler: "jwks.handler",
-            code: Code.fromAsset("dist/lambda/jwks"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
-    private createLoginLambda(role: Role): LambdaFunction {
-        const functionName = "website-login";
-        return new LambdaFunction(this, "websiteLoginLambda", {
-            functionName,
-            handler: "login.handler",
-            code: Code.fromAsset("dist/lambda/auth/login"),
             runtime: Runtime.NODEJS_22_X,
             ...this.createLambdaParams(functionName, role)
         });

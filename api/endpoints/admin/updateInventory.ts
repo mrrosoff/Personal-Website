@@ -4,11 +4,13 @@ import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { FLAVORS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
 import { documentClient } from "../../aws/services/dynamodb";
 import { buildResponse, buildErrorResponse, HttpResponseStatus } from "../../common";
+import { getParameter } from "../../aws/services/parameterStore";
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     const body = JSON.parse(event.body || "{}");
     const { priceId, count } = body;
 
+    const adminPassword = await getParameter("/website/password");
     // Validate inputs
     if (!priceId || typeof priceId !== "string") {
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Invalid or missing priceId");
