@@ -245,7 +245,7 @@ class WebsiteAPIStack extends Stack {
         return new LambdaFunction(this, "websiteJWKsLambda", {
             functionName,
             handler: "jwks.handler",
-            code: Code.fromAsset("dist/jwks"),
+            code: Code.fromAsset("dist/lambda/jwks"),
             runtime: Runtime.NODEJS_22_X,
             ...this.createLambdaParams(functionName, role)
         });
