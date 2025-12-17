@@ -1,9 +1,9 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 
 import { getParameter } from "../../aws/services/parameterStore";
-import { buildResponse, buildErrorResponse, HttpResponseStatus } from "../../common";
+import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
 
-type UpdateInventoryPayload = {
+type PasswordCheckPayload = {
     password: string;
 };
 
@@ -12,13 +12,12 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Request Body");
     }
 
-    const body: UpdateInventoryPayload = JSON.parse(event.body);
-
+    const body: PasswordCheckPayload = JSON.parse(event.body);
 
     const password = await getParameter("/website/password");
     if (password !== body.password) {
         return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Invalid Admin Password");
     }
 
-    return buildResponse(event, HttpResponseStatus.OK, {});
+    return buildResponse(event, HttpResponseStatus.OK, { message: "Password Valid" });
 };

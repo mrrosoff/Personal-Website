@@ -75,6 +75,7 @@ class WebsiteAPIStack extends Stack {
         const sendEmailLambda = this.createSendEmailLambda(apiRole);
         const unsubscribeLambda = this.createUnsubscribeLambda(apiRole);
 
+        const passwordCheckLambda = this.createPasswordCheckLambda(apiRole);
         const provisionFlavorLambda = this.createProvisionFlavorLambda(apiRole);
         const updateInventoryLambda = this.createUpdateInventoryLambda(apiRole);
 
@@ -112,6 +113,9 @@ class WebsiteAPIStack extends Stack {
             .addMethod("POST", new LambdaIntegration(unsubscribeLambda));
 
         const adminResource = api.root.addResource("admin");
+        adminResource
+            .addResource("password-check")
+            .addMethod("POST", new LambdaIntegration(passwordCheckLambda));
         adminResource
             .addResource("provision-flavor")
             .addMethod("POST", new LambdaIntegration(provisionFlavorLambda));
@@ -204,6 +208,17 @@ class WebsiteAPIStack extends Stack {
             functionName,
             handler: "unsubscribe.handler",
             code: Code.fromAsset("dist/lambda/email/unsubscribe"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(functionName, role)
+        });
+    }
+
+    private createPasswordCheckLambda(role: Role): LambdaFunction {
+        const functionName = "website-password-check";
+        return new LambdaFunction(this, "websitePasswordCheckLambda", {
+            functionName,
+            handler: "passwordCheck.handler",
+            code: Code.fromAsset("dist/lambda/admin/passwordCheck"),
             runtime: Runtime.NODEJS_22_X,
             ...this.createLambdaParams(functionName, role)
         });
