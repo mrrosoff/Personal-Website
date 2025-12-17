@@ -1,8 +1,8 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 
-import { buildResponse, buildErrorResponse, HttpResponseStatus } from "../../common";
 import { getParameter } from "../../aws/services/parameterStore";
 import { generateToken } from "../../auth";
+import { buildResponse, buildErrorResponse, HttpResponseStatus } from "../../common";
 
 type LoginPayload = {
     password: string;

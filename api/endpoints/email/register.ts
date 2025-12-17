@@ -1,8 +1,8 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import { Resend } from "resend";
 
-import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
 import { getParameters } from "../../aws/services/parameterStore";
+import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
 
 type RegisterPayload = {
     firstName?: string;

@@ -1,11 +1,11 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import Stripe from "stripe";
 
+import { FLAVORS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
+import { decrementPropertyCount } from "../../aws/services/dynamodb";
+import { getParameters } from "../../aws/services/parameterStore";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
 import { registerNewMailingListUser } from "../email/register";
-import { decrementPropertyCount } from "../../aws/services/dynamodb";
-import { FLAVORS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
-import { getParameters } from "../../aws/services/parameterStore";
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     if (!event.body) {

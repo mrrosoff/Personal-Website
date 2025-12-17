@@ -2,8 +2,8 @@ import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import { Resend } from "resend";
 
 import MailingListEmail from "../../../src/components/emails/MailingListEmail";
-import { buildResponse, HttpResponseStatus } from "../../common";
 import { getParameter } from "../../aws/services/parameterStore";
+import { buildResponse, HttpResponseStatus } from "../../common";
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     const apiKey = await getParameter("/website/resend/api-key",);

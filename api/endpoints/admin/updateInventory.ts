@@ -1,9 +1,9 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 
-import { buildResponse, buildErrorResponse, HttpResponseStatus } from "../common";
-import { documentClient } from "../aws/dynamodb";
-import { FLAVORS_TABLE } from "../../infrastructure/WebsiteAPIStack";
+import { FLAVORS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
+import { documentClient } from "../../aws/services/dynamodb";
+import { buildResponse, buildErrorResponse, HttpResponseStatus } from "../../common";
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     const body = JSON.parse(event.body || "{}");

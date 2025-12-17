@@ -1,6 +1,6 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 
-import { buildResponse, HttpResponseStatus } from "../common";
+import { buildResponse, HttpResponseStatus } from "../../common";
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     const body = JSON.parse(event.body || "{}");

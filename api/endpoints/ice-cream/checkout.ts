@@ -1,8 +1,8 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import Stripe from "stripe";
 
-import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
 import { getParameter } from "../../aws/services/parameterStore";
+import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     const stripe = new Stripe(await getParameter("/website/stripe/api-key"));
