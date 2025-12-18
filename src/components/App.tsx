@@ -122,7 +122,6 @@ const Layout = (props: { inputRef: RefObject<HTMLInputElement | null> }) => {
     const smallScreenPadding = isHome ? 0 : 3;
     return (
         <Box
-            width={"100vw"}
             height={"100vh"}
             sx={{
                 p: smallScreen ? smallScreenPadding : 8,
@@ -137,7 +136,7 @@ const Layout = (props: { inputRef: RefObject<HTMLInputElement | null> }) => {
                 sx={{
                     width: "100%",
                     height: "100%",
-                    overflowY: isHome ? "scroll" : undefined
+                    overflowY: isHome ? "auto" : undefined
                 }}
             >
                 <Outlet />

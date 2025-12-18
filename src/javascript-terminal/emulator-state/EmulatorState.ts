@@ -2,6 +2,52 @@ import { CommandMapping, create as createCommandMapping } from "./CommandMapping
 import * as FileUtil from "../fs/util/file-util";
 import * as PathUtil from "../fs/util/path-util";
 import { FileSystem } from "../../FileSystem";
+import { DatabaseFlavor, FlavorType } from "../../../api/types";
+
+export enum MainMenuOption {
+    IceCreamInventory = "IceCreamInventory",
+    SendMarketingEmails = "SendMarketingEmails",
+    Exit = "Exit"
+}
+
+export enum IceCreamInventoryMenuOption {
+    ProvisionNewFlavor = "ProvisionNewFlavor",
+    ModifyFlavorInventory = "ModifyFlavorInventory",
+    GoBack = "GoBack"
+}
+
+export enum AdminConsoleScreen {
+    Main = "main",
+    IceCreamInventory = "ice-cream-inventory",
+    SelectFlavor = "select-flavor",
+    ConfirmSendEmails = "confirm-send-emails",
+    ProvisionFlavorForm = "provision-flavor-form",
+    ConfirmProvisionFlavor = "confirm-provision-flavor"
+}
+
+export type ProvisionFlavorForm = {
+    flavorName: string;
+    initialQuantity: number;
+    color: string;
+    type: FlavorType | null;
+    currentField: "flavorName" | "initialQuantity" | "color" | "type";
+};
+
+export type AdminConsoleState = {
+    screen?: AdminConsoleScreen;
+    selectedOption?: MainMenuOption | IceCreamInventoryMenuOption | number | "yes" | "no";
+    password: string;
+    inventoryData?: DatabaseFlavor[];
+    editingFlavor?: DatabaseFlavor;
+    provisionForm?: ProvisionFlavorForm;
+    currentPage?: number;
+};
+
+export type PasswordPromptState = {
+    targetCommand: string;
+    targetOptions: string[];
+    verifiedPassword?: string;
+};
 
 const TAB_COUNT_KEY = "tabCount";
 const FS_KEY = "fs";
@@ -9,6 +55,8 @@ const ENVIRONMENT_VARIABLES_KEY = "environmentVariables";
 const HISTORY_KEY = "history";
 const OUTPUTS_KEY = "outputs";
 const COMMAND_MAPPING_KEY = "commandMapping";
+const ADMIN_CONSOLE_KEY = "adminConsole";
+const PASSWORD_PROMPT_KEY = "passwordPrompt";
 
 type EmulatorStateType = {
     [TAB_COUNT_KEY]?: number;
@@ -17,6 +65,8 @@ type EmulatorStateType = {
     [HISTORY_KEY]?: any;
     [OUTPUTS_KEY]?: any;
     [COMMAND_MAPPING_KEY]: CommandMapping;
+    [ADMIN_CONSOLE_KEY]?: AdminConsoleState;
+    [PASSWORD_PROMPT_KEY]?: PasswordPromptState;
 };
 
 export default class EmulatorState {
@@ -93,6 +143,22 @@ export default class EmulatorState {
 
     setCommandMapping(newCommandMapping: CommandMapping) {
         this.state[COMMAND_MAPPING_KEY] = newCommandMapping;
+    }
+
+    getAdminConsoleMode(): AdminConsoleState | undefined {
+        return this.state[ADMIN_CONSOLE_KEY];
+    }
+
+    setAdminConsoleMode(newMode: AdminConsoleState | undefined) {
+        this.state[ADMIN_CONSOLE_KEY] = newMode;
+    }
+
+    getPasswordPromptState(): PasswordPromptState | undefined {
+        return this.state[PASSWORD_PROMPT_KEY];
+    }
+
+    setPasswordPromptState(promptState: PasswordPromptState | undefined) {
+        this.state[PASSWORD_PROMPT_KEY] = promptState;
     }
 }
 

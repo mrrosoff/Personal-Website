@@ -2,9 +2,11 @@ import { ChangeEvent, KeyboardEvent, forwardRef, Ref, useEffect, useState } from
 
 import { Box, Grid } from "@mui/material";
 import { Emulator, EmulatorState } from "../../javascript-terminal";
+import { handleAdminConsoleKeyPress } from "../../javascript-terminal/commands/console";
+import { handlePasswordPromptKeyPress } from "../../javascript-terminal/commands/sudo";
+import AdminConsole from "./admin/AdminConsole";
 
 import CommandInput from "./CommandInput";
-
 import OutputHeader from "./output/OutputHeader";
 import OutputText from "./output/OutputText";
 import OutputError from "./output/OutputError";
@@ -33,10 +35,62 @@ const Terminal = (
     const [emulatorState, setEmulatorState] = useState(props.emulatorState);
     const [outputs, setOutputs] = useState([]);
     const [_, setHistoryIndex] = useState(-1);
+    const [visibleCursor, setVisibleCursor] = useState<boolean>(true);
 
     let emulator = new Emulator();
 
-    const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setVisibleCursor((visible) => !visible);
+        }, 600);
+        return () => clearInterval(interval);
+    }, []);
+
+    const onKeyDown = async (e: KeyboardEvent<HTMLInputElement>) => {
+        const passwordPrompt = emulatorState.getPasswordPromptState();
+        if (passwordPrompt) {
+            e.preventDefault();
+
+            if (e.metaKey) return; // Allow CMD key for Mac users
+            if (e.key === "Backspace") {
+                return setInput(input.slice(0, -1));
+            }
+            if (e.key.length === 1) {
+                return setInput(input + e.key);
+            }
+
+            const shouldClearInput = await handlePasswordPromptKeyPress(
+                emulator,
+                emulatorState,
+                input,
+                e.key,
+                e.ctrlKey
+            );
+            if (shouldClearInput) {
+                setInput("");
+            }
+            return;
+        }
+
+        const adminConsoleMode = emulatorState.getAdminConsoleMode();
+        if (adminConsoleMode) {
+            if (e.metaKey) return; // Allow CMD key for Mac users
+
+            const handledKeys = [
+                "ArrowUp",
+                "ArrowDown",
+                "ArrowLeft",
+                "ArrowRight",
+                "Enter",
+                "Escape"
+            ];
+
+            if (handledKeys.includes(e.key) || (e.ctrlKey && e.key === "c")) {
+                e.preventDefault();
+            }
+            return await handleAdminConsoleKeyPress(e.key, emulatorState, e.ctrlKey);
+        }
+
         switch (e.key) {
             case "ArrowUp":
                 e.preventDefault();
@@ -110,7 +164,9 @@ const Terminal = (
         ));
     };
 
-    useEffect(() => setOutputs(calculateOutputs()), [input]);
+    useEffect(() => {
+        setOutputs(calculateOutputs());
+    }, [input, emulatorState]);
 
     const MOTDText = `
 		Welcome To Rosoff OS BETA v4.1.2
@@ -170,16 +226,75 @@ const Terminal = (
             )}
             <Grid container direction={"column"} justifyContent={"flex-start"} spacing={1}>
                 {outputs}
+                {emulatorState.getAdminConsoleMode() && (
+                    <Grid key="admin-console">
+                        <AdminConsole emulatorState={emulatorState} theme={props.theme} />
+                    </Grid>
+                )}
                 <Grid key={outputs.length}>
-                    <CommandInput
-                        ref={ref}
-                        value={input}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
-                        onKeyDown={onKeyDown}
-                        promptSymbol={props.promptSymbol}
-                        theme={props.theme}
-                        emulatorState={emulatorState}
-                    />
+                    {emulatorState.getPasswordPromptState() ? (
+                        <Grid container alignItems="center" spacing={1}>
+                            <Box component="span" style={{ color: props.theme.outputColor }}>
+                                Password:
+                            </Box>
+                            <Grid container justifyContent="center" alignItems="center">
+                                <Box
+                                    width={8}
+                                    height={18}
+                                    sx={{
+                                        visibility: visibleCursor ? "visible" : "hidden",
+                                        background: "#FFFFFF"
+                                    }}
+                                />
+                                <input
+                                    ref={ref}
+                                    type="text"
+                                    value=""
+                                    onKeyDown={onKeyDown}
+                                    style={{
+                                        width: 0,
+                                        height: 0,
+                                        opacity: 0,
+                                        position: "absolute"
+                                    }}
+                                    autoComplete="off"
+                                    autoCorrect="off"
+                                    autoCapitalize="off"
+                                    spellCheck={false}
+                                    readOnly
+                                    autoFocus
+                                />
+                            </Grid>
+                        </Grid>
+                    ) : emulatorState.getAdminConsoleMode() ? (
+                        <Grid style={{ width: 0, height: 0 }}>
+                            <input
+                                ref={ref}
+                                type="text"
+                                value=""
+                                onKeyDown={onKeyDown}
+                                style={{
+                                    width: 0,
+                                    height: 0,
+                                    opacity: 0,
+                                    position: "absolute"
+                                }}
+                                autoFocus
+                            />
+                        </Grid>
+                    ) : (
+                        <CommandInput
+                            ref={ref}
+                            value={input}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                                setInput(e.target.value)
+                            }
+                            onKeyDown={onKeyDown}
+                            promptSymbol={props.promptSymbol}
+                            theme={props.theme}
+                            emulatorState={emulatorState}
+                        />
+                    )}
                 </Grid>
             </Grid>
         </>

@@ -138,7 +138,7 @@ export default class Emulator {
         commandMapping: CommandMapping,
         commandName: string,
         commandArgs: (EmulatorState | string[])[],
-        errorString = "Command not found"
+        errorString = "Command Not Found"
     ) {
         const notFoundCallback = () => ({ output: errorString, type: "error" });
 
@@ -152,7 +152,7 @@ export default class Emulator {
             return command(...commandArgs);
         } catch (fatalCommandError: unknown) {
             console.error(fatalCommandError);
-            return { output: "An unknown command error occurred" };
+            return { output: "An Unknown Command Error Occurred" };
         }
     }
 }
