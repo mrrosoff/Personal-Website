@@ -82,3 +82,43 @@ export async function putItem<T extends Table>(
     await documentClient.send(putItemRequest);
     return item as TableObject<T>;
 }
+
+export async function updateItem<T extends Table>(
+    table: T,
+    key: Record<string, string>,
+    updates: UpdateItemInput<T>
+): Promise<TableObject<T>> {
+    console.debug(`Updating item in ${table} with key ${JSON.stringify(key)}`);
+
+    const updateExpressions: string[] = [];
+    const expressionAttributeNames: Record<string, string> = {};
+    const expressionAttributeValues: Record<string, any> = {};
+
+    let valueIndex = 0;
+    for (const [field, value] of Object.entries(updates)) {
+        const namePlaceholder = `#field${valueIndex}`;
+        const valuePlaceholder = `:val${valueIndex}`;
+
+        updateExpressions.push(`${namePlaceholder} = ${valuePlaceholder}`);
+        expressionAttributeNames[namePlaceholder] = field;
+        expressionAttributeValues[valuePlaceholder] = value;
+
+        valueIndex++;
+    }
+
+    const updateItemRequest = new UpdateCommand({
+        TableName: table,
+        Key: key,
+        UpdateExpression: `SET ${updateExpressions.join(", ")}`,
+        ExpressionAttributeNames: expressionAttributeNames,
+        ExpressionAttributeValues: expressionAttributeValues,
+        ReturnValues: "ALL_NEW"
+    });
+
+    const itemOutput = await documentClient.send(updateItemRequest);
+    const object = itemOutput.Attributes as TableObject<T> | undefined;
+    if (!object) {
+        throw new Error("Called DynamoDB Without Validating Item Exists");
+    }
+    return object;
+}

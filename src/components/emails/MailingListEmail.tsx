@@ -14,9 +14,13 @@ import {
     Text
 } from "@react-email/components";
 
-import { ICE_CREAM_FLAVORS, IceCreamFlavor } from "../ice-cream/flavors";
+import { DatabaseFlavor } from "../../../api/types";
 
-const MailingListEmail = () => {
+const MailingListEmail = (props: {
+    currentFlavors: DatabaseFlavor[];
+    lastBatch: DatabaseFlavor[];
+    upcoming: DatabaseFlavor[];
+}) => {
     return (
         <Html>
             <Head />
@@ -64,19 +68,19 @@ const MailingListEmail = () => {
                     <FlavorsList
                         title="New Flavors"
                         description={"Our current rotation of flavors."}
-                        flavors={ICE_CREAM_FLAVORS.currentFlavors}
+                        flavors={props.currentFlavors}
                     />
                     <FlavorsList
                         title="Last Batch"
                         description={"Get them before they are gone! Limited quantities available."}
-                        flavors={ICE_CREAM_FLAVORS.lastBatch}
+                        flavors={props.lastBatch}
                     />
                     <FlavorsList
                         title="Coming Soon"
                         description={
                             "The following is a list of possible upcoming flavors. Actual availability may vary by seasonal produce and other factors."
                         }
-                        flavors={ICE_CREAM_FLAVORS.upcomingFlavors}
+                        flavors={props.upcoming}
                     />
                     <Footer />
                 </Container>
@@ -85,7 +89,7 @@ const MailingListEmail = () => {
     );
 };
 
-const FlavorsList = (props: { title: string; description: string; flavors: IceCreamFlavor[] }) => {
+const FlavorsList = (props: { title: string; description: string; flavors: DatabaseFlavor[] }) => {
     if (props.flavors.length === 0) {
         return null;
     }

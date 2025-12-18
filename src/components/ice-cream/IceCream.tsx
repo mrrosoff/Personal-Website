@@ -15,9 +15,8 @@ import {
 import LaunchIcon from "@mui/icons-material/Launch";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 
-import { ICE_CREAM_FLAVORS } from "./flavors";
 import { useIceCreamCart } from "./IceCreamCartContext";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { API_URL } from "../App";
 import axios from "axios";
 import { DatabaseFlavor } from "../../../api/types";
@@ -58,20 +57,17 @@ const IceCream = () => {
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
     const { selectedPriceIds, toggleFlavor } = useIceCreamCart();
-    const [zeroInventoryFlavors, setZeroInventoryFlavors] = useState<string[] | undefined>();
+    const [flavors, setFlavors] = useState<DatabaseFlavor[]>([]);
 
     useEffect(() => {
         async function fetchInventory() {
             const { data } = await axios.post<{ inventory: DatabaseFlavor[] }>(
                 `${API_URL}/inventory`
             );
-            const zeroInventoryFlavors = data.inventory
-                .filter((flavor) => flavor.count <= 0)
-                .map((flavor) => flavor.priceId);
-            setZeroInventoryFlavors(zeroInventoryFlavors);
+            setFlavors(data.inventory);
         }
         void fetchInventory();
-    }, [setZeroInventoryFlavors]);
+    }, []);
 
     useEffect(() => {
         const flavorPriceId = params.get("flavor");
@@ -96,8 +92,8 @@ const IceCream = () => {
         >
             <Typography variant="h1">Max's Freezer Stash</Typography>
             <Typography mt={smallScreen ? 2 : undefined}>
-                High quality. Small batch.  San Francisco based creative flavors, priced at
-                $5 per pint.
+                High quality. Small batch. San Francisco based creative flavors, priced at $5 per
+                pint.
             </Typography>
             <Typography mt={smallScreen ? 2 : -1}>
                 In SF? Come stop by! Outside SF? Don't buy anything you can't carry home.
@@ -126,14 +122,14 @@ const IceCream = () => {
             <CurrentFlavors
                 selectedPriceIds={selectedPriceIds}
                 toggleFlavor={toggleFlavor}
-                zeroInventoryFlavors={zeroInventoryFlavors}
+                flavors={flavors.filter((f) => f.type === "currentFlavor")}
             />
             <LastBatch
                 selectedPriceIds={selectedPriceIds}
                 toggleFlavor={toggleFlavor}
-                zeroInventoryFlavors={zeroInventoryFlavors}
+                flavors={flavors.filter((f) => f.type === "lastBatch")}
             />
-            <Schedule />
+            <Schedule flavors={flavors.filter((f) => f.type === "upcoming")} />
             {smallScreen && selectedPriceIds.length > 0 && (
                 <Zoom
                     in={true}
@@ -165,17 +161,11 @@ const IceCream = () => {
     );
 };
 
-type FlavorSectionProps = {
+export const CurrentFlavors = (props: {
     selectedPriceIds: string[];
     toggleFlavor: (priceId: string | undefined) => void;
-    zeroInventoryFlavors?: string[];
-};
-
-export const CurrentFlavors = ({
-    selectedPriceIds,
-    toggleFlavor,
-    zeroInventoryFlavors
-}: FlavorSectionProps) => {
+    flavors: DatabaseFlavor[];
+}) => {
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -194,29 +184,23 @@ export const CurrentFlavors = ({
                 direction={smallScreen ? "column" : undefined}
                 sx={{ paddingTop: smallScreen ? 4 : 2 }}
             >
-                {ICE_CREAM_FLAVORS.currentFlavors.map((flavor, index) => {
-                    const isSelected = flavor.priceId
-                        ? selectedPriceIds.includes(flavor.priceId)
-                        : false;
+                {props.flavors.map((flavor) => {
+                    const isSelected = props.selectedPriceIds.includes(flavor.priceId);
                     const flavorStyles = getFlavorStyles(
                         flavor.color || "white",
                         isSelected,
                         smallScreen
                     );
                     return (
-                        <Collapse
-                            in={!(zeroInventoryFlavors ?? []).includes(flavor.priceId!)}
-                            timeout={300}
-                        >
+                        <Collapse key={flavor.productId} in={flavor.count > 0} timeout={300}>
                             <Grid
-                                key={index}
                                 display={"flex"}
                                 justifyContent={"center"}
                                 sx={{ width: smallScreen ? "100%" : undefined }}
                             >
                                 <Box
                                     display={"flex"}
-                                    onClick={() => toggleFlavor(flavor.priceId)}
+                                    onClick={() => props.toggleFlavor(flavor.priceId)}
                                     sx={{
                                         ...flavorStyles,
                                         width: smallScreen ? "100%" : undefined,
@@ -236,11 +220,11 @@ export const CurrentFlavors = ({
     );
 };
 
-export const LastBatch = ({
-    selectedPriceIds,
-    toggleFlavor,
-    zeroInventoryFlavors
-}: FlavorSectionProps) => {
+export const LastBatch = (props: {
+    selectedPriceIds: string[];
+    toggleFlavor: (priceId: string | undefined) => void;
+    flavors: DatabaseFlavor[];
+}) => {
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -259,29 +243,23 @@ export const LastBatch = ({
                 direction={smallScreen ? "column" : undefined}
                 sx={{ paddingTop: smallScreen ? 4 : 2 }}
             >
-                {ICE_CREAM_FLAVORS.lastBatch.map((flavor, index) => {
-                    const isSelected = flavor.priceId
-                        ? selectedPriceIds.includes(flavor.priceId)
-                        : false;
+                {props.flavors.map((flavor) => {
+                    const isSelected = props.selectedPriceIds.includes(flavor.priceId);
                     const flavorStyles = getFlavorStyles(
                         flavor.color || "white",
                         isSelected,
                         smallScreen
                     );
                     return (
-                        <Collapse
-                            in={!(zeroInventoryFlavors ?? []).includes(flavor.priceId!)}
-                            timeout={300}
-                        >
+                        <Collapse key={flavor.productId} in={flavor.count > 0} timeout={300}>
                             <Grid
-                                key={index}
                                 display={"flex"}
                                 justifyContent={"center"}
                                 sx={{ width: smallScreen ? "100%" : undefined }}
                             >
                                 <Box
                                     display={"flex"}
-                                    onClick={() => toggleFlavor(flavor.priceId)}
+                                    onClick={() => props.toggleFlavor(flavor.priceId)}
                                     sx={{
                                         ...flavorStyles,
                                         width: smallScreen ? "100%" : undefined,
@@ -301,7 +279,7 @@ export const LastBatch = ({
     );
 };
 
-export const Schedule = () => {
+export const Schedule = (props: { flavors: DatabaseFlavor[] }) => {
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
     return (
@@ -322,11 +300,11 @@ export const Schedule = () => {
                 direction={smallScreen ? "column" : undefined}
                 sx={{ paddingTop: smallScreen ? 4 : 2 }}
             >
-                {ICE_CREAM_FLAVORS.upcomingFlavors.map((flavor, index) => {
+                {props.flavors.map((flavor, index) => {
                     const upcomingStyles = getUpcomingFlavorStyles();
                     return (
                         <Grid
-                            key={index}
+                            key={flavor.productId}
                             display={"flex"}
                             justifyContent={"center"}
                             sx={{ width: smallScreen ? "100%" : undefined }}

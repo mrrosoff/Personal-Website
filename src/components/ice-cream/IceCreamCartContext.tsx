@@ -25,7 +25,6 @@ export const IceCreamCartProvider = ({ children }: { children: ReactNode }) => {
         });
     };
 
-    // Hide indicator when cart is empty
     useEffect(() => {
         if (selectedPriceIds.length === 0) {
             setShowCartIndicator(false);

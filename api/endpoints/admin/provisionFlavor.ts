@@ -5,12 +5,14 @@ import { FLAVORS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
 import { getParameters } from "../../aws/services/parameterStore";
 import { putItem } from "../../aws/services/dynamodb";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
+import { FlavorType } from "../../types";
 
 type ProvisionFlavorPayload = {
     password: string;
     flavorName: string;
     initialQuantity: number;
     color: string;
+    type: FlavorType | null;
 };
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
@@ -40,7 +42,8 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         priceId: price.id,
         name: body.flavorName,
         color: body.color,
-        count: body.initialQuantity
+        count: body.initialQuantity,
+        type: body.type
     };
     await putItem(FLAVORS_TABLE, flavor);
     return buildResponse(event, HttpResponseStatus.OK, flavor);
