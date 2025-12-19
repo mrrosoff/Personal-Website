@@ -2,7 +2,7 @@ import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import Stripe from "stripe";
 
 import { FLAVORS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
-import { decrementPropertyCount } from "../../aws/services/dynamodb";
+import { decrementField, getAllItems } from "../../aws/services/dynamodb";
 import { getParameters } from "../../aws/services/parameterStore";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
 import { registerNewMailingListUser } from "../email/register";
@@ -37,9 +37,12 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     }
 
     const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
-    const priceIds = lineItems.data.map((item) => item.price!.id);
+    const productIds = lineItems.data.map((item) => item.price?.product as string);
+
     await Promise.all(
-        priceIds.map((priceId) => decrementPropertyCount(FLAVORS_TABLE, priceId, "count"))
+        productIds.map((productId) =>
+            decrementField(FLAVORS_TABLE, productId, "count")
+        )
     );
     return buildResponse(event, HttpResponseStatus.OK, { received: true });
 };

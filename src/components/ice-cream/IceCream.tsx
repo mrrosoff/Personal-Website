@@ -1,12 +1,14 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import {
+    Alert,
     Badge,
     Box,
     Collapse,
     Fab,
     Grid,
     Link,
+    Skeleton,
     Typography,
     useMediaQuery,
     useTheme,
@@ -16,9 +18,7 @@ import LaunchIcon from "@mui/icons-material/Launch";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 
 import { useIceCreamCart } from "./IceCreamCartContext";
-import { useEffect, useState } from "react";
-import { API_URL } from "../App";
-import axios from "axios";
+import { useEffect } from "react";
 import { DatabaseFlavor } from "../../../api/types";
 
 const getFlavorStyles = (color: string, isSelected: boolean, isSmallScreen: boolean) => {
@@ -56,18 +56,8 @@ const IceCream = () => {
     const [params, _] = useSearchParams();
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-    const { selectedPriceIds, toggleFlavor } = useIceCreamCart();
-    const [flavors, setFlavors] = useState<DatabaseFlavor[]>([]);
-
-    useEffect(() => {
-        async function fetchInventory() {
-            const { data } = await axios.post<{ inventory: DatabaseFlavor[] }>(
-                `${API_URL}/inventory`
-            );
-            setFlavors(data.inventory);
-        }
-        void fetchInventory();
-    }, []);
+    const { selectedPriceIds, toggleFlavor, flavors, isLoadingFlavors, flavorsError } =
+        useIceCreamCart();
 
     useEffect(() => {
         const flavorPriceId = params.get("flavor");
@@ -119,17 +109,27 @@ const IceCream = () => {
                 </Link>{" "}
                 for new flavor announcements.
             </Typography>
+            {flavorsError && (
+                <Alert severity="error" sx={{ mt: 3 }}>
+                    {flavorsError}
+                </Alert>
+            )}
             <CurrentFlavors
                 selectedPriceIds={selectedPriceIds}
                 toggleFlavor={toggleFlavor}
                 flavors={flavors.filter((f) => f.type === "currentFlavor")}
+                isLoading={isLoadingFlavors}
             />
             <LastBatch
                 selectedPriceIds={selectedPriceIds}
                 toggleFlavor={toggleFlavor}
                 flavors={flavors.filter((f) => f.type === "lastBatch")}
+                isLoading={isLoadingFlavors}
             />
-            <Schedule flavors={flavors.filter((f) => f.type === "upcoming")} />
+            <Schedule
+                flavors={flavors.filter((f) => f.type === "upcoming")}
+                isLoading={isLoadingFlavors}
+            />
             {smallScreen && selectedPriceIds.length > 0 && (
                 <Zoom
                     in={true}
@@ -165,6 +165,7 @@ export const CurrentFlavors = (props: {
     selectedPriceIds: string[];
     toggleFlavor: (priceId: string | undefined) => void;
     flavors: DatabaseFlavor[];
+    isLoading: boolean;
 }) => {
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -184,37 +185,57 @@ export const CurrentFlavors = (props: {
                 direction={smallScreen ? "column" : undefined}
                 sx={{ paddingTop: smallScreen ? 4 : 2 }}
             >
-                {props.flavors.map((flavor) => {
-                    const isSelected = props.selectedPriceIds.includes(flavor.priceId);
-                    const flavorStyles = getFlavorStyles(
-                        flavor.color || "white",
-                        isSelected,
-                        smallScreen
-                    );
-                    return (
-                        <Collapse key={flavor.productId} in={flavor.count > 0} timeout={300}>
+                {props.isLoading ? (
+                    <>
+                        {[1, 2, 3].map((i) => (
                             <Grid
+                                key={i}
                                 display={"flex"}
                                 justifyContent={"center"}
                                 sx={{ width: smallScreen ? "100%" : undefined }}
                             >
-                                <Box
-                                    display={"flex"}
-                                    onClick={() => props.toggleFlavor(flavor.priceId)}
-                                    sx={{
-                                        ...flavorStyles,
-                                        width: smallScreen ? "100%" : undefined,
-                                        justifyContent: smallScreen ? "flex-start" : "center"
-                                    }}
-                                >
-                                    <Typography color={flavor.color || "white"}>
-                                        {flavor.name}
-                                    </Typography>
-                                </Box>
+                                <Skeleton
+                                    variant="rounded"
+                                    width={smallScreen ? "100%" : 200 + Math.random() * 100}
+                                    height={75}
+                                    sx={{ borderRadius: 1 }}
+                                />
                             </Grid>
-                        </Collapse>
-                    );
-                })}
+                        ))}
+                    </>
+                ) : (
+                    props.flavors.map((flavor) => {
+                        const isSelected = props.selectedPriceIds.includes(flavor.priceId);
+                        const flavorStyles = getFlavorStyles(
+                            flavor.color || "white",
+                            isSelected,
+                            smallScreen
+                        );
+                        return (
+                            <Collapse key={flavor.productId} in={flavor.count > 0} timeout={300}>
+                                <Grid
+                                    display={"flex"}
+                                    justifyContent={"center"}
+                                    sx={{ width: smallScreen ? "100%" : undefined }}
+                                >
+                                    <Box
+                                        display={"flex"}
+                                        onClick={() => props.toggleFlavor(flavor.priceId)}
+                                        sx={{
+                                            ...flavorStyles,
+                                            width: smallScreen ? "100%" : undefined,
+                                            justifyContent: smallScreen ? "flex-start" : "center"
+                                        }}
+                                    >
+                                        <Typography color={flavor.color || "white"}>
+                                            {flavor.name}
+                                        </Typography>
+                                    </Box>
+                                </Grid>
+                            </Collapse>
+                        );
+                    })
+                )}
             </Grid>
         </Box>
     );
@@ -224,6 +245,7 @@ export const LastBatch = (props: {
     selectedPriceIds: string[];
     toggleFlavor: (priceId: string | undefined) => void;
     flavors: DatabaseFlavor[];
+    isLoading: boolean;
 }) => {
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -243,43 +265,63 @@ export const LastBatch = (props: {
                 direction={smallScreen ? "column" : undefined}
                 sx={{ paddingTop: smallScreen ? 4 : 2 }}
             >
-                {props.flavors.map((flavor) => {
-                    const isSelected = props.selectedPriceIds.includes(flavor.priceId);
-                    const flavorStyles = getFlavorStyles(
-                        flavor.color || "white",
-                        isSelected,
-                        smallScreen
-                    );
-                    return (
-                        <Collapse key={flavor.productId} in={flavor.count > 0} timeout={300}>
+                {props.isLoading ? (
+                    <>
+                        {[1, 2].map((i) => (
                             <Grid
+                                key={i}
                                 display={"flex"}
                                 justifyContent={"center"}
                                 sx={{ width: smallScreen ? "100%" : undefined }}
                             >
-                                <Box
-                                    display={"flex"}
-                                    onClick={() => props.toggleFlavor(flavor.priceId)}
-                                    sx={{
-                                        ...flavorStyles,
-                                        width: smallScreen ? "100%" : undefined,
-                                        justifyContent: smallScreen ? "flex-start" : "center"
-                                    }}
-                                >
-                                    <Typography color={flavor.color || "white"}>
-                                        {flavor.name}
-                                    </Typography>
-                                </Box>
+                                <Skeleton
+                                    variant="rounded"
+                                    width={smallScreen ? "100%" : 200 + Math.random() * 100}
+                                    height={75}
+                                    sx={{ borderRadius: 1 }}
+                                />
                             </Grid>
-                        </Collapse>
-                    );
-                })}
+                        ))}
+                    </>
+                ) : (
+                    props.flavors.map((flavor) => {
+                        const isSelected = props.selectedPriceIds.includes(flavor.priceId);
+                        const flavorStyles = getFlavorStyles(
+                            flavor.color || "white",
+                            isSelected,
+                            smallScreen
+                        );
+                        return (
+                            <Collapse key={flavor.productId} in={flavor.count > 0} timeout={300}>
+                                <Grid
+                                    display={"flex"}
+                                    justifyContent={"center"}
+                                    sx={{ width: smallScreen ? "100%" : undefined }}
+                                >
+                                    <Box
+                                        display={"flex"}
+                                        onClick={() => props.toggleFlavor(flavor.priceId)}
+                                        sx={{
+                                            ...flavorStyles,
+                                            width: smallScreen ? "100%" : undefined,
+                                            justifyContent: smallScreen ? "flex-start" : "center"
+                                        }}
+                                    >
+                                        <Typography color={flavor.color || "white"}>
+                                            {flavor.name}
+                                        </Typography>
+                                    </Box>
+                                </Grid>
+                            </Collapse>
+                        );
+                    })
+                )}
             </Grid>
         </Box>
     );
 };
 
-export const Schedule = (props: { flavors: DatabaseFlavor[] }) => {
+export const Schedule = (props: { flavors: DatabaseFlavor[]; isLoading: boolean }) => {
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
     return (
@@ -300,30 +342,50 @@ export const Schedule = (props: { flavors: DatabaseFlavor[] }) => {
                 direction={smallScreen ? "column" : undefined}
                 sx={{ paddingTop: smallScreen ? 4 : 2 }}
             >
-                {props.flavors.map((flavor, index) => {
-                    const upcomingStyles = getUpcomingFlavorStyles();
-                    return (
-                        <Grid
-                            key={flavor.productId}
-                            display={"flex"}
-                            justifyContent={"center"}
-                            sx={{ width: smallScreen ? "100%" : undefined }}
-                        >
-                            <Box
+                {props.isLoading ? (
+                    <>
+                        {[1, 2, 3, 4].map((i) => (
+                            <Grid
+                                key={i}
                                 display={"flex"}
-                                sx={{
-                                    ...upcomingStyles,
-                                    width: smallScreen ? "100%" : undefined,
-                                    justifyContent: smallScreen ? "flex-start" : "center"
-                                }}
+                                justifyContent={"center"}
+                                sx={{ width: smallScreen ? "100%" : undefined }}
                             >
-                                <Typography color={flavor.color || "white"}>
-                                    {flavor.name}
-                                </Typography>
-                            </Box>
-                        </Grid>
-                    );
-                })}
+                                <Skeleton
+                                    variant="rounded"
+                                    width={smallScreen ? "100%" : 200 + Math.random() * 100}
+                                    height={75}
+                                    sx={{ borderRadius: 1 }}
+                                />
+                            </Grid>
+                        ))}
+                    </>
+                ) : (
+                    props.flavors.map((flavor) => {
+                        const upcomingStyles = getUpcomingFlavorStyles();
+                        return (
+                            <Grid
+                                key={flavor.productId}
+                                display={"flex"}
+                                justifyContent={"center"}
+                                sx={{ width: smallScreen ? "100%" : undefined }}
+                            >
+                                <Box
+                                    display={"flex"}
+                                    sx={{
+                                        ...upcomingStyles,
+                                        width: smallScreen ? "100%" : undefined,
+                                        justifyContent: smallScreen ? "flex-start" : "center"
+                                    }}
+                                >
+                                    <Typography color={flavor.color || "white"}>
+                                        {flavor.name}
+                                    </Typography>
+                                </Box>
+                            </Grid>
+                        );
+                    })
+                )}
             </Grid>
         </Box>
     );

@@ -1,10 +1,10 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 
 import { getParameter } from "../../aws/services/parameterStore";
-import { updateItem } from "../../aws/services/dynamodb";
+import { updateItemFields } from "../../aws/services/dynamodb";
 import { FLAVORS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
 import { buildResponse, buildErrorResponse, HttpResponseStatus } from "../../common";
-import { FlavorType } from "../../types";
+import { DatabaseFlavor, FlavorType } from "../../types";
 
 type UpdateInventoryPayload = {
     password: string;
@@ -27,16 +27,17 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Invalid Admin Password");
     }
 
-    const updatedFlavor = await updateItem(
-        FLAVORS_TABLE,
-        { productId: body.productId },
-        {
-            name: body.name,
-            color: body.color,
-            count: body.count,
-            type: body.type
-        }
-    );
+    const updatedFields: Partial<DatabaseFlavor> = {
+        name: body.name,
+        color: body.color,
+        count: body.count,
+        type: body.type
+    };
 
+    const updatedFlavor = await updateItemFields(
+        FLAVORS_TABLE,
+        body.productId,
+        updatedFields
+    );
     return buildResponse(event, HttpResponseStatus.OK, updatedFlavor);
 };

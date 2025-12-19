@@ -43,22 +43,22 @@ export async function getAllItems<T extends Table>(table: T): Promise<TableObjec
     return itemOutput.Items as TableObject<T>[];
 }
 
-export async function decrementPropertyCount<T extends Table>(
+export async function decrementField<T extends Table>(
     table: T,
     key: ItemKeyInput<T>,
-    propertyName: ValuesOfType<TableObject<T>, number>
+    fieldName: ValuesOfType<TableObject<T>, number>
 ): Promise<TableObject<T>> {
     console.debug(
-        `Decrementing ${String(propertyName)} by 1 for item in ${table} with id ${JSON.stringify(key)}`
+        `Decrementing ${String(fieldName)} by 1 for item in ${table} with id ${JSON.stringify(key)}`
     );
-    const compositeKey = { [primaryKeys[table]]: key };
+    const compositeKey = generateCompositeKey(table, key);
 
     const updateItemRequest = new UpdateCommand({
         TableName: table,
         Key: compositeKey,
         UpdateExpression: `SET #prop = #prop - :dec`,
         ExpressionAttributeNames: {
-            "#prop": propertyName
+            "#prop": fieldName
         },
         ExpressionAttributeValues: {
             ":dec": 1
@@ -85,40 +85,62 @@ export async function putItem<T extends Table>(
 
 export async function updateItem<T extends Table>(
     table: T,
-    key: Record<string, string>,
-    updates: UpdateItemInput<T>
+    id: ItemKeyInput<T>,
+    key: ValuesOfType<TableObject<T>, DynamoDBFieldValue>,
+    value: DynamoDBFieldValue
 ): Promise<TableObject<T>> {
-    console.debug(`Updating item in ${table} with key ${JSON.stringify(key)}`);
+    return updateItemFields(table, id, { [key]: value } as UpdateItemInput<T>);
+}
 
-    const updateExpressions: string[] = [];
-    const expressionAttributeNames: Record<string, string> = {};
-    const expressionAttributeValues: Record<string, any> = {};
+export async function updateItemFields<T extends Table>(
+    table: T,
+    key: ItemKeyInput<T>,
+    fields: UpdateItemInput<T>
+): Promise<TableObject<T>> {
+    console.debug(
+        `Updating item in ${table} with id ${JSON.stringify(key)}. New data: ${JSON.stringify(fields)}`
+    );
+    const compositeKey = generateCompositeKey(table, key);
 
-    let valueIndex = 0;
-    for (const [field, value] of Object.entries(updates)) {
-        const namePlaceholder = `#field${valueIndex}`;
-        const valuePlaceholder = `:val${valueIndex}`;
-
-        updateExpressions.push(`${namePlaceholder} = ${valuePlaceholder}`);
-        expressionAttributeNames[namePlaceholder] = field;
-        expressionAttributeValues[valuePlaceholder] = value;
-
-        valueIndex++;
-    }
+    const setExpressions: string[] = [];
+    const removeExpressions: string[] = [];
+    const dynamoAttributeNames: Record<string, string> = {};
+    const dynamoAttributeValues: Record<string, DynamoDBFieldValue> = {};
+    Object.entries<DynamoDBFieldValue>(fields).forEach(([key, value], i) => {
+        dynamoAttributeNames[`#${key}`] = key;
+        if (value === undefined) {
+            removeExpressions.push(`#${key}`);
+        } else {
+            dynamoAttributeValues[`:${i}`] = value;
+            setExpressions.push(`#${key} = :${i}`);
+        }
+    });
+    const expressionParts = [
+        setExpressions.length && `SET ${setExpressions.join(", ")}`,
+        removeExpressions.length && `REMOVE ${removeExpressions.join(", ")}`
+    ];
 
     const updateItemRequest = new UpdateCommand({
         TableName: table,
-        Key: key,
-        UpdateExpression: `SET ${updateExpressions.join(", ")}`,
-        ExpressionAttributeNames: expressionAttributeNames,
-        ExpressionAttributeValues: expressionAttributeValues,
+        Key: compositeKey,
+        UpdateExpression: expressionParts.filter(Boolean).join(" "),
+        ExpressionAttributeNames: dynamoAttributeNames,
+        ...(Object.keys(dynamoAttributeValues).length && {
+            ExpressionAttributeValues: dynamoAttributeValues
+        }),
         ReturnValues: "ALL_NEW"
     });
-
     const itemOutput = await documentClient.send(updateItemRequest);
     const object = itemOutput.Attributes as TableObject<T> | undefined;
     if (!object) {
         throw new Error("Called DynamoDB Without Validating Item Exists");
     }
     return object;
+}
+
+function generateCompositeKey<T extends Table>(
+    table: T,
+    key: ItemKeyInput<T>
+): Record<string, string> {
+    return typeof key === "string" ? { [primaryKeys[table]]: key } : key;
 }
