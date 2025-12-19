@@ -1,4 +1,4 @@
-import { RefObject, useRef } from "react";
+import { RefObject, useRef, useState } from "react";
 import { BrowserRouter, Navigate, Outlet, Route, Routes, useMatch } from "react-router-dom";
 
 import { Box, useMediaQuery } from "@mui/material";
@@ -16,6 +16,9 @@ import { IceCreamCartProvider } from "./ice-cream/IceCreamCartContext";
 export const API_URL = "https://api.maxrosoff.com";
 
 const App = () => {
+    // @ts-expect-error
+    const [shouldBootUp, setShouldBootUp] = useState(import.meta.env.PROD);
+
     const inputRef = useRef<HTMLInputElement | null>(null);
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
     const theme = createTheme({
@@ -111,6 +114,8 @@ const App = () => {
                                     index
                                     element={
                                         <Page
+                                            shouldBootUp={shouldBootUp}
+                                            setShouldBootUp={setShouldBootUp}
                                             inputRef={inputRef}
                                             scrollContainerRef={scrollContainerRef}
                                         />

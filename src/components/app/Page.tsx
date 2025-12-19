@@ -1,7 +1,7 @@
 import { Dispatch, RefObject, SetStateAction, useState } from "react";
 import { Link, useMatch, useNavigate } from "react-router-dom";
 
-import { Avatar, Badge, Box, Paper, useMediaQuery, useTheme } from "@mui/material";
+import { Avatar, Box, Paper, useMediaQuery, useTheme } from "@mui/material";
 
 import { DesktopSocialButtonList } from "./SocialButtons";
 import BootUp from "./desktop/BootUp";
@@ -12,14 +12,15 @@ import SmallProfile from "../../assets/images/small-profile.webp";
 import MobileLayout from "./MobileLayout";
 
 const Page = (props: {
+    shouldBootUp: boolean;
+    setShouldBootUp: Dispatch<SetStateAction<boolean>>;
     inputRef: RefObject<HTMLInputElement | null>;
     scrollContainerRef: RefObject<HTMLDivElement | null>;
 }) => {
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
-    // @ts-ignore
-    const [bootingUp, setBootingUp] = useState(import.meta.env.PROD);
+    const [bootingUp, setBootingUp] = useState(props.shouldBootUp);
 
     const creationDate = new Date();
     creationDate.setMinutes(creationDate.getMinutes() - 8);
@@ -31,7 +32,13 @@ const Page = (props: {
     }
 
     if (bootingUp) {
-        return <BootUp setBootingUp={setBootingUp} creationDate={creationDate.toString()} />;
+        return (
+            <BootUp
+                setBootingUp={setBootingUp}
+                setShouldBootUp={props.setShouldBootUp}
+                creationDate={creationDate.toString()}
+            />
+        );
     }
 
     return <TerminalEmbed ref={props.inputRef} scrollContainerRef={props.scrollContainerRef} />;

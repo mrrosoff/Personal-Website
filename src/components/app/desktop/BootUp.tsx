@@ -6,6 +6,7 @@ import Logo from "../../../assets/images/logo.webp";
 
 const BootUp = (props: {
     setBootingUp: Dispatch<SetStateAction<boolean>>;
+    setShouldBootUp: Dispatch<SetStateAction<boolean>>;
     creationDate: string;
 }) => {
     const [state, setState] = useState(0);
@@ -29,7 +30,10 @@ const BootUp = (props: {
         setTimeout(() => setState(16), 5000);
         setTimeout(() => setState(17), 5500);
         setTimeout(() => setState(18), 5800);
-        setTimeout(() => props.setBootingUp(false), 8000);
+        setTimeout(() => {
+            props.setShouldBootUp(false);
+            props.setBootingUp(false);
+        }, 8000);
     }, []);
 
     return (
