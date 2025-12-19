@@ -34,10 +34,6 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         type: body.type
     };
 
-    const updatedFlavor = await updateItemFields(
-        FLAVORS_TABLE,
-        body.productId,
-        updatedFields
-    );
+    const updatedFlavor = await updateItemFields(FLAVORS_TABLE, body.productId, updatedFields);
     return buildResponse(event, HttpResponseStatus.OK, updatedFlavor);
 };

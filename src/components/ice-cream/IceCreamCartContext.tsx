@@ -61,7 +61,16 @@ export const IceCreamCartProvider = ({ children }: { children: ReactNode }) => {
     }, [selectedPriceIds]);
 
     return (
-        <IceCreamCartContext.Provider value={{ selectedPriceIds, toggleFlavor, showCartIndicator, flavors, isLoadingFlavors, flavorsError }}>
+        <IceCreamCartContext.Provider
+            value={{
+                selectedPriceIds,
+                toggleFlavor,
+                showCartIndicator,
+                flavors,
+                isLoadingFlavors,
+                flavorsError
+            }}
+        >
             {children}
         </IceCreamCartContext.Provider>
     );

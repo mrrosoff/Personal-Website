@@ -40,9 +40,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     const productIds = lineItems.data.map((item) => item.price?.product as string);
 
     await Promise.all(
-        productIds.map((productId) =>
-            decrementField(FLAVORS_TABLE, productId, "count")
-        )
+        productIds.map((productId) => decrementField(FLAVORS_TABLE, productId, "count"))
     );
     return buildResponse(event, HttpResponseStatus.OK, { received: true });
 };
