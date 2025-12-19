@@ -10,10 +10,13 @@ const OutputHeader = (props: {
     promptSymbol: string;
     emulatorState: EmulatorState;
     children: string;
+    cwd?: string;
 }) => (
     <Grid container alignContent={"center"} alignItems={"center"} spacing={2}>
         <Grid>
-            <PromptSymbol {...props}>{props.promptSymbol}</PromptSymbol>
+            <PromptSymbol {...props} cwd={props.cwd}>
+                {props.promptSymbol}
+            </PromptSymbol>
         </Grid>
         <Grid>
             <OutputText {...props}>{props.children}</OutputText>

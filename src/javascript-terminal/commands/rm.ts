@@ -15,7 +15,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length === 0) {
-        return {};
+        return { output: "", type: "text" };
     }
 
     try {
@@ -23,7 +23,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         const fs = state.getFileSystem();
 
         if (deletionPath === "/" && options.noPreserveRoot !== true) {
-            return {};
+            return { output: "", type: "text" };
         }
 
         options.recursive === true

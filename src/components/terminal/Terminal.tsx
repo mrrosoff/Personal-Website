@@ -63,7 +63,7 @@ const Terminal = (
             if (e.key === "Backspace") {
                 return setInput(input.slice(0, -1));
             }
-            if (e.key.length === 1) {
+            if (e.key.length === 1 && !e.ctrlKey) {
                 return setInput(input + e.key);
             }
 
@@ -163,7 +163,9 @@ const Terminal = (
         return emulatorState.getOutputs().map((content: any, index: number) => (
             <Grid key={index} container direction={"column"}>
                 <Grid>
-                    <OutputHeader {...props}>{content.command}</OutputHeader>
+                    <OutputHeader {...props} cwd={content.cwd}>
+                        {content.command}
+                    </OutputHeader>
                 </Grid>
                 {content.output.map((output: any, index: number) => {
                     if (output.type === "error") {
@@ -248,12 +250,11 @@ const Terminal = (
             )}
             <Grid container direction={"column"} justifyContent={"flex-start"} spacing={1}>
                 {outputs}
-                {emulatorState.getAdminConsoleMode() && (
+                {emulatorState.getAdminConsoleMode()?.screen && (
                     <Box height={280}>
                         <AdminConsole emulatorState={emulatorState} theme={props.theme} />
                     </Box>
                 )}
-
                 {emulatorState.getPasswordPromptState() ? (
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                         <Box component="span" style={{ color: props.theme.outputColor }}>
