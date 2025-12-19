@@ -7,7 +7,6 @@
         "check-format": "prettier --check \"api/**/*.ts*\" \"src/**/*.ts*\"",
         "format": "prettier --write \"api/**/*.ts*\" \"src/**/*.ts*\"",
         "types": "tsc --noEmit",
-        "create-jwt-keys": "ts-node scripts/createJWTKeys.ts",
         "start": "NODE_ENV=development vite",
         "start-email": "NODE_ENV=development email dev --dir src/components/emails --port 4000",
         "build-website": "npm run types && vite build",
