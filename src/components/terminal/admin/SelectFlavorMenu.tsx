@@ -53,17 +53,16 @@ const SelectFlavorMenu = (props: {
         );
     }
 
-    // Sort inventory: current → last-batch → upcoming, then by count (descending)
-    const typeOrder = { current: 0, "last-batch": 1, upcoming: 2 };
+    const typeOrder = { current: 2, lastBatch: 1, upcoming: 0 };
     const sortedInventory = [...props.mode.inventoryData].sort((a, b) => {
         const typeA = typeOrder[a.type as keyof typeof typeOrder] ?? 999;
         const typeB = typeOrder[b.type as keyof typeof typeOrder] ?? 999;
 
         if (typeA !== typeB) {
-            return typeA - typeB;
+            return typeB - typeA;
         }
 
-        return b.count - a.count; // Descending count
+        return b.count - a.count;
     });
 
     const allItems = sortedInventory;
