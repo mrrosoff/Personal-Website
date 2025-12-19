@@ -23,7 +23,7 @@ import {
 import ClaconFont from "../../../assets/fonts/clacon.ttf";
 import { API_URL } from "../../App";
 import { useIceCreamCart } from "../IceCreamCartContext";
-import { DatabaseFlavor } from "../../../api/types";
+import { DatabaseFlavor } from "../../../../api/types";
 
 const stripePublishableApiKey =
     "pk_live_51SSn4jGZZEzkLsbifOmvMvPB5xo33fgFS19ejvNuOibMMPHFu3ixt00c2nbCn4EPiIXWXvJvH1t3AZLXJE3dIrKz00aPsF6Dt2";
