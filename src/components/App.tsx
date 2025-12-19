@@ -17,6 +17,7 @@ export const API_URL = "https://api.maxrosoff.com";
 
 const App = () => {
     const inputRef = useRef<HTMLInputElement | null>(null);
+    const scrollContainerRef = useRef<HTMLDivElement | null>(null);
     const theme = createTheme({
         palette: {
             mode: "dark",
@@ -44,8 +45,10 @@ const App = () => {
                         backgroundColor: "#30313D",
                         border: "1px solid rgba(255, 255, 255, 0.1)",
                         borderRadius: "6px",
-                        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25)",
-                        transition: "background 0.15s ease, border 0.15s ease, box-shadow 0.15s ease, color 0.15s ease, outline 0.15s ease",
+                        boxShadow:
+                            "0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25)",
+                        transition:
+                            "background 0.15s ease, border 0.15s ease, box-shadow 0.15s ease, color 0.15s ease, outline 0.15s ease",
                         overflow: "hidden",
                         outline: "0px solid transparent",
                         "&:hover": {
@@ -56,7 +59,8 @@ const App = () => {
                             backgroundColor: "#30313D",
                             borderColor: "#F9F9F9",
                             outline: "2.5px solid rgba(249, 249, 249, 0.20)",
-                            boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25), 0 0 0 3px rgba(249, 249, 249, 0.1)"
+                            boxShadow:
+                                "0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25), 0 0 0 3px rgba(249, 249, 249, 0.1)"
                         },
                         "&::before, &::after": {
                             display: "none"
@@ -94,8 +98,24 @@ const App = () => {
                 <BrowserRouter>
                     <IceCreamCartProvider>
                         <Routes>
-                            <Route path="/" element={<Layout inputRef={inputRef} />}>
-                                <Route index element={<Page inputRef={inputRef} />} />
+                            <Route
+                                path="/"
+                                element={
+                                    <Layout
+                                        inputRef={inputRef}
+                                        scrollContainerRef={scrollContainerRef}
+                                    />
+                                }
+                            >
+                                <Route
+                                    index
+                                    element={
+                                        <Page
+                                            inputRef={inputRef}
+                                            scrollContainerRef={scrollContainerRef}
+                                        />
+                                    }
+                                />
                                 <Route path="ice-cream" element={<IceCream />} />
                                 <Route path="ice-cream/checkout" element={<Checkout />} />
                                 <Route path="ice-cream/checkout/return" element={<Return />} />
@@ -114,7 +134,10 @@ const App = () => {
     );
 };
 
-const Layout = (props: { inputRef: RefObject<HTMLInputElement | null> }) => {
+const Layout = (props: {
+    inputRef: RefObject<HTMLInputElement | null>;
+    scrollContainerRef: RefObject<HTMLDivElement | null>;
+}) => {
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
     const mdScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -122,7 +145,7 @@ const Layout = (props: { inputRef: RefObject<HTMLInputElement | null> }) => {
     const smallScreenPadding = isHome ? 0 : 3;
     return (
         <Box
-            height={"100vh"}
+            height={"100dvh"}
             sx={{
                 p: smallScreen ? smallScreenPadding : 8,
                 ...(smallScreen && { pt: 4, pb: 4 }),
@@ -133,6 +156,7 @@ const Layout = (props: { inputRef: RefObject<HTMLInputElement | null> }) => {
         >
             {!mdScreen && <LinksAndMenu />}
             <Box
+                ref={props.scrollContainerRef}
                 sx={{
                     width: "100%",
                     height: "100%",

@@ -10,7 +10,7 @@ const MobileLayout = () => {
             direction={"column"}
             justifyContent={"space-betweeen"}
             alignItems={"center"}
-            sx={{ width: "100vw", height: "100vh" }}
+            sx={{ width: "100dvw", height: "100dvh" }}
             spacing={6}
         >
             <Grid></Grid>

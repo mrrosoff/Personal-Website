@@ -11,7 +11,10 @@ import { useIceCreamCart } from "../ice-cream/IceCreamCartContext";
 import SmallProfile from "../../assets/images/small-profile.webp";
 import MobileLayout from "./MobileLayout";
 
-const Page = (props: { inputRef: RefObject<HTMLInputElement | null> }) => {
+const Page = (props: {
+    inputRef: RefObject<HTMLInputElement | null>;
+    scrollContainerRef: RefObject<HTMLDivElement | null>;
+}) => {
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -31,7 +34,7 @@ const Page = (props: { inputRef: RefObject<HTMLInputElement | null> }) => {
         return <BootUp setBootingUp={setBootingUp} creationDate={creationDate.toString()} />;
     }
 
-    return <TerminalEmbed ref={props.inputRef} />;
+    return <TerminalEmbed ref={props.inputRef} scrollContainerRef={props.scrollContainerRef} />;
 };
 
 export const LinksAndMenu = (props: {}) => {
@@ -94,7 +97,10 @@ const Links = (props: { open: boolean; setOpen: Dispatch<SetStateAction<boolean>
                     <a
                         style={{
                             margin: 0,
-                            color: selectedPriceIds.length === 0 ? "rgba(252, 252, 252, 0.5)" : "#FCFCFC",
+                            color:
+                                selectedPriceIds.length === 0
+                                    ? "rgba(252, 252, 252, 0.5)"
+                                    : "#FCFCFC",
                             fontSize: 22,
                             cursor: selectedPriceIds.length === 0 ? "default" : "pointer"
                         }}

@@ -29,7 +29,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 
     const stripe = new Stripe(keys["/website/stripe/api-key"]);
     const product = await stripe.products.create({
-        name: body.flavorName,
+        name: body.flavorName
     });
     const price = await stripe.prices.create({
         product: product.id,

@@ -5,7 +5,10 @@ import { CommandMapping, DefaultCommandMapping, EmulatorState } from "../../../j
 import Terminal from "../../terminal/Terminal";
 import files from "../../../FileSystem";
 
-const TerminalEmbed = (_props: {}, ref: Ref<HTMLInputElement | null>) => {
+const TerminalEmbed = (
+    props: { scrollContainerRef: React.RefObject<HTMLDivElement | null> },
+    ref: Ref<HTMLInputElement | null>
+) => {
     useEffect(() => {
         Array.from(document.getElementsByTagName("form")).forEach((form) => {
             form.setAttribute("spellcheck", "false");
@@ -29,6 +32,7 @@ const TerminalEmbed = (_props: {}, ref: Ref<HTMLInputElement | null>) => {
     return (
         <Terminal
             ref={ref}
+            scrollContainerRef={props.scrollContainerRef}
             theme={{
                 background: "#121212",
                 promptSymbolColor: "#2BC903",
@@ -36,7 +40,7 @@ const TerminalEmbed = (_props: {}, ref: Ref<HTMLInputElement | null>) => {
                 outputColor: "#FCFCFC",
                 errorColor: "#ff0606",
                 width: "100%",
-                height: "88vh"
+                height: "88dvh"
             }}
             emulatorState={customState}
             promptSymbol={"dev@rosoff"}

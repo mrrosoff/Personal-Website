@@ -4,8 +4,8 @@
     "description": "My Personal Website",
     "scripts": {
         "clean": "rm -rf coverage dist",
-        "check-format": "prettier --check \"lambda/**/*.ts*\" \"src/**/*.ts*\"",
-        "format": "prettier --write \"lambda/**/*.ts*\" \"src/**/*.ts*\"",
+        "check-format": "prettier --check \"api/**/*.ts*\" \"src/**/*.ts*\"",
+        "format": "prettier --write \"api/**/*.ts*\" \"src/**/*.ts*\"",
         "types": "tsc --noEmit",
         "create-jwt-keys": "ts-node scripts/createJWTKeys.ts",
         "start": "NODE_ENV=development vite",

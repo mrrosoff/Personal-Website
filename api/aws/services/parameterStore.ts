@@ -14,7 +14,6 @@ export async function getParameter(parameter: string): Promise<string> {
 export async function getParameters<T extends string[]>(
     ...parameters: T
 ): Promise<MappedStringRecord<T>> {
-
     const getParametersRequest = new GetParametersCommand({
         Names: parameters,
         WithDecryption: true

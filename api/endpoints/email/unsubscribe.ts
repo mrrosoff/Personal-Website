@@ -13,10 +13,17 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Request Body");
     }
 
-    const resendKeys = await getParameters("/website/resend/api-key", "/website/resend/audience-id");
+    const resendKeys = await getParameters(
+        "/website/resend/api-key",
+        "/website/resend/audience-id"
+    );
     const resend = new Resend(resendKeys["/website/resend/api-key"]);
     const payload: UnsubscribePayload = JSON.parse(event.body);
-    const removed = await unsubscribeUser(resend, resendKeys["/website/resend/audience-id"], payload.email);
+    const removed = await unsubscribeUser(
+        resend,
+        resendKeys["/website/resend/audience-id"],
+        payload.email
+    );
     if (!removed) {
         return buildResponse(event, HttpResponseStatus.OK, {});
     }

@@ -12,8 +12,8 @@ import icecreamImage from "../../../assets/images/ice-cream.webp";
 
 const Return = () => {
     const navigate = useNavigate();
-    const [status, setStatus] = useState<Stripe.Checkout.Session.Status | null>("complete");
-    const [customerEmail, setCustomerEmail] = useState<string | null>("test@test.com");
+    const [status, setStatus] = useState<Stripe.Checkout.Session.Status | null>(null);
+    const [customerEmail, setCustomerEmail] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchSessionStatus = async () => {

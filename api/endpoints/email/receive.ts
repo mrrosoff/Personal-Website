@@ -53,7 +53,7 @@ async function verifyWebhookSignature(
     headers: APIGatewayProxyEventHeaders,
     requestBody: string
 ): Promise<boolean> {
-    const secret = await getParameter("/website/resend/webhook",);
+    const secret = await getParameter("/website/resend/webhook");
     try {
         resend.webhooks.verify({
             payload: requestBody,

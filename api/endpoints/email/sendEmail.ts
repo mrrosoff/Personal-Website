@@ -8,7 +8,7 @@ import MailingListEmail from "../../../src/components/emails/MailingListEmail";
 import { buildResponse, HttpResponseStatus } from "../../common";
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
-    const apiKey = await getParameter("/website/resend/api-key",);
+    const apiKey = await getParameter("/website/resend/api-key");
     const resend = new Resend(apiKey);
     const broadcastId = await createBroadcast(resend);
     const sendBroadcastId = await sendBroadcast(resend, broadcastId);

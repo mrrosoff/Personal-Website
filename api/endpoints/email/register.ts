@@ -21,7 +21,10 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 };
 
 export async function registerNewMailingListUser(payload: RegisterPayload) {
-    const resendKeys = await getParameters("/website/resend/api-key", "/website/resend/audience-id");
+    const resendKeys = await getParameters(
+        "/website/resend/api-key",
+        "/website/resend/audience-id"
+    );
     const resend = new Resend(resendKeys["/website/resend/api-key"]);
 
     const audienceId = resendKeys["/website/resend/audience-id"];

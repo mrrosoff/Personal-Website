@@ -33,22 +33,26 @@ const getNextFlavorType = (currentType: FlavorType | null): FlavorType | null =>
 
 const getPreviousFlavorType = (currentType: FlavorType | null): FlavorType | null => {
     const currentIndex = FLAVOR_TYPE_OPTIONS.indexOf(currentType);
-    const previousIndex = (currentIndex - 1 + FLAVOR_TYPE_OPTIONS.length) % FLAVOR_TYPE_OPTIONS.length;
+    const previousIndex =
+        (currentIndex - 1 + FLAVOR_TYPE_OPTIONS.length) % FLAVOR_TYPE_OPTIONS.length;
     return FLAVOR_TYPE_OPTIONS[previousIndex];
 };
 
 const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
     try {
         const existingMode = state.getAdminConsoleMode();
-        if (existingMode?.password) {
+        if (existingMode?.screen) {
             return {
                 output: "",
                 type: "text"
             };
         }
 
-        const promptState = state.getPasswordPromptState();
-        const password = promptState?.verifiedPassword;
+        let password = existingMode?.password;
+        if (!password) {
+            const promptState = state.getPasswordPromptState();
+            password = promptState?.verifiedPassword;
+        }
 
         if (!password) {
             return { output: "Permission Denied", type: "error" };
@@ -174,7 +178,10 @@ const handleIceCreamInventory = async (
 
     switch (key) {
         case "ArrowDown": {
-            const nextIndex = Math.min(currentIndex + 1, ICE_CREAM_INVENTORY_MENU_OPTIONS.length - 1);
+            const nextIndex = Math.min(
+                currentIndex + 1,
+                ICE_CREAM_INVENTORY_MENU_OPTIONS.length - 1
+            );
             setState({
                 ...mode,
                 selectedOption: ICE_CREAM_INVENTORY_MENU_OPTIONS[nextIndex]
@@ -290,8 +297,8 @@ const handleIceCreamMenuSelection = async (
                 screen: AdminConsoleScreen.ProvisionFlavorForm,
                 provisionForm: {
                     flavorName: "",
-                    initialQuantity: 10,
-                    color: "#808080",
+                    initialQuantity: 2,
+                    color: "white",
                     type: null,
                     currentField: "flavorName"
                 }
@@ -686,7 +693,7 @@ const updateFlavorInventory = async (
     password: string
 ) => {
     try {
-        const { data } = await axios.put("https://api.maxrosoff.com/admin/update-inventory", {
+        const { data } = await axios.post("https://api.maxrosoff.com/admin/update-inventory", {
             productId,
             name,
             color,
