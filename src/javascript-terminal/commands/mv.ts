@@ -4,7 +4,7 @@ import { parseOptions } from "../parser";
 import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import * as DirOp from "../fs/operations/directory-operations";
 
-export const optDef = {};
+export const optDef = { "-v, --verbose": "" };
 
 const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
@@ -23,6 +23,10 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
 
         DirOp.rename(state.getFileSystem(), srcPath, destPath);
 
+        if (options.verbose) {
+            return { output: `'${argv[0]}' -> '${argv[1]}'` };
+        }
+
         return { output: "" };
     } catch (err: unknown) {
         assert(err instanceof Error);
@@ -34,9 +38,12 @@ export const manPage = `NAME
      mv -- move (rename) files
 
 SYNOPSIS
-     mv source target
+     mv [-v] source target
 
 DESCRIPTION
-     Move SOURCE to DEST, or rename SOURCE to DEST.`;
+     Move SOURCE to DEST, or rename SOURCE to DEST.
+
+OPTIONS
+     -v, --verbose    Explain what is being done`;
 
 export default { optDef, functionDef };

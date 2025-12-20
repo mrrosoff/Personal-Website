@@ -4,23 +4,48 @@ import { parseOptions } from "../parser";
 import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import * as FileOp from "../fs/operations/file-operations";
 
-export const optDef = {};
+export const optDef = {
+    "-i, --ignore-case": "",
+    "-n, --line-number": "",
+    "-v, --invert-match": ""
+};
 
 const functionDef = (state: EmulatorState, commandOptions: string[]) => {
-    const { argv } = parseOptions(commandOptions, optDef);
+    const { options, argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length < 2) {
         return {};
     }
 
     try {
-        const pattern = argv[0];
+        let pattern = argv[0];
         const filePath = relativeToAbsolutePath(state, argv[1]);
         const fileContent = FileOp.read(state.getFileSystem(), filePath);
 
-        const matchingLines = fileContent
-            .split("\n")
-            .filter((line: string) => line.includes(pattern));
+        const lines = fileContent.split("\n");
+        const matchingLines: string[] = [];
+
+        lines.forEach((line: string, index: number) => {
+            let matches: boolean;
+
+            if (options.ignoreCase) {
+                matches = line.toLowerCase().includes(pattern.toLowerCase());
+            } else {
+                matches = line.includes(pattern);
+            }
+
+            if (options.invertMatch) {
+                matches = !matches;
+            }
+
+            if (matches) {
+                if (options.lineNumber) {
+                    matchingLines.push(`${index + 1}:${line}`);
+                } else {
+                    matchingLines.push(line);
+                }
+            }
+        });
 
         return { output: matchingLines.join("\n") };
     } catch (err: unknown) {
@@ -33,10 +58,15 @@ export const manPage = `NAME
      grep -- search for patterns in files
 
 SYNOPSIS
-     grep pattern file
+     grep [-inv] pattern file
 
 DESCRIPTION
      The grep utility searches the specified file for lines containing a match
-     to the given pattern. By default, grep prints the matching lines.`;
+     to the given pattern. By default, grep prints the matching lines.
+
+OPTIONS
+     -i, --ignore-case    Perform case-insensitive matching
+     -n, --line-number    Prefix each line with its line number
+     -v, --invert-match   Select non-matching lines`;
 
 export default { optDef, functionDef };

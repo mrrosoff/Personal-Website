@@ -8,7 +8,8 @@ import * as FileOp from "../fs/operations/file-operations";
 export const optDef = {
     "--no-preserve-root, --noPreserveRoot": "",
     "-r, --recursive": "",
-    "-f, --force": ""
+    "-f, --force": "",
+    "-v, --verbose": ""
 };
 
 const functionDef = (state: EmulatorState, commandOptions: string[]) => {
@@ -29,6 +30,11 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         options.recursive === true
             ? DirOp.remove(fs, deletionPath)
             : FileOp.remove(fs, deletionPath);
+
+        if (options.verbose) {
+            return { output: `removed '${argv[0]}'` };
+        }
+
         return { output: "" };
     } catch (err: unknown) {
         assert(err instanceof Error);
@@ -40,10 +46,15 @@ export const manPage = `NAME
      rm -- remove files or directories
 
 SYNOPSIS
-     rm [-rf] file
+     rm [-rfv] file
 
 DESCRIPTION
      The rm utility attempts to remove the non-directory type files specified.
-     If the -r or -R option is specified, rm removes file hierarchies.`;
+     If the -r or -R option is specified, rm removes file hierarchies.
+
+OPTIONS
+     -r, --recursive    Remove directories and their contents recursively
+     -f, --force        Ignore nonexistent files and arguments, never prompt
+     -v, --verbose      Explain what is being done`;
 
 export default { optDef, functionDef };

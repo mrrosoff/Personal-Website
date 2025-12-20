@@ -5,7 +5,10 @@ import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/Emulato
 import * as DirOp from "../fs/operations/directory-operations";
 import * as FileOp from "../fs/operations/file-operations";
 
-export const optDef = { "-r, --recursive": "" };
+export const optDef = {
+    "-r, --recursive": "",
+    "-v, --verbose": ""
+};
 
 const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
@@ -28,6 +31,10 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
             FileOp.copy(state.getFileSystem(), srcPath, destPath);
         }
 
+        if (options.verbose) {
+            return { output: `'${argv[0]}' -> '${argv[1]}'` };
+        }
+
         return { output: "" };
     } catch (err: unknown) {
         assert(err instanceof Error);
@@ -39,9 +46,13 @@ export const manPage = `NAME
      cp -- copy files and directories
 
 SYNOPSIS
-     cp [OPTION] SOURCE DEST
+     cp [-rv] SOURCE DEST
 
 DESCRIPTION
-     Copy SOURCE to DEST, or multiple SOURCE(s) to DIRECTORY.`;
+     Copy SOURCE to DEST, or multiple SOURCE(s) to DIRECTORY.
+
+OPTIONS
+     -r, --recursive    Copy directories recursively
+     -v, --verbose      Explain what is being done`;
 
 export default { optDef, functionDef };

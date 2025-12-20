@@ -12,17 +12,19 @@ const substituteEnvVariables = (
 ) => {
     return inputStr.replace(
         VARIABLE_GROUP_REGEX,
-        (match, varName) => environmentVariables[varName] || ""
+        (_match, varName) => environmentVariables[varName] || ""
     );
 };
 
-export const optDef = {};
+export const optDef = {
+    "-n": ""
+};
 
 const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
 
     try {
-        const input = commandOptions.join(" ");
+        const input = argv.join(" ");
         const outputStr = substituteEnvVariables(state.getEnvVariables(), input);
         let cleanStr = outputStr.trim().replace(DOUBLE_SPACE_REGEX, " ");
 
@@ -41,10 +43,13 @@ export const manPage = `NAME
      echo -- display a line of text
 
 SYNOPSIS
-     echo STRING
+     echo [-n] STRING
 
 DESCRIPTION
      The echo prints either the specified string or an environment variable to
-     the standard output.`;
+     the standard output. Environment variables are expanded using $VAR syntax.
+
+OPTIONS
+     -n    Do not output the trailing newline`;
 
 export default { optDef, functionDef };
