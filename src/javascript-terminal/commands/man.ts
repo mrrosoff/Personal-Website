@@ -2,13 +2,17 @@ import assert from "assert";
 
 import EmulatorState from "../emulator-state/EmulatorState";
 import { parseOptions } from "../parser";
+import { manPage as aliasManPage } from "./alias";
+import { manPage as basenameManPage } from "./basename";
 import { manPage as catManPage } from "./cat";
 import { manPage as cdManPage } from "./cd";
 import { manPage as clearManPage } from "./clear";
 import { manPage as consoleManPage } from "./console";
 import { manPage as cpManPage } from "./cp";
+import { manPage as cutManPage } from "./cut";
 import { manPage as dateManPage } from "./date";
 import { manPage as diffManPage } from "./diff";
+import { manPage as dirnameManPage } from "./dirname";
 import { manPage as displayManPage } from "./display";
 import { manPage as echoManPage } from "./echo";
 import { manPage as exportManPage } from "./export";
@@ -30,19 +34,25 @@ import { manPage as sudoManPage } from "./sudo";
 import { manPage as tailManPage } from "./tail";
 import { manPage as teeManPage } from "./tee";
 import { manPage as touchManPage } from "./touch";
+import { manPage as uniqManPage } from "./uniq";
 import { manPage as wcManPage } from "./wc";
+import { manPage as whichManPage } from "./which";
 import { manPage as whoamiManPage } from "./whoami";
 
 export const optDef = {};
 
 const manPages: Record<string, string> = {
+    alias: aliasManPage,
+    basename: basenameManPage,
     cat: catManPage,
     cd: cdManPage,
     clear: clearManPage,
     console: consoleManPage,
     cp: cpManPage,
+    cut: cutManPage,
     date: dateManPage,
     diff: diffManPage,
+    dirname: dirnameManPage,
     display: displayManPage,
     echo: echoManPage,
     export: exportManPage,
@@ -64,7 +74,9 @@ const manPages: Record<string, string> = {
     tail: tailManPage,
     tee: teeManPage,
     touch: touchManPage,
+    uniq: uniqManPage,
     wc: wcManPage,
+    which: whichManPage,
     whoami: whoamiManPage
 };
 
