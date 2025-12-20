@@ -3,6 +3,9 @@ import assert from "assert";
 import { parseOptions } from "../parser";
 import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import * as FileOp from "../fs/operations/file-operations";
+import { fsSearchParent } from "../fs/operations/base-operations";
+import { getLastPathPart } from "../fs/util/path-util";
+import { isDirectory } from "../fs/util/file-util";
 
 export const optDef = {
     "-i, --ignore-case": "",
@@ -13,13 +16,29 @@ export const optDef = {
 const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
 
+    if (argv.length < 1) {
+        return { output: "grep: missing pattern", type: "error" };
+    }
+
     if (argv.length < 2) {
-        return {};
+        return { output: "grep: missing file operand", type: "error" };
     }
 
     try {
         let pattern = argv[0];
         const filePath = relativeToAbsolutePath(state, argv[1]);
+
+        const fsPart = fsSearchParent(state.getFileSystem(), filePath);
+        const target = fsPart[getLastPathPart(filePath)];
+
+        if (!target) {
+            throw Error("No such file or directory: " + argv[1]);
+        }
+
+        if (isDirectory(target)) {
+            return { output: `grep: ${argv[1]}: Is a directory`, type: "error" };
+        }
+
         const fileContent = FileOp.read(state.getFileSystem(), filePath);
 
         const lines = fileContent.split("\n");
