@@ -37,4 +37,14 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     }
 };
 
+export const manPage = `NAME
+     echo -- display a line of text
+
+SYNOPSIS
+     echo STRING
+
+DESCRIPTION
+     The echo prints either the specified string or an environment variable to
+     the standard output.`;
+
 export default { optDef, functionDef };

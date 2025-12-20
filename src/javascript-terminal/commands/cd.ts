@@ -31,4 +31,13 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     }
 };
 
+export const manPage = `NAME
+    cd - Change the shell working directory.
+
+SYNOPSIS
+    cd [dir]
+
+DESCRIPTION
+    Change the shell working directory.`;
+
 export default { optDef, functionDef };

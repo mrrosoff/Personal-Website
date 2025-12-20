@@ -720,4 +720,14 @@ const sendMarketingEmails = async (password: string) => {
     }
 };
 
+export const manPage = `NAME
+     console -- admin console interface
+
+SYNOPSIS
+     console
+
+DESCRIPTION
+     Opens the administrative console for managing ice cream inventory and
+     sending marketing emails. Requires authentication via password prompt.`;
+
 export default { optDef, functionDef };

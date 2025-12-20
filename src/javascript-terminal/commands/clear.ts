@@ -14,4 +14,13 @@ const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
     }
 };
 
+export const manPage = `NAME
+     clear -- clear the terminal screen
+
+SYNOPSIS
+     clear
+
+DESCRIPTION
+     Clears your screen if it is possible, including its scrollback buffer.`;
+
 export default { optDef, functionDef };

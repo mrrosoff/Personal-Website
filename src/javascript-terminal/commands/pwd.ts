@@ -16,4 +16,13 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     }
 };
 
+export const manPage = `NAME
+     pwd -- print working directory
+
+SYNOPSIS
+     pwd
+
+DESCRIPTION
+     Print the absolute pathname of the current working directory.`;
+
 export default { optDef, functionDef };

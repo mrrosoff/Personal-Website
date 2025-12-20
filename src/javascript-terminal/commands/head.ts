@@ -25,4 +25,14 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     }
 };
 
+export const manPage = `NAME
+     head -- display first lines of a file
+
+SYNOPSIS
+     head [-n count] [file]
+
+DESCRIPTION
+     This filter displays the first count lines of each of the specified files.
+     If count is omitted it defaults to 10.`;
+
 export default { optDef, functionDef };

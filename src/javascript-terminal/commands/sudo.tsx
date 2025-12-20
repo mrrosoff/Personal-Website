@@ -104,4 +104,15 @@ export const handlePasswordPromptKeyPress = async (
     return false;
 };
 
+export const manPage = `NAME
+     sudo -- execute a command as the superuser
+
+SYNOPSIS
+     sudo command [arguments]
+
+DESCRIPTION
+     The sudo utility allows a permitted user to execute a command with
+     elevated privileges. You will be prompted for a password before the
+     command is executed.`;
+
 export default { optDef, functionDef };

@@ -18,4 +18,13 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     }
 };
 
+export const manPage = `NAME
+     whoami -- display effective user name
+
+SYNOPSIS
+     whoami
+
+DESCRIPTION
+     The whoami utility displays your effective user name.`;
+
 export default { optDef, functionDef };

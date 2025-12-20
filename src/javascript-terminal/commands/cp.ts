@@ -35,4 +35,13 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     }
 };
 
+export const manPage = `NAME
+     cp -- copy files and directories
+
+SYNOPSIS
+     cp [OPTION] SOURCE DEST
+
+DESCRIPTION
+     Copy SOURCE to DEST, or multiple SOURCE(s) to DIRECTORY.`;
+
 export default { optDef, functionDef };

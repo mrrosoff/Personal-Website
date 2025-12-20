@@ -13,4 +13,13 @@ const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
     }
 };
 
+export const manPage = `NAME
+     history -- command history
+
+SYNOPSIS
+     history
+
+DESCRIPTION
+     Display the command history list with line numbers.`;
+
 export default { optDef, functionDef };

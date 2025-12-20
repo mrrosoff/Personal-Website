@@ -36,4 +36,14 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     }
 };
 
+export const manPage = `NAME
+     rm -- remove files or directories
+
+SYNOPSIS
+     rm [-rf] file
+
+DESCRIPTION
+     The rm utility attempts to remove the non-directory type files specified.
+     If the -r or -R option is specified, rm removes file hierarchies.`;
+
 export default { optDef, functionDef };

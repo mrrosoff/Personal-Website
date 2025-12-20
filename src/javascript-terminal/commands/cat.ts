@@ -24,4 +24,14 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     }
 };
 
+export const manPage = `NAME
+     cat -- concatenate and print files
+
+SYNOPSIS
+     cat [file ...]
+
+DESCRIPTION
+     The cat utility reads files sequentially, writing them to the standard
+     output.`;
+
 export default { optDef, functionDef };

@@ -52,4 +52,13 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     }
 };
 
+export const manPage = `NAME
+     display -- display image and video files
+
+SYNOPSIS
+     display [file ...]
+
+DESCRIPTION
+     Views files sequentially, writing them to the standard output.`;
+
 export default { optDef, functionDef };

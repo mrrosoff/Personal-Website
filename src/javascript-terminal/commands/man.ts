@@ -2,11 +2,74 @@ import assert from "assert";
 
 import EmulatorState from "../emulator-state/EmulatorState";
 import { parseOptions } from "../parser";
+import { manPage as catManPage } from "./cat";
+import { manPage as cdManPage } from "./cd";
+import { manPage as clearManPage } from "./clear";
+import { manPage as consoleManPage } from "./console";
+import { manPage as cpManPage } from "./cp";
+import { manPage as dateManPage } from "./date";
+import { manPage as diffManPage } from "./diff";
+import { manPage as displayManPage } from "./display";
+import { manPage as echoManPage } from "./echo";
+import { manPage as exportManPage } from "./export";
+import { manPage as findManPage } from "./find";
+import { manPage as grepManPage } from "./grep";
+import { manPage as headManPage } from "./head";
+import { manPage as historyManPage } from "./history";
+import { manPage as icecreamManPage } from "./icecream";
+import { manPage as lsManPage } from "./ls";
+import { manPage as mkdirManPage } from "./mkdir";
+import { manPage as mvManPage } from "./mv";
+import { manPage as printenvManPage } from "./printenv";
+import { manPage as pwdManPage } from "./pwd";
+import { manPage as rmManPage } from "./rm";
+import { manPage as rmdirManPage } from "./rmdir";
+import { manPage as sedManPage } from "./sed";
+import { manPage as sortManPage } from "./sort";
+import { manPage as sudoManPage } from "./sudo";
+import { manPage as tailManPage } from "./tail";
+import { manPage as teeManPage } from "./tee";
+import { manPage as touchManPage } from "./touch";
+import { manPage as wcManPage } from "./wc";
+import { manPage as whoamiManPage } from "./whoami";
 
 export const optDef = {};
 
+const manPages: Record<string, string> = {
+    cat: catManPage,
+    cd: cdManPage,
+    clear: clearManPage,
+    console: consoleManPage,
+    cp: cpManPage,
+    date: dateManPage,
+    diff: diffManPage,
+    display: displayManPage,
+    echo: echoManPage,
+    export: exportManPage,
+    find: findManPage,
+    grep: grepManPage,
+    head: headManPage,
+    history: historyManPage,
+    icecream: icecreamManPage,
+    ls: lsManPage,
+    mkdir: mkdirManPage,
+    mv: mvManPage,
+    printenv: printenvManPage,
+    pwd: pwdManPage,
+    rm: rmManPage,
+    rmdir: rmdirManPage,
+    sed: sedManPage,
+    sort: sortManPage,
+    sudo: sudoManPage,
+    tail: tailManPage,
+    tee: teeManPage,
+    touch: touchManPage,
+    wc: wcManPage,
+    whoami: whoamiManPage
+};
+
 const functionDef = (_state: EmulatorState, commandOptions: string[]) => {
-    const { options, argv } = parseOptions(commandOptions, optDef);
+    const { argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length !== 1) {
         return {};
@@ -14,107 +77,26 @@ const functionDef = (_state: EmulatorState, commandOptions: string[]) => {
 
     try {
         const command = argv[0];
-        switch (command) {
-            case "cat":
-                return {
-                    output:
-                        "NAME\n" +
-                        "     cat -- concatenate and print files\n" +
-                        "\n" +
-                        "SYNOPSIS\n" +
-                        "     cat [file ...]\n" +
-                        "\n" +
-                        "DESCRIPTION\n" +
-                        "     The cat utility reads files sequentially, writing them to the standard\n" +
-                        "     output."
-                };
+        const manPage = manPages[command];
 
-            case "cd":
-                return {
-                    output:
-                        "NAME\n" +
-                        "    cd - Change the shell working directory.\n" +
-                        "\n" +
-                        "SYNOPSIS\n" +
-                        "    cd [dir]\n" +
-                        "\n" +
-                        "DESCRIPTION\n" +
-                        "    Change the shell working directory."
-                };
-            case "clear":
-                return {
-                    output:
-                        "NAME\n" +
-                        "     clear -- clear the terminal screen\n" +
-                        "\n" +
-                        "SYNOPSIS\n" +
-                        "     clear\n" +
-                        "\n" +
-                        "DESCRIPTION\n" +
-                        "     Clears your screen if it is possible, including its scrollback buffer."
-                };
-            case "cp":
-                return {
-                    output:
-                        "NAME\n" +
-                        "     cp -- copy files and directories\n" +
-                        "\n" +
-                        "SYNOPSIS\n" +
-                        "     cp [OPTION] SOURCE DEST\n" +
-                        "\n" +
-                        "DESCRIPTION\n" +
-                        "     Copy SOURCE to DEST, or multiple SOURCE(s) to DIRECTORY."
-                };
-            case "display":
-                return {
-                    output:
-                        "NAME\n" +
-                        "     display -- display image and video files\n" +
-                        "\n" +
-                        "SYNOPSIS\n" +
-                        "     display [file ...]\n" +
-                        "\n" +
-                        "DESCRIPTION\n" +
-                        "     Views files sequentially, writing them to the standard output."
-                };
-            case "echo":
-                return {
-                    output:
-                        "NAME\n" +
-                        "     echo -- display a line of text\n" +
-                        "\n" +
-                        "SYNOPSIS\n" +
-                        "     echo STRING\n" +
-                        "\n" +
-                        "DESCRIPTION\n" +
-                        "     The echo prints either the specified string or an environment variable to\n" +
-                        "	 the standard output."
-                };
-            case "ls":
-                return {
-                    output:
-                        "NAME\n" +
-                        "     ls -- list directory contents\n" +
-                        "\n" +
-                        "SYNOPSIS\n" +
-                        "     ls [file ...]\n" +
-                        "\n" +
-                        "DESCRIPTION\n" +
-                        "     For each operand that names a file of a type other than directory, ls\n" +
-                        "     displays its name as well as any requested, associated information.  For\n" +
-                        "     each operand that names a file of type directory, ls displays the names\n" +
-                        "     of files contained within that directory, as well as any requested, associated\n" +
-                        "     information."
-                };
-            default:
-                return {
-                    output: ""
-                };
+        if (manPage) {
+            return { output: manPage };
         }
+
+        return { output: "" };
     } catch (err: unknown) {
         assert(err instanceof Error);
         return { output: err.message, type: "error" };
     }
 };
+
+export const manPage = `NAME
+     man -- display manual pages
+
+SYNOPSIS
+     man command
+
+DESCRIPTION
+     The man utility displays the manual page for the specified command.`;
 
 export default { optDef, functionDef };

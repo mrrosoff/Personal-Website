@@ -2,21 +2,26 @@ import assert from "assert";
 
 import { parseOptions } from "../parser";
 import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
-import * as DirOp from "../fs/operations/directory-operations";
+import * as FileOp from "../fs/operations/file-operations";
 
 export const optDef = {};
 
 const functionDef = (state: EmulatorState, commandOptions: string[]) => {
-    const { options, argv } = parseOptions(commandOptions, optDef);
+    const { argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length === 0) {
         return {};
     }
 
     try {
-        const pathToDelete = relativeToAbsolutePath(state, argv[0]);
-        DirOp.remove(state.getFileSystem(), pathToDelete);
-        return { output: "" };
+        const filePath = relativeToAbsolutePath(state, argv[0]);
+        const fileContent = FileOp.read(state.getFileSystem(), filePath);
+
+        const sortedLines = fileContent
+            .split("\n")
+            .sort();
+
+        return { output: sortedLines.join("\n") };
     } catch (err: unknown) {
         assert(err instanceof Error);
         return { output: err.message, type: "error" };
@@ -24,12 +29,13 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
 };
 
 export const manPage = `NAME
-     rmdir -- remove directories
+     sort -- sort lines of text files
 
 SYNOPSIS
-     rmdir directory
+     sort [file]
 
 DESCRIPTION
-     The rmdir utility removes the directory entry specified.`;
+     The sort utility sorts text files by lines. Lines are sorted
+     alphabetically by default.`;
 
 export default { optDef, functionDef };

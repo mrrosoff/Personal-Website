@@ -17,4 +17,14 @@ const functionDef = (_state: EmulatorState, _commandOptions: string[]) => {
     }
 };
 
+export const manPage = `NAME
+     icecream -- navigate to ice cream shop
+
+SYNOPSIS
+     icecream
+
+DESCRIPTION
+     Navigates to the ice cream shop page where you can browse and purchase
+     ice cream flavors.`;
+
 export default { optDef, functionDef };

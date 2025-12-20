@@ -30,4 +30,13 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     }
 };
 
+export const manPage = `NAME
+     mv -- move (rename) files
+
+SYNOPSIS
+     mv source target
+
+DESCRIPTION
+     Move SOURCE to DEST, or rename SOURCE to DEST.`;
+
 export default { optDef, functionDef };
