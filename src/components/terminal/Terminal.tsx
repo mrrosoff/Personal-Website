@@ -53,6 +53,15 @@ const Terminal = (
         }
     }, [emulatorState.getPasswordPromptState(), emulatorState.getAdminConsoleMode()?.screen]);
 
+    const scrollToBottom = () => {
+        setTimeout(() => {
+            if (props.scrollContainerRef.current) {
+                props.scrollContainerRef.current.scrollTop =
+                    props.scrollContainerRef.current.scrollHeight;
+            }
+        }, 0);
+    };
+
     const onKeyDown = async (e: KeyboardEvent<HTMLInputElement>) => {
         const passwordPrompt = emulatorState.getPasswordPromptState();
         if (passwordPrompt) {
@@ -77,12 +86,7 @@ const Terminal = (
             if (shouldClearInput) {
                 setInput("");
                 if (e.key === "Enter") {
-                    setTimeout(() => {
-                        if (props.scrollContainerRef.current) {
-                            props.scrollContainerRef.current.scrollTop =
-                                props.scrollContainerRef.current.scrollHeight;
-                        }
-                    }, 0);
+                    scrollToBottom();
                 }
             }
             return;
@@ -117,6 +121,7 @@ const Terminal = (
                     setInput(historyUp[historyUp.length - nextIndexValue - 1]);
                     return nextIndexValue;
                 });
+                scrollToBottom();
                 break;
 
             case "ArrowDown":
@@ -128,12 +133,14 @@ const Terminal = (
                     setInput(nextInputValue ? nextInputValue : "");
                     return nextIndexValue;
                 });
+                scrollToBottom();
                 break;
 
             case "Tab":
                 e.preventDefault();
                 setInput(emulator.autocomplete(emulatorState, input));
                 setOutputs(calculateOutputs());
+                scrollToBottom();
                 break;
 
             case "Enter":
@@ -142,12 +149,7 @@ const Terminal = (
                 setInput("");
                 setHistoryIndex(-1);
                 setOutputs(calculateOutputs());
-                setTimeout(() => {
-                    if (props.scrollContainerRef.current) {
-                        props.scrollContainerRef.current.scrollTop =
-                            props.scrollContainerRef.current.scrollHeight;
-                    }
-                }, 0);
+                scrollToBottom();
                 break;
         }
     };
