@@ -7,7 +7,6 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import IcecreamIcon from "@mui/icons-material/Icecream";
-import MarkunreadMailboxIcon from "@mui/icons-material/MarkunreadMailbox";
 import { useNavigate } from "react-router-dom";
 
 const socialList = [
@@ -71,10 +70,9 @@ export const MobileSocialButtonList = () => {
         <Grid
             container
             direction={"column"}
-            spacing={1}
+            spacing={0.5}
             justifyContent={"center"}
             alignItems={"center"}
-            alignContent={"center"}
         >
             {socialList.slice(1).map((socialDetails, index) => (
                 <Grid key={index}>
@@ -90,14 +88,6 @@ export const MobileSocialButtonList = () => {
                     href={"ice-cream"}
                     icon={IcecreamIcon}
                     text={"Ice Cream"}
-                    isLink={true}
-                />
-            </Grid>
-            <Grid>
-                <CustomIconButton
-                    href={"ice-cream/mailing-list"}
-                    icon={MarkunreadMailboxIcon}
-                    text={"Mailing List"}
                     isLink={true}
                 />
             </Grid>

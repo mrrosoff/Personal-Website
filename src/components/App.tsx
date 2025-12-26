@@ -1,4 +1,4 @@
-import { RefObject, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import { BrowserRouter, Navigate, Outlet, Route, Routes, useMatch } from "react-router-dom";
 
 import { Box, useMediaQuery } from "@mui/material";
@@ -146,13 +146,26 @@ const Layout = (props: {
     const theme = useTheme();
     const mdScreen = useMediaQuery(theme.breakpoints.down("md"));
     const isHome = useMatch("/");
-    const smallScreenPadding = isHome ? 0 : 3;
+
+    const [screenBottomPadding, setBottomScreenPadding] = useState<number>(4);
+
+    useEffect(() => {
+        function handleResize() {
+            const smallHeight = window.innerHeight < 620;
+            setBottomScreenPadding(smallHeight ? 0 : 4);
+        }
+
+        handleResize();
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
     return (
         <Box
             height={"100dvh"}
             sx={{
-                p: mdScreen ? smallScreenPadding : 8,
-                ...(mdScreen && { pt: 4, pb: 4 }),
+                p: mdScreen ? (isHome ? 0 : 3) : 8,
+                ...(mdScreen && { pt: 4, pb: screenBottomPadding }),
                 boxSizing: "border-box",
                 overflow: isHome ? "hidden" : undefined
             }}
