@@ -144,7 +144,6 @@ const Layout = (props: {
     scrollContainerRef: RefObject<HTMLDivElement | null>;
 }) => {
     const theme = useTheme();
-    const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
     const mdScreen = useMediaQuery(theme.breakpoints.down("md"));
     const isHome = useMatch("/");
     const smallScreenPadding = isHome ? 0 : 3;
@@ -152,8 +151,8 @@ const Layout = (props: {
         <Box
             height={"100dvh"}
             sx={{
-                p: smallScreen ? smallScreenPadding : 8,
-                ...(smallScreen && { pt: 4, pb: 4 }),
+                p: mdScreen ? smallScreenPadding : 8,
+                ...(mdScreen && { pt: 4, pb: 4 }),
                 boxSizing: "border-box",
                 overflow: isHome ? "hidden" : undefined
             }}
