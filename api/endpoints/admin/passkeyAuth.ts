@@ -33,18 +33,9 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     }
 
     try {
-        const credentialIdBase64 = Buffer.from(body.response.rawId, "base64").toString("base64");
-
         const parameters = await getParameters("/website/admin/passkeyId", "/website/admin/publicKey");
         const storedCredentialId = parameters["/website/admin/passkeyId"];
         const storedPublicKey = parameters["/website/admin/publicKey"];
-
-        console.error(parameters);
-        console.error(body.response, credentialIdBase64)
-
-        if (credentialIdBase64 !== storedCredentialId) {
-            return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Credential not found");
-        }
 
         const webAuthnCredential = {
             id: storedCredentialId,
@@ -61,7 +52,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         });
 
         if (!verification.verified) {
-            return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Authentication failed");
+            return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Authentication Failed");
         }
 
         await deleteItem(PASSKEY_CHALLENGES_TABLE, challengeRecord.id);
@@ -72,7 +63,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
             token: await generateToken("admin")
         });
     } catch (error) {
-        console.error("Passkey authentication error:", error);
-        return buildErrorResponse(event, HttpResponseStatus.INTERNAL_SERVER_ERROR, "Authentication failed");
+        console.error("Passkey Authentication Error:", error);
+        return buildErrorResponse(event, HttpResponseStatus.INTERNAL_SERVER_ERROR, "Authentication Failed");
     }
 };
