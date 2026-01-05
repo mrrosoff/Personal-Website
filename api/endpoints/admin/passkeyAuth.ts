@@ -3,6 +3,7 @@ import { AuthenticationResponseJSON, verifyAuthenticationResponse } from "@simpl
 
 import { PASSKEY_CHALLENGES_TABLE, PASSKEY_CREDENTIALS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
 import { deleteItem, getAllItems, putItem } from "../../aws/services/dynamodb";
+import { generateToken, GrantType } from "../../auth";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
 import { RP_ID, RP_ORIGIN } from "./passkeyAuthOptions";
 
@@ -33,7 +34,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     try {
         const credentialIdBase64 = Buffer.from(body.response.rawId, "base64").toString("base64");
         const credentials = await getAllItems(PASSKEY_CREDENTIALS_TABLE);
-        const credential = credentials?.find((c: any) => c.credentialId === credentialIdBase64);
+        const credential = credentials?.find((c: any) => c.id === credentialIdBase64);
 
         if (!credential) {
             return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Credential not found");
@@ -44,13 +45,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
             expectedChallenge: challengeRecord.challenge,
             expectedOrigin: RP_ORIGIN,
             expectedRPID: RP_ID,
-            // @ts-ignore
-            authenticator: {
-                credentialID: Buffer.from(credential.credentialId, "base64"),
-                credentialPublicKey: Buffer.from(credential.publicKey, "base64"),
-                // @ts-ignore
-                counter: credential.counter
-            }
+            credential: credential
         });
 
         if (!verification.verified) {
@@ -59,16 +54,17 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 
         await putItem(PASSKEY_CREDENTIALS_TABLE, {
             ...credential,
-            // @ts-ignore
-            counter: verification.authenticationInfo.newCounter,
-            lastUsed: new Date().toISOString()
+            counter: verification.authenticationInfo.newCounter
         });
 
         await deleteItem(PASSKEY_CHALLENGES_TABLE, challengeRecord.challenge);
 
+        const token = await generateToken("admin", GrantType.AUTH);
+
         return buildResponse(event, HttpResponseStatus.OK, {
             verified: true,
-            message: "Authentication successful"
+            message: "Authentication successful",
+            token
         });
     } catch (error) {
         console.error("Passkey authentication error:", error);

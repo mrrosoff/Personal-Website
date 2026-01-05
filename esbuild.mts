@@ -44,6 +44,14 @@ await buildLambdaFunction(
 );
 await buildLambdaFunction("api/endpoints/admin/passkeyAuth.ts", "dist/lambda/admin/passkeyAuth");
 await buildLambdaFunction(
+    "api/endpoints/admin/passkeyRegisterOptions.ts",
+    "dist/lambda/admin/passkeyRegisterOptions"
+);
+await buildLambdaFunction(
+    "api/endpoints/admin/passkeyRegister.ts",
+    "dist/lambda/admin/passkeyRegister"
+);
+await buildLambdaFunction(
     "api/endpoints/admin/provisionFlavor.ts",
     "dist/lambda/admin/provisionFlavor"
 );

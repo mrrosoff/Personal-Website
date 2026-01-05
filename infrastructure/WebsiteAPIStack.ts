@@ -120,6 +120,8 @@ class WebsiteAPIStack extends Stack {
 
         const passkeyAuthOptionsLambda = this.createPasskeyAuthOptionsLambda(apiRole);
         const passkeyAuthLambda = this.createPasskeyAuthLambda(apiRole);
+        const passkeyRegisterOptionsLambda = this.createPasskeyRegisterOptionsLambda(apiRole);
+        const passkeyRegisterLambda = this.createPasskeyRegisterLambda(apiRole);
 
         const adminResource = api.root.addResource("admin");
         adminResource
@@ -134,6 +136,12 @@ class WebsiteAPIStack extends Stack {
         adminResource
             .addResource("passkey-auth")
             .addMethod("POST", new LambdaIntegration(passkeyAuthLambda));
+        adminResource
+            .addResource("passkey-register-options")
+            .addMethod("POST", new LambdaIntegration(passkeyRegisterOptionsLambda));
+        adminResource
+            .addResource("passkey-register")
+            .addMethod("POST", new LambdaIntegration(passkeyRegisterLambda));
     }
 
     private createEmailRoutes(api: RestApi, apiRole: Role) {
@@ -315,6 +323,28 @@ class WebsiteAPIStack extends Stack {
             functionName,
             handler: "passkeyAuth.handler",
             code: Code.fromAsset("dist/lambda/admin/passkeyAuth"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(functionName, role)
+        });
+    }
+
+    private createPasskeyRegisterOptionsLambda(role: Role): LambdaFunction {
+        const functionName = "website-passkey-register-options";
+        return new LambdaFunction(this, "websitePasskeyRegisterOptionsLambda", {
+            functionName,
+            handler: "passkeyRegisterOptions.handler",
+            code: Code.fromAsset("dist/lambda/admin/passkeyRegisterOptions"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(functionName, role)
+        });
+    }
+
+    private createPasskeyRegisterLambda(role: Role): LambdaFunction {
+        const functionName = "website-passkey-register";
+        return new LambdaFunction(this, "websitePasskeyRegisterLambda", {
+            functionName,
+            handler: "passkeyRegister.handler",
+            code: Code.fromAsset("dist/lambda/admin/passkeyRegister"),
             runtime: Runtime.NODEJS_22_X,
             ...this.createLambdaParams(functionName, role)
         });

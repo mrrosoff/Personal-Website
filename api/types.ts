@@ -19,13 +19,6 @@ export type DatabaseFlavor = {
     type: FlavorType | null;
 };
 
-export type PasskeyCredential = {
-    id: string;
-    credentialId: string;
-    publicKey: string;
-    transports: AuthenticatorTransport[];
-};
-
 export type PasskeyChallenge = {
     challenge: string;
     expiresAt: number;

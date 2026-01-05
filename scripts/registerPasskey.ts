@@ -86,17 +86,15 @@ async function handleRegistration(req: http.IncomingMessage, res: http.ServerRes
             }
 
             const { credential } = verification.registrationInfo;
-            const credentialId = Buffer.from(credential.id).toString('base64');
 
+            // Store the credential directly - DynamoDB handles binary data
             await documentClient.send(new PutCommand({
                 TableName: PASSKEY_CREDENTIALS_TABLE,
                 Item: {
-                    id: credentialId,
-                    credentialId: credentialId,
-                    publicKey: Buffer.from(credential.publicKey).toString('base64'),
+                    id: Buffer.from(credential.id).toString('base64'), // ID as base64 for easy lookup
+                    publicKey: credential.publicKey, // Store as Buffer directly
                     counter: credential.counter,
-                    transports: registrationResponse.response.transports || [],
-                    createdAt: new Date().toISOString()
+                    transports: registrationResponse.response.transports
                 }
             }));
 
