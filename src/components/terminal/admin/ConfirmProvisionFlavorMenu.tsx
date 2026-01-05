@@ -1,3 +1,4 @@
+import { useState } from "react";
 import axios from "axios";
 import { Box, Typography } from "@mui/material";
 
@@ -8,12 +9,14 @@ import EmulatorState, {
 } from "../../../javascript-terminal/emulator-state/EmulatorState";
 import { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
+import LoadingDots from "./common/LoadingDots";
 
 const ConfirmProvisionFlavorMenu = (props: {
     mode: AdminConsoleState;
     theme?: TerminalTheme;
     emulatorState: EmulatorState;
 }) => {
+    const [isLoading, setIsLoading] = useState(false);
     const selectedOption = props.mode.selectedOption as "yes" | "no";
     const form = props.mode.provisionForm;
     if (!form) return null;
@@ -33,13 +36,18 @@ const ConfirmProvisionFlavorMenu = (props: {
     };
 
     const handleYesClick = async () => {
-        await provisionFlavor();
-        props.emulatorState.setAdminConsoleMode({
-            ...props.mode,
-            screen: AdminConsoleScreen.IceCreamInventory,
-            selectedOption: IceCreamInventoryMenuOption.ProvisionNewFlavor,
-            provisionForm: undefined
-        });
+        setIsLoading(true);
+        try {
+            await provisionFlavor();
+            props.emulatorState.setAdminConsoleMode({
+                ...props.mode,
+                screen: AdminConsoleScreen.IceCreamInventory,
+                selectedOption: IceCreamInventoryMenuOption.ProvisionNewFlavor,
+                provisionForm: undefined
+            });
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleNoClick = () => {
@@ -49,6 +57,31 @@ const ConfirmProvisionFlavorMenu = (props: {
             selectedOption: 0
         });
     };
+
+    if (isLoading) {
+        return (
+            <Box sx={{ paddingTop: 1 }}>
+                <Typography
+                    sx={{
+                        color: props.theme?.outputColor || "#FCFCFC",
+                        fontWeight: "bold",
+                        mb: 1.25
+                    }}
+                >
+                    === Admin Console (Provisioning Flavor) ===
+                </Typography>
+                <Typography
+                    sx={{
+                        color: props.theme?.outputColor || "#FCFCFC",
+                        mb: 2
+                    }}
+                >
+                    Provisioning {form.flavorName}...
+                </Typography>
+                <LoadingDots theme={props.theme} />
+            </Box>
+        );
+    }
 
     return (
         <Box sx={{ paddingTop: 1 }}>

@@ -334,10 +334,23 @@ const handleSelectFlavor = (
 ): EmulatorState => {
     if (!mode.inventoryData) return state;
 
-    const ITEMS_PER_PAGE = 5;
+    // Sort inventory the same way as SelectFlavorMenu component
+    const typeOrder = { current: 2, lastBatch: 1, upcoming: 0 };
+    const sortedInventory = [...mode.inventoryData].sort((a, b) => {
+        const typeA = typeOrder[a.type as keyof typeof typeOrder];
+        const typeB = typeOrder[b.type as keyof typeof typeOrder];
+
+        if (typeA !== typeB) {
+            return typeB - typeA;
+        }
+
+        return b.count - a.count;
+    });
+
+    const ITEMS_PER_PAGE = 4;
     const selectedIndex = mode.selectedOption as number;
     const currentPage = mode.currentPage ?? 0;
-    const totalItems = mode.inventoryData.length;
+    const totalItems = sortedInventory.length;
     const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
     const startIndex = currentPage * ITEMS_PER_PAGE;
     const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalItems);
@@ -378,7 +391,7 @@ const handleSelectFlavor = (
             }
             break;
         case "Enter":
-            const flavor = mode.inventoryData[selectedIndex];
+            const flavor = sortedInventory[selectedIndex];
             setState({
                 ...mode,
                 screen: AdminConsoleScreen.IceCreamInventory,

@@ -55,8 +55,8 @@ const SelectFlavorMenu = (props: {
 
     const typeOrder = { current: 2, lastBatch: 1, upcoming: 0 };
     const sortedInventory = [...props.mode.inventoryData].sort((a, b) => {
-        const typeA = typeOrder[a.type as keyof typeof typeOrder] ?? 999;
-        const typeB = typeOrder[b.type as keyof typeof typeOrder] ?? 999;
+        const typeA = typeOrder[a.type as keyof typeof typeOrder];
+        const typeB = typeOrder[b.type as keyof typeof typeOrder];
 
         if (typeA !== typeB) {
             return typeB - typeA;
