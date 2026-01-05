@@ -310,11 +310,10 @@ const handleSelectFlavor = (key: string, state: EmulatorState): EmulatorState =>
     const mode = state.getAdminConsoleMode()!;
     if (!mode.inventoryData) return state;
 
-    // Sort inventory the same way as SelectFlavorMenu component
-    const typeOrder = { current: 2, lastBatch: 1, upcoming: 0 };
+    const typeOrder = { current: 3, lastBatch: 2, upcoming: 1 };
     const sortedInventory = [...mode.inventoryData].sort((a, b) => {
-        const typeA = typeOrder[a.type as keyof typeof typeOrder];
-        const typeB = typeOrder[b.type as keyof typeof typeOrder];
+        const typeA = typeOrder[a.type as keyof typeof typeOrder] ?? 0;
+        const typeB = typeOrder[b.type as keyof typeof typeOrder] ?? 0;
 
         if (typeA !== typeB) {
             return typeB - typeA;

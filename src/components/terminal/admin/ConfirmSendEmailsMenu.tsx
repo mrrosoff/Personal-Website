@@ -9,12 +9,9 @@ import EmulatorState, {
 import { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
 
-const ConfirmSendEmailsMenu = (props: {
-    mode: AdminConsoleState;
-    theme?: TerminalTheme;
-    emulatorState: EmulatorState;
-}) => {
-    const selectedOption = props.mode.selectedOption as "yes" | "no";
+const ConfirmSendEmailsMenu = (props: { theme?: TerminalTheme; emulatorState: EmulatorState }) => {
+    const mode = props.emulatorState.getAdminConsoleMode() as AdminConsoleState;
+    const selectedOption = mode.selectedOption as "yes" | "no";
 
     const sendMarketingEmails = async () => {
         const authToken = props.emulatorState.getEnvVariables()["AUTH_TOKEN"];
@@ -34,7 +31,7 @@ const ConfirmSendEmailsMenu = (props: {
     const handleYesClick = async () => {
         await sendMarketingEmails();
         props.emulatorState.setAdminConsoleMode({
-            ...props.mode,
+            ...mode,
             screen: AdminConsoleScreen.Main,
             selectedOption: MainMenuOption.SendMarketingEmails
         });
@@ -42,7 +39,7 @@ const ConfirmSendEmailsMenu = (props: {
 
     const handleNoClick = () => {
         props.emulatorState.setAdminConsoleMode({
-            ...props.mode,
+            ...mode,
             screen: AdminConsoleScreen.Main,
             selectedOption: MainMenuOption.SendMarketingEmails
         });
@@ -73,7 +70,7 @@ const ConfirmSendEmailsMenu = (props: {
                     theme={props.theme}
                     onMouseEnter={() =>
                         props.emulatorState.setAdminConsoleMode({
-                            ...props.mode,
+                            ...mode,
                             selectedOption: "yes"
                         })
                     }
@@ -86,7 +83,7 @@ const ConfirmSendEmailsMenu = (props: {
                     theme={props.theme}
                     onMouseEnter={() =>
                         props.emulatorState.setAdminConsoleMode({
-                            ...props.mode,
+                            ...mode,
                             selectedOption: "no"
                         })
                     }

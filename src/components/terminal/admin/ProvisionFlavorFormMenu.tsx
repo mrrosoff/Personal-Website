@@ -6,11 +6,11 @@ import EmulatorState, {
 import { TerminalTheme } from "../Terminal";
 
 const ProvisionFlavorFormMenu = (props: {
-    mode: AdminConsoleState;
     theme?: TerminalTheme;
     emulatorState: EmulatorState;
 }) => {
-    const form = props.mode.provisionForm;
+    const mode = props.emulatorState.getAdminConsoleMode() as AdminConsoleState;
+    const form = mode.provisionForm;
     if (!form) return null;
 
     return (

@@ -8,16 +8,14 @@ import { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
 import LoadingDots from "./common/LoadingDots";
 
-const SelectFlavorMenu = (props: {
-    mode: AdminConsoleState;
-    theme?: TerminalTheme;
-    emulatorState: EmulatorState;
-}) => {
-    const ITEMS_PER_PAGE = 4;
-    const selectedIndex = props.mode.selectedOption as number;
-    const currentPage = props.mode.currentPage ?? 0;
+const SelectFlavorMenu = (props: { theme?: TerminalTheme; emulatorState: EmulatorState }) => {
+    const mode = props.emulatorState.getAdminConsoleMode() as AdminConsoleState;
 
-    if (!props.mode.inventoryData) {
+    const ITEMS_PER_PAGE = 4;
+    const selectedIndex = mode.selectedOption as number;
+    const currentPage = mode.currentPage ?? 0;
+
+    if (!mode.inventoryData) {
         return (
             <Box sx={{ paddingTop: 1 }}>
                 <Typography
@@ -34,7 +32,7 @@ const SelectFlavorMenu = (props: {
         );
     }
 
-    if (props.mode.inventoryData.length === 0) {
+    if (mode.inventoryData.length === 0) {
         return (
             <Box sx={{ paddingTop: 1 }}>
                 <Typography
@@ -53,10 +51,10 @@ const SelectFlavorMenu = (props: {
         );
     }
 
-    const typeOrder = { current: 2, lastBatch: 1, upcoming: 0 };
-    const sortedInventory = [...props.mode.inventoryData].sort((a, b) => {
-        const typeA = typeOrder[a.type as keyof typeof typeOrder];
-        const typeB = typeOrder[b.type as keyof typeof typeOrder];
+    const typeOrder = { currentFlavor: 3, lastBatch: 2, upcoming: 1 };
+    const sortedInventory = [...mode.inventoryData].sort((a, b) => {
+        const typeA = typeOrder[a.type as keyof typeof typeOrder] ?? 0;
+        const typeB = typeOrder[b.type as keyof typeof typeOrder] ?? 0;
 
         if (typeA !== typeB) {
             return typeB - typeA;
@@ -92,13 +90,13 @@ const SelectFlavorMenu = (props: {
                         theme={props.theme}
                         onMouseEnter={() =>
                             props.emulatorState.setAdminConsoleMode({
-                                ...props.mode,
+                                ...mode,
                                 selectedOption: globalIndex
                             })
                         }
                         onClick={() =>
                             props.emulatorState.setAdminConsoleMode({
-                                ...props.mode,
+                                ...mode,
                                 screen: AdminConsoleScreen.IceCreamInventory,
                                 editingFlavor: item,
                                 inventoryData: undefined,

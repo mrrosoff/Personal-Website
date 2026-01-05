@@ -12,13 +12,14 @@ import MenuItem from "./common/MenuItem";
 import LoadingDots from "./common/LoadingDots";
 
 const ConfirmProvisionFlavorMenu = (props: {
-    mode: AdminConsoleState;
     theme?: TerminalTheme;
     emulatorState: EmulatorState;
 }) => {
+    const mode = props.emulatorState.getAdminConsoleMode() as AdminConsoleState;
+    
     const [isLoading, setIsLoading] = useState(false);
-    const selectedOption = props.mode.selectedOption as "yes" | "no";
-    const form = props.mode.provisionForm;
+    const selectedOption = mode.selectedOption as "yes" | "no";
+    const form = mode.provisionForm;
     if (!form) return null;
 
     const provisionFlavor = async () => {
@@ -46,7 +47,7 @@ const ConfirmProvisionFlavorMenu = (props: {
         try {
             await provisionFlavor();
             props.emulatorState.setAdminConsoleMode({
-                ...props.mode,
+                ...mode,
                 screen: AdminConsoleScreen.IceCreamInventory,
                 selectedOption: IceCreamInventoryMenuOption.ProvisionNewFlavor,
                 provisionForm: undefined
@@ -58,7 +59,7 @@ const ConfirmProvisionFlavorMenu = (props: {
 
     const handleNoClick = () => {
         props.emulatorState.setAdminConsoleMode({
-            ...props.mode,
+            ...mode,
             screen: AdminConsoleScreen.ProvisionFlavorForm,
             selectedOption: 0
         });
@@ -144,7 +145,7 @@ const ConfirmProvisionFlavorMenu = (props: {
                     theme={props.theme}
                     onMouseEnter={() =>
                         props.emulatorState.setAdminConsoleMode({
-                            ...props.mode,
+                            ...mode,
                             selectedOption: "yes"
                         })
                     }
@@ -157,7 +158,7 @@ const ConfirmProvisionFlavorMenu = (props: {
                     theme={props.theme}
                     onMouseEnter={() =>
                         props.emulatorState.setAdminConsoleMode({
-                            ...props.mode,
+                            ...mode,
                             selectedOption: "no"
                         })
                     }

@@ -12,14 +12,12 @@ import { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
 import { API_URL } from "../../App";
 
-const IceCreamInventoryMenu = (props: {
-    mode: AdminConsoleState;
-    theme?: TerminalTheme;
-    emulatorState: EmulatorState;
-}) => {
+const IceCreamInventoryMenu = (props: { theme?: TerminalTheme; emulatorState: EmulatorState }) => {
+    const mode = props.emulatorState.getAdminConsoleMode() as AdminConsoleState;
+
     const provisionNewFlavor = () => {
         props.emulatorState.setAdminConsoleMode({
-            ...props.mode,
+            ...mode,
             screen: AdminConsoleScreen.ProvisionFlavorForm,
             selectedOption: 0,
             provisionForm: {
@@ -34,7 +32,7 @@ const IceCreamInventoryMenu = (props: {
 
     const handleModifyInventory = async () => {
         const newMode = {
-            ...props.mode,
+            ...mode,
             screen: AdminConsoleScreen.SelectFlavor,
             selectedOption: 0
         };
@@ -51,7 +49,7 @@ const IceCreamInventoryMenu = (props: {
         props.emulatorState.setAdminConsoleMode({ ...newMode, inventoryData: data.inventory });
     };
 
-    if (props.mode.editingFlavor) {
+    if (mode.editingFlavor) {
         return (
             <Box sx={{ paddingTop: 1 }}>
                 <Typography
@@ -64,7 +62,7 @@ const IceCreamInventoryMenu = (props: {
                     === Admin Console (Modify Flavor Inventory) ===
                 </Typography>
                 <Typography sx={{ color: props.theme?.outputColor || "#FCFCFC", mb: 1 }}>
-                    Editing: {props.mode.editingFlavor.name}
+                    Editing: {mode.editingFlavor.name}
                 </Typography>
                 <Typography
                     sx={{
@@ -72,7 +70,7 @@ const IceCreamInventoryMenu = (props: {
                         mb: 1
                     }}
                 >
-                    Type: {props.mode.editingFlavor.type || "Not Listed"}
+                    Type: {mode.editingFlavor.type || "Not Listed"}
                 </Typography>
                 <Typography
                     sx={{
@@ -80,7 +78,7 @@ const IceCreamInventoryMenu = (props: {
                         mb: 2
                     }}
                 >
-                    Count: {props.mode.editingFlavor.count}
+                    Count: {mode.editingFlavor.count}
                 </Typography>
                 <Typography
                     sx={{
@@ -108,12 +106,12 @@ const IceCreamInventoryMenu = (props: {
             </Typography>
             <MenuItem
                 selected={
-                    props.mode.selectedOption === IceCreamInventoryMenuOption.ProvisionNewFlavor
+                    mode.selectedOption === IceCreamInventoryMenuOption.ProvisionNewFlavor
                 }
                 theme={props.theme}
                 onMouseEnter={() =>
                     props.emulatorState.setAdminConsoleMode({
-                        ...props.mode,
+                        ...mode,
                         selectedOption: IceCreamInventoryMenuOption.ProvisionNewFlavor
                     })
                 }
@@ -123,12 +121,12 @@ const IceCreamInventoryMenu = (props: {
             </MenuItem>
             <MenuItem
                 selected={
-                    props.mode.selectedOption === IceCreamInventoryMenuOption.ModifyFlavorInventory
+                    mode.selectedOption === IceCreamInventoryMenuOption.ModifyFlavorInventory
                 }
                 theme={props.theme}
                 onMouseEnter={() =>
                     props.emulatorState.setAdminConsoleMode({
-                        ...props.mode,
+                        ...mode,
                         selectedOption: IceCreamInventoryMenuOption.ModifyFlavorInventory
                     })
                 }
@@ -137,17 +135,17 @@ const IceCreamInventoryMenu = (props: {
                 2. Modify Flavor Inventory
             </MenuItem>
             <MenuItem
-                selected={props.mode.selectedOption === IceCreamInventoryMenuOption.GoBack}
+                selected={mode.selectedOption === IceCreamInventoryMenuOption.GoBack}
                 theme={props.theme}
                 onMouseEnter={() =>
                     props.emulatorState.setAdminConsoleMode({
-                        ...props.mode,
+                        ...mode,
                         selectedOption: IceCreamInventoryMenuOption.GoBack
                     })
                 }
                 onClick={() =>
                     props.emulatorState.setAdminConsoleMode({
-                        ...props.mode,
+                        ...mode,
                         screen: AdminConsoleScreen.Main,
                         selectedOption: MainMenuOption.IceCreamInventory,
                         inventoryData: undefined
