@@ -79,6 +79,8 @@ export const authenticateWithPasskey = async (
             const lastOutput = outputs[outputs.length - 1];
             lastOutput.output = [result];
             emulatorState.setOutputs([...outputs]);
+        } else {
+            emulatorState.setOutputs([{ output: result }]);
         }
     } catch (err) {
         console.error("Authentication Failed:", err);
