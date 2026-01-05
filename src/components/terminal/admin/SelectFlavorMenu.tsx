@@ -1,4 +1,5 @@
 import { Box, Typography } from "@mui/material";
+import { useMemo } from "react";
 
 import EmulatorState, {
     AdminConsoleState,
@@ -51,23 +52,28 @@ const SelectFlavorMenu = (props: { theme?: TerminalTheme; emulatorState: Emulato
         );
     }
 
-    const typeOrder = { currentFlavor: 3, lastBatch: 2, upcoming: 1 };
-    const sortedInventory = [...mode.inventoryData].sort((a, b) => {
-        const typeA = typeOrder[a.type as keyof typeof typeOrder] ?? 0;
-        const typeB = typeOrder[b.type as keyof typeof typeOrder] ?? 0;
+    const sortedInventory = useMemo(() => {
+        const typeOrder = { currentFlavor: 3, lastBatch: 2, upcoming: 1 };
+        return [...(mode.inventoryData ?? [])].sort((a, b) => {
+            const typeA = typeOrder[a.type as keyof typeof typeOrder] ?? 0;
+            const typeB = typeOrder[b.type as keyof typeof typeOrder] ?? 0;
 
-        if (typeA !== typeB) {
-            return typeB - typeA;
-        }
+            if (typeA !== typeB) {
+                return typeB - typeA;
+            }
 
-        return b.count - a.count;
-    });
+            return b.count - a.count;
+        });
+    }, [mode.inventoryData]);
 
-    const allItems = sortedInventory;
-    const totalPages = Math.ceil(allItems.length / ITEMS_PER_PAGE);
-    const startIndex = currentPage * ITEMS_PER_PAGE;
-    const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, allItems.length);
-    const itemsOnPage = allItems.slice(startIndex, endIndex);
+    const { totalPages, startIndex, itemsOnPage } = useMemo(() => {
+        const allItems = sortedInventory;
+        const totalPages = Math.ceil(allItems.length / ITEMS_PER_PAGE);
+        const startIndex = currentPage * ITEMS_PER_PAGE;
+        const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, allItems.length);
+        const itemsOnPage = allItems.slice(startIndex, endIndex);
+        return { totalPages, startIndex, itemsOnPage };
+    }, [sortedInventory, currentPage]);
 
     return (
         <Box sx={{ paddingTop: 1 }}>
