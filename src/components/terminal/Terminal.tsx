@@ -62,6 +62,26 @@ const Terminal = (
         }, 0);
     };
 
+    const onPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+        const adminConsoleMode = emulatorState.getAdminConsoleMode();
+        if (adminConsoleMode?.screen && adminConsoleMode.provisionForm) {
+            const form = adminConsoleMode.provisionForm;
+
+            if (form.currentField === 'flavorName' || form.currentField === 'color') {
+                e.preventDefault();
+                const pastedText = e.clipboardData.getData('text');
+
+                emulatorState.setAdminConsoleMode({
+                    ...adminConsoleMode,
+                    provisionForm: {
+                        ...form,
+                        [form.currentField]: form[form.currentField] + pastedText
+                    }
+                });
+            }
+        }
+    };
+
     const onKeyDown = async (e: KeyboardEvent<HTMLInputElement>) => {
         const passwordPrompt = emulatorState.getPasswordPromptState();
         if (passwordPrompt) {
@@ -297,6 +317,7 @@ const Terminal = (
                             type="text"
                             value=""
                             onKeyDown={onKeyDown}
+                            onPaste={onPaste}
                             style={{
                                 width: 0,
                                 height: 0,
@@ -305,7 +326,6 @@ const Terminal = (
                                 top: 0,
                                 left: 0
                             }}
-                            readOnly
                         />
                     </Grid>
                 ) : (
