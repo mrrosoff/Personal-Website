@@ -1,13 +1,10 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
-import { verifyAuthenticationResponse } from "@simplewebauthn/server";
-import type { AuthenticationResponseJSON } from "@simplewebauthn/types";
+import { AuthenticationResponseJSON, verifyAuthenticationResponse } from "@simplewebauthn/server";
 
-import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
-import { getItem, deleteItem, getAllItems, putItem } from "../../aws/services/dynamodb";
 import { PASSKEY_CHALLENGES_TABLE, PASSKEY_CREDENTIALS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
-
-const RP_ID = "maxrosoff.com";
-const ORIGIN = "https://maxrosoff.com";
+import { deleteItem, getAllItems, putItem } from "../../aws/services/dynamodb";
+import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
+import { RP_ID, RP_ORIGIN } from "./passkeyAuthOptions";
 
 type PasskeyAuthPayload = {
     response: AuthenticationResponseJSON;
@@ -20,7 +17,6 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 
     const body: PasskeyAuthPayload = JSON.parse(event.body);
 
-    // Get the challenge
     const challenges = await getAllItems(PASSKEY_CHALLENGES_TABLE);
     const challengeRecord = challenges?.find((c: any) => c.type === "authentication");
 
@@ -30,14 +26,13 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 
     const currentTime = Math.floor(Date.now() / 1000);
     if (challengeRecord.expiresAt < currentTime) {
-        await deleteItem(PASSKEY_CHALLENGES_TABLE, { challengeId: challengeRecord.challengeId });
+        await deleteItem(PASSKEY_CHALLENGES_TABLE, challengeRecord.challenge);
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Challenge expired");
     }
 
     try {
-        // Find the credential
         const credentialIdBase64 = Buffer.from(body.response.rawId, "base64").toString("base64");
-        const credentials = await scanTable(PASSKEY_CREDENTIALS_TABLE);
+        const credentials = await getAllItems(PASSKEY_CREDENTIALS_TABLE);
         const credential = credentials?.find((c: any) => c.credentialId === credentialIdBase64);
 
         if (!credential) {
@@ -46,12 +41,14 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 
         const verification = await verifyAuthenticationResponse({
             response: body.response,
-            expectedChallenge: challengeRecord.challengeId,
-            expectedOrigin: ORIGIN,
+            expectedChallenge: challengeRecord.challenge,
+            expectedOrigin: RP_ORIGIN,
             expectedRPID: RP_ID,
+            // @ts-ignore
             authenticator: {
                 credentialID: Buffer.from(credential.credentialId, "base64"),
                 credentialPublicKey: Buffer.from(credential.publicKey, "base64"),
+                // @ts-ignore
                 counter: credential.counter
             }
         });
@@ -60,15 +57,14 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
             return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Authentication failed");
         }
 
-        // Update counter - use generic putItem since updateItem has different signature
-        await putItem(PASSKEY_CREDENTIALS_TABLE as any, {
+        await putItem(PASSKEY_CREDENTIALS_TABLE, {
             ...credential,
+            // @ts-ignore
             counter: verification.authenticationInfo.newCounter,
             lastUsed: new Date().toISOString()
         });
 
-        // Clean up challenge
-        await deleteItem(PASSKEY_CHALLENGES_TABLE, { challengeId: challengeRecord.challengeId });
+        await deleteItem(PASSKEY_CHALLENGES_TABLE, challengeRecord.challenge);
 
         return buildResponse(event, HttpResponseStatus.OK, {
             verified: true,

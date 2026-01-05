@@ -102,7 +102,7 @@ const UnsubscribeForm = () => {
                 onClick={async () => {
                     try {
                         setLoading(true);
-                        await axios.post(`${API_URL}/unsubscribe`, { email });
+                        await axios.post(`${API_URL}/email/unsubscribe`, { email });
                         setSuccess(true);
                     } catch (error: unknown) {
                         if (isAxiosError(error)) {

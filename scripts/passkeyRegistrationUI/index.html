@@ -1,86 +1,21 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register Passkey</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
-            background: #f5f5f5;
-        }
-        .card {
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        h1 {
-            margin-top: 0;
-            color: #333;
-        }
-        .status {
-            padding: 15px;
-            border-radius: 4px;
-            margin: 20px 0;
-        }
-        .status.info {
-            background: #e3f2fd;
-            color: #1976d2;
-        }
-        .status.success {
-            background: #e8f5e9;
-            color: #388e3c;
-        }
-        .status.error {
-            background: #ffebee;
-            color: #d32f2f;
-        }
-        button {
-            background: #1976d2;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-            width: 100%;
-        }
-        button:hover {
-            background: #1565c0;
-        }
-        button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-        .spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-    </style>
-</head>
-<body>
-    <div class="card">
-        <h1>Register Passkey</h1>
-        <div id="status" class="status info">
-            Click the button below to register your passkey (Touch ID, Face ID, or security key)
-        </div>
-        <button id="registerBtn" onclick="registerPasskey()">
-            Register Passkey
-        </button>
-    </div>
+    <head>
+        <meta charset="UTF-8" />
+        <meta content="width=device-width, height=device-height" name="viewport" />
+        <title>Register Passkey</title>
+        <meta name="title" content="Register Passkey" />
 
-    <script type="module" src="./registration.js"></script>
-</body>
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://maxrosoff.com" />
+        <meta property="og:title" content="Register Passkey" />
+
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content="https://maxrosoff.com" />
+        <meta property="twitter:title" content="Register Passkey" />
+    </head>
+    <body>
+        <div id="root"></div>
+        <script type="module" src="/src/index.tsx"></script>
+    </body>
 </html>

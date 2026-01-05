@@ -35,7 +35,7 @@ const Checkout = () => {
     const priceIdsArray = priceIdsString.split(",").filter(Boolean);
 
     const fetchClientSecret = useMemo(async () => {
-        const result = await axios.post(`${API_URL}/checkout?priceIds=${priceIdsString}`);
+        const result = await axios.post(`${API_URL}/ice-cream/checkout?priceIds=${priceIdsString}`);
         return result.data.client_secret;
     }, [priceIdsString]);
 

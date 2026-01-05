@@ -7,6 +7,7 @@ import { buildResponse, HttpResponseStatus } from "../../common";
 
 export const RP_NAME = `Max's Personal Website`;
 export const RP_ID = "maxrosoff.com";
+export const RP_ORIGIN = "https://maxrosoff.com";
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     const credentials = await getAllItems(PASSKEY_CREDENTIALS_TABLE);

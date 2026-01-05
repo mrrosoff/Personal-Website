@@ -8,6 +8,7 @@ import EmulatorState, {
     ProvisionFlavorForm
 } from "../emulator-state/EmulatorState";
 import { FLAVOR_TYPES, FlavorType } from "../../../api/types";
+import { API_URL } from "../../components/App";
 
 export const optDef = {};
 
@@ -654,12 +655,10 @@ const fetchInventoryData = async (
 
     try {
         const { data } = await axios.post(
-            "https://api.maxrosoff.com/inventory",
+            `${API_URL}/ice-cream/inventory`,
             {},
             {
-                headers: {
-                    Authorization: `Bearer ${mode.authToken}`
-                }
+                headers: { Authorization: `Bearer ${mode.authToken}` }
             }
         );
 
@@ -732,15 +731,12 @@ const updateFlavorInventory = async (
 const sendMarketingEmails = async (authToken: string) => {
     try {
         const { data } = await axios.post(
-            "https://api.maxrosoff.com/admin/send-marketing-emails",
+            "https://api.maxrosoff.com/email/send-emails",
             {},
             {
-                headers: {
-                    Authorization: `Bearer ${authToken}`
-                }
+                headers: { Authorization: `Bearer ${authToken}` }
             }
         );
-        console.log("Marketing emails sent:", data);
         return data;
     } catch (err) {
         console.error("Failed to send marketing emails", err);

@@ -133,7 +133,7 @@ const MailingListForm = () => {
                 onClick={async () => {
                     try {
                         setLoading(true);
-                        await axios.post(`${API_URL}/register`, { firstName, lastName, email });
+                        await axios.post(`${API_URL}/email/register`, { firstName, lastName, email });
                         setSuccess(true);
                     } catch (error: unknown) {
                         if (isAxiosError(error)) {

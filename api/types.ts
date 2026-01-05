@@ -20,14 +20,14 @@ export type DatabaseFlavor = {
 };
 
 export type PasskeyCredential = {
-    id: string; // base64url-encoded ID
-    credentialId: string; // base64url-encoded ID
-    publicKey: string; // base64url-encoded public key
+    id: string;
+    credentialId: string;
+    publicKey: string;
     transports: AuthenticatorTransport[];
 };
 
 export type PasskeyChallenge = {
-    challenge: string; // base64url-encoded challenge
-    expiresAt: number; // epoch time in seconds
+    challenge: string;
+    expiresAt: number;
     type: "registration" | "authentication";
 };

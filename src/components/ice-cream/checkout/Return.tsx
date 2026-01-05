@@ -24,7 +24,7 @@ const Return = () => {
             try {
                 const body = { sessionId };
                 const result = await axios.post<Stripe.Checkout.Session>(
-                    `${API_URL}/checkout-status`,
+                    `${API_URL}/ice-cream/checkout-status`,
                     body
                 );
                 setStatus(result.data.status);

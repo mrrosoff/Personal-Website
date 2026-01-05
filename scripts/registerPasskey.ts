@@ -17,24 +17,22 @@ const PASSKEY_CREDENTIALS_TABLE = "website-passkey-credentials";
 const dynamodbClient = new DynamoDBClient({});
 const documentClient = DynamoDBDocument.from(dynamodbClient);
 
-interface RegistrationResponse extends RegistrationResponseJSON { }
-
 // Store the registration options and response
 let registrationOptions: Awaited<ReturnType<typeof generateRegistrationOptions>> | null = null;
-let registrationResponse: RegistrationResponse | null = null;
+let registrationResponse: RegistrationResponseJSON | null = null;
 let server: http.Server | null = null;
 
 function handleHomePage(res: http.ServerResponse): void {
-    const htmlPath = path.join(__dirname, 'passkey-registration-ui', 'index.html');
+    const htmlPath = path.join(__dirname, 'passkeyRegistrationUI', 'index.html');
     const html = fs.readFileSync(htmlPath, 'utf8');
-    res.writeHead(200, { 'Content-Type': 'text/html' });
+    res.writeHead(200, { 'Content-Type': 'text/html', 'Access-Control-Allow-Origin': '*' });
     res.end(html);
 }
 
 function handleRegistrationScript(res: http.ServerResponse): void {
-    const tsPath = path.join(__dirname, 'passkey-registration-ui', 'registration.ts');
+    const tsPath = path.join(__dirname, 'passkeyRegistrationUI', 'registration.ts');
     const ts = fs.readFileSync(tsPath, 'utf8');
-    res.writeHead(200, { 'Content-Type': 'application/javascript' });
+    res.writeHead(200, { 'Content-Type': 'application/javascript', 'Access-Control-Allow-Origin': '*' });
     res.end(ts);
 }
 
@@ -44,21 +42,14 @@ async function handleGenerateOptions(res: http.ServerResponse): Promise<void> {
             rpName: RP_NAME,
             rpID: RP_ID,
             userName: "admin",
-            userDisplayName: "Admin",
-            attestationType: "none",
-            authenticatorSelection: {
-                residentKey: "preferred",
-                userVerification: "preferred",
-                authenticatorAttachment: "platform"
-            }
         });
 
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
         res.end(JSON.stringify(registrationOptions));
     } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Unknown error';
         console.error('✗ Failed to generate options:', errorMessage);
-        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
         res.end(JSON.stringify({ error: errorMessage }));
     }
 }
@@ -112,12 +103,12 @@ async function handleRegistration(req: http.IncomingMessage, res: http.ServerRes
             console.log('✓ Passkey registered successfully!');
             console.log('\nYou can now use your passkey to authenticate with sudo console');
 
-            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
             res.end(JSON.stringify({ success: true }));
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : 'Unknown error';
             console.error('✗ Registration failed:', errorMessage);
-            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
             res.end(JSON.stringify({ error: errorMessage }));
         }
 
@@ -128,55 +119,41 @@ async function handleRegistration(req: http.IncomingMessage, res: http.ServerRes
     });
 }
 
-function handleNotFound(res: http.ServerResponse): void {
+server = http.createServer(async (req, res) => {
+    if (req.method === 'OPTIONS') {
+        res.writeHead(204, {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Headers': 'Content-Type',
+        });
+        return res.end();
+    }
+
+    switch (req.url) {
+        case '/':
+            return handleHomePage(res);
+        case '/registration.js':
+            return handleRegistrationScript(res);
+        case '/options':
+            return handleGenerateOptions(res);
+        case '/register':
+            return handleRegistration(req, res);
+    }
+
     res.writeHead(404);
     res.end('Not found');
-}
-
-// Create a simple HTTP server
-server = http.createServer(async (req, res) => {
-    if (req.method === 'GET' && req.url === '/') {
-        return handleHomePage(res);
-    }
-
-    if (req.method === 'GET' && req.url === '/registration.js') {
-        return handleRegistrationScript(res);
-    }
-
-    if (req.method === 'POST' && req.url === '/options') {
-        return handleGenerateOptions(res);
-    }
-
-    if (req.method === 'POST' && req.url === '/register') {
-        return handleRegistration(req, res);
-    }
-
-    return handleNotFound(res);
 });
 
 async function main(): Promise<void> {
     console.log('Passkey Registration Script');
-    console.log('============================\n');
+    console.log('===========================');
 
-    // Start server
     server?.listen(PORT, () => {
         console.log(`Opening browser for passkey registration...`);
-        const url = `http://localhost:${PORT}`;
-
-        // Open browser based on platform
-        const command = process.platform === 'darwin' ? 'open' :
-            process.platform === 'win32' ? 'start' : 'xdg-open';
-
-        exec(`${command} ${url}`, (err) => {
-            if (err) {
-                console.error('Could not open browser automatically.');
-                console.log(`Please open: ${url}`);
-            }
-        });
+        exec("NODE_ENV=development vite");
     });
 
-    console.log('\nWaiting for passkey registration...');
-    console.log('(The browser window will close automatically when done)\n');
+    console.log('\nWaiting for passkey registration (the browser will close automatically when finished)...');
+    console.log();
 }
 
 main().catch(console.error);

@@ -10,6 +10,7 @@ import EmulatorState, {
 } from "../../../javascript-terminal/emulator-state/EmulatorState";
 import { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
+import { API_URL } from "../../App";
 
 const IceCreamInventoryMenu = (props: {
     mode: AdminConsoleState;
@@ -40,7 +41,7 @@ const IceCreamInventoryMenu = (props: {
         props.emulatorState.setAdminConsoleMode(newMode);
 
         const { data } = await axios.post<{ inventory: DatabaseFlavor[] }>(
-            "https://api.maxrosoff.com/inventory",
+            `${API_URL}/ice-cream/inventory`,
             {},
             {
                 headers: { Authorization: `Bearer ${props.mode.authToken}` }

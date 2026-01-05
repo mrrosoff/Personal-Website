@@ -90,16 +90,6 @@ class WebsiteAPIStack extends Stack {
         certificate: Certificate,
         apiRole: Role
     ): RestApi {
-        const inventoryLambda = this.createInventoryLambda(apiRole);
-        const checkoutLambda = this.createCheckoutLambda(apiRole);
-        const checkoutStatusLambda = this.createCheckoutStatusLambda(apiRole);
-        const checkoutSuccessLambda = this.createCheckoutSuccessLambda(apiRole);
-
-        const receiveLambda = this.createReceiveLambda(apiRole);
-        const registerLambda = this.createRegisterLambda(apiRole);
-        const sendEmailLambda = this.createSendEmailLambda(apiRole);
-        const unsubscribeLambda = this.createUnsubscribeLambda(apiRole);
-
         const api = new RestApi(this, "websiteRestApi", {
             restApiName: "Website API",
             description: "The service endpoint for Personal Website API",
@@ -116,24 +106,11 @@ class WebsiteAPIStack extends Stack {
             defaultCorsPreflightOptions: { allowOrigins: Cors.ALL_ORIGINS },
             endpointExportName: "WebsiteApiEndpoint"
         });
-        api.root.addResource("inventory").addMethod("POST", new LambdaIntegration(inventoryLambda));
-        api.root.addResource("checkout").addMethod("POST", new LambdaIntegration(checkoutLambda));
-        api.root
-            .addResource("checkout-status")
-            .addMethod("POST", new LambdaIntegration(checkoutStatusLambda));
-        api.root
-            .addResource("checkout-success")
-            .addMethod("POST", new LambdaIntegration(checkoutSuccessLambda));
-        api.root.addResource("receive").addMethod("POST", new LambdaIntegration(receiveLambda));
-        api.root.addResource("register").addMethod("POST", new LambdaIntegration(registerLambda));
-        api.root
-            .addResource("send-email")
-            .addMethod("POST", new LambdaIntegration(sendEmailLambda));
-        api.root
-            .addResource("unsubscribe")
-            .addMethod("POST", new LambdaIntegration(unsubscribeLambda));
+
         this.createAdminRoutes(api, apiRole);
+        this.createEmailRoutes(api, apiRole);
         this.createJWKRoutes(api, apiRole);
+        this.createIceCreamRoutes(api, apiRole);
         return api;
     }
 
@@ -143,7 +120,6 @@ class WebsiteAPIStack extends Stack {
 
         const passkeyAuthOptionsLambda = this.createPasskeyAuthOptionsLambda(apiRole);
         const passkeyAuthLambda = this.createPasskeyAuthLambda(apiRole);
-
 
         const adminResource = api.root.addResource("admin");
         adminResource
@@ -160,11 +136,45 @@ class WebsiteAPIStack extends Stack {
             .addMethod("POST", new LambdaIntegration(passkeyAuthLambda));
     }
 
+    private createEmailRoutes(api: RestApi, apiRole: Role) {
+        const receiveLambda = this.createReceiveLambda(apiRole);
+        const registerLambda = this.createRegisterLambda(apiRole);
+        const sendEmailLambda = this.createSendEmailLambda(apiRole);
+        const unsubscribeLambda = this.createUnsubscribeLambda(apiRole);
+
+        const emailResource = api.root.addResource("email");
+        emailResource.addResource("receive").addMethod("POST", new LambdaIntegration(receiveLambda));
+        emailResource.addResource("register").addMethod("POST", new LambdaIntegration(registerLambda));
+        emailResource
+            .addResource("send-email")
+            .addMethod("POST", new LambdaIntegration(sendEmailLambda));
+        emailResource
+            .addResource("unsubscribe")
+            .addMethod("POST", new LambdaIntegration(unsubscribeLambda));
+    }
+
     private createJWKRoutes(api: RestApi, apiRole: Role) {
         const jwksLambda = this.createJWKLambda(apiRole);
 
         const jwks = api.root.addResource("jwks");
         jwks.addMethod("GET", new LambdaIntegration(jwksLambda));
+    }
+
+    private createIceCreamRoutes(api: RestApi, apiRole: Role) {
+        const inventoryLambda = this.createInventoryLambda(apiRole);
+        const checkoutLambda = this.createCheckoutLambda(apiRole);
+        const checkoutStatusLambda = this.createCheckoutStatusLambda(apiRole);
+        const checkoutSuccessLambda = this.createCheckoutSuccessLambda(apiRole);
+
+        const iceCreamResource = api.root.addResource("ice-cream");
+        iceCreamResource.addResource("inventory").addMethod("POST", new LambdaIntegration(inventoryLambda));
+        iceCreamResource.addResource("checkout").addMethod("POST", new LambdaIntegration(checkoutLambda));
+        iceCreamResource
+            .addResource("checkout-status")
+            .addMethod("POST", new LambdaIntegration(checkoutStatusLambda));
+        iceCreamResource
+            .addResource("checkout-success")
+            .addMethod("POST", new LambdaIntegration(checkoutSuccessLambda));
     }
 
     private createJWKLambda(role: Role): LambdaFunction {

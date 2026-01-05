@@ -28,7 +28,7 @@ export const IceCreamCartProvider = ({ children }: { children: ReactNode }) => {
                 setIsLoadingFlavors(true);
                 setFlavorsError(null);
                 const { data } = await axios.post<{ inventory: DatabaseFlavor[] }>(
-                    `${API_URL}/inventory`
+                    `${API_URL}/ice-cream/inventory`
                 );
                 setFlavors(data.inventory);
             } catch (error) {
