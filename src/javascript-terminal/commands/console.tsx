@@ -6,7 +6,7 @@ import EmulatorState, {
     IceCreamInventoryMenuOption,
     ProvisionFlavorForm
 } from "../emulator-state/EmulatorState";
-import { FLAVOR_TYPES, FlavorType } from "../../../api/types";
+import { DatabaseFlavor, FLAVOR_TYPES, FlavorType } from "../../../api/types";
 import { API_URL } from "../../components/App";
 
 export const optDef = {};
@@ -310,17 +310,7 @@ const handleSelectFlavor = (key: string, state: EmulatorState): EmulatorState =>
     const mode = state.getAdminConsoleMode()!;
     if (!mode.inventoryData) return state;
 
-    const typeOrder = { current: 3, lastBatch: 2, upcoming: 1 };
-    const sortedInventory = [...mode.inventoryData].sort((a, b) => {
-        const typeA = typeOrder[a.type as keyof typeof typeOrder] ?? 0;
-        const typeB = typeOrder[b.type as keyof typeof typeOrder] ?? 0;
-
-        if (typeA !== typeB) {
-            return typeB - typeA;
-        }
-
-        return b.count - a.count;
-    });
+    const sortedInventory = sortInventory(mode.inventoryData);
 
     const ITEMS_PER_PAGE = 4;
     const selectedIndex = mode.selectedOption as number;
@@ -712,6 +702,20 @@ const sendMarketingEmails = async (authToken: string) => {
     } catch (err) {
         console.error("Failed to send marketing emails", err);
     }
+};
+
+export const sortInventory = (inventoryData: DatabaseFlavor[]) => {
+    const typeOrder = { currentFlavor: 3, lastBatch: 2, upcoming: 1 };
+    return [...inventoryData].sort((a, b) => {
+        const typeA = typeOrder[a.type as keyof typeof typeOrder] ?? 0;
+        const typeB = typeOrder[b.type as keyof typeof typeOrder] ?? 0;
+
+        if (typeA !== typeB) {
+            return typeB - typeA;
+        }
+
+        return b.count - a.count;
+    });
 };
 
 export const manPage = `NAME

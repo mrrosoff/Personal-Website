@@ -1,6 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import { useMemo } from "react";
 
+import { sortInventory } from "../../../javascript-terminal/commands/console";
 import EmulatorState, {
     AdminConsoleState,
     AdminConsoleScreen
@@ -53,17 +54,7 @@ const SelectFlavorMenu = (props: { theme?: TerminalTheme; emulatorState: Emulato
     }
 
     const sortedInventory = useMemo(() => {
-        const typeOrder = { currentFlavor: 3, lastBatch: 2, upcoming: 1 };
-        return [...(mode.inventoryData ?? [])].sort((a, b) => {
-            const typeA = typeOrder[a.type as keyof typeof typeOrder] ?? 0;
-            const typeB = typeOrder[b.type as keyof typeof typeOrder] ?? 0;
-
-            if (typeA !== typeB) {
-                return typeB - typeA;
-            }
-
-            return b.count - a.count;
-        });
+        return sortInventory(mode.inventoryData ?? []);
     }, [mode.inventoryData]);
 
     const { totalPages, startIndex, itemsOnPage } = useMemo(() => {
