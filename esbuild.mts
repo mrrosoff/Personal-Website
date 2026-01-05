@@ -36,10 +36,13 @@ await buildLambdaFunction("api/endpoints/email/register.ts", "dist/lambda/email/
 await buildLambdaFunction("api/endpoints/email/sendEmail.ts", "dist/lambda/email/sendEmail");
 await buildLambdaFunction("api/endpoints/email/unsubscribe.ts", "dist/lambda/email/unsubscribe");
 
+await buildLambdaFunction("api/jwks/jwks.ts", "dist/lambda/jwks");
+
 await buildLambdaFunction(
-    "api/endpoints/admin/passwordCheck.ts",
-    "dist/lambda/admin/passwordCheck"
+    "api/endpoints/admin/passkeyAuthOptions.ts",
+    "dist/lambda/admin/passkeyAuthOptions"
 );
+await buildLambdaFunction("api/endpoints/admin/passkeyAuth.ts", "dist/lambda/admin/passkeyAuth");
 await buildLambdaFunction(
     "api/endpoints/admin/provisionFlavor.ts",
     "dist/lambda/admin/provisionFlavor"

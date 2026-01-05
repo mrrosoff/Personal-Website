@@ -14,7 +14,7 @@
         "build-cdk": "npm run types && ts-node esbuild.mts",
         "bootstrap": "cdk bootstrap",
         "deploy": "cdk deploy --require-approval=never --all",
-        "register-passkey": "ts-node scripts/register-passkey.ts"
+        "register-passkey": "ts-node scripts/registerPasskey.ts"
     },
     "author": "Max Rosoff",
     "license": "MIT",
