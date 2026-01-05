@@ -74,9 +74,9 @@ const Terminal = (
         if (adminConsoleMode?.screen && adminConsoleMode.provisionForm) {
             const form = adminConsoleMode.provisionForm;
 
-            if (form.currentField === 'flavorName' || form.currentField === 'color') {
+            if (form.currentField === "flavorName" || form.currentField === "color") {
                 e.preventDefault();
-                const pastedText = e.clipboardData.getData('text');
+                const pastedText = e.clipboardData.getData("text");
 
                 emulatorState.setAdminConsoleMode({
                     ...adminConsoleMode,
@@ -206,6 +206,7 @@ const Terminal = (
 		0 updates are ready to be installed.
 	`;
 
+    const passwordPrompt = emulatorState.getPasswordPromptState();
     return (
         <>
             {showMOTD && (
@@ -260,19 +261,23 @@ const Terminal = (
                         <AdminConsole emulatorState={emulatorState} theme={props.theme} />
                     </Box>
                 )}
-                {emulatorState.getPasswordPromptState() ? (
+                {passwordPrompt ? (
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                         <Box component="span" style={{ color: props.theme.outputColor }}>
                             Password:
                         </Box>
-                        <Box
-                            width={8}
-                            height={18}
-                            sx={{
-                                visibility: visibleCursor ? "visible" : "hidden",
-                                background: "#FFFFFF"
-                            }}
-                        />
+                        {passwordPrompt.loading ? (
+                            <>...</>
+                        ) : (
+                            <Box
+                                width={8}
+                                height={18}
+                                sx={{
+                                    visibility: visibleCursor ? "visible" : "hidden",
+                                    background: "#FFFFFF"
+                                }}
+                            />
+                        )}
                         <input
                             ref={ref}
                             type="text"

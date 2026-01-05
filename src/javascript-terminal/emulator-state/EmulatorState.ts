@@ -45,6 +45,7 @@ export type AdminConsoleState = {
 export type PasswordPromptState = {
     targetCommand: string;
     targetOptions: string[];
+    loading?: boolean;
 };
 
 const TAB_COUNT_KEY = "tabCount";
