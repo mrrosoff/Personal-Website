@@ -36,13 +36,13 @@ const Terminal = (
     const [emulatorState, setEmulatorState] = useState(props.emulatorState);
     const [renderedOutputs, setRenderedOutputs] = useState([]);
     const [_, setHistoryIndex] = useState(-1);
-    const [visibleCursor, setVisibleCursor] = useState<boolean>(true);
+    const [loadingDots, setLoadingDots] = useState(0);
 
     let emulator = new Emulator();
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setVisibleCursor((visible) => !visible);
+            setLoadingDots((dots) => (dots + 1) % 4);
         }, 600);
         return () => clearInterval(interval);
     }, []);
@@ -267,13 +267,15 @@ const Terminal = (
                             Password:
                         </Box>
                         {passwordPrompt.loading ? (
-                            <>...</>
+                            <Box component="span" style={{ color: props.theme.outputColor }}>
+                                {".".repeat(loadingDots + 1)}
+                            </Box>
                         ) : (
                             <Box
                                 width={8}
                                 height={18}
                                 sx={{
-                                    visibility: visibleCursor ? "visible" : "hidden",
+                                    visibility: loadingDots % 2 === 0 ? "visible" : "hidden",
                                     background: "#FFFFFF"
                                 }}
                             />

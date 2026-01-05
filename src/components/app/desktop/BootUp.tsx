@@ -178,7 +178,7 @@ const DriveInfo = (props: { state: number }) => {
                 <Grid>
                     <header>
                         <Typography>
-                            Detecting Primary Drive (C) . . . . . .
+                            Detecting Primary Drive (/dev/sda1) . . . . . .
                             {props.state >= 13 ? (
                                 <span style={{ color: "#2BC903" }}> SUCCESS </span>
                             ) : null}
@@ -190,7 +190,7 @@ const DriveInfo = (props: { state: number }) => {
                 <Grid>
                     <header>
                         <Typography>
-                            Detecting Secondary Drive (D) . . . . . .
+                            Detecting Secondary Drive (/dev/sda2) . . . . . .
                             {props.state >= 15 ? (
                                 <span style={{ color: "#2BC903" }}> SUCCESS </span>
                             ) : null}
