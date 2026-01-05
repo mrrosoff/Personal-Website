@@ -56,10 +56,10 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 
         const { credential } = verification.registrationInfo;
 
-        // Store the credential directly - DynamoDB handles binary data
+        // Store credential with base64-encoded publicKey for DynamoDB compatibility
         await putItem(PASSKEY_CREDENTIALS_TABLE, {
-            id: Buffer.from(credential.id).toString("base64"), // ID as base64 for easy lookup
-            publicKey: credential.publicKey, // Store as Buffer directly
+            id: Buffer.from(credential.id).toString("base64"),
+            publicKey: Buffer.from(credential.publicKey).toString("base64"),
             counter: credential.counter,
             transports: body.response.response.transports
         });

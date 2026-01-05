@@ -1,3 +1,5 @@
+import type { AuthenticatorTransportFuture } from "@simplewebauthn/server";
+
 export type DynamoDBScalar = number | string | boolean | undefined | null;
 export type DynamoDBFieldValue =
     | DynamoDBScalar
@@ -17,6 +19,13 @@ export type DatabaseFlavor = {
     color: string;
     count: number;
     type: FlavorType | null;
+};
+
+export type PasskeyCredential = {
+    id: string;
+    publicKey: string;
+    counter: number;
+    transports?: AuthenticatorTransportFuture[];
 };
 
 export type PasskeyChallenge = {

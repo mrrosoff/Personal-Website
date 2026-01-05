@@ -1,9 +1,8 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocument, UpdateCommand, ScanCommand, PutCommand, GetCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
-import { WebAuthnCredential } from "@simplewebauthn/server";
 
 import { FLAVORS_TABLE, PASSKEY_CHALLENGES_TABLE, PASSKEY_CREDENTIALS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
-import { DatabaseFlavor, DynamoDBFieldValue, PasskeyChallenge } from "../../types";
+import { DatabaseFlavor, DynamoDBFieldValue, PasskeyChallenge, PasskeyCredential } from "../../types";
 
 // prettier-ignore
 export type Table =
@@ -26,7 +25,7 @@ type UpdateItemInput<T extends Table> = Partial<
 export type TableObject<T extends Table> =
     T extends typeof FLAVORS_TABLE ? DatabaseFlavor :
     T extends typeof PASSKEY_CHALLENGES_TABLE ? PasskeyChallenge :
-    T extends typeof PASSKEY_CREDENTIALS_TABLE ? WebAuthnCredential :
+    T extends typeof PASSKEY_CREDENTIALS_TABLE ? PasskeyCredential :
     never;
 
 // prettier-ignore

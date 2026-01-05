@@ -40,12 +40,20 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
             return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Credential not found");
         }
 
+        // Convert database format (base64 publicKey) to WebAuthnCredential format (Buffer)
+        const webAuthnCredential = {
+            id: credential.id,
+            publicKey: Buffer.from(credential.publicKey, "base64"),
+            counter: credential.counter,
+            transports: credential.transports
+        };
+
         const verification = await verifyAuthenticationResponse({
             response: body.response,
             expectedChallenge: challengeRecord.challenge,
             expectedOrigin: RP_ORIGIN,
             expectedRPID: RP_ID,
-            credential: credential
+            credential: webAuthnCredential
         });
 
         if (!verification.verified) {

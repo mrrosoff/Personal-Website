@@ -7,6 +7,7 @@ import { exec } from 'child_process';
 import { RegistrationResponseJSON, generateRegistrationOptions, verifyRegistrationResponse } from '@simplewebauthn/server';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocument, PutCommand } from '@aws-sdk/lib-dynamodb';
+import { putItem } from '../api/aws/services/dynamodb';
 
 const PORT = 3456;
 const RP_NAME = "Max Rosoff's Website";
@@ -86,17 +87,12 @@ async function handleRegistration(req: http.IncomingMessage, res: http.ServerRes
             }
 
             const { credential } = verification.registrationInfo;
-
-            // Store the credential directly - DynamoDB handles binary data
-            await documentClient.send(new PutCommand({
-                TableName: PASSKEY_CREDENTIALS_TABLE,
-                Item: {
-                    id: Buffer.from(credential.id).toString('base64'), // ID as base64 for easy lookup
-                    publicKey: credential.publicKey, // Store as Buffer directly
-                    counter: credential.counter,
-                    transports: registrationResponse.response.transports
-                }
-            }));
+            await putItem(PASSKEY_CREDENTIALS_TABLE, {
+                id: Buffer.from(credential.id).toString('base64'),
+                publicKey: Buffer.from(credential.publicKey).toString('base64'),
+                counter: credential.counter,
+                transports: registrationResponse.response.transports
+            })
 
             console.log('✓ Passkey registered successfully!');
             console.log('\nYou can now use your passkey to authenticate with sudo console');
