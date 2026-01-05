@@ -36,7 +36,7 @@ export type ProvisionFlavorForm = {
 export type AdminConsoleState = {
     screen?: AdminConsoleScreen;
     selectedOption?: MainMenuOption | IceCreamInventoryMenuOption | number | "yes" | "no";
-    password: string;
+    authToken?: string; // JWT token for API authentication
     inventoryData?: DatabaseFlavor[];
     editingFlavor?: DatabaseFlavor;
     provisionForm?: ProvisionFlavorForm;
@@ -46,7 +46,6 @@ export type AdminConsoleState = {
 export type PasswordPromptState = {
     targetCommand: string;
     targetOptions: string[];
-    verifiedPassword?: string;
 };
 
 const TAB_COUNT_KEY = "tabCount";

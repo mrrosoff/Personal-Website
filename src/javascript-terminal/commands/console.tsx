@@ -264,7 +264,7 @@ const handleFlavorEdit = (
                 mode.editingFlavor.color,
                 mode.editingFlavor.count,
                 mode.editingFlavor.type,
-                mode.password
+                mode.authToken!
             );
             const newMode = {
                 ...mode,
@@ -630,7 +630,7 @@ const handleConfirmProvisionFlavor = async (
             break;
         case "Enter":
             if (currentOption === "yes" && mode.provisionForm) {
-                await provisionNewFlavor(mode.provisionForm, mode.password);
+                await provisionNewFlavor(mode.provisionForm, mode.authToken!);
             }
             setState({
                 ...mode,
@@ -681,15 +681,20 @@ const fetchInventoryData = async (
     }
 };
 
-const provisionNewFlavor = async (form: ProvisionFlavorForm, password: string) => {
+const provisionNewFlavor = async (form: ProvisionFlavorForm, authToken: string) => {
     try {
-        const { data } = await axios.post("https://api.maxrosoff.com/admin/provision-flavor", {
-            flavorName: form.flavorName,
-            initialQuantity: form.initialQuantity,
-            color: form.color,
-            type: form.type,
-            password
-        });
+        const { data } = await axios.post(
+            "https://api.maxrosoff.com/admin/provision-flavor",
+            {
+                flavorName: form.flavorName,
+                initialQuantity: form.initialQuantity,
+                color: form.color,
+                type: form.type
+            },
+            {
+                headers: { Authorization: `Bearer ${authToken}` }
+            }
+        );
         console.log("Provision flavor result:", data);
         return data;
     } catch (err) {
@@ -703,17 +708,16 @@ const updateFlavorInventory = async (
     color: string,
     count: number,
     type: FlavorType | null,
-    password: string
+    authToken: string
 ) => {
     try {
-        const { data } = await axios.post("https://api.maxrosoff.com/admin/update-inventory", {
-            productId,
-            name,
-            color,
-            count,
-            type,
-            password
-        });
+        const { data } = await axios.post(
+            "https://api.maxrosoff.com/admin/update-inventory",
+            { productId, name, color, count, type },
+            {
+                headers: { Authorization: `Bearer ${authToken}` }
+            }
+        );
         console.log("Update inventory result:", data);
         return data;
     } catch (err) {

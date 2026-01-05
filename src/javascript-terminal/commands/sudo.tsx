@@ -1,4 +1,6 @@
 import axios from "axios";
+import { startAuthentication } from "@simplewebauthn/browser";
+
 import EmulatorState from "../emulator-state/EmulatorState";
 import { parseOptions } from "../parser";
 import * as CommandMappingUtil from "../emulator-state/CommandMapping";
@@ -45,7 +47,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
 export const handlePasswordPromptKeyPress = async (
     emulator: Emulator,
     emulatorState: EmulatorState,
-    password: string,
+    _password: string,
     key: string,
     ctrlKey: boolean = false
 ): Promise<boolean> => {
@@ -59,17 +61,26 @@ export const handlePasswordPromptKeyPress = async (
 
     if (key === "Enter") {
         try {
-            await axios.post("https://api.maxrosoff.com/admin/password-check", { password });
+            const { data: authOptions } = await axios.post(
+                "https://api.maxrosoff.com/admin/passkey-auth-options"
+            );
+
+            const authResponse = await startAuthentication(authOptions);
+
+            const { data: authResult } = await axios.post("https://api.maxrosoff.com/admin/passkey-auth", {
+                response: authResponse
+            });
 
             const existingAdminMode = emulatorState.getAdminConsoleMode();
             emulatorState.setAdminConsoleMode({
                 ...existingAdminMode,
-                password
+                password: "passkey-authenticated",
+                authToken: authResult.token
             });
 
             emulatorState.setPasswordPromptState({
                 ...promptState,
-                verifiedPassword: password
+                verifiedPassword: "passkey-authenticated"
             });
 
             const commandMapping = emulatorState.getCommandMapping();
@@ -89,13 +100,13 @@ export const handlePasswordPromptKeyPress = async (
 
             return true;
         } catch (err) {
-            console.error("Password Validation Failed:", err);
+            console.error("Authentication Failed:", err);
             emulatorState.setPasswordPromptState(undefined);
 
             const outputs = emulatorState.getOutputs();
             if (outputs.length > 0) {
                 const lastOutput = outputs[outputs.length - 1];
-                lastOutput.output = [{ output: "Invalid Password", type: "error" }];
+                lastOutput.output = [{ output: "Authentication Failed", type: "error" }];
                 emulatorState.setOutputs([...outputs]);
             }
             return true;

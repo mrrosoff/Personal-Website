@@ -2,13 +2,13 @@ import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import Stripe from "stripe";
 
 import { FLAVORS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
-import { getParameters } from "../../aws/services/parameterStore";
+import { getParameter } from "../../aws/services/parameterStore";
 import { putItem } from "../../aws/services/dynamodb";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
 import { FlavorType } from "../../types";
+import { isAuthenticated } from "../../auth";
 
 type ProvisionFlavorPayload = {
-    password: string;
     flavorName: string;
     initialQuantity: number;
     color: string;
@@ -22,12 +22,12 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 
     const body: ProvisionFlavorPayload = JSON.parse(event.body);
 
-    const keys = await getParameters("/website/password", "/website/stripe/api-key");
-    if (keys["/website/password"] !== body.password) {
-        return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Invalid Admin Password");
+    if (!(await isAuthenticated(event))) {
+        return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Authentication required");
     }
 
-    const stripe = new Stripe(keys["/website/stripe/api-key"]);
+    const stripeApiKey = await getParameter("/website/stripe/api-key");
+    const stripe = new Stripe(stripeApiKey);
     const product = await stripe.products.create({
         name: body.flavorName
     });

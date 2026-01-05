@@ -1,14 +1,20 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocument, UpdateCommand, ScanCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocument, UpdateCommand, ScanCommand, PutCommand, GetCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
 
-import { FLAVORS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
-import { DatabaseFlavor, DynamoDBFieldValue } from "../../types";
+import { FLAVORS_TABLE, PASSKEY_CHALLENGES_TABLE, PASSKEY_CREDENTIALS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
+import { DatabaseFlavor, DynamoDBFieldValue, PasskeyChallenge, PasskeyCredential } from "../../types";
 
-export type Table = typeof FLAVORS_TABLE;
+// prettier-ignore
+export type Table =
+    typeof FLAVORS_TABLE |
+    typeof PASSKEY_CHALLENGES_TABLE |
+    typeof PASSKEY_CREDENTIALS_TABLE;
 
 // prettier-ignore
 type ItemKeyInput<T extends Table> =
     T extends typeof FLAVORS_TABLE ? string :
+    T extends typeof PASSKEY_CHALLENGES_TABLE ? string :
+    T extends typeof PASSKEY_CREDENTIALS_TABLE ? string :
     never;
 
 type UpdateItemInput<T extends Table> = Partial<
@@ -18,6 +24,8 @@ type UpdateItemInput<T extends Table> = Partial<
 // prettier-ignore
 export type TableObject<T extends Table> =
     T extends typeof FLAVORS_TABLE ? DatabaseFlavor :
+    T extends typeof PASSKEY_CHALLENGES_TABLE ? PasskeyChallenge :
+    T extends typeof PASSKEY_CREDENTIALS_TABLE ? PasskeyCredential :
     never;
 
 // prettier-ignore
@@ -29,8 +37,18 @@ const dynamodbClient = new DynamoDBClient();
 export const documentClient = DynamoDBDocument.from(dynamodbClient);
 
 const primaryKeys: Record<Table, string> = {
-    [FLAVORS_TABLE]: "productId"
+    [FLAVORS_TABLE]: "productId",
+    [PASSKEY_CHALLENGES_TABLE]: "id",
+    [PASSKEY_CREDENTIALS_TABLE]: "id"
 };
+
+// Generic helper functions for passkey tables
+export async function getItem<T extends Table>(table: T, key: Record<string, any>): Promise<any> {
+    console.debug(`Getting item from ${table} with key ${JSON.stringify(key)}`);
+    const getItemRequest = new GetCommand({ TableName: table, Key: key });
+    const itemOutput = await documentClient.send(getItemRequest);
+    return itemOutput.Item;
+}
 
 export async function getAllItems<T extends Table>(table: T): Promise<TableObject<T>[]> {
     console.debug(`Getting all items from ${table}`);
@@ -131,6 +149,23 @@ export async function updateItemFields<T extends Table>(
         ReturnValues: "ALL_NEW"
     });
     const itemOutput = await documentClient.send(updateItemRequest);
+    const object = itemOutput.Attributes as TableObject<T> | undefined;
+    if (!object) {
+        throw new Error("Called DynamoDB Without Validating Item Exists");
+    }
+    return object;
+}
+
+export async function deleteItem<T extends Table>(table: T, key: ItemKeyInput<T>): Promise<TableObject<T>> {
+    console.debug(`Deleting item in ${table} with key ${JSON.stringify(key)}.`);
+    const compositeKey = generateCompositeKey(table, key);
+
+    const deleteItemRequest = new DeleteCommand({
+        TableName: table,
+        Key: compositeKey,
+        ReturnValues: "ALL_OLD"
+    });
+    const itemOutput = await documentClient.send(deleteItemRequest);
     const object = itemOutput.Attributes as TableObject<T> | undefined;
     if (!object) {
         throw new Error("Called DynamoDB Without Validating Item Exists");

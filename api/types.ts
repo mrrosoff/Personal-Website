@@ -18,3 +18,16 @@ export type DatabaseFlavor = {
     count: number;
     type: FlavorType | null;
 };
+
+export type PasskeyCredential = {
+    id: string; // base64url-encoded ID
+    credentialId: string; // base64url-encoded ID
+    publicKey: string; // base64url-encoded public key
+    transports: AuthenticatorTransport[];
+};
+
+export type PasskeyChallenge = {
+    challenge: string; // base64url-encoded challenge
+    expiresAt: number; // epoch time in seconds
+    type: "registration" | "authentication";
+};

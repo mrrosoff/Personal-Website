@@ -29,19 +29,23 @@ import { EmailSubscription } from "aws-cdk-lib/aws-sns-subscriptions";
 import { AttributeType, BillingMode, Table } from "aws-cdk-lib/aws-dynamodb";
 
 export const FLAVORS_TABLE = "website-flavors";
+export const PASSKEY_CHALLENGES_TABLE = "website-passkey-challenges";
+export const PASSKEY_CREDENTIALS_TABLE = "website-passkey-credentials";
 
 class WebsiteAPIStack extends Stack {
     constructor(scope: Construct, id: string, props: StackProps) {
         super(scope, id, props);
 
         const flavorsTable = this.createFlavorsTable();
+        const passkeyChallengesTable = this.createPasskeyChallengesTable();
+        const passkeyCredentialsTable = this.createPasskeyCredentialsTable();
 
         const certificate = new Certificate(this, "websiteCertificate", {
             domainName: "maxrosoff.com",
             subjectAlternativeNames: ["*.maxrosoff.com"],
             validation: CertificateValidation.fromDns()
         });
-        const apiRole = this.createAPILambdaRole(flavorsTable);
+        const apiRole = this.createAPILambdaRole(flavorsTable, passkeyChallengesTable, passkeyCredentialsTable);
         const restApi = this.createAPI(
             certificate,
             apiRole,
@@ -61,6 +65,27 @@ class WebsiteAPIStack extends Stack {
         });
     }
 
+    private createPasskeyChallengesTable(): Table {
+        return new Table(this, "websitePasskeyChallengesTable", {
+            tableName: PASSKEY_CHALLENGES_TABLE,
+            partitionKey: { name: "id", type: AttributeType.STRING },
+            billingMode: BillingMode.PAY_PER_REQUEST,
+            removalPolicy: RemovalPolicy.DESTROY,
+            deletionProtection: true,
+            timeToLiveAttribute: "expiresAt"
+        });
+    }
+
+    private createPasskeyCredentialsTable(): Table {
+        return new Table(this, "websitePasskeyCredentialsTable", {
+            tableName: PASSKEY_CREDENTIALS_TABLE,
+            partitionKey: { name: "id", type: AttributeType.STRING },
+            billingMode: BillingMode.PAY_PER_REQUEST,
+            removalPolicy: RemovalPolicy.DESTROY,
+            deletionProtection: true
+        });
+    }
+
     private createAPI(
         certificate: Certificate,
         apiRole: Role
@@ -74,10 +99,6 @@ class WebsiteAPIStack extends Stack {
         const registerLambda = this.createRegisterLambda(apiRole);
         const sendEmailLambda = this.createSendEmailLambda(apiRole);
         const unsubscribeLambda = this.createUnsubscribeLambda(apiRole);
-
-        const passwordCheckLambda = this.createPasswordCheckLambda(apiRole);
-        const provisionFlavorLambda = this.createProvisionFlavorLambda(apiRole);
-        const updateInventoryLambda = this.createUpdateInventoryLambda(apiRole);
 
         const api = new RestApi(this, "websiteRestApi", {
             restApiName: "Website API",
@@ -111,18 +132,50 @@ class WebsiteAPIStack extends Stack {
         api.root
             .addResource("unsubscribe")
             .addMethod("POST", new LambdaIntegration(unsubscribeLambda));
+        this.createAdminRoutes(api, apiRole);
+        this.createJWKRoutes(api, apiRole);
+        return api;
+    }
+
+    private createAdminRoutes(api: RestApi, apiRole: Role) {
+        const provisionFlavorLambda = this.createProvisionFlavorLambda(apiRole);
+        const updateInventoryLambda = this.createUpdateInventoryLambda(apiRole);
+
+        const passkeyAuthOptionsLambda = this.createPasskeyAuthOptionsLambda(apiRole);
+        const passkeyAuthLambda = this.createPasskeyAuthLambda(apiRole);
+
 
         const adminResource = api.root.addResource("admin");
-        adminResource
-            .addResource("password-check")
-            .addMethod("POST", new LambdaIntegration(passwordCheckLambda));
         adminResource
             .addResource("provision-flavor")
             .addMethod("POST", new LambdaIntegration(provisionFlavorLambda));
         adminResource
             .addResource("update-inventory")
             .addMethod("POST", new LambdaIntegration(updateInventoryLambda));
-        return api;
+        adminResource
+            .addResource("passkey-auth-options")
+            .addMethod("POST", new LambdaIntegration(passkeyAuthOptionsLambda));
+        adminResource
+            .addResource("passkey-auth")
+            .addMethod("POST", new LambdaIntegration(passkeyAuthLambda));
+    }
+
+    private createJWKRoutes(api: RestApi, apiRole: Role) {
+        const jwksLambda = this.createJWKLambda(apiRole);
+
+        const jwks = api.root.addResource("jwks");
+        jwks.addMethod("GET", new LambdaIntegration(jwksLambda));
+    }
+
+    private createJWKLambda(role: Role): LambdaFunction {
+        const functionName = "website-jwks";
+        return new LambdaFunction(this, "websiteJWKsLambda", {
+            functionName,
+            handler: "jwks.handler",
+            code: Code.fromAsset("dist/lambda/jwks"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(functionName, role)
+        });
     }
 
     private createInventoryLambda(role: Role): LambdaFunction {
@@ -213,17 +266,6 @@ class WebsiteAPIStack extends Stack {
         });
     }
 
-    private createPasswordCheckLambda(role: Role): LambdaFunction {
-        const functionName = "website-password-check";
-        return new LambdaFunction(this, "websitePasswordCheckLambda", {
-            functionName,
-            handler: "passwordCheck.handler",
-            code: Code.fromAsset("dist/lambda/admin/passwordCheck"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
     private createProvisionFlavorLambda(role: Role): LambdaFunction {
         const functionName = "website-provision-flavor";
         return new LambdaFunction(this, "websiteProvisionFlavorLambda", {
@@ -241,6 +283,28 @@ class WebsiteAPIStack extends Stack {
             functionName,
             handler: "updateInventory.handler",
             code: Code.fromAsset("dist/lambda/admin/updateInventory"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(functionName, role)
+        });
+    }
+
+    private createPasskeyAuthOptionsLambda(role: Role): LambdaFunction {
+        const functionName = "website-passkey-auth-options";
+        return new LambdaFunction(this, "websitePasskeyAuthOptionsLambda", {
+            functionName,
+            handler: "passkeyAuthOptions.handler",
+            code: Code.fromAsset("dist/lambda/admin/passkeyAuthOptions"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(functionName, role)
+        });
+    }
+
+    private createPasskeyAuthLambda(role: Role): LambdaFunction {
+        const functionName = "website-passkey-auth";
+        return new LambdaFunction(this, "websitePasskeyAuthLambda", {
+            functionName,
+            handler: "passkeyAuth.handler",
+            code: Code.fromAsset("dist/lambda/admin/passkeyAuth"),
             runtime: Runtime.NODEJS_22_X,
             ...this.createLambdaParams(functionName, role)
         });
