@@ -53,8 +53,9 @@ export const authenticateWithPasskey = async (
     if (!promptState) return;
 
     try {
-        emulatorState.setPasswordPromptState({ ...promptState, loading: true });
         const { data: authOptions } = await axios.post(`${API_URL}/admin/passkey-auth-options`);
+
+        emulatorState.setPasswordPromptState({ ...promptState, loading: true });
 
         const authResponse = await startAuthentication({ optionsJSON: authOptions });
         const { data: authResult } = await axios.post(`${API_URL}/admin/passkey-auth`, {

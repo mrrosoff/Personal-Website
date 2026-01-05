@@ -55,7 +55,7 @@ const Terminal = (
 
     useEffect(() => {
         const passwordPrompt = emulatorState.getPasswordPromptState();
-        if (passwordPrompt) {
+        if (passwordPrompt && !passwordPrompt.loading) {
             authenticateWithPasskey(emulator, emulatorState);
         }
     }, [emulatorState.getPasswordPromptState()]);
