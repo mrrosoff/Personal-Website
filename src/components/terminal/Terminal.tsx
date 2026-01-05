@@ -34,7 +34,7 @@ const Terminal = (
     const [showMOTD, setShowMOTD] = useState(true);
     const [input, setInput] = useState("");
     const [emulatorState, setEmulatorState] = useState(props.emulatorState);
-    const [outputs, setOutputs] = useState([]);
+    const [renderedOutputs, setRenderedOutputs] = useState([]);
     const [_, setHistoryIndex] = useState(-1);
     const [visibleCursor, setVisibleCursor] = useState<boolean>(true);
 
@@ -56,7 +56,11 @@ const Terminal = (
     useEffect(() => {
         const passwordPrompt = emulatorState.getPasswordPromptState();
         if (passwordPrompt && !passwordPrompt.loading) {
-            authenticateWithPasskey(emulator, emulatorState);
+            const authenticate = async () => {
+                await authenticateWithPasskey(emulator, emulatorState);
+                setRenderedOutputs(calculateOutputs());
+            };
+            authenticate();
         }
     }, [emulatorState.getPasswordPromptState()]);
 
@@ -142,7 +146,7 @@ const Terminal = (
             case "Tab":
                 e.preventDefault();
                 setInput(emulator.autocomplete(emulatorState, input));
-                setOutputs(calculateOutputs());
+                setRenderedOutputs(calculateOutputs());
                 scrollToBottom();
                 break;
 
@@ -151,7 +155,7 @@ const Terminal = (
                 setEmulatorState(emulator.execute(emulatorState, input, props.errorStr));
                 setInput("");
                 setHistoryIndex(-1);
-                setOutputs(calculateOutputs());
+                setRenderedOutputs(calculateOutputs());
                 scrollToBottom();
                 break;
         }
@@ -192,10 +196,6 @@ const Terminal = (
             </Grid>
         ));
     };
-
-    useEffect(() => {
-        setOutputs(calculateOutputs());
-    }, [input, emulatorState]);
 
     const MOTDText = `
 		Welcome To Rosoff OS BETA v4.1.2
@@ -255,7 +255,7 @@ const Terminal = (
                 </>
             )}
             <Grid container direction={"column"} justifyContent={"flex-start"} spacing={1}>
-                {outputs}
+                {renderedOutputs}
                 {emulatorState.getAdminConsoleMode()?.screen && (
                     <Box height={280}>
                         <AdminConsole emulatorState={emulatorState} theme={props.theme} />

@@ -79,21 +79,16 @@ export const authenticateWithPasskey = async (
             const lastOutput = outputs[outputs.length - 1];
             lastOutput.output = [result];
             emulatorState.setOutputs([...outputs]);
-        } else {
-            emulatorState.setOutputs([{ output: result }]);
         }
     } catch (err) {
         console.error("Authentication Failed:", err);
         emulatorState.setPasswordPromptState(undefined);
 
         const outputs = emulatorState.getOutputs();
-        const failedOutput = { output: "Authentication Failed", type: "error" };
         if (outputs.length > 0) {
             const lastOutput = outputs[outputs.length - 1];
-            lastOutput.output = [failedOutput];
+            lastOutput.output = [{ output: "Authentication Failed", type: "error" }];
             emulatorState.setOutputs([...outputs]);
-        } else {
-            emulatorState.setOutputs([{ output: failedOutput }]);
         }
     }
 };
