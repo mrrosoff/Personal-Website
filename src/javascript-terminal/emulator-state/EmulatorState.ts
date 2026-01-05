@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 import { CommandMapping, create as createCommandMapping } from "./CommandMapping";
 import * as FileUtil from "../fs/util/file-util";
 import * as PathUtil from "../fs/util/path-util";
@@ -48,6 +50,10 @@ export type PasswordPromptState = {
     loading?: boolean;
 };
 
+export type BlockingModeState = {
+    content?: ReactNode;
+};
+
 const TAB_COUNT_KEY = "tabCount";
 const FS_KEY = "fs";
 const ENVIRONMENT_VARIABLES_KEY = "environmentVariables";
@@ -56,6 +62,7 @@ const OUTPUTS_KEY = "outputs";
 const COMMAND_MAPPING_KEY = "commandMapping";
 const ADMIN_CONSOLE_KEY = "adminConsole";
 const PASSWORD_PROMPT_KEY = "passwordPrompt";
+const BLOCKING_MODE_KEY = "blockingMode";
 
 type EmulatorStateType = {
     [TAB_COUNT_KEY]?: number;
@@ -66,6 +73,7 @@ type EmulatorStateType = {
     [COMMAND_MAPPING_KEY]: CommandMapping;
     [ADMIN_CONSOLE_KEY]?: AdminConsoleState;
     [PASSWORD_PROMPT_KEY]?: PasswordPromptState;
+    [BLOCKING_MODE_KEY]?: BlockingModeState;
 };
 
 export default class EmulatorState {
@@ -158,6 +166,14 @@ export default class EmulatorState {
 
     setPasswordPromptState(promptState: PasswordPromptState | undefined) {
         this.state[PASSWORD_PROMPT_KEY] = promptState;
+    }
+
+    getBlockingMode(): BlockingModeState | undefined {
+        return this.state[BLOCKING_MODE_KEY];
+    }
+
+    setBlockingMode(blockingMode: BlockingModeState | undefined) {
+        this.state[BLOCKING_MODE_KEY] = blockingMode;
     }
 }
 

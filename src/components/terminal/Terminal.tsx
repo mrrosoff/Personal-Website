@@ -207,6 +207,7 @@ const Terminal = (
 	`;
 
     const passwordPrompt = emulatorState.getPasswordPromptState();
+
     return (
         <>
             {showMOTD && (
@@ -260,6 +261,9 @@ const Terminal = (
                     <Box height={280}>
                         <AdminConsole emulatorState={emulatorState} theme={props.theme} />
                     </Box>
+                )}
+                {emulatorState.getBlockingMode()?.content && (
+                    <Box>{emulatorState.getBlockingMode()?.content}</Box>
                 )}
                 {passwordPrompt ? (
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -318,7 +322,7 @@ const Terminal = (
                             }}
                         />
                     </Grid>
-                ) : (
+                ) : emulatorState.getBlockingMode() ? null : (
                     <CommandInput
                         ref={ref}
                         value={input}
