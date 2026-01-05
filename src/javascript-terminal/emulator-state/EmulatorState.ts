@@ -36,7 +36,6 @@ export type ProvisionFlavorForm = {
 export type AdminConsoleState = {
     screen?: AdminConsoleScreen;
     selectedOption?: MainMenuOption | IceCreamInventoryMenuOption | number | "yes" | "no";
-    authToken?: string; // JWT token for API authentication
     inventoryData?: DatabaseFlavor[];
     editingFlavor?: DatabaseFlavor;
     provisionForm?: ProvisionFlavorForm;

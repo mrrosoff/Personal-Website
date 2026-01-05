@@ -22,6 +22,7 @@ const ConfirmProvisionFlavorMenu = (props: {
     if (!form) return null;
 
     const provisionFlavor = async () => {
+        const authToken = props.emulatorState.getEnvVariables()["AUTH_TOKEN"];
         try {
             await axios.post(
                 "https://api.maxrosoff.com/admin/provision-flavor",
@@ -32,7 +33,7 @@ const ConfirmProvisionFlavorMenu = (props: {
                     type: form.type
                 },
                 {
-                    headers: { Authorization: `Bearer ${props.mode.authToken}` }
+                    headers: { Authorization: `Bearer ${authToken}` }
                 }
             );
         } catch (err) {

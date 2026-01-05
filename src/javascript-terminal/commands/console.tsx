@@ -1,7 +1,6 @@
 import assert from "assert";
 import axios from "axios";
 import EmulatorState, {
-    AdminConsoleState,
     AdminConsoleScreen,
     MainMenuOption,
     IceCreamInventoryMenuOption,
@@ -49,16 +48,15 @@ const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
             };
         }
 
-        const authToken = existingMode?.authToken;
-
+        const environmentVariables = state.getEnvVariables();
+        const authToken = environmentVariables["AUTH_TOKEN"];
         if (!authToken) {
             return { output: "Permission Denied", type: "error" };
         }
 
         state.setAdminConsoleMode({
             screen: AdminConsoleScreen.Main,
-            selectedOption: MainMenuOption.IceCreamInventory,
-            authToken
+            selectedOption: MainMenuOption.IceCreamInventory
         });
 
         return {
@@ -79,45 +77,37 @@ export const handleAdminConsoleKeyPress = async (
     const mode = emulatorState.getAdminConsoleMode();
     if (!mode) return emulatorState;
 
-    const setState = (state: AdminConsoleState | undefined) => {
-        emulatorState.setAdminConsoleMode(state);
-    };
-
     if (key === "c" && ctrlKey) {
-        setState(undefined);
+        emulatorState.setAdminConsoleMode(undefined);
         return emulatorState;
     }
 
     if (mode.screen === "main") {
-        return handleMainMenu(key, emulatorState, mode, setState);
+        return handleMainMenu(key, emulatorState);
     } else if (mode.screen === "ice-cream-inventory") {
-        return await handleIceCreamInventory(key, emulatorState, mode, setState);
+        return await handleIceCreamInventory(key, emulatorState);
     } else if (mode.screen === "select-flavor") {
-        return handleSelectFlavor(key, emulatorState, mode, setState);
+        return handleSelectFlavor(key, emulatorState);
     } else if (mode.screen === "confirm-send-emails") {
-        return await handleConfirmSendEmails(key, emulatorState, mode, setState);
+        return await handleConfirmSendEmails(key, emulatorState);
     } else if (mode.screen === "provision-flavor-form") {
-        return handleProvisionFlavorForm(key, emulatorState, mode, setState);
+        return handleProvisionFlavorForm(key, emulatorState);
     } else if (mode.screen === "confirm-provision-flavor") {
-        return await handleConfirmProvisionFlavor(key, emulatorState, mode, setState);
+        return await handleConfirmProvisionFlavor(key, emulatorState);
     }
 
     return emulatorState;
 };
 
-const handleMainMenu = (
-    key: string,
-    state: EmulatorState,
-    mode: AdminConsoleState,
-    setState: (state: AdminConsoleState | undefined) => void
-): EmulatorState => {
+const handleMainMenu = (key: string, state: EmulatorState): EmulatorState => {
+    const mode = state.getAdminConsoleMode()!;
     const currentOption = mode.selectedOption as MainMenuOption;
     const currentIndex = MAIN_MENU_OPTIONS.indexOf(currentOption);
 
     switch (key) {
         case "ArrowDown": {
             const nextIndex = Math.min(currentIndex + 1, MAIN_MENU_OPTIONS.length - 1);
-            setState({
+            state.setAdminConsoleMode({
                 ...mode,
                 selectedOption: MAIN_MENU_OPTIONS[nextIndex]
             });
@@ -125,7 +115,7 @@ const handleMainMenu = (
         }
         case "ArrowUp": {
             const prevIndex = Math.max(currentIndex - 1, 0);
-            setState({
+            state.setAdminConsoleMode({
                 ...mode,
                 selectedOption: MAIN_MENU_OPTIONS[prevIndex]
             });
@@ -134,26 +124,26 @@ const handleMainMenu = (
         case "Enter":
             switch (currentOption) {
                 case MainMenuOption.IceCreamInventory:
-                    setState({
+                    state.setAdminConsoleMode({
                         ...mode,
                         screen: AdminConsoleScreen.IceCreamInventory,
                         selectedOption: IceCreamInventoryMenuOption.ProvisionNewFlavor
                     });
                     break;
                 case MainMenuOption.SendMarketingEmails:
-                    setState({
+                    state.setAdminConsoleMode({
                         ...mode,
                         screen: AdminConsoleScreen.ConfirmSendEmails,
                         selectedOption: "yes"
                     });
                     break;
                 case MainMenuOption.Exit:
-                    setState(undefined);
+                    state.setAdminConsoleMode(undefined);
                     break;
             }
             break;
         case "Escape":
-            setState(undefined);
+            state.setAdminConsoleMode(undefined);
             break;
     }
 
@@ -162,12 +152,11 @@ const handleMainMenu = (
 
 const handleIceCreamInventory = async (
     key: string,
-    state: EmulatorState,
-    mode: AdminConsoleState,
-    setState: (state: AdminConsoleState | undefined) => void
+    state: EmulatorState
 ): Promise<EmulatorState> => {
+    const mode = state.getAdminConsoleMode()!;
     if (mode.editingFlavor) {
-        return handleFlavorEdit(key, state, mode, setState);
+        return handleFlavorEdit(key, state);
     }
 
     const currentOption = mode.selectedOption as IceCreamInventoryMenuOption;
@@ -179,7 +168,7 @@ const handleIceCreamInventory = async (
                 currentIndex + 1,
                 ICE_CREAM_INVENTORY_MENU_OPTIONS.length - 1
             );
-            setState({
+            state.setAdminConsoleMode({
                 ...mode,
                 selectedOption: ICE_CREAM_INVENTORY_MENU_OPTIONS[nextIndex]
             });
@@ -187,17 +176,17 @@ const handleIceCreamInventory = async (
         }
         case "ArrowUp": {
             const prevIndex = Math.max(currentIndex - 1, 0);
-            setState({
+            state.setAdminConsoleMode({
                 ...mode,
                 selectedOption: ICE_CREAM_INVENTORY_MENU_OPTIONS[prevIndex]
             });
             break;
         }
         case "Enter":
-            await handleIceCreamMenuSelection(mode, setState);
+            await handleIceCreamMenuSelection(state);
             break;
         case "Escape":
-            setState({
+            state.setAdminConsoleMode({
                 ...mode,
                 screen: AdminConsoleScreen.Main,
                 selectedOption: MainMenuOption.IceCreamInventory,
@@ -209,17 +198,13 @@ const handleIceCreamInventory = async (
     return state;
 };
 
-const handleFlavorEdit = (
-    key: string,
-    state: EmulatorState,
-    mode: AdminConsoleState,
-    setState: (state: AdminConsoleState | undefined) => void
-): EmulatorState => {
+const handleFlavorEdit = (key: string, state: EmulatorState): EmulatorState => {
+    const mode = state.getAdminConsoleMode()!;
     if (!mode.editingFlavor) return state;
 
     switch (key) {
         case "ArrowUp":
-            setState({
+            state.setAdminConsoleMode({
                 ...mode,
                 editingFlavor: {
                     ...mode.editingFlavor,
@@ -228,7 +213,7 @@ const handleFlavorEdit = (
             });
             break;
         case "ArrowDown":
-            setState({
+            state.setAdminConsoleMode({
                 ...mode,
                 editingFlavor: {
                     ...mode.editingFlavor,
@@ -237,7 +222,7 @@ const handleFlavorEdit = (
             });
             break;
         case "ArrowRight":
-            setState({
+            state.setAdminConsoleMode({
                 ...mode,
                 editingFlavor: {
                     ...mode.editingFlavor,
@@ -246,7 +231,7 @@ const handleFlavorEdit = (
             });
             break;
         case "ArrowLeft":
-            setState({
+            state.setAdminConsoleMode({
                 ...mode,
                 editingFlavor: {
                     ...mode.editingFlavor,
@@ -256,22 +241,22 @@ const handleFlavorEdit = (
             break;
         case "Enter":
             updateFlavorInventory(
+                state,
                 mode.editingFlavor.productId,
                 mode.editingFlavor.name,
                 mode.editingFlavor.color,
                 mode.editingFlavor.count,
-                mode.editingFlavor.type,
-                mode.authToken!
+                mode.editingFlavor.type
             );
             const newMode = {
                 ...mode,
                 editingFlavor: undefined
             };
-            setState(newMode);
-            fetchInventoryData(newMode, setState);
+            state.setAdminConsoleMode(newMode);
+            fetchInventoryData(state);
             break;
         case "Escape":
-            setState({
+            state.setAdminConsoleMode({
                 ...mode,
                 editingFlavor: undefined
             });
@@ -281,15 +266,13 @@ const handleFlavorEdit = (
     return state;
 };
 
-const handleIceCreamMenuSelection = async (
-    mode: AdminConsoleState,
-    setState: (state: AdminConsoleState | undefined) => void
-) => {
+const handleIceCreamMenuSelection = async (state: EmulatorState) => {
+    const mode = state.getAdminConsoleMode()!;
     const currentOption = mode.selectedOption as IceCreamInventoryMenuOption;
 
     switch (currentOption) {
         case IceCreamInventoryMenuOption.ProvisionNewFlavor:
-            setState({
+            state.setAdminConsoleMode({
                 ...mode,
                 screen: AdminConsoleScreen.ProvisionFlavorForm,
                 provisionForm: {
@@ -308,12 +291,12 @@ const handleIceCreamMenuSelection = async (
                 selectedOption: 0,
                 currentPage: 0
             };
-            setState(newMode);
-            await fetchInventoryData(newMode, setState);
+            state.setAdminConsoleMode(newMode);
+            await fetchInventoryData(state);
             break;
         }
         case IceCreamInventoryMenuOption.GoBack:
-            setState({
+            state.setAdminConsoleMode({
                 ...mode,
                 screen: AdminConsoleScreen.Main,
                 selectedOption: MainMenuOption.IceCreamInventory,
@@ -323,12 +306,8 @@ const handleIceCreamMenuSelection = async (
     }
 };
 
-const handleSelectFlavor = (
-    key: string,
-    state: EmulatorState,
-    mode: AdminConsoleState,
-    setState: (state: AdminConsoleState | undefined) => void
-): EmulatorState => {
+const handleSelectFlavor = (key: string, state: EmulatorState): EmulatorState => {
+    const mode = state.getAdminConsoleMode()!;
     if (!mode.inventoryData) return state;
 
     // Sort inventory the same way as SelectFlavorMenu component
@@ -354,13 +333,13 @@ const handleSelectFlavor = (
 
     switch (key) {
         case "ArrowDown":
-            setState({
+            state.setAdminConsoleMode({
                 ...mode,
                 selectedOption: Math.min(selectedIndex + 1, endIndex - 1)
             });
             break;
         case "ArrowUp":
-            setState({
+            state.setAdminConsoleMode({
                 ...mode,
                 selectedOption: Math.max(selectedIndex - 1, startIndex)
             });
@@ -369,7 +348,7 @@ const handleSelectFlavor = (
             if (currentPage < totalPages - 1) {
                 const newPage = currentPage + 1;
                 const newStartIndex = newPage * ITEMS_PER_PAGE;
-                setState({
+                state.setAdminConsoleMode({
                     ...mode,
                     currentPage: newPage,
                     selectedOption: newStartIndex
@@ -380,7 +359,7 @@ const handleSelectFlavor = (
             if (currentPage > 0) {
                 const newPage = currentPage - 1;
                 const newStartIndex = newPage * ITEMS_PER_PAGE;
-                setState({
+                state.setAdminConsoleMode({
                     ...mode,
                     currentPage: newPage,
                     selectedOption: newStartIndex
@@ -389,7 +368,7 @@ const handleSelectFlavor = (
             break;
         case "Enter":
             const flavor = sortedInventory[selectedIndex];
-            setState({
+            state.setAdminConsoleMode({
                 ...mode,
                 screen: AdminConsoleScreen.IceCreamInventory,
                 editingFlavor: flavor,
@@ -398,7 +377,7 @@ const handleSelectFlavor = (
             });
             break;
         case "Escape":
-            setState({
+            state.setAdminConsoleMode({
                 ...mode,
                 screen: AdminConsoleScreen.IceCreamInventory,
                 selectedOption: IceCreamInventoryMenuOption.ModifyFlavorInventory,
@@ -413,32 +392,32 @@ const handleSelectFlavor = (
 
 const handleConfirmSendEmails = async (
     key: string,
-    state: EmulatorState,
-    mode: AdminConsoleState,
-    setState: (state: AdminConsoleState | undefined) => void
+    state: EmulatorState
 ): Promise<EmulatorState> => {
+    const mode = state.getAdminConsoleMode()!;
+    const authToken = state.getEnvVariables()["AUTH_TOKEN"];
     const currentOption = mode.selectedOption as "yes" | "no";
 
     switch (key) {
         case "ArrowLeft":
         case "ArrowRight":
-            setState({
+            state.setAdminConsoleMode({
                 ...mode,
                 selectedOption: currentOption === "yes" ? "no" : "yes"
             });
             break;
         case "Enter":
-            if (currentOption === "yes" && mode.authToken) {
-                await sendMarketingEmails(mode.authToken);
+            if (currentOption === "yes") {
+                await sendMarketingEmails(authToken);
             }
-            setState({
+            state.setAdminConsoleMode({
                 ...mode,
                 screen: AdminConsoleScreen.Main,
                 selectedOption: MainMenuOption.SendMarketingEmails
             });
             break;
         case "Escape":
-            setState({
+            state.setAdminConsoleMode({
                 ...mode,
                 screen: AdminConsoleScreen.Main,
                 selectedOption: MainMenuOption.SendMarketingEmails
@@ -449,12 +428,8 @@ const handleConfirmSendEmails = async (
     return state;
 };
 
-const handleProvisionFlavorForm = (
-    key: string,
-    state: EmulatorState,
-    mode: AdminConsoleState,
-    setState: (state: AdminConsoleState | undefined) => void
-): EmulatorState => {
+const handleProvisionFlavorForm = (key: string, state: EmulatorState): EmulatorState => {
+    const mode = state.getAdminConsoleMode()!;
     if (!mode.provisionForm) return state;
 
     const form = mode.provisionForm;
@@ -470,7 +445,7 @@ const handleProvisionFlavorForm = (
         case "ArrowDown":
         case "Tab": {
             const nextIndex = (currentIndex + 1) % fields.length;
-            setState({
+            state.setAdminConsoleMode({
                 ...mode,
                 provisionForm: {
                     ...form,
@@ -481,7 +456,7 @@ const handleProvisionFlavorForm = (
         }
         case "ArrowUp": {
             const prevIndex = (currentIndex - 1 + fields.length) % fields.length;
-            setState({
+            state.setAdminConsoleMode({
                 ...mode,
                 provisionForm: {
                     ...form,
@@ -492,7 +467,7 @@ const handleProvisionFlavorForm = (
         }
         case "ArrowLeft":
             if (form.currentField === "type") {
-                setState({
+                state.setAdminConsoleMode({
                     ...mode,
                     provisionForm: {
                         ...form,
@@ -503,7 +478,7 @@ const handleProvisionFlavorForm = (
             break;
         case "ArrowRight":
             if (form.currentField === "type") {
-                setState({
+                state.setAdminConsoleMode({
                     ...mode,
                     provisionForm: {
                         ...form,
@@ -513,14 +488,14 @@ const handleProvisionFlavorForm = (
             }
             break;
         case "Enter":
-            setState({
+            state.setAdminConsoleMode({
                 ...mode,
                 screen: AdminConsoleScreen.ConfirmProvisionFlavor,
                 selectedOption: "yes"
             });
             break;
         case "Escape":
-            setState({
+            state.setAdminConsoleMode({
                 ...mode,
                 screen: AdminConsoleScreen.IceCreamInventory,
                 selectedOption: IceCreamInventoryMenuOption.ProvisionNewFlavor,
@@ -529,7 +504,7 @@ const handleProvisionFlavorForm = (
             break;
         default:
             if (key.length === 1 || key === "Backspace") {
-                handleProvisionFormInput(key, mode, setState);
+                handleProvisionFormInput(key, state);
             }
             break;
     }
@@ -537,11 +512,8 @@ const handleProvisionFlavorForm = (
     return state;
 };
 
-const handleProvisionFormInput = (
-    key: string,
-    mode: AdminConsoleState,
-    setState: (state: AdminConsoleState | undefined) => void
-) => {
+const handleProvisionFormInput = (key: string, state: EmulatorState) => {
+    const mode = state.getAdminConsoleMode()!;
     if (!mode.provisionForm) return;
 
     const form = mode.provisionForm;
@@ -549,7 +521,7 @@ const handleProvisionFormInput = (
     switch (form.currentField) {
         case "flavorName":
             if (key === "Backspace") {
-                setState({
+                state.setAdminConsoleMode({
                     ...mode,
                     provisionForm: {
                         ...form,
@@ -557,7 +529,7 @@ const handleProvisionFormInput = (
                     }
                 });
             } else if (key.length === 1) {
-                setState({
+                state.setAdminConsoleMode({
                     ...mode,
                     provisionForm: {
                         ...form,
@@ -569,7 +541,7 @@ const handleProvisionFormInput = (
         case "initialQuantity":
             if (key === "Backspace") {
                 const newValue = Math.floor(form.initialQuantity / 10);
-                setState({
+                state.setAdminConsoleMode({
                     ...mode,
                     provisionForm: {
                         ...form,
@@ -578,7 +550,7 @@ const handleProvisionFormInput = (
                 });
             } else if (key >= "0" && key <= "9") {
                 const newValue = form.initialQuantity * 10 + parseInt(key);
-                setState({
+                state.setAdminConsoleMode({
                     ...mode,
                     provisionForm: {
                         ...form,
@@ -589,7 +561,7 @@ const handleProvisionFormInput = (
             break;
         case "color":
             if (key === "Backspace") {
-                setState({
+                state.setAdminConsoleMode({
                     ...mode,
                     provisionForm: {
                         ...form,
@@ -597,7 +569,7 @@ const handleProvisionFormInput = (
                     }
                 });
             } else if (key.length === 1 && form.color.length < 7) {
-                setState({
+                state.setAdminConsoleMode({
                     ...mode,
                     provisionForm: {
                         ...form,
@@ -611,25 +583,25 @@ const handleProvisionFormInput = (
 
 const handleConfirmProvisionFlavor = async (
     key: string,
-    state: EmulatorState,
-    mode: AdminConsoleState,
-    setState: (state: AdminConsoleState | undefined) => void
+    state: EmulatorState
 ): Promise<EmulatorState> => {
+    const mode = state.getAdminConsoleMode()!;
+    const authToken = state.getEnvVariables()["AUTH_TOKEN"];
     const currentOption = mode.selectedOption as "yes" | "no";
 
     switch (key) {
         case "ArrowLeft":
         case "ArrowRight":
-            setState({
+            state.setAdminConsoleMode({
                 ...mode,
                 selectedOption: currentOption === "yes" ? "no" : "yes"
             });
             break;
         case "Enter":
             if (currentOption === "yes" && mode.provisionForm) {
-                await provisionNewFlavor(mode.provisionForm, mode.authToken!);
+                await provisionNewFlavor(mode.provisionForm, authToken);
             }
-            setState({
+            state.setAdminConsoleMode({
                 ...mode,
                 screen: AdminConsoleScreen.IceCreamInventory,
                 selectedOption: IceCreamInventoryMenuOption.ProvisionNewFlavor,
@@ -637,7 +609,7 @@ const handleConfirmProvisionFlavor = async (
             });
             break;
         case "Escape":
-            setState({
+            state.setAdminConsoleMode({
                 ...mode,
                 screen: AdminConsoleScreen.ProvisionFlavorForm
             });
@@ -647,18 +619,17 @@ const handleConfirmProvisionFlavor = async (
     return state;
 };
 
-const fetchInventoryData = async (
-    mode: AdminConsoleState,
-    setState: (state: AdminConsoleState | undefined) => void
-) => {
-    if (!mode.authToken) return;
+const fetchInventoryData = async (state: EmulatorState) => {
+    const mode = state.getAdminConsoleMode()!;
+    const authToken = state.getEnvVariables()["AUTH_TOKEN"];
+    if (!authToken) return;
 
     try {
         const { data } = await axios.post(
             `${API_URL}/ice-cream/inventory`,
             {},
             {
-                headers: { Authorization: `Bearer ${mode.authToken}` }
+                headers: { Authorization: `Bearer ${authToken}` }
             }
         );
 
@@ -671,13 +642,13 @@ const fetchInventoryData = async (
             type: item.type || "upcoming"
         }));
 
-        setState({
+        state.setAdminConsoleMode({
             ...mode,
             inventoryData
         });
     } catch (err) {
-        console.error("Failed to fetch inventory", err);
-        setState({
+        console.error("Failed To Fetch Inventory", err);
+        state.setAdminConsoleMode({
             ...mode,
             inventoryData: []
         });
@@ -706,13 +677,14 @@ const provisionNewFlavor = async (form: ProvisionFlavorForm, authToken: string) 
 };
 
 const updateFlavorInventory = async (
+    state: EmulatorState,
     productId: string,
     name: string,
     color: string,
     count: number,
-    type: FlavorType | null,
-    authToken: string
+    type: FlavorType | null
 ) => {
+    const authToken = state.getEnvVariables()["AUTH_TOKEN"];
     try {
         const { data } = await axios.post(
             "https://api.maxrosoff.com/admin/update-inventory",

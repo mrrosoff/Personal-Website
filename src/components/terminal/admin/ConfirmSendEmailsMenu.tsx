@@ -17,12 +17,13 @@ const ConfirmSendEmailsMenu = (props: {
     const selectedOption = props.mode.selectedOption as "yes" | "no";
 
     const sendMarketingEmails = async () => {
+        const authToken = props.emulatorState.getEnvVariables()["AUTH_TOKEN"];
         try {
             await axios.post(
                 "https://api.maxrosoff.com/admin/send-marketing-emails",
                 {},
                 {
-                    headers: { Authorization: `Bearer ${props.mode.authToken}` }
+                    headers: { Authorization: `Bearer ${authToken}` }
                 }
             );
         } catch (err) {

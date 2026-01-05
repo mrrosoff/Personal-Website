@@ -19,8 +19,8 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         };
     }
 
-    const adminMode = state.getAdminConsoleMode();
-    if (adminMode?.authToken) {
+    const environmentVariables = state.getEnvVariables();
+    if (environmentVariables["AUTH_TOKEN"]) {
         const targetCommand = argv[0];
         const targetOptions = argv.slice(1);
         const commandMapping = state.getCommandMapping();
@@ -61,11 +61,8 @@ export const authenticateWithPasskey = async (
             challenge: authOptions.challenge
         });
 
-        const existingAdminMode = emulatorState.getAdminConsoleMode();
-        emulatorState.setAdminConsoleMode({
-            ...existingAdminMode,
-            authToken: authResult.token
-        });
+        const existingVars = emulatorState.getEnvVariables();
+        emulatorState.setEnvVariables({ ...existingVars, AUTH_TOKEN: authResult.token });
 
         const commandMapping = emulatorState.getCommandMapping();
         const result = emulator.runCommand(commandMapping, promptState.targetCommand, [
