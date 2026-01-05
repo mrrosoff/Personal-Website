@@ -1,6 +1,5 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
-import { verifyRegistrationResponse } from "@simplewebauthn/server";
-import type { RegistrationResponseJSON } from "@simplewebauthn/types";
+import { RegistrationResponseJSON, verifyRegistrationResponse } from "@simplewebauthn/server";
 
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
 import { getAllItems, deleteItem, putItem } from "../../aws/services/dynamodb";
