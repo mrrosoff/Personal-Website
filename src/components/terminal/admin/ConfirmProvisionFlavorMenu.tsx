@@ -23,13 +23,18 @@ const ConfirmProvisionFlavorMenu = (props: {
 
     const provisionFlavor = async () => {
         try {
-            await axios.post("https://api.maxrosoff.com/admin/provision-flavor", {
-                flavorName: form.flavorName,
-                initialQuantity: form.initialQuantity,
-                color: form.color,
-                type: form.type,
-                password: props.mode.password
-            });
+            await axios.post(
+                "https://api.maxrosoff.com/admin/provision-flavor",
+                {
+                    flavorName: form.flavorName,
+                    initialQuantity: form.initialQuantity,
+                    color: form.color,
+                    type: form.type
+                },
+                {
+                    headers: { Authorization: `Bearer ${props.mode.authToken}` }
+                }
+            );
         } catch (err) {
             console.error("Failed to provision flavor", err);
         }

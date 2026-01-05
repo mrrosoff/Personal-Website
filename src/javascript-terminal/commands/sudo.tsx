@@ -19,7 +19,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     }
 
     const adminMode = state.getAdminConsoleMode();
-    if (adminMode?.password) {
+    if (adminMode?.authToken) {
         const targetCommand = argv[0];
         const targetOptions = argv.slice(1);
         const commandMapping = state.getCommandMapping();
@@ -74,13 +74,7 @@ export const handlePasswordPromptKeyPress = async (
             const existingAdminMode = emulatorState.getAdminConsoleMode();
             emulatorState.setAdminConsoleMode({
                 ...existingAdminMode,
-                password: "passkey-authenticated",
                 authToken: authResult.token
-            });
-
-            emulatorState.setPasswordPromptState({
-                ...promptState,
-                verifiedPassword: "passkey-authenticated"
             });
 
             const commandMapping = emulatorState.getCommandMapping();

@@ -18,9 +18,13 @@ const ConfirmSendEmailsMenu = (props: {
 
     const sendMarketingEmails = async () => {
         try {
-            await axios.post("https://api.maxrosoff.com/admin/send-marketing-emails", {
-                password: props.mode.password
-            });
+            await axios.post(
+                "https://api.maxrosoff.com/admin/send-marketing-emails",
+                {},
+                {
+                    headers: { Authorization: `Bearer ${props.mode.authToken}` }
+                }
+            );
         } catch (err) {
             console.error("Failed to send marketing emails", err);
         }

@@ -41,8 +41,9 @@ const IceCreamInventoryMenu = (props: {
 
         const { data } = await axios.post<{ inventory: DatabaseFlavor[] }>(
             "https://api.maxrosoff.com/inventory",
+            {},
             {
-                password: props.mode.password
+                headers: { Authorization: `Bearer ${props.mode.authToken}` }
             }
         );
         props.emulatorState.setAdminConsoleMode({ ...newMode, inventoryData: data.inventory });

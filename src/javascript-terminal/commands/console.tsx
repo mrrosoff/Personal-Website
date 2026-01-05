@@ -48,20 +48,16 @@ const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
             };
         }
 
-        let password = existingMode?.password;
-        if (!password) {
-            const promptState = state.getPasswordPromptState();
-            password = promptState?.verifiedPassword;
-        }
+        const authToken = existingMode?.authToken;
 
-        if (!password) {
+        if (!authToken) {
             return { output: "Permission Denied", type: "error" };
         }
 
         state.setAdminConsoleMode({
             screen: AdminConsoleScreen.Main,
             selectedOption: MainMenuOption.IceCreamInventory,
-            password
+            authToken
         });
 
         return {
@@ -431,8 +427,8 @@ const handleConfirmSendEmails = async (
             });
             break;
         case "Enter":
-            if (currentOption === "yes") {
-                await sendMarketingEmails(mode.password);
+            if (currentOption === "yes" && mode.authToken) {
+                await sendMarketingEmails(mode.authToken);
             }
             setState({
                 ...mode,
@@ -654,10 +650,18 @@ const fetchInventoryData = async (
     mode: AdminConsoleState,
     setState: (state: AdminConsoleState | undefined) => void
 ) => {
+    if (!mode.authToken) return;
+
     try {
-        const { data } = await axios.post("https://api.maxrosoff.com/inventory", {
-            password: mode.password
-        });
+        const { data } = await axios.post(
+            "https://api.maxrosoff.com/inventory",
+            {},
+            {
+                headers: {
+                    Authorization: `Bearer ${mode.authToken}`
+                }
+            }
+        );
 
         const inventoryData = data.inventory.map((item: any) => ({
             productId: item.productId || "",
@@ -725,11 +729,17 @@ const updateFlavorInventory = async (
     }
 };
 
-const sendMarketingEmails = async (password: string) => {
+const sendMarketingEmails = async (authToken: string) => {
     try {
-        const { data } = await axios.post("https://api.maxrosoff.com/admin/send-marketing-emails", {
-            password
-        });
+        const { data } = await axios.post(
+            "https://api.maxrosoff.com/admin/send-marketing-emails",
+            {},
+            {
+                headers: {
+                    Authorization: `Bearer ${authToken}`
+                }
+            }
+        );
         console.log("Marketing emails sent:", data);
         return data;
     } catch (err) {
