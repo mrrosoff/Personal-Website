@@ -17,11 +17,6 @@ export type AccessToken = {
     exp: number;
 };
 
-export enum GrantType {
-    AUTH,
-    REFRESH
-}
-
 export async function verifyJWTFromURI(
     token: string,
     uri: string,
@@ -42,27 +37,15 @@ export async function verifyJWTFromURI(
     }
 }
 
-export async function generateToken(
-    id: string,
-    grant_type: GrantType = GrantType.AUTH
-): Promise<string> {
-    console.debug(`Generating ${GrantType[grant_type]} token for user ${id}`);
+export async function generateToken(id: string): Promise<string> {
+    console.debug(`Generating auth token for user ${id}`);
     const keyStore = await JWK.asKeyStore(keys);
     const key = keyStore.get(keyMapping.authentication).toPEM(true);
     return sign({ id }, key, {
         algorithm: "ES256",
         issuer: API_ENDPOINT_URL,
-        expiresIn: `${getTokenExpiryInHours(grant_type)}h`
+        expiresIn: "6h"
     });
-}
-
-function getTokenExpiryInHours(grant_type: GrantType) {
-    switch (grant_type) {
-        case GrantType.AUTH:
-            return 6;
-        case GrantType.REFRESH:
-            return 48;
-    }
 }
 
 export async function decryptToken(token: string): Promise<AccessToken> {

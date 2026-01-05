@@ -68,7 +68,8 @@ export const handlePasswordPromptKeyPress = async (
             const authResponse = await startAuthentication(authOptions);
 
             const { data: authResult } = await axios.post("https://api.maxrosoff.com/admin/passkey-auth", {
-                response: authResponse
+                response: authResponse,
+                challenge: authOptions.challenge
             });
 
             const existingAdminMode = emulatorState.getAdminConsoleMode();

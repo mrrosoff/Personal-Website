@@ -1,14 +1,17 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import { AuthenticationResponseJSON, verifyAuthenticationResponse } from "@simplewebauthn/server";
+import { DateTime } from "luxon";
 
-import { PASSKEY_CHALLENGES_TABLE, PASSKEY_CREDENTIALS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
-import { deleteItem, getAllItems, putItem } from "../../aws/services/dynamodb";
-import { generateToken, GrantType } from "../../auth";
+import { PASSKEY_CHALLENGES_TABLE } from "../../../infrastructure/WebsiteAPIStack";
+import { deleteItem, getItem } from "../../aws/services/dynamodb";
+import { getParameters } from "../../aws/services/parameterStore";
+import { generateToken } from "../../auth";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
 import { RP_ID, RP_ORIGIN } from "./passkeyAuthOptions";
 
 type PasskeyAuthPayload = {
     response: AuthenticationResponseJSON;
+    challenge: string;
 };
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
@@ -18,34 +21,32 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 
     const body: PasskeyAuthPayload = JSON.parse(event.body);
 
-    const challenges = await getAllItems(PASSKEY_CHALLENGES_TABLE);
-    const challengeRecord = challenges?.find((c: any) => c.type === "authentication");
-
+    const challengeRecord = await getItem(PASSKEY_CHALLENGES_TABLE, body.challenge);
     if (!challengeRecord) {
-        return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Invalid or expired challenge");
+        return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Invalid Expired Challenge");
     }
 
-    const currentTime = Math.floor(Date.now() / 1000);
+    const currentTime = DateTime.now().toSeconds();
     if (challengeRecord.expiresAt < currentTime) {
         await deleteItem(PASSKEY_CHALLENGES_TABLE, challengeRecord.id);
-        return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Challenge expired");
+        return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Challenge Expired");
     }
 
     try {
         const credentialIdBase64 = Buffer.from(body.response.rawId, "base64").toString("base64");
-        const credentials = await getAllItems(PASSKEY_CREDENTIALS_TABLE);
-        const credential = credentials?.find((c: any) => c.id === credentialIdBase64);
 
-        if (!credential) {
+        const parameters = await getParameters("/website/admin/passkeyId", "/website/admin/publicKey");
+        const storedCredentialId = parameters["/website/admin/passkeyId"];
+        const storedPublicKey = parameters["/website/admin/publicKey"];
+
+        if (credentialIdBase64 !== storedCredentialId) {
             return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Credential not found");
         }
 
-        // Convert database format (base64 publicKey) to WebAuthnCredential format (Buffer)
         const webAuthnCredential = {
-            id: credential.id,
-            publicKey: Buffer.from(credential.publicKey, "base64"),
-            counter: credential.counter,
-            transports: credential.transports
+            id: storedCredentialId,
+            publicKey: Buffer.from(storedPublicKey, "base64"),
+            counter: 0 // Not tracking counter for simplicity
         };
 
         const verification = await verifyAuthenticationResponse({
@@ -60,19 +61,12 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
             return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Authentication failed");
         }
 
-        await putItem(PASSKEY_CREDENTIALS_TABLE, {
-            ...credential,
-            counter: verification.authenticationInfo.newCounter
-        });
-
         await deleteItem(PASSKEY_CHALLENGES_TABLE, challengeRecord.id);
-
-        const token = await generateToken("admin", GrantType.AUTH);
 
         return buildResponse(event, HttpResponseStatus.OK, {
             verified: true,
             message: "Authentication successful",
-            token
+            token: await generateToken("admin")
         });
     } catch (error) {
         console.error("Passkey authentication error:", error);

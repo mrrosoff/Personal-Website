@@ -30,7 +30,6 @@ import { AttributeType, BillingMode, Table } from "aws-cdk-lib/aws-dynamodb";
 
 export const FLAVORS_TABLE = "website-flavors";
 export const PASSKEY_CHALLENGES_TABLE = "website-passkey-challenges";
-export const PASSKEY_CREDENTIALS_TABLE = "website-passkey-credentials";
 
 class WebsiteAPIStack extends Stack {
     constructor(scope: Construct, id: string, props: StackProps) {
@@ -38,14 +37,13 @@ class WebsiteAPIStack extends Stack {
 
         const flavorsTable = this.createFlavorsTable();
         const passkeyChallengesTable = this.createPasskeyChallengesTable();
-        const passkeyCredentialsTable = this.createPasskeyCredentialsTable();
 
         const certificate = new Certificate(this, "websiteCertificate", {
             domainName: "maxrosoff.com",
             subjectAlternativeNames: ["*.maxrosoff.com"],
             validation: CertificateValidation.fromDns()
         });
-        const apiRole = this.createAPILambdaRole(flavorsTable, passkeyChallengesTable, passkeyCredentialsTable);
+        const apiRole = this.createAPILambdaRole(flavorsTable, passkeyChallengesTable);
         const restApi = this.createAPI(
             certificate,
             apiRole,
@@ -73,16 +71,6 @@ class WebsiteAPIStack extends Stack {
             removalPolicy: RemovalPolicy.DESTROY,
             deletionProtection: true,
             timeToLiveAttribute: "expiresAt"
-        });
-    }
-
-    private createPasskeyCredentialsTable(): Table {
-        return new Table(this, "websitePasskeyCredentialsTable", {
-            tableName: PASSKEY_CREDENTIALS_TABLE,
-            partitionKey: { name: "id", type: AttributeType.STRING },
-            billingMode: BillingMode.PAY_PER_REQUEST,
-            removalPolicy: RemovalPolicy.DESTROY,
-            deletionProtection: true
         });
     }
 
@@ -120,8 +108,6 @@ class WebsiteAPIStack extends Stack {
 
         const passkeyAuthOptionsLambda = this.createPasskeyAuthOptionsLambda(apiRole);
         const passkeyAuthLambda = this.createPasskeyAuthLambda(apiRole);
-        const passkeyRegisterOptionsLambda = this.createPasskeyRegisterOptionsLambda(apiRole);
-        const passkeyRegisterLambda = this.createPasskeyRegisterLambda(apiRole);
 
         const adminResource = api.root.addResource("admin");
         adminResource
@@ -136,12 +122,6 @@ class WebsiteAPIStack extends Stack {
         adminResource
             .addResource("passkey-auth")
             .addMethod("POST", new LambdaIntegration(passkeyAuthLambda));
-        adminResource
-            .addResource("passkey-register-options")
-            .addMethod("POST", new LambdaIntegration(passkeyRegisterOptionsLambda));
-        adminResource
-            .addResource("passkey-register")
-            .addMethod("POST", new LambdaIntegration(passkeyRegisterLambda));
     }
 
     private createEmailRoutes(api: RestApi, apiRole: Role) {
@@ -328,28 +308,6 @@ class WebsiteAPIStack extends Stack {
         });
     }
 
-    private createPasskeyRegisterOptionsLambda(role: Role): LambdaFunction {
-        const functionName = "website-passkey-register-options";
-        return new LambdaFunction(this, "websitePasskeyRegisterOptionsLambda", {
-            functionName,
-            handler: "passkeyRegisterOptions.handler",
-            code: Code.fromAsset("dist/lambda/admin/passkeyRegisterOptions"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
-    private createPasskeyRegisterLambda(role: Role): LambdaFunction {
-        const functionName = "website-passkey-register";
-        return new LambdaFunction(this, "websitePasskeyRegisterLambda", {
-            functionName,
-            handler: "passkeyRegister.handler",
-            code: Code.fromAsset("dist/lambda/admin/passkeyRegister"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
     private createLambdaParams(
         functionName: string,
         role: Role
@@ -388,7 +346,7 @@ class WebsiteAPIStack extends Stack {
                 TableAccessPolicy: new PolicyDocument({
                     statements: [
                         new PolicyStatement({
-                            actions: ["dynamodb:PutItem", "dynamodb:UpdateItem", "dynamodb:Scan"],
+                            actions: ["dynamodb:GetItem", "dynamodb:DeleteItem", "dynamodb:PutItem", "dynamodb:Scan", "dynamodb:UpdateItem"],
                             resources: tables.flatMap((table) => [table.tableArn])
                         })
                     ]

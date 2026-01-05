@@ -12,7 +12,6 @@ import Unsubscribe from "./ice-cream/Unsubscribe";
 import Checkout from "./ice-cream/checkout/Checkout";
 import Return from "./ice-cream/checkout/Return";
 import { IceCreamCartProvider } from "./ice-cream/IceCreamCartContext";
-import RegisterPasskey from "../pages/RegisterPasskey";
 
 export const API_URL = "https://api.maxrosoff.com";
 
@@ -130,7 +129,6 @@ const App = () => {
                                     element={<Unsubscribe />}
                                 />
                                 <Route path="ice-cream/mailing-list" element={<MailingList />} />
-                                <Route path="admin/register-passkey" element={<RegisterPasskey />} />
                             </Route>
                             <Route path="*" element={<Navigate to="/" replace />} />
                         </Routes>

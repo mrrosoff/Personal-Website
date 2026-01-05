@@ -1,20 +1,18 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocument, UpdateCommand, ScanCommand, PutCommand, GetCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
 
-import { FLAVORS_TABLE, PASSKEY_CHALLENGES_TABLE, PASSKEY_CREDENTIALS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
-import { DatabaseFlavor, DynamoDBFieldValue, PasskeyChallenge, PasskeyCredential } from "../../types";
+import { FLAVORS_TABLE, PASSKEY_CHALLENGES_TABLE } from "../../../infrastructure/WebsiteAPIStack";
+import { DatabaseFlavor, DatabasePasskeyChallenge, DynamoDBFieldValue } from "../../types";
 
 // prettier-ignore
 export type Table =
     typeof FLAVORS_TABLE |
-    typeof PASSKEY_CHALLENGES_TABLE |
-    typeof PASSKEY_CREDENTIALS_TABLE;
+    typeof PASSKEY_CHALLENGES_TABLE;
 
 // prettier-ignore
 type ItemKeyInput<T extends Table> =
     T extends typeof FLAVORS_TABLE ? string :
     T extends typeof PASSKEY_CHALLENGES_TABLE ? string :
-    T extends typeof PASSKEY_CREDENTIALS_TABLE ? string :
     never;
 
 type UpdateItemInput<T extends Table> = Partial<
@@ -24,8 +22,7 @@ type UpdateItemInput<T extends Table> = Partial<
 // prettier-ignore
 export type TableObject<T extends Table> =
     T extends typeof FLAVORS_TABLE ? DatabaseFlavor :
-    T extends typeof PASSKEY_CHALLENGES_TABLE ? PasskeyChallenge :
-    T extends typeof PASSKEY_CREDENTIALS_TABLE ? PasskeyCredential :
+    T extends typeof PASSKEY_CHALLENGES_TABLE ? DatabasePasskeyChallenge :
     never;
 
 // prettier-ignore
@@ -38,14 +35,15 @@ export const documentClient = DynamoDBDocument.from(dynamodbClient);
 
 const primaryKeys: Record<Table, string> = {
     [FLAVORS_TABLE]: "productId",
-    [PASSKEY_CHALLENGES_TABLE]: "id",
-    [PASSKEY_CREDENTIALS_TABLE]: "id"
+    [PASSKEY_CHALLENGES_TABLE]: "id"
 };
 
 // Generic helper functions for passkey tables
-export async function getItem<T extends Table>(table: T, key: Record<string, any>): Promise<any> {
+export async function getItem<T extends Table>(table: T, key: ItemKeyInput<T>): Promise<any> {
     console.debug(`Getting item from ${table} with key ${JSON.stringify(key)}`);
-    const getItemRequest = new GetCommand({ TableName: table, Key: key });
+    const compositeKey = generateCompositeKey(table, key);
+
+    const getItemRequest = new GetCommand({ TableName: table, Key: compositeKey });
     const itemOutput = await documentClient.send(getItemRequest);
     return itemOutput.Item;
 }
