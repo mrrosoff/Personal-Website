@@ -39,6 +39,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         const storedCredentialId = parameters["/website/admin/passkeyId"];
         const storedPublicKey = parameters["/website/admin/publicKey"];
 
+        console.error(credentialIdBase64, storedCredentialId, body.response.rawId);
         if (credentialIdBase64 !== storedCredentialId) {
             return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Credential not found");
         }
