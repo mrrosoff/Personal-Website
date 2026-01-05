@@ -86,10 +86,13 @@ export const authenticateWithPasskey = async (
         emulatorState.setPasswordPromptState(undefined);
 
         const outputs = emulatorState.getOutputs();
+        const failedOutput = { output: "Authentication Failed", type: "error" };
         if (outputs.length > 0) {
             const lastOutput = outputs[outputs.length - 1];
-            lastOutput.output = [{ output: "Authentication Failed", type: "error" }];
+            lastOutput.output = [failedOutput];
             emulatorState.setOutputs([...outputs]);
+        } else {
+            emulatorState.setOutputs([{ output: failedOutput }]);
         }
     }
 };

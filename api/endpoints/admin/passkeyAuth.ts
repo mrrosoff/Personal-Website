@@ -20,7 +20,6 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     }
 
     const body: PasskeyAuthPayload = JSON.parse(event.body);
-    console.error(event.body, body, body.challenge);
 
     const challengeRecord = await getItem(PASSKEY_CHALLENGES_TABLE, body.challenge);
     if (!challengeRecord) {
@@ -28,7 +27,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     }
 
     const currentTime = DateTime.now().toSeconds();
-    if (challengeRecord.expiresAt < currentTime) {
+    if (challengeRecord.expiresAt > currentTime) {
         await deleteItem(PASSKEY_CHALLENGES_TABLE, challengeRecord.id);
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Challenge Expired");
     }
@@ -40,7 +39,6 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         const storedCredentialId = parameters["/website/admin/passkeyId"];
         const storedPublicKey = parameters["/website/admin/publicKey"];
 
-        console.error(credentialIdBase64, storedCredentialId, body.response.rawId);
         if (credentialIdBase64 !== storedCredentialId) {
             return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Credential not found");
         }
