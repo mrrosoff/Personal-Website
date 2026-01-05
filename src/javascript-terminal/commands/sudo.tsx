@@ -5,6 +5,7 @@ import EmulatorState from "../emulator-state/EmulatorState";
 import { parseOptions } from "../parser";
 import * as CommandMappingUtil from "../emulator-state/CommandMapping";
 import Emulator from "../emulator";
+import { API_URL } from "../../components/App";
 
 export const optDef = {};
 
@@ -52,12 +53,10 @@ export const authenticateWithPasskey = async (
     if (!promptState) return;
 
     try {
-        const { data: authOptions } = await axios.post(
-            "https://api.maxrosoff.com/admin/passkey-auth-options"
-        );
+        const { data: authOptions } = await axios.post(`${API_URL}/admin/passkey-auth-options`);
 
         const authResponse = await startAuthentication({ optionsJSON: authOptions });
-        const { data: authResult } = await axios.post("https://api.maxrosoff.com/admin/passkey-auth", {
+        const { data: authResult } = await axios.post(`${API_URL}/admin/passkey-auth`, {
             response: authResponse,
             challenge: authOptions.challenge
         });
