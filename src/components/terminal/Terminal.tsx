@@ -3,7 +3,7 @@ import { ChangeEvent, KeyboardEvent, forwardRef, Ref, useEffect, useState } from
 import { Box, Grid } from "@mui/material";
 import { Emulator, EmulatorState } from "../../javascript-terminal";
 import { handleAdminConsoleKeyPress } from "../../javascript-terminal/commands/console";
-import { handlePasswordPromptKeyPress } from "../../javascript-terminal/commands/sudo";
+import { authenticateWithPasskey } from "../../javascript-terminal/commands/sudo";
 import AdminConsole from "./admin/AdminConsole";
 
 import CommandInput from "./CommandInput";
@@ -53,6 +53,13 @@ const Terminal = (
         }
     }, [emulatorState.getPasswordPromptState(), emulatorState.getAdminConsoleMode()?.screen]);
 
+    useEffect(() => {
+        const passwordPrompt = emulatorState.getPasswordPromptState();
+        if (passwordPrompt) {
+            authenticateWithPasskey(emulator, emulatorState);
+        }
+    }, [emulatorState.getPasswordPromptState()]);
+
     const scrollToBottom = () => {
         setTimeout(() => {
             if (props.scrollContainerRef.current) {
@@ -85,30 +92,6 @@ const Terminal = (
     const onKeyDown = async (e: KeyboardEvent<HTMLInputElement>) => {
         const passwordPrompt = emulatorState.getPasswordPromptState();
         if (passwordPrompt) {
-            if (e.metaKey) return; // Allow CMD key for Mac users
-
-            e.preventDefault();
-
-            if (e.key === "Backspace") {
-                return setInput(input.slice(0, -1));
-            }
-            if (e.key.length === 1 && !e.ctrlKey) {
-                return setInput(input + e.key);
-            }
-
-            const shouldClearInput = await handlePasswordPromptKeyPress(
-                emulator,
-                emulatorState,
-                input,
-                e.key,
-                e.ctrlKey
-            );
-            if (shouldClearInput) {
-                setInput("");
-                if (e.key === "Enter") {
-                    scrollToBottom();
-                }
-            }
             return;
         }
 

@@ -44,70 +44,55 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     return { output: "", type: "text" };
 };
 
-export const handlePasswordPromptKeyPress = async (
+export const authenticateWithPasskey = async (
     emulator: Emulator,
-    emulatorState: EmulatorState,
-    _password: string,
-    key: string,
-    ctrlKey: boolean = false
-): Promise<boolean> => {
+    emulatorState: EmulatorState
+): Promise<void> => {
     const promptState = emulatorState.getPasswordPromptState();
-    if (!promptState) return false;
+    if (!promptState) return;
 
-    if (key === "c" && ctrlKey) {
+    try {
+        const { data: authOptions } = await axios.post(
+            "https://api.maxrosoff.com/admin/passkey-auth-options"
+        );
+
+        const authResponse = await startAuthentication({ optionsJSON: authOptions });
+        const { data: authResult } = await axios.post("https://api.maxrosoff.com/admin/passkey-auth", {
+            response: authResponse,
+            challenge: authOptions.challenge
+        });
+
+        const existingAdminMode = emulatorState.getAdminConsoleMode();
+        emulatorState.setAdminConsoleMode({
+            ...existingAdminMode,
+            authToken: authResult.token
+        });
+
+        const commandMapping = emulatorState.getCommandMapping();
+        const result = emulator.runCommand(commandMapping, promptState.targetCommand, [
+            emulatorState,
+            promptState.targetOptions
+        ]);
+
         emulatorState.setPasswordPromptState(undefined);
-        return true;
-    }
 
-    if (key === "Enter") {
-        try {
-            const { data: authOptions } = await axios.post(
-                "https://api.maxrosoff.com/admin/passkey-auth-options"
-            );
+        const outputs = emulatorState.getOutputs();
+        if (outputs.length > 0) {
+            const lastOutput = outputs[outputs.length - 1];
+            lastOutput.output = [result];
+            emulatorState.setOutputs([...outputs]);
+        }
+    } catch (err) {
+        console.error("Authentication Failed:", err);
+        emulatorState.setPasswordPromptState(undefined);
 
-            const authResponse = await startAuthentication(authOptions);
-
-            const { data: authResult } = await axios.post("https://api.maxrosoff.com/admin/passkey-auth", {
-                response: authResponse,
-                challenge: authOptions.challenge
-            });
-
-            const existingAdminMode = emulatorState.getAdminConsoleMode();
-            emulatorState.setAdminConsoleMode({
-                ...existingAdminMode,
-                authToken: authResult.token
-            });
-
-            const commandMapping = emulatorState.getCommandMapping();
-            const result = emulator.runCommand(commandMapping, promptState.targetCommand, [
-                emulatorState,
-                promptState.targetOptions
-            ]);
-
-            emulatorState.setPasswordPromptState(undefined);
-
-            const outputs = emulatorState.getOutputs();
-            if (outputs.length > 0) {
-                const lastOutput = outputs[outputs.length - 1];
-                lastOutput.output = [result];
-                emulatorState.setOutputs([...outputs]);
-            }
-
-            return true;
-        } catch (err) {
-            console.error("Authentication Failed:", err);
-            emulatorState.setPasswordPromptState(undefined);
-
-            const outputs = emulatorState.getOutputs();
-            if (outputs.length > 0) {
-                const lastOutput = outputs[outputs.length - 1];
-                lastOutput.output = [{ output: "Authentication Failed", type: "error" }];
-                emulatorState.setOutputs([...outputs]);
-            }
-            return true;
+        const outputs = emulatorState.getOutputs();
+        if (outputs.length > 0) {
+            const lastOutput = outputs[outputs.length - 1];
+            lastOutput.output = [{ output: "Authentication Failed", type: "error" }];
+            emulatorState.setOutputs([...outputs]);
         }
     }
-    return false;
 };
 
 export const manPage = `NAME

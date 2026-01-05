@@ -20,6 +20,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     }
 
     const body: PasskeyAuthPayload = JSON.parse(event.body);
+    console.error(body);
 
     const challengeRecord = await getItem(PASSKEY_CHALLENGES_TABLE, body.challenge);
     if (!challengeRecord) {
