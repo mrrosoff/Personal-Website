@@ -34,14 +34,14 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 
     const currentTime = Math.floor(Date.now() / 1000);
     if (challengeRecord.expiresAt < currentTime) {
-        await deleteItem(PASSKEY_CHALLENGES_TABLE, challengeRecord.challenge);
+        await deleteItem(PASSKEY_CHALLENGES_TABLE, challengeRecord.id);
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Challenge expired");
     }
 
     try {
         const verification = await verifyRegistrationResponse({
             response: body.response,
-            expectedChallenge: challengeRecord.challenge,
+            expectedChallenge: challengeRecord.id,
             expectedOrigin: RP_ORIGIN,
             expectedRPID: RP_ID
         });
@@ -63,7 +63,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
             counter: credential.counter,
             transports: body.response.response.transports
         });
-        await deleteItem(PASSKEY_CHALLENGES_TABLE, challengeRecord.challenge);
+        await deleteItem(PASSKEY_CHALLENGES_TABLE, challengeRecord.id);
 
         return buildResponse(event, HttpResponseStatus.OK, {
             verified: true,

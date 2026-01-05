@@ -27,7 +27,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 
     const currentTime = Math.floor(Date.now() / 1000);
     if (challengeRecord.expiresAt < currentTime) {
-        await deleteItem(PASSKEY_CHALLENGES_TABLE, challengeRecord.challenge);
+        await deleteItem(PASSKEY_CHALLENGES_TABLE, challengeRecord.id);
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Challenge expired");
     }
 
@@ -50,7 +50,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 
         const verification = await verifyAuthenticationResponse({
             response: body.response,
-            expectedChallenge: challengeRecord.challenge,
+            expectedChallenge: challengeRecord.id,
             expectedOrigin: RP_ORIGIN,
             expectedRPID: RP_ID,
             credential: webAuthnCredential
@@ -65,7 +65,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
             counter: verification.authenticationInfo.newCounter
         });
 
-        await deleteItem(PASSKEY_CHALLENGES_TABLE, challengeRecord.challenge);
+        await deleteItem(PASSKEY_CHALLENGES_TABLE, challengeRecord.id);
 
         const token = await generateToken("admin", GrantType.AUTH);
 

@@ -19,7 +19,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         })),
     });
     await putItem(PASSKEY_CHALLENGES_TABLE, {
-        ...options,
+        id: options.challenge,
         type: "authentication",
         expiresAt: Math.floor(Date.now() / 1000) + 300 // 5 minutes from now
     });

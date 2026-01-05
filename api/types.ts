@@ -29,7 +29,7 @@ export type PasskeyCredential = {
 };
 
 export type PasskeyChallenge = {
-    challenge: string;
+    id: string;
     expiresAt: number;
     type: "registration" | "authentication";
 };
