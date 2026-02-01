@@ -4,7 +4,6 @@ import {
     Alert,
     Badge,
     Box,
-    Collapse,
     Fab,
     Grid,
     Link,
@@ -212,8 +211,9 @@ export const CurrentFlavors = (props: {
                             smallScreen
                         );
                         return (
-                            <Collapse key={flavor.productId} in={flavor.count > 0} timeout={300}>
+                            flavor.count > 0 && (
                                 <Grid
+                                    key={flavor.productId}
                                     display={"flex"}
                                     justifyContent={"center"}
                                     sx={{ width: smallScreen ? "100%" : undefined }}
@@ -232,7 +232,7 @@ export const CurrentFlavors = (props: {
                                         </Typography>
                                     </Box>
                                 </Grid>
-                            </Collapse>
+                            )
                         );
                     })
                 )}
@@ -292,8 +292,9 @@ export const LastBatch = (props: {
                             smallScreen
                         );
                         return (
-                            <Collapse key={flavor.productId} in={flavor.count > 0} timeout={300}>
+                            flavor.count > 0 && (
                                 <Grid
+                                    key={flavor.productId}
                                     display={"flex"}
                                     justifyContent={"center"}
                                     sx={{ width: smallScreen ? "100%" : undefined }}
@@ -312,7 +313,7 @@ export const LastBatch = (props: {
                                         </Typography>
                                     </Box>
                                 </Grid>
-                            </Collapse>
+                            )
                         );
                     })
                 )}
