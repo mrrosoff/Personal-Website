@@ -191,7 +191,7 @@ const CompactCheckoutLayout = (props: {
                     </Box>
                 </Grid>
             </Grid>
-            <Typography variant={"h2"} mt={4} mb={2}>
+            <Typography variant={"h2"} mt={props.selectedFlavors.length != 2 ? 4 : undefined} mb={2}>
                 Payment
             </Typography>
             <PaymentElement
