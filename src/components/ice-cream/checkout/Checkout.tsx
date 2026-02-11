@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Navigate, useSearchParams } from "react-router-dom";
 
 import axios from "axios";
@@ -60,7 +60,7 @@ const Checkout = () => {
                 clientSecret: fetchClientSecret,
                 elementsOptions: {
                     appearance,
-                    fonts: [{ family: "Clacon", src: "url(/fonts/clacon.ttf)" }]
+                    fonts: [{ family: "Clacon", src: "url(https://maxrosoff.com/fonts/clacon.ttf)" }]
                 }
             }}
         >
@@ -76,7 +76,11 @@ const CheckoutForm = ({ priceIds }: { priceIds: string[] }) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const state = useCheckout();
-    const { flavors } = useIceCreamCart();
+    const { flavors, loadFlavors } = useIceCreamCart();
+
+    useEffect(() => {
+        loadFlavors();
+    }, [loadFlavors]);
 
     const selectedFlavors = flavors.filter((flavor) => priceIds.includes(flavor.priceId));
 

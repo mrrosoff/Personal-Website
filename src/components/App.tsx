@@ -162,6 +162,7 @@ const Layout = (props: {
 
     return (
         <Box
+            component="main"
             height={"100dvh"}
             sx={{
                 p: mdScreen ? (isHome ? 0 : 3) : 8,

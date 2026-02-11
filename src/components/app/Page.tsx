@@ -1,7 +1,7 @@
 import { Dispatch, RefObject, SetStateAction, useState } from "react";
 import { Link, useMatch, useNavigate } from "react-router-dom";
 
-import { Avatar, Box, Paper, useMediaQuery, useTheme } from "@mui/material";
+import { Avatar, Box, Button, Paper, useMediaQuery, useTheme } from "@mui/material";
 
 import { DesktopSocialButtonList } from "./SocialButtons";
 import BootUp from "./desktop/BootUp";
@@ -80,7 +80,7 @@ const Links = (props: { open: boolean; setOpen: Dispatch<SetStateAction<boolean>
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
     const isIceCream = useMatch("/ice-cream");
-    const { selectedPriceIds, showCartIndicator } = useIceCreamCart();
+    const { selectedPriceIds } = useIceCreamCart();
 
     const handleCartClick = () => {
         const priceIdsParam = selectedPriceIds.join(",");
@@ -115,7 +115,7 @@ const Links = (props: { open: boolean; setOpen: Dispatch<SetStateAction<boolean>
                     >
                         Cart ({selectedPriceIds.length})
                     </a>
-                    {!smallScreen && showCartIndicator && (
+                    {!smallScreen && selectedPriceIds.length > 0 && (
                         <Box
                             sx={{
                                 position: "absolute",
@@ -142,12 +142,24 @@ const Links = (props: { open: boolean; setOpen: Dispatch<SetStateAction<boolean>
                     )}
                 </Box>
             )}
-            <a
-                style={{ margin: 0, color: "#FCFCFC", fontSize: 22, cursor: "pointer" }}
+            <Button
+                disableRipple
                 onClick={() => props.setOpen(!props.open)}
+                sx={{
+                    color: "#FCFCFC",
+                    fontSize: 22,
+                    textTransform: "none",
+                    padding: 0,
+                    minWidth: "auto",
+                    lineHeight: "normal",
+                    "&:hover": {
+                        backgroundColor: "transparent",
+                        textDecoration: "underline"
+                    }
+                }}
             >
                 More
-            </a>
+            </Button>
         </Box>
     );
 };

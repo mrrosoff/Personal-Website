@@ -55,9 +55,10 @@ const IceCream = () => {
     const [params, _] = useSearchParams();
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-    const { selectedPriceIds, toggleFlavor, flavors, isLoadingFlavors, flavorsError } =
+    const { selectedPriceIds, isLoadingFlavors, flavors, flavorsError, loadFlavors, toggleFlavor } =
         useIceCreamCart();
 
+    useEffect(() => loadFlavors(), [loadFlavors]);
     useEffect(() => {
         const flavorPriceId = params.get("flavor");
         if (!flavorPriceId) {
