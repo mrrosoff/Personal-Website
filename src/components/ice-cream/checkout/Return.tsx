@@ -8,7 +8,7 @@ import LaunchIcon from "@mui/icons-material/Launch";
 
 import { API_URL } from "../../App";
 import Stripe from "stripe";
-import icecreamImage from "../../../assets/images/ice-cream.webp";
+import icecreamImage from "../../../images/ice-cream.webp";
 
 const Return = () => {
     const navigate = useNavigate();

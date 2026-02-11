@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Avatar, Grid } from "@mui/material";
 
-import SmallProfile from "../../assets/images/small-profile.webp";
+import SmallProfile from "../../images/small-profile.webp";
 import { MobileSocialButtonList } from "./SocialButtons";
 
 const MobileLayout = () => {

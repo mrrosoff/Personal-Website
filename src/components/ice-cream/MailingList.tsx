@@ -7,7 +7,7 @@ import { validate } from "email-validator";
 
 import { API_URL } from "../App";
 ``;
-import icecreamImage from "../../assets/images/ice-cream.webp";
+import icecreamImage from "../../images/ice-cream.webp";
 
 const MailingList = () => {
     const theme = useTheme();

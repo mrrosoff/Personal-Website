@@ -8,7 +8,7 @@ import BootUp from "./desktop/BootUp";
 import TerminalEmbed from "./desktop/TerminalEmbed";
 import { useIceCreamCart } from "../ice-cream/IceCreamCartContext";
 
-import SmallProfile from "../../assets/images/small-profile.webp";
+import SmallProfile from "../../images/small-profile.webp";
 import MobileLayout from "./MobileLayout";
 
 const Page = (props: {

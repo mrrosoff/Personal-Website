@@ -39,6 +39,12 @@
 
         <!-- Critical styles for immediate rendering -->
         <style>
+            @font-face {
+                font-family: "Clacon";
+                font-style: normal;
+                src: url("/fonts/clacon.ttf") format("truetype");
+            }
+
             html {
                 height: 100%
             }
@@ -66,8 +72,8 @@
             }
         </style>
 
-        <link rel="preload" href="/styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="/styles.css"></noscript>
+        <link rel="preload" href="/styles/styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/styles/styles.css"></noscript>
     </head>
     <body>
         <div id="root"></div>

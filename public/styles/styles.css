@@ -1,9 +1,3 @@
-@font-face {
-    font-family: "Clacon";
-    font-style: normal;
-    src: url("/src/assets/fonts/clacon.ttf") format("truetype");
-}
-
 a:hover {
     text-decoration: underline;
 }

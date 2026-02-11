@@ -20,7 +20,6 @@ import {
     StripeCheckoutValue
 } from "@stripe/react-stripe-js/checkout";
 
-import ClaconFont from "../../../assets/fonts/clacon.ttf";
 import { API_URL } from "../../App";
 import { useIceCreamCart } from "../IceCreamCartContext";
 import { DatabaseFlavor } from "../../../../api/types";
@@ -61,7 +60,7 @@ const Checkout = () => {
                 clientSecret: fetchClientSecret,
                 elementsOptions: {
                     appearance,
-                    fonts: [{ family: "Clacon", src: `url(${ClaconFont})` }]
+                    fonts: [{ family: "Clacon", src: "url(/fonts/clacon.ttf)" }]
                 }
             }}
         >

@@ -207,7 +207,7 @@ const Footer = () => {
                     <Img
                         alt="Ice Cream Logo"
                         height="20"
-                        src="https://maxrosoff.com/ice-cream.png"
+                        src="https://maxrosoff.com/images-external/ice-cream.png"
                     />
                     <Text
                         style={{

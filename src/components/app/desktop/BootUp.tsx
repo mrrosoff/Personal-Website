@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 import { Box, Grid, Typography } from "@mui/material";
 
-import Logo from "../../../assets/images/logo.webp";
+import Logo from "../../../images/logo.webp";
 
 const BootUp = (props: {
     setBootingUp: Dispatch<SetStateAction<boolean>>;
