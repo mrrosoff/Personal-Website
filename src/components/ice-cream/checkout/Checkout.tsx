@@ -79,8 +79,8 @@ const CheckoutForm = ({ priceIds }: { priceIds: string[] }) => {
     const { flavors, loadFlavors } = useIceCreamCart();
 
     useEffect(() => {
-        loadFlavors();
-    }, [loadFlavors]);
+        void loadFlavors();
+    }, []);
 
     const selectedFlavors = flavors.filter((flavor) => priceIds.includes(flavor.priceId));
 

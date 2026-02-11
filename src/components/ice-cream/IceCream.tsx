@@ -58,7 +58,10 @@ const IceCream = () => {
     const { selectedPriceIds, isLoadingFlavors, flavors, flavorsError, loadFlavors, toggleFlavor } =
         useIceCreamCart();
 
-    useEffect(() => loadFlavors(), [loadFlavors]);
+    useEffect(() => {
+        void loadFlavors();
+    }, []);
+
     useEffect(() => {
         const flavorPriceId = params.get("flavor");
         if (!flavorPriceId) {

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode, useCallback } from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 import axios from "axios";
 
 import { DatabaseFlavor } from "../../../api/types";
@@ -8,7 +8,7 @@ type IceCreamCartContextType = {
     flavors: DatabaseFlavor[];
     isLoadingFlavors: boolean;
     flavorsError: string | null;
-    loadFlavors: () => void;
+    loadFlavors: () => Promise<void>;
     selectedPriceIds: string[];
     toggleFlavor: (priceId: string | undefined) => void;
 };
@@ -21,7 +21,7 @@ export const IceCreamCartProvider = ({ children }: { children: ReactNode }) => {
     const [isLoadingFlavors, setIsLoadingFlavors] = useState(false);
     const [flavorsError, setFlavorsError] = useState<string | null>(null);
 
-    const loadFlavors = useCallback(async () => {
+    const loadFlavors = async () => {
         if (flavors.length > 0 || isLoadingFlavors) return;
 
         try {
@@ -37,7 +37,7 @@ export const IceCreamCartProvider = ({ children }: { children: ReactNode }) => {
         } finally {
             setIsLoadingFlavors(false);
         }
-    }, [flavors.length, isLoadingFlavors]);
+    };
 
     const toggleFlavor = (priceId: string | undefined) => {
         if (!priceId) return;

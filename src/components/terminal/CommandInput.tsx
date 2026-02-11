@@ -55,6 +55,7 @@ const CommandInput = (
                             onChange={props.onChange}
                             onKeyDown={props.onKeyDown}
                             style={{ width: 0, height: 0, opacity: 0 }}
+                            aria-label={"Terminal command input"}
                         />
                     </Grid>
                 </Grid>
