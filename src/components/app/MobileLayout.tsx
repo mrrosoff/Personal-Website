@@ -30,7 +30,7 @@ const MobileLayout = () => {
                 <Avatar
                     alt="Max Rosoff"
                     src={SmallProfile}
-                    sx={{ width: avatarSize, height: avatarSize }}
+                    sx={{ width: avatarSize, height: avatarSize, fetchPriority: "high" }}
                 />
             </Grid>
             <Grid>

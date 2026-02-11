@@ -34,6 +34,40 @@
             property="twitter:image"
             content="https://maxrosoff.com/25924c04cedd27cf36486935c5b0ee7c.jpg"
         />
+
+        <link rel="preload" href="/assets/small-profile-FZFWFXJd.webp" as="image" fetchpriority="high">
+
+        <!-- Critical styles for immediate rendering -->
+        <style>
+            html {
+                height: 100%
+            }
+
+            html ::-webkit-scrollbar {
+                display: none
+            }
+
+            body,
+            #root {
+                background-color: #121212!important;
+                color: #fff;
+                min-height: 100%
+            }
+
+            body *,
+            #root * {
+                font-family: Clacon,serif!important;
+                font-display: swap
+            }
+
+            a {
+                text-decoration: none;
+                cursor: pointer
+            }
+        </style>
+
+        <link rel="preload" href="/styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/styles.css"></noscript>
     </head>
     <body>
         <div id="root"></div>

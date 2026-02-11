@@ -1,0 +1,26 @@
+@font-face {
+    font-family: "Clacon";
+    font-style: normal;
+    src: url("/src/assets/fonts/clacon.ttf") format("truetype");
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.social-button:hover {
+    background-color: #323232 !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+    -webkit-text-fill-color: white !important;
+    -webkit-box-shadow: 0 0 0px 1000px #30313D inset !important;
+    -webkit-font-smoothing: antialiased !important;
+}
+
+.MuiTextField-root:has(input:-webkit-autofill) .MuiInputLabel-root,
+.MuiFormControl-root:has(input:-webkit-autofill) .MuiInputLabel-root {
+    opacity: 0 !important;
+}
