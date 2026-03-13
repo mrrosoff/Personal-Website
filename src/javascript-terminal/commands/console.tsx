@@ -156,7 +156,7 @@ const handleIceCreamInventory = async (
 ): Promise<EmulatorState> => {
     const mode = state.getAdminConsoleMode()!;
     if (mode.editingFlavor) {
-        return handleFlavorEdit(key, state);
+        return await handleFlavorEdit(key, state);
     }
 
     const currentOption = mode.selectedOption as IceCreamInventoryMenuOption;
@@ -198,7 +198,7 @@ const handleIceCreamInventory = async (
     return state;
 };
 
-const handleFlavorEdit = (key: string, state: EmulatorState): EmulatorState => {
+const handleFlavorEdit = async (key: string, state: EmulatorState): Promise<EmulatorState> => {
     const mode = state.getAdminConsoleMode()!;
     if (!mode.editingFlavor) return state;
 
@@ -240,7 +240,7 @@ const handleFlavorEdit = (key: string, state: EmulatorState): EmulatorState => {
             });
             break;
         case "Enter":
-            updateFlavorInventory(
+            await updateFlavorInventory(
                 state,
                 mode.editingFlavor.productId,
                 mode.editingFlavor.name,
@@ -248,18 +248,44 @@ const handleFlavorEdit = (key: string, state: EmulatorState): EmulatorState => {
                 mode.editingFlavor.count,
                 mode.editingFlavor.type
             );
-            const newMode = {
+            // Go back to SelectFlavor screen and refresh inventory
+            state.setAdminConsoleMode({
                 ...mode,
-                editingFlavor: undefined
-            };
-            state.setAdminConsoleMode(newMode);
-            fetchInventoryData(state);
+                screen: AdminConsoleScreen.SelectFlavor,
+                editingFlavor: undefined,
+                selectedOption: 0,
+                currentPage: 0
+            });
+            await fetchInventoryData(state);
             break;
         case "Escape":
             state.setAdminConsoleMode({
                 ...mode,
                 editingFlavor: undefined
             });
+            break;
+        case "Backspace":
+            if (mode.editingFlavor.name.length > 0) {
+                state.setAdminConsoleMode({
+                    ...mode,
+                    editingFlavor: {
+                        ...mode.editingFlavor,
+                        name: mode.editingFlavor.name.slice(0, -1)
+                    }
+                });
+            }
+            break;
+        default:
+            // Handle text input for name field
+            if (key.length === 1) {
+                state.setAdminConsoleMode({
+                    ...mode,
+                    editingFlavor: {
+                        ...mode.editingFlavor,
+                        name: mode.editingFlavor.name + key
+                    }
+                });
+            }
             break;
     }
 

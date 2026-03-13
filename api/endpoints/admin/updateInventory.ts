@@ -1,6 +1,8 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
+import Stripe from "stripe";
 
 import { updateItemFields } from "../../aws/services/dynamodb";
+import { getParameter } from "../../aws/services/parameterStore";
 import { FLAVORS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
 import { buildResponse, buildErrorResponse, HttpResponseStatus } from "../../common";
 import { DatabaseFlavor, FlavorType } from "../../types";
@@ -24,6 +26,12 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     if (!(await isAuthenticated(event))) {
         return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Authentication required");
     }
+
+    const stripeApiKey = await getParameter("/website/stripe/api-key");
+    const stripe = new Stripe(stripeApiKey);
+    await stripe.products.update(body.productId, {
+        name: body.name
+    });
 
     const updatedFields: Partial<DatabaseFlavor> = {
         name: body.name,

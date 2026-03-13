@@ -62,23 +62,23 @@ const IceCreamInventoryMenu = (props: { theme?: TerminalTheme; emulatorState: Em
                     === Admin Console (Modify Flavor Inventory) ===
                 </Typography>
                 <Typography sx={{ color: props.theme?.outputColor || "#FCFCFC", mb: 1 }}>
-                    Editing: {mode.editingFlavor.name}
+                    Name: <span style={{ color: props.theme?.commandColor || "#FFFFFF" }}>{mode.editingFlavor.name}</span>
                 </Typography>
                 <Typography
                     sx={{
-                        color: props.theme?.commandColor || "#FFFFFF",
+                        color: props.theme?.outputColor || "#FCFCFC",
                         mb: 1
                     }}
                 >
-                    Type: {mode.editingFlavor.type || "Not Listed"}
+                    Type: <span style={{ color: props.theme?.commandColor || "#FFFFFF" }}>{mode.editingFlavor.type || "Not Listed"}</span>
                 </Typography>
                 <Typography
                     sx={{
-                        color: props.theme?.commandColor || "#FFFFFF",
+                        color: props.theme?.outputColor || "#FCFCFC",
                         mb: 2
                     }}
                 >
-                    Count: {mode.editingFlavor.count}
+                    Count: <span style={{ color: props.theme?.commandColor || "#FFFFFF" }}>{mode.editingFlavor.count}</span>
                 </Typography>
                 <Typography
                     sx={{
@@ -87,7 +87,7 @@ const IceCreamInventoryMenu = (props: { theme?: TerminalTheme; emulatorState: Em
                         opacity: 0.7
                     }}
                 >
-                    left/right: change type | up/down: adjust count | enter: save | escape: cancel
+                    type: edit name | left/right: change type | up/down: adjust count | enter: save | escape: cancel
                 </Typography>
             </Box>
         );
