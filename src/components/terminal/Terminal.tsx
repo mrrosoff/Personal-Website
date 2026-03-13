@@ -90,6 +90,17 @@ const Terminal = (
                     }
                 });
             }
+        } else if (adminConsoleMode?.screen && adminConsoleMode.editingFlavor) {
+            e.preventDefault();
+            const pastedText = e.clipboardData.getData("text");
+
+            emulatorState.setAdminConsoleMode({
+                ...adminConsoleMode,
+                editingFlavor: {
+                    ...adminConsoleMode.editingFlavor,
+                    name: adminConsoleMode.editingFlavor.name + pastedText
+                }
+            });
         }
     };
 
