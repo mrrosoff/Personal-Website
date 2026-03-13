@@ -583,7 +583,7 @@ const handleProvisionFormInput = (key: string, state: EmulatorState) => {
                         color: form.color.slice(0, -1)
                     }
                 });
-            } else if (key.length === 1 && form.color.length < 7) {
+            } else if (key.length === 1) {
                 state.setAdminConsoleMode({
                     ...mode,
                     provisionForm: {
