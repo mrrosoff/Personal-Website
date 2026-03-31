@@ -24,6 +24,18 @@ const SelectFlavorMenu = (props: { theme?: TerminalTheme; emulatorState: Emulato
     const selectedIndex = mode.selectedOption as number;
     const currentPage = mode.currentPage ?? 0;
 
+    const sortedInventory = useMemo(() => {
+        return sortInventory(mode.inventoryData ?? []);
+    }, [mode.inventoryData]);
+
+    const { totalPages, startIndex, itemsOnPage } = useMemo(() => {
+        const totalPages = Math.ceil(sortedInventory.length / ITEMS_PER_PAGE);
+        const startIndex = currentPage * ITEMS_PER_PAGE;
+        const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, sortedInventory.length);
+        const itemsOnPage = sortedInventory.slice(startIndex, endIndex);
+        return { totalPages, startIndex, itemsOnPage };
+    }, [sortedInventory, currentPage]);
+
     if (!mode.inventoryData) {
         return (
             <Box sx={{ paddingTop: 1 }}>
@@ -67,19 +79,6 @@ const SelectFlavorMenu = (props: { theme?: TerminalTheme; emulatorState: Emulato
             </Box>
         );
     }
-
-    const sortedInventory = useMemo(() => {
-        return sortInventory(mode.inventoryData ?? []);
-    }, [mode.inventoryData]);
-
-    const { totalPages, startIndex, itemsOnPage } = useMemo(() => {
-        const allItems = sortedInventory;
-        const totalPages = Math.ceil(allItems.length / ITEMS_PER_PAGE);
-        const startIndex = currentPage * ITEMS_PER_PAGE;
-        const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, allItems.length);
-        const itemsOnPage = allItems.slice(startIndex, endIndex);
-        return { totalPages, startIndex, itemsOnPage };
-    }, [sortedInventory, currentPage]);
 
     return (
         <Box sx={{ paddingTop: 1 }}>
