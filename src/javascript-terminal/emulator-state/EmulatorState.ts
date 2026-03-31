@@ -27,6 +27,8 @@ export enum AdminConsoleScreen {
     ConfirmProvisionFlavor = "confirm-provision-flavor"
 }
 
+export type EditField = Exclude<keyof DatabaseFlavor, "productId" | "priceId">;
+
 export type ProvisionFlavorForm = {
     flavorName: string;
     initialQuantity: number;
@@ -40,8 +42,10 @@ export type AdminConsoleState = {
     selectedOption?: MainMenuOption | IceCreamInventoryMenuOption | number | "yes" | "no";
     inventoryData?: DatabaseFlavor[];
     editingFlavor?: DatabaseFlavor;
+    editingField?: EditField;
     provisionForm?: ProvisionFlavorForm;
     currentPage?: number;
+    loading?: boolean;
 };
 
 export type PasswordPromptState = {

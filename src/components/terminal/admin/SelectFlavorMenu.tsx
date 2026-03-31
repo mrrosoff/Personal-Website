@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 
 import { sortInventory } from "../../../javascript-terminal/commands/console";
 import EmulatorState, {
@@ -8,10 +8,17 @@ import EmulatorState, {
 } from "../../../javascript-terminal/emulator-state/EmulatorState";
 import { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
-import LoadingDots from "./common/LoadingDots";
 
 const SelectFlavorMenu = (props: { theme?: TerminalTheme; emulatorState: EmulatorState }) => {
     const mode = props.emulatorState.getAdminConsoleMode() as AdminConsoleState;
+    const [dots, setDots] = useState(".");
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setDots((prev) => (prev.length >= 3 ? "." : prev + "."));
+        }, 500);
+        return () => clearInterval(interval);
+    }, []);
 
     const ITEMS_PER_PAGE = 4;
     const selectedIndex = mode.selectedOption as number;
@@ -29,7 +36,15 @@ const SelectFlavorMenu = (props: { theme?: TerminalTheme; emulatorState: Emulato
                 >
                     === Admin Console (Select Flavor) ===
                 </Typography>
-                <LoadingDots theme={props.theme} />
+                <Typography
+                    sx={{
+                        color: props.theme?.outputColor || "#FCFCFC",
+                        fontSize: "0.9em",
+                        opacity: 0.7
+                    }}
+                >
+                    Loading{dots}
+                </Typography>
             </Box>
         );
     }

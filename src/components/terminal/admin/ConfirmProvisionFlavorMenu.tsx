@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { Box, Typography } from "@mui/material";
 
@@ -9,15 +9,21 @@ import EmulatorState, {
 } from "../../../javascript-terminal/emulator-state/EmulatorState";
 import { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
-import LoadingDots from "./common/LoadingDots";
 
 const ConfirmProvisionFlavorMenu = (props: {
     theme?: TerminalTheme;
     emulatorState: EmulatorState;
 }) => {
     const mode = props.emulatorState.getAdminConsoleMode() as AdminConsoleState;
-    
-    const [isLoading, setIsLoading] = useState(false);
+    const [dots, setDots] = useState(".");
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setDots((prev) => (prev.length >= 3 ? "." : prev + "."));
+        }, 500);
+        return () => clearInterval(interval);
+    }, []);
+
     const selectedOption = mode.selectedOption as "yes" | "no";
     const form = mode.provisionForm;
     if (!form) return null;
@@ -43,17 +49,18 @@ const ConfirmProvisionFlavorMenu = (props: {
     };
 
     const handleYesClick = async () => {
-        setIsLoading(true);
+        props.emulatorState.setAdminConsoleMode({ ...mode, loading: true });
         try {
             await provisionFlavor();
             props.emulatorState.setAdminConsoleMode({
                 ...mode,
                 screen: AdminConsoleScreen.IceCreamInventory,
                 selectedOption: IceCreamInventoryMenuOption.ProvisionNewFlavor,
-                provisionForm: undefined
+                provisionForm: undefined,
+                loading: false
             });
-        } finally {
-            setIsLoading(false);
+        } catch {
+            props.emulatorState.setAdminConsoleMode({ ...mode, loading: false });
         }
     };
 
@@ -64,31 +71,6 @@ const ConfirmProvisionFlavorMenu = (props: {
             selectedOption: 0
         });
     };
-
-    if (isLoading) {
-        return (
-            <Box sx={{ paddingTop: 1 }}>
-                <Typography
-                    sx={{
-                        color: props.theme?.outputColor || "#FCFCFC",
-                        fontWeight: "bold",
-                        mb: 1.25
-                    }}
-                >
-                    === Admin Console (Provisioning Flavor) ===
-                </Typography>
-                <Typography
-                    sx={{
-                        color: props.theme?.outputColor || "#FCFCFC",
-                        mb: 2
-                    }}
-                >
-                    Provisioning {form.flavorName}...
-                </Typography>
-                <LoadingDots theme={props.theme} />
-            </Box>
-        );
-    }
 
     return (
         <Box sx={{ paddingTop: 1 }}>
@@ -143,6 +125,7 @@ const ConfirmProvisionFlavorMenu = (props: {
                 <MenuItem
                     selected={selectedOption === "yes"}
                     theme={props.theme}
+                    disabled={mode.loading}
                     onMouseEnter={() =>
                         props.emulatorState.setAdminConsoleMode({
                             ...mode,
@@ -156,6 +139,7 @@ const ConfirmProvisionFlavorMenu = (props: {
                 <MenuItem
                     selected={selectedOption === "no"}
                     theme={props.theme}
+                    disabled={mode.loading}
                     onMouseEnter={() =>
                         props.emulatorState.setAdminConsoleMode({
                             ...mode,
@@ -174,7 +158,9 @@ const ConfirmProvisionFlavorMenu = (props: {
                     opacity: 0.7
                 }}
             >
-                left/right: select option | enter: confirm | escape: cancel
+                {mode.loading
+                    ? `Loading${dots}`
+                    : "left/right: select option | enter: confirm | escape: cancel"}
             </Typography>
         </Box>
     );

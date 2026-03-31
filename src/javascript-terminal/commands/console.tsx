@@ -2,6 +2,7 @@ import assert from "assert";
 import axios from "axios";
 import EmulatorState, {
     AdminConsoleScreen,
+    EditField,
     MainMenuOption,
     IceCreamInventoryMenuOption,
     ProvisionFlavorForm
@@ -81,6 +82,8 @@ export const handleAdminConsoleKeyPress = async (
         emulatorState.setAdminConsoleMode(undefined);
         return emulatorState;
     }
+
+    if (mode.loading) return emulatorState;
 
     if (mode.screen === "main") {
         return handleMainMenu(key, emulatorState);
@@ -202,44 +205,60 @@ const handleFlavorEdit = async (key: string, state: EmulatorState): Promise<Emul
     const mode = state.getAdminConsoleMode()!;
     if (!mode.editingFlavor) return state;
 
+    const fields: EditField[] = ["name", "color", "type", "count"];
+    const currentField: EditField = (mode.editingField as EditField) || "name";
+    const fieldIndex = fields.indexOf(currentField);
+
     switch (key) {
         case "ArrowUp":
             state.setAdminConsoleMode({
                 ...mode,
-                editingFlavor: {
-                    ...mode.editingFlavor,
-                    count: mode.editingFlavor.count + 1
-                }
+                editingField: fields[Math.max(fieldIndex - 1, 0)]
             });
             break;
         case "ArrowDown":
             state.setAdminConsoleMode({
                 ...mode,
-                editingFlavor: {
-                    ...mode.editingFlavor,
-                    count: Math.max(0, mode.editingFlavor.count - 1)
-                }
+                editingField: fields[Math.min(fieldIndex + 1, fields.length - 1)]
             });
             break;
         case "ArrowRight":
-            state.setAdminConsoleMode({
-                ...mode,
-                editingFlavor: {
-                    ...mode.editingFlavor,
-                    type: getNextFlavorType(mode.editingFlavor.type)
-                }
-            });
+            if (currentField === "type") {
+                state.setAdminConsoleMode({
+                    ...mode,
+                    editingFlavor: {
+                        ...mode.editingFlavor,
+                        type: getNextFlavorType(mode.editingFlavor.type)
+                    }
+                });
+            } else if (currentField === "count") {
+                state.setAdminConsoleMode({
+                    ...mode,
+                    editingFlavor: { ...mode.editingFlavor, count: mode.editingFlavor.count + 1 }
+                });
+            }
             break;
         case "ArrowLeft":
-            state.setAdminConsoleMode({
-                ...mode,
-                editingFlavor: {
-                    ...mode.editingFlavor,
-                    type: getPreviousFlavorType(mode.editingFlavor.type)
-                }
-            });
+            if (currentField === "type") {
+                state.setAdminConsoleMode({
+                    ...mode,
+                    editingFlavor: {
+                        ...mode.editingFlavor,
+                        type: getPreviousFlavorType(mode.editingFlavor.type)
+                    }
+                });
+            } else if (currentField === "count") {
+                state.setAdminConsoleMode({
+                    ...mode,
+                    editingFlavor: {
+                        ...mode.editingFlavor,
+                        count: Math.max(0, mode.editingFlavor.count - 1)
+                    }
+                });
+            }
             break;
         case "Enter":
+            state.setAdminConsoleMode({ ...mode, loading: true });
             await updateFlavorInventory(
                 state,
                 mode.editingFlavor.productId,
@@ -248,41 +267,43 @@ const handleFlavorEdit = async (key: string, state: EmulatorState): Promise<Emul
                 mode.editingFlavor.count,
                 mode.editingFlavor.type
             );
-            // Go back to SelectFlavor screen and refresh inventory
             state.setAdminConsoleMode({
                 ...mode,
                 screen: AdminConsoleScreen.SelectFlavor,
                 editingFlavor: undefined,
+                editingField: undefined,
                 selectedOption: 0,
-                currentPage: 0
+                currentPage: 0,
+                loading: false
             });
             await fetchInventoryData(state);
             break;
         case "Escape":
-            state.setAdminConsoleMode({
-                ...mode,
-                editingFlavor: undefined
-            });
+            state.setAdminConsoleMode({ ...mode, editingFlavor: undefined, editingField: undefined });
             break;
         case "Backspace":
-            if (mode.editingFlavor.name.length > 0) {
-                state.setAdminConsoleMode({
-                    ...mode,
-                    editingFlavor: {
-                        ...mode.editingFlavor,
-                        name: mode.editingFlavor.name.slice(0, -1)
-                    }
-                });
+            if (currentField === "name" || currentField === "color") {
+                const textField = currentField;
+                const current = mode.editingFlavor[textField];
+                if (current.length > 0) {
+                    state.setAdminConsoleMode({
+                        ...mode,
+                        editingFlavor: {
+                            ...mode.editingFlavor,
+                            [textField]: current.slice(0, -1)
+                        }
+                    });
+                }
             }
             break;
         default:
-            // Handle text input for name field
-            if (key.length === 1) {
+            if (key.length === 1 && (currentField === "name" || currentField === "color")) {
+                const textField = currentField;
                 state.setAdminConsoleMode({
                     ...mode,
                     editingFlavor: {
                         ...mode.editingFlavor,
-                        name: mode.editingFlavor.name + key
+                        [textField]: mode.editingFlavor[textField] + key
                     }
                 });
             }
@@ -614,13 +635,15 @@ const handleConfirmProvisionFlavor = async (
             break;
         case "Enter":
             if (currentOption === "yes" && mode.provisionForm) {
+                state.setAdminConsoleMode({ ...mode, loading: true });
                 await provisionNewFlavor(mode.provisionForm, authToken);
             }
             state.setAdminConsoleMode({
                 ...mode,
                 screen: AdminConsoleScreen.IceCreamInventory,
                 selectedOption: IceCreamInventoryMenuOption.ProvisionNewFlavor,
-                provisionForm: undefined
+                provisionForm: undefined,
+                loading: false
             });
             break;
         case "Escape":
