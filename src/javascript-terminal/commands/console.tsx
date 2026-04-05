@@ -15,6 +15,7 @@ export const optDef = {};
 const MAIN_MENU_OPTIONS = [
     MainMenuOption.IceCreamInventory,
     MainMenuOption.SendMarketingEmails,
+    MainMenuOption.CreateFriendInvite,
     MainMenuOption.Exit
 ];
 
@@ -97,6 +98,8 @@ export const handleAdminConsoleKeyPress = async (
         return handleProvisionFlavorForm(key, emulatorState);
     } else if (mode.screen === "confirm-provision-flavor") {
         return await handleConfirmProvisionFlavor(key, emulatorState);
+    } else if (mode.screen === "create-friend-invite") {
+        return handleCreateFriendInvite(key, emulatorState);
     }
 
     return emulatorState;
@@ -138,6 +141,13 @@ const handleMainMenu = (key: string, state: EmulatorState): EmulatorState => {
                         ...mode,
                         screen: AdminConsoleScreen.ConfirmSendEmails,
                         selectedOption: "yes"
+                    });
+                    break;
+                case MainMenuOption.CreateFriendInvite:
+                    state.setAdminConsoleMode({
+                        ...mode,
+                        screen: AdminConsoleScreen.CreateFriendInvite,
+                        friendInviteUrl: undefined
                     });
                     break;
                 case MainMenuOption.Exit:
@@ -619,6 +629,19 @@ const handleProvisionFormInput = (key: string, state: EmulatorState) => {
             }
             break;
     }
+};
+
+const handleCreateFriendInvite = (key: string, state: EmulatorState): EmulatorState => {
+    const mode = state.getAdminConsoleMode()!;
+    if (key === "Escape") {
+        state.setAdminConsoleMode({
+            ...mode,
+            screen: AdminConsoleScreen.Main,
+            selectedOption: MainMenuOption.CreateFriendInvite,
+            friendInviteUrl: undefined
+        });
+    }
+    return state;
 };
 
 const handleConfirmProvisionFlavor = async (

@@ -43,6 +43,7 @@
         "email-validator": "^2.0.4",
         "get-options": "^1.2.0",
         "jsonwebtoken": "^9.0.3",
+        "jwt-decode": "^4.0.0",
         "luxon": "^3.7.2",
         "node-jose": "^2.2.0",
         "react": "19.2.0",

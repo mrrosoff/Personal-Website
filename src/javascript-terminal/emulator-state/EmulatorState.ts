@@ -9,6 +9,7 @@ import { DatabaseFlavor, FlavorType } from "../../../api/types";
 export enum MainMenuOption {
     IceCreamInventory = "IceCreamInventory",
     SendMarketingEmails = "SendMarketingEmails",
+    CreateFriendInvite = "CreateFriendInvite",
     Exit = "Exit"
 }
 
@@ -24,7 +25,8 @@ export enum AdminConsoleScreen {
     SelectFlavor = "select-flavor",
     ConfirmSendEmails = "confirm-send-emails",
     ProvisionFlavorForm = "provision-flavor-form",
-    ConfirmProvisionFlavor = "confirm-provision-flavor"
+    ConfirmProvisionFlavor = "confirm-provision-flavor",
+    CreateFriendInvite = "create-friend-invite"
 }
 
 export type EditField = Exclude<keyof DatabaseFlavor, "productId" | "priceId">;
@@ -46,6 +48,7 @@ export type AdminConsoleState = {
     provisionForm?: ProvisionFlavorForm;
     currentPage?: number;
     loading?: boolean;
+    friendInviteUrl?: string;
 };
 
 export type PasswordPromptState = {
