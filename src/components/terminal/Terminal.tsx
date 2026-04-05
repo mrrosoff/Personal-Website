@@ -69,7 +69,9 @@ const Terminal = (
 
     const authToken = emulatorState.getEnvVariables()["AUTH_TOKEN"];
     const authPayload = authToken ? decodeToken(authToken) : null;
-    const promptSymbol = `${authPayload?.id ?? "dev"}@rosoff`;
+    const promptUser =
+        authPayload?.userType === UserType.ADMIN ? "admin" : (authPayload?.id ?? "dev");
+    const promptSymbol = `${promptUser}@rosoff`;
 
     useEffect(() => {
         if (!authToken || !authPayload) {

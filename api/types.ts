@@ -27,6 +27,7 @@ export type DatabasePasskeyChallenge = {
 export type DatabasePasskey = {
     credentialId: string;
     publicKey: string;
+    userType?: UserType;
 };
 
 export enum UserType {

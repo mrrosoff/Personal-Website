@@ -4,7 +4,6 @@ import { DateTime } from "luxon";
 
 import { PASSKEY_CHALLENGES_TABLE, PASSKEYS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
 import { deleteItem, getItem } from "../../aws/services/dynamodb";
-import { getParameter } from "../../aws/services/parameterStore";
 import { generateToken, UserType } from "../../auth";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
 import { RP_ID, RP_ORIGIN } from "./passkeyAuthOptions";
@@ -38,9 +37,6 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 
     const presentedCredentialId = body.response.id;
 
-    const adminCredentialId = await getParameter("/website/admin/passkeyId");
-    const isAdmin = presentedCredentialId === adminCredentialId;
-
     const storedPasskey = await getItem(PASSKEYS_TABLE, presentedCredentialId);
     if (!storedPasskey) {
         return buildErrorResponse(
@@ -50,7 +46,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         );
     }
 
-    const userType = isAdmin ? UserType.ADMIN : UserType.FRIEND;
+    const userType = storedPasskey.userType ?? UserType.ADMIN;
     const webAuthnCredential: Parameters<typeof verifyAuthenticationResponse>[0]["credential"] = {
         id: storedPasskey.credentialId,
         publicKey: Buffer.from(storedPasskey.publicKey, "base64"),
