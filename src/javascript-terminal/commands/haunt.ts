@@ -8,7 +8,7 @@ const ghost = `
    | o  o |
     \\ __ /
      _||_
-    (____)`
+    (____)`;
 
 const skeleton = `
      ___
@@ -16,13 +16,13 @@ const skeleton = `
   | () () |
    \\  ^  /
     |||||
-    |||||`
+    |||||`;
 
 const bat = `
    /\\___/\\
   {  o o  }
    \\ " " /
-    ^^^^^`
+    ^^^^^`;
 
 const functionDef = (_state: EmulatorState, _commandOptions: string[]) => {
     const decorations = [ghost, skeleton, bat];

@@ -24,7 +24,11 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     const body: UpdateInventoryPayload = JSON.parse(event.body);
 
     if (!(await isAuthenticated(event))) {
-        return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Authentication required");
+        return buildErrorResponse(
+            event,
+            HttpResponseStatus.UNAUTHORIZED,
+            "Authentication required"
+        );
     }
 
     const stripeApiKey = await getParameter("/website/stripe/api-key");

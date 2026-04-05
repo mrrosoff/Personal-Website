@@ -23,7 +23,10 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
             const numberedContents = contents.map((content) => {
                 const lines = content.split("\n");
                 return lines
-                    .map((line: string, index: number) => `${String(index + 1).padStart(6, " ")}\t${line}`)
+                    .map(
+                        (line: string, index: number) =>
+                            `${String(index + 1).padStart(6, " ")}\t${line}`
+                    )
                     .join("\n");
             });
             return { output: numberedContents.join("\n") };

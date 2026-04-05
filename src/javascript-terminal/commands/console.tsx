@@ -279,7 +279,11 @@ const handleFlavorEdit = async (key: string, state: EmulatorState): Promise<Emul
             await fetchInventoryData(state);
             break;
         case "Escape":
-            state.setAdminConsoleMode({ ...mode, editingFlavor: undefined, editingField: undefined });
+            state.setAdminConsoleMode({
+                ...mode,
+                editingFlavor: undefined,
+                editingField: undefined
+            });
             break;
         case "Backspace":
             if (currentField === "name" || currentField === "color") {

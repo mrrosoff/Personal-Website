@@ -41,7 +41,10 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
             output = fileContent
                 .split("\n")
                 .map((line: string) =>
-                    line.replace(new RegExp(findPattern, caseInsensitiveFlag ? "i" : ""), replacePattern)
+                    line.replace(
+                        new RegExp(findPattern, caseInsensitiveFlag ? "i" : ""),
+                        replacePattern
+                    )
                 )
                 .join("\n");
         }

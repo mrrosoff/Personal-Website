@@ -37,8 +37,7 @@ const findInDirectory = (
                 findInDirectory(fs, fullPath, namePattern, results);
             }
         });
-    } catch (err) {
-    }
+    } catch (err) {}
 
     return results;
 };

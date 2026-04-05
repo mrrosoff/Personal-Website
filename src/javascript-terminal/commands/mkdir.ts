@@ -30,7 +30,8 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
                     continue;
                 }
 
-                currentPath = currentPath === "/" ? `/${pathParts[i]}` : `${currentPath}/${pathParts[i]}`;
+                currentPath =
+                    currentPath === "/" ? `/${pathParts[i]}` : `${currentPath}/${pathParts[i]}`;
 
                 try {
                     const parent = fsSearchParent(state.getFileSystem(), currentPath);
@@ -39,8 +40,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
                     if (!parent[dirName]) {
                         DirOp.add(state.getFileSystem(), currentPath, makeEmptyDirectory());
                     }
-                } catch (err) {
-                }
+                } catch (err) {}
             }
         } else {
             DirOp.add(state.getFileSystem(), newFolderPath, makeEmptyDirectory());

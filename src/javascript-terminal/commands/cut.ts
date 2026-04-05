@@ -45,9 +45,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         const output = lines
             .map((line: string) => {
                 const parts = line.split(delimiter);
-                return fieldNumbers
-                    .map((fieldNum) => parts[fieldNum - 1] || "")
-                    .join(delimiter);
+                return fieldNumbers.map((fieldNum) => parts[fieldNum - 1] || "").join(delimiter);
             })
             .join("\n");
 

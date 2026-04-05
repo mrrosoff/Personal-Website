@@ -21,11 +21,7 @@ const makeSortedReturn = (listing: string[]) => {
     return { output: listing.sort().join("\n") };
 };
 
-const makeLongFormatReturn = (
-    fs: any,
-    dirPath: string,
-    listing: string[]
-) => {
+const makeLongFormatReturn = (fs: any, dirPath: string, listing: string[]) => {
     const dirContents = PathUtil.toPathParts(dirPath).reduce(
         (section, part) => section[part]?.contents || section,
         fs

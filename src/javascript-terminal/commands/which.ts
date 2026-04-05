@@ -6,7 +6,10 @@ import * as CommandMappingUtil from "../emulator-state/CommandMapping";
 
 export const optDef = {};
 
-const functionDef = (state: EmulatorState, commandOptions: string[]): { output: string; type?: string } => {
+const functionDef = (
+    state: EmulatorState,
+    commandOptions: string[]
+): { output: string; type?: string } => {
     const { argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length === 0) {

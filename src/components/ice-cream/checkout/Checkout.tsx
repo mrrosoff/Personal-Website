@@ -60,7 +60,9 @@ const Checkout = () => {
                 clientSecret: fetchClientSecret,
                 elementsOptions: {
                     appearance,
-                    fonts: [{ family: "Clacon", src: "url(https://maxrosoff.com/fonts/clacon.ttf)" }]
+                    fonts: [
+                        { family: "Clacon", src: "url(https://maxrosoff.com/fonts/clacon.ttf)" }
+                    ]
                 }
             }}
         >
@@ -194,7 +196,11 @@ const CompactCheckoutLayout = (props: {
                     </Box>
                 </Grid>
             </Grid>
-            <Typography variant={"h2"} mt={props.selectedFlavors.length != 2 ? 4 : undefined} mb={2}>
+            <Typography
+                variant={"h2"}
+                mt={props.selectedFlavors.length != 2 ? 4 : undefined}
+                mb={2}
+            >
                 Payment
             </Typography>
             <PaymentElement

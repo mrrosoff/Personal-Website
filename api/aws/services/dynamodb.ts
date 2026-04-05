@@ -1,5 +1,12 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocument, UpdateCommand, ScanCommand, PutCommand, GetCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
+import {
+    DynamoDBDocument,
+    UpdateCommand,
+    ScanCommand,
+    PutCommand,
+    GetCommand,
+    DeleteCommand
+} from "@aws-sdk/lib-dynamodb";
 
 import { FLAVORS_TABLE, PASSKEY_CHALLENGES_TABLE } from "../../../infrastructure/WebsiteAPIStack";
 import { DatabaseFlavor, DatabasePasskeyChallenge, DynamoDBFieldValue } from "../../types";
@@ -64,20 +71,37 @@ export async function decrementField<T extends Table>(
     key: ItemKeyInput<T>,
     fieldName: ValuesOfType<TableObject<T>, number>
 ): Promise<TableObject<T>> {
+    return adjustField(table, key, fieldName, -1);
+}
+
+export async function incrementField<T extends Table>(
+    table: T,
+    key: ItemKeyInput<T>,
+    fieldName: ValuesOfType<TableObject<T>, number>
+): Promise<TableObject<T>> {
+    return adjustField(table, key, fieldName, 1);
+}
+
+async function adjustField<T extends Table>(
+    table: T,
+    key: ItemKeyInput<T>,
+    fieldName: ValuesOfType<TableObject<T>, number>,
+    delta: number
+): Promise<TableObject<T>> {
     console.debug(
-        `Decrementing ${String(fieldName)} by 1 for item in ${table} with id ${JSON.stringify(key)}`
+        `Adjusting ${String(fieldName)} by ${delta} for item in ${table} with id ${JSON.stringify(key)}`
     );
     const compositeKey = generateCompositeKey(table, key);
 
     const updateItemRequest = new UpdateCommand({
         TableName: table,
         Key: compositeKey,
-        UpdateExpression: `SET #prop = #prop - :dec`,
+        UpdateExpression: `SET #prop = #prop + :delta`,
         ExpressionAttributeNames: {
             "#prop": fieldName
         },
         ExpressionAttributeValues: {
-            ":dec": 1
+            ":delta": delta
         },
         ReturnValues: "ALL_NEW"
     });
@@ -154,7 +178,10 @@ export async function updateItemFields<T extends Table>(
     return object;
 }
 
-export async function deleteItem<T extends Table>(table: T, key: ItemKeyInput<T>): Promise<TableObject<T>> {
+export async function deleteItem<T extends Table>(
+    table: T,
+    key: ItemKeyInput<T>
+): Promise<TableObject<T>> {
     console.debug(`Deleting item in ${table} with key ${JSON.stringify(key)}.`);
     const compositeKey = generateCompositeKey(table, key);
 

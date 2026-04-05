@@ -23,7 +23,11 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 
     const challengeRecord = await getItem(PASSKEY_CHALLENGES_TABLE, body.challenge);
     if (!challengeRecord) {
-        return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Invalid Expired Challenge");
+        return buildErrorResponse(
+            event,
+            HttpResponseStatus.BAD_REQUEST,
+            "Invalid Expired Challenge"
+        );
     }
 
     const currentTime = DateTime.now().toSeconds();
@@ -33,7 +37,10 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     }
 
     try {
-        const parameters = await getParameters("/website/admin/passkeyId", "/website/admin/publicKey");
+        const parameters = await getParameters(
+            "/website/admin/passkeyId",
+            "/website/admin/publicKey"
+        );
         const storedCredentialId = parameters["/website/admin/passkeyId"];
         const storedPublicKey = parameters["/website/admin/publicKey"];
 
@@ -52,7 +59,11 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         });
 
         if (!verification.verified) {
-            return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Authentication Failed");
+            return buildErrorResponse(
+                event,
+                HttpResponseStatus.UNAUTHORIZED,
+                "Authentication Failed"
+            );
         }
 
         await deleteItem(PASSKEY_CHALLENGES_TABLE, challengeRecord.id);
@@ -64,6 +75,10 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         });
     } catch (error) {
         console.error("Passkey Authentication Error:", error);
-        return buildErrorResponse(event, HttpResponseStatus.INTERNAL_SERVER_ERROR, "Authentication Failed");
+        return buildErrorResponse(
+            event,
+            HttpResponseStatus.INTERNAL_SERVER_ERROR,
+            "Authentication Failed"
+        );
     }
 };

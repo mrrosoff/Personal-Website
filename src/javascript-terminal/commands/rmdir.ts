@@ -31,7 +31,11 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
                     const dirName = PathUtil.getLastPathPart(parentPath);
                     const dir = parent[dirName];
 
-                    if (dir && typeof dir.contents === "object" && Object.keys(dir.contents).length === 0) {
+                    if (
+                        dir &&
+                        typeof dir.contents === "object" &&
+                        Object.keys(dir.contents).length === 0
+                    ) {
                         DirOp.remove(state.getFileSystem(), parentPath);
                         currentPath = parentPath;
                     } else {
