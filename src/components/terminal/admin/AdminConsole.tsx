@@ -8,6 +8,7 @@ import SelectFlavorMenu from "./SelectFlavorMenu";
 import ConfirmSendEmailsMenu from "./ConfirmSendEmailsMenu";
 import ProvisionFlavorFormMenu from "./ProvisionFlavorFormMenu";
 import ConfirmProvisionFlavorMenu from "./ConfirmProvisionFlavorMenu";
+import CreateFriendInviteMenu from "./CreateFriendInviteMenu";
 
 const AdminConsole = (props: { emulatorState: EmulatorState; theme?: TerminalTheme }) => {
     const mode = props.emulatorState.getAdminConsoleMode();
@@ -36,6 +37,10 @@ const AdminConsole = (props: { emulatorState: EmulatorState; theme?: TerminalThe
                     theme={props.theme}
                     emulatorState={props.emulatorState}
                 />
+            );
+        case AdminConsoleScreen.CreateFriendInvite:
+            return (
+                <CreateFriendInviteMenu theme={props.theme} emulatorState={props.emulatorState} />
             );
     }
 };

@@ -20,6 +20,21 @@ import { useIceCreamCart } from "./IceCreamCartContext";
 import { useEffect } from "react";
 import { DatabaseFlavor } from "../../../api/types";
 
+export const rainbowTextSx = {
+    background:
+        "linear-gradient(90deg, #ff0000, #ff9a00, #d0de21, #4fdc4a, #3fdad8, #2fc9e2, #1c7fee, #5f15f2, #ba0cf8, #fb07d9, #ff0000)",
+    backgroundSize: "200% 100%",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
+    backgroundClip: "text",
+    color: "transparent",
+    animation: "friendRainbow 3s linear infinite",
+    "@keyframes friendRainbow": {
+        "0%": { backgroundPosition: "0% 50%" },
+        "100%": { backgroundPosition: "200% 50%" }
+    }
+} as const;
+
 const getFlavorStyles = (color: string, isSelected: boolean, isSmallScreen: boolean) => {
     return {
         cursor: "pointer",
@@ -85,8 +100,14 @@ const IceCream = () => {
         >
             <Typography variant="h1">Max's Freezer Stash</Typography>
             <Typography mt={smallScreen ? 2 : undefined}>
-                High quality. Small batch. San Francisco based creative flavors, priced at $5 per
-                pint.
+                High quality. Small batch. San Francisco based creative flavors,{" "}
+                {localStorage.getItem("friendToken") ? (
+                    <Typography component={"span"} sx={{ fontSize: "inherit", ...rainbowTextSx }}>
+                        on the house for friends of Max.
+                    </Typography>
+                ) : (
+                    "priced at $5 per pint."
+                )}
             </Typography>
             <Typography mt={smallScreen ? 2 : -1}>
                 In SF? Come stop by! Outside SF? Don't buy anything you can't carry home.

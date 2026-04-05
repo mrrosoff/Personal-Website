@@ -68,11 +68,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         });
     } catch (error) {
         console.error(error);
-        return buildErrorResponse(
-            event,
-            HttpResponseStatus.UNAUTHORIZED,
-            "Authentication Failed"
-        );
+        return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Authentication Failed");
     }
 
     if (!verification.verified) {

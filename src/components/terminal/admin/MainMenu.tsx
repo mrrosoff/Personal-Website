@@ -61,6 +61,25 @@ const MainMenu = (props: { theme?: TerminalTheme; emulatorState: EmulatorState }
                 2. Send Marketing Emails
             </MenuItem>
             <MenuItem
+                selected={mode.selectedOption === MainMenuOption.CreateFriendInvite}
+                theme={props.theme}
+                onMouseEnter={() =>
+                    props.emulatorState.setAdminConsoleMode({
+                        ...mode,
+                        selectedOption: MainMenuOption.CreateFriendInvite
+                    })
+                }
+                onClick={() =>
+                    props.emulatorState.setAdminConsoleMode({
+                        ...mode,
+                        screen: AdminConsoleScreen.CreateFriendInvite,
+                        friendInviteUrl: undefined
+                    })
+                }
+            >
+                3. Create Friend Invite
+            </MenuItem>
+            <MenuItem
                 selected={mode.selectedOption === MainMenuOption.Exit}
                 theme={props.theme}
                 onMouseEnter={() =>
@@ -71,7 +90,7 @@ const MainMenu = (props: { theme?: TerminalTheme; emulatorState: EmulatorState }
                 }
                 onClick={() => props.emulatorState.setAdminConsoleMode(undefined)}
             >
-                3. Exit
+                4. Exit
             </MenuItem>
             <Typography
                 sx={{

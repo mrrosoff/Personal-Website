@@ -43,7 +43,7 @@ const TerminalEmbed = (
                 height: "88dvh"
             }}
             emulatorState={customState}
-            promptSymbol={"dev@rosoff"}
+            promptSymbol={`${customState.getEnvVariables().USER ?? "dev"}@rosoff`}
             errorStr={"Command Not Found"}
         />
     );

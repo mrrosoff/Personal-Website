@@ -2,10 +2,17 @@ import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 
 import { generateToken, isAdmin, UserType } from "../../auth";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
+import { RP_ORIGIN } from "./passkeyAuthOptions";
 
-const FRONTEND_ORIGIN = "https://maxrosoff.com";
+type CreateFriendInvitePayload = {
+    name: string;
+};
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
+    if (!event.body) {
+        return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Request Body");
+    }
+
     if (!(await isAdmin(event))) {
         return buildErrorResponse(
             event,
@@ -14,11 +21,14 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         );
     }
 
-    const inviteToken = await generateToken(UserType[UserType.SHARE], {
+    const body: CreateFriendInvitePayload = JSON.parse(event.body);
+    const friendName = body.name.trim();
+
+    const inviteToken = await generateToken(friendName, {
         userType: UserType.SHARE,
         expiresIn: "5m"
     });
-    const url = `${FRONTEND_ORIGIN}/friend-register?token=${encodeURIComponent(inviteToken)}`;
+    const url = `${RP_ORIGIN}/friend-register?token=${encodeURIComponent(inviteToken)}`;
 
     return buildResponse(event, HttpResponseStatus.OK, { url, token: inviteToken });
 };
