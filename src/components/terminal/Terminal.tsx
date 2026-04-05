@@ -1,9 +1,12 @@
-import { ChangeEvent, KeyboardEvent, forwardRef, Ref, useEffect, useState } from "react";
-
+import { ChangeEvent, KeyboardEvent, Ref, forwardRef, useEffect, useState } from "react";
 import { Box, Grid } from "@mui/material";
+
+import { UserType } from "../../../api/types";
 import { Emulator, EmulatorState } from "../../javascript-terminal";
 import { handleAdminConsoleKeyPress } from "../../javascript-terminal/commands/console";
 import { authenticateWithPasskey } from "../../javascript-terminal/commands/sudo";
+import { decodeToken } from "../App";
+import { useAppContext } from "../AppContext";
 import AdminConsole from "./admin/AdminConsole";
 
 import CommandInput from "./CommandInput";
@@ -26,11 +29,11 @@ const Terminal = (
         emulatorState: EmulatorState;
         errorStr: string;
         theme: TerminalTheme;
-        promptSymbol: string;
         scrollContainerRef: React.RefObject<HTMLDivElement | null>;
     },
     ref: Ref<HTMLInputElement | null>
 ) => {
+    const { setFriendToken } = useAppContext();
     const [showMOTD, setShowMOTD] = useState(true);
     const [input, setInput] = useState("");
     const [emulatorState, setEmulatorState] = useState(props.emulatorState);
@@ -63,6 +66,18 @@ const Terminal = (
             authenticate();
         }
     }, [emulatorState.getPasswordPromptState()]);
+
+    const authToken = emulatorState.getEnvVariables()["AUTH_TOKEN"];
+    const promptSymbol = `${authToken ? decodeToken(authToken).id : "dev"}@rosoff`;
+
+    useEffect(() => {
+        if (!authToken) {
+            setFriendToken("");
+            return;
+        }
+        const payload = decodeToken(authToken);
+        setFriendToken(payload.userType === UserType.FRIEND ? authToken : "");
+    }, [authToken]);
 
     const scrollToBottom = () => {
         setTimeout(() => {
@@ -183,7 +198,7 @@ const Terminal = (
         return emulatorState.getOutputs().map((content: any, index: number) => (
             <Grid key={index} container direction={"column"}>
                 <Grid>
-                    <OutputHeader {...props} cwd={content.cwd}>
+                    <OutputHeader {...props} promptSymbol={promptSymbol} cwd={content.cwd}>
                         {content.command}
                     </OutputHeader>
                 </Grid>
@@ -339,7 +354,7 @@ const Terminal = (
                         value={input}
                         onChange={(e: ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
                         onKeyDown={onKeyDown}
-                        promptSymbol={props.promptSymbol}
+                        promptSymbol={promptSymbol}
                         theme={props.theme}
                         emulatorState={emulatorState}
                     />

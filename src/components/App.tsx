@@ -4,24 +4,24 @@ import { BrowserRouter, Navigate, Outlet, Route, Routes, useMatch } from "react-
 import { Box, useMediaQuery } from "@mui/material";
 import { createTheme, ThemeProvider, StyledEngineProvider, useTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import { jwtDecode } from "jwt-decode";
 
+import { AccessToken } from "../../api/types";
+import { AppProvider } from "./AppContext";
+import { IceCreamCartProvider } from "./ice-cream/IceCreamCartContext";
 import Page, { LinksAndMenu } from "./app/Page";
 import IceCream from "./ice-cream/IceCream";
 import MailingList from "./ice-cream/MailingList";
 import Unsubscribe from "./ice-cream/Unsubscribe";
 import Checkout from "./ice-cream/checkout/Checkout";
 import Return from "./ice-cream/checkout/Return";
-import { IceCreamCartProvider } from "./ice-cream/IceCreamCartContext";
 import RegisterFriend from "./RegisterFriend";
 
 export const API_URL = "https://api.maxrosoff.com";
 
-const App = () => {
-    // @ts-expect-error
-    const [shouldBootUp, setShouldBootUp] = useState(import.meta.env.PROD);
+export const decodeToken = (token: string): AccessToken => jwtDecode<AccessToken>(token);
 
-    const inputRef = useRef<HTMLInputElement | null>(null);
-    const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+const App = () => {
     const theme = createTheme({
         palette: {
             mode: "dark",
@@ -100,44 +100,42 @@ const App = () => {
             <ThemeProvider theme={theme}>
                 <CssBaseline />
                 <BrowserRouter>
-                    <IceCreamCartProvider>
-                        <Routes>
-                            <Route
-                                path="/"
-                                element={
-                                    <Layout
-                                        inputRef={inputRef}
-                                        scrollContainerRef={scrollContainerRef}
-                                    />
-                                }
-                            >
-                                <Route
-                                    index
-                                    element={
-                                        <Page
-                                            shouldBootUp={shouldBootUp}
-                                            setShouldBootUp={setShouldBootUp}
-                                            inputRef={inputRef}
-                                            scrollContainerRef={scrollContainerRef}
-                                        />
-                                    }
-                                />
-                                <Route path="ice-cream" element={<IceCream />} />
-                                <Route path="ice-cream/checkout" element={<Checkout />} />
-                                <Route path="ice-cream/checkout/return" element={<Return />} />
-                                <Route
-                                    path="ice-cream/mailing-list/unsubscribe"
-                                    element={<Unsubscribe />}
-                                />
-                                <Route path="ice-cream/mailing-list" element={<MailingList />} />
-                                <Route path="register-friend" element={<RegisterFriend />} />
-                            </Route>
-                            <Route path="*" element={<Navigate to="/" replace />} />
-                        </Routes>
-                    </IceCreamCartProvider>
+                    <AppProvider>
+                        <IceCreamCartProvider>
+                            <AppRoutes />
+                        </IceCreamCartProvider>
+                    </AppProvider>
                 </BrowserRouter>
             </ThemeProvider>
         </StyledEngineProvider>
+    );
+};
+
+const AppRoutes = () => {
+    const inputRef = useRef<HTMLInputElement | null>(null);
+    const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+
+    return (
+        <Routes>
+            <Route
+                path="/"
+                element={<Layout inputRef={inputRef} scrollContainerRef={scrollContainerRef} />}
+            >
+                <Route
+                    index
+                    element={
+                        <Page inputRef={inputRef} scrollContainerRef={scrollContainerRef} />
+                    }
+                />
+                <Route path="ice-cream" element={<IceCream />} />
+                <Route path="ice-cream/checkout" element={<Checkout />} />
+                <Route path="ice-cream/checkout/return" element={<Return />} />
+                <Route path="ice-cream/mailing-list/unsubscribe" element={<Unsubscribe />} />
+                <Route path="ice-cream/mailing-list" element={<MailingList />} />
+                <Route path="register-friend" element={<RegisterFriend />} />
+            </Route>
+            <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
     );
 };
 

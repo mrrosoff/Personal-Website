@@ -4,10 +4,8 @@ import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { Box, Button, Typography } from "@mui/material";
 import { startRegistration } from "@simplewebauthn/browser";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
 
-import { API_URL } from "./App";
-import { AccessToken } from "../../api/auth";
+import { API_URL, decodeToken } from "./App";
 
 const RegisterFriend = () => {
     const navigate = useNavigate();
@@ -41,7 +39,7 @@ const RegisterFriend = () => {
         }
     };
 
-    const decodedToken = jwtDecode<AccessToken>(token);
+    const decodedToken = decodeToken(token);
 
     return (
         <Box

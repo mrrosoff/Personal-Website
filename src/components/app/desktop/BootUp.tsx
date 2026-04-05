@@ -3,13 +3,14 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Box, Grid, Typography } from "@mui/material";
 
 import Logo from "../../../images/logo.webp";
+import { useAppContext } from "../../AppContext";
 
 const BootUp = (props: {
     setBootingUp: Dispatch<SetStateAction<boolean>>;
-    setShouldBootUp: Dispatch<SetStateAction<boolean>>;
     creationDate: string;
 }) => {
     const [state, setState] = useState(0);
+    const { setShouldBootUp } = useAppContext();
 
     useEffect(() => {
         setTimeout(() => setState(1), 300);
@@ -31,7 +32,7 @@ const BootUp = (props: {
         setTimeout(() => setState(17), 5500);
         setTimeout(() => setState(18), 5800);
         setTimeout(() => {
-            props.setShouldBootUp(false);
+            setShouldBootUp(false);
             props.setBootingUp(false);
         }, 8000);
     }, []);

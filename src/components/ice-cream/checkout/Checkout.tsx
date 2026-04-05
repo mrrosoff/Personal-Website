@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Navigate, useSearchParams } from "react-router-dom";
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 
 import axios from "axios";
 import {
@@ -21,8 +21,10 @@ import {
 } from "@stripe/react-stripe-js/checkout";
 
 import { API_URL } from "../../App";
+import { useAppContext } from "../../AppContext";
 import { useIceCreamCart } from "../IceCreamCartContext";
 import { DatabaseFlavor } from "../../../../api/types";
+import { rainbowTextSx } from "../IceCream";
 
 const stripePublishableApiKey =
     "pk_live_51SSn4jGZZEzkLsbifOmvMvPB5xo33fgFS19ejvNuOibMMPHFu3ixt00c2nbCn4EPiIXWXvJvH1t3AZLXJE3dIrKz00aPsF6Dt2";
@@ -30,6 +32,7 @@ const stripeLoader = loadStripe(stripePublishableApiKey);
 
 const Checkout = () => {
     const [searchParams] = useSearchParams();
+    const { friendToken } = useAppContext();
     const priceIdsString = searchParams.get("priceIds") || "";
     const priceIdsArray = priceIdsString.split(",").filter(Boolean);
 
@@ -40,6 +43,10 @@ const Checkout = () => {
 
     if (!priceIdsString || priceIdsArray.length === 0) {
         return <Navigate to={"/ice-cream"} replace />;
+    }
+
+    if (friendToken) {
+        return <FriendCheckoutForm priceIds={priceIdsArray} friendToken={friendToken} />;
     }
 
     const appearance: Appearance = {
@@ -68,6 +75,124 @@ const Checkout = () => {
         >
             <CheckoutForm priceIds={priceIdsArray} />
         </CheckoutProvider>
+    );
+};
+
+const FriendCheckoutForm = ({
+    priceIds,
+    friendToken
+}: {
+    priceIds: string[];
+    friendToken: string;
+}) => {
+    const navigate = useNavigate();
+    const theme = useTheme();
+    const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
+    const { flavors, loadFlavors } = useIceCreamCart();
+
+    const [email, setEmail] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [message, setMessage] = useState<string | null>(null);
+
+    useEffect(() => {
+        void loadFlavors();
+    }, []);
+
+    const selectedFlavors = flavors.filter((flavor) => priceIds.includes(flavor.priceId));
+
+    const onSubmit = async () => {
+        setIsLoading(true);
+        setMessage(null);
+        try {
+            await axios.post(
+                `${API_URL}/ice-cream/checkout?priceIds=${priceIds.join(",")}`,
+                { email },
+                { headers: { Authorization: `Bearer ${friendToken}` } }
+            );
+            navigate("/ice-cream/checkout/return?friend=1");
+        } catch (err: any) {
+            console.error(err);
+            setMessage(err?.response?.data?.message ?? "Checkout Failed");
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <Box pb={4}>
+            <Typography variant={"h1"} mb={4}>
+                Checkout
+            </Typography>
+            <Grid
+                container
+                spacing={smallScreen ? 4 : 2}
+                direction={smallScreen ? "column-reverse" : "row"}
+            >
+                <Grid size={{ xs: 12, md: 6 }} sx={{ pr: smallScreen ? 0 : 10 }}>
+                    <Typography variant={"h2"} mb={2}>
+                        Contact Info
+                    </Typography>
+                    <TextField
+                        variant={"filled"}
+                        label={"Email"}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        fullWidth
+                        slotProps={{ inputLabel: { shrink: !!email } }}
+                    />
+                </Grid>
+                <Grid size={{ xs: 12, md: 6 }}>
+                    <Typography variant={"h2"} mb={2}>
+                        Your Order
+                    </Typography>
+                    <Box
+                        sx={{
+                            border: 1,
+                            borderColor: "rgba(255, 255, 255, 0.5)",
+                            borderRadius: 1,
+                            px: 3
+                        }}
+                    >
+                        {selectedFlavors.map((flavor, index) => (
+                            <Box key={flavor.priceId}>
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        py: 2
+                                    }}
+                                >
+                                    <Typography color={flavor.color || "white"}>
+                                        {flavor.name}
+                                    </Typography>
+                                    <Typography sx={rainbowTextSx}>$0.00</Typography>
+                                </Box>
+                                {index < selectedFlavors.length - 1 && <Divider />}
+                            </Box>
+                        ))}
+                    </Box>
+                </Grid>
+            </Grid>
+            <Button
+                color={"primary"}
+                variant={"contained"}
+                size={"large"}
+                fullWidth
+                disabled={isLoading || !email}
+                loading={isLoading}
+                onClick={onSubmit}
+                sx={{
+                    mt: 4,
+                    fontSize: 20,
+                    backgroundColor: "#52535F",
+                    color: "white",
+                    ":hover": { backgroundColor: "#5F6272" }
+                }}
+            >
+                Complete Order
+            </Button>
+            {message && <Typography mt={2}>{message}</Typography>}
+        </Box>
     );
 };
 

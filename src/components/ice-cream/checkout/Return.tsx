@@ -6,12 +6,14 @@ import { Box, Link, Typography, useMediaQuery, useTheme } from "@mui/material";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import LaunchIcon from "@mui/icons-material/Launch";
 
-import { API_URL } from "../../App";
+import { API_URL, decodeToken } from "../../App";
+import { useAppContext } from "../../AppContext";
 import Stripe from "stripe";
 import icecreamImage from "../../../images/ice-cream.webp";
 
 const Return = () => {
     const navigate = useNavigate();
+    const { friendToken } = useAppContext();
     const [status, setStatus] = useState<Stripe.Checkout.Session.Status | null>(null);
     const [customerEmail, setCustomerEmail] = useState<string | null>(null);
 
@@ -20,6 +22,11 @@ const Return = () => {
             const queryString = window.location.search;
             const urlParams = new URLSearchParams(queryString);
             const sessionId = urlParams.get("sessionId");
+
+            if (friendToken) {
+                setStatus("complete");
+                return;
+            }
 
             try {
                 const body = { sessionId };
@@ -46,10 +53,11 @@ const Return = () => {
     return null;
 };
 
-const OrderConfirmation = ({ customerEmail }: { customerEmail: string | null }) => {
+const OrderConfirmation = (props: { customerEmail: string | null }) => {
     const navigate = useNavigate();
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
+    const { friendToken } = useAppContext();
 
     return (
         <Box
@@ -85,8 +93,18 @@ const OrderConfirmation = ({ customerEmail }: { customerEmail: string | null }) 
                         color: "text.primary"
                     }}
                 >
-                    Thank you for your order! We're excited to make your ice cream. A confirmation
-                    email has been sent to <Box component="span">{customerEmail}</Box>.
+                    {friendToken ? (
+                        <>
+                            Thanks for dropping by, {decodeToken(friendToken).id}! I'll deliver
+                            your ice cream soon.
+                        </>
+                    ) : (
+                        <>
+                            Thank you for your order! We're excited to make your ice cream. A
+                            confirmation email has been sent to{" "}
+                            <Box component="span">{props.customerEmail}</Box>.
+                        </>
+                    )}
                 </Typography>
                 <Typography mt={4} align={smallScreen ? "center" : undefined}>
                     If you have any questions, please email{" "}

@@ -17,6 +17,7 @@ import LaunchIcon from "@mui/icons-material/Launch";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 
 import { useIceCreamCart } from "./IceCreamCartContext";
+import { useAppContext } from "../AppContext";
 import { useEffect } from "react";
 import { DatabaseFlavor } from "../../../api/types";
 
@@ -72,6 +73,7 @@ const IceCream = () => {
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
     const { selectedPriceIds, isLoadingFlavors, flavors, flavorsError, loadFlavors, toggleFlavor } =
         useIceCreamCart();
+    const { friendToken } = useAppContext();
 
     useEffect(() => {
         void loadFlavors();
@@ -100,8 +102,8 @@ const IceCream = () => {
         >
             <Typography variant="h1">Max's Freezer Stash</Typography>
             <Typography mt={smallScreen ? 2 : undefined}>
-                High quality. Small batch. San Francisco based creative flavors,{" "}
-                {localStorage.getItem("friendToken") ? (
+                High quality. Small batch. San Francisco based creative flavors{" "}
+                {friendToken ? (
                     <Typography component={"span"} sx={{ fontSize: "inherit", ...rainbowTextSx }}>
                         on the house for friends of Max.
                     </Typography>

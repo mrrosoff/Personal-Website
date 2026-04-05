@@ -1,5 +1,8 @@
 import assert from "assert";
 import axios from "axios";
+
+import { DatabaseFlavor, FLAVOR_TYPES, FlavorType, UserType } from "../../../api/types";
+import { API_URL, decodeToken } from "../../components/App";
 import EmulatorState, {
     AdminConsoleScreen,
     EditField,
@@ -7,8 +10,6 @@ import EmulatorState, {
     IceCreamInventoryMenuOption,
     ProvisionFlavorForm
 } from "../emulator-state/EmulatorState";
-import { DatabaseFlavor, FLAVOR_TYPES, FlavorType } from "../../../api/types";
-import { API_URL } from "../../components/App";
 
 export const optDef = {};
 
@@ -51,8 +52,13 @@ const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
         }
 
         const environmentVariables = state.getEnvVariables();
-        const authToken = environmentVariables["AUTH_TOKEN"];
-        if (!authToken) {
+        const token = environmentVariables["AUTH_TOKEN"];
+        if (!token) {
+            return { output: "Permission Denied", type: "error" };
+        }
+
+        const payload = decodeToken(token);
+        if (payload?.userType !== UserType.ADMIN) {
             return { output: "Permission Denied", type: "error" };
         }
 

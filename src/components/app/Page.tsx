@@ -7,20 +7,20 @@ import { DesktopSocialButtonList } from "./SocialButtons";
 import BootUp from "./desktop/BootUp";
 import TerminalEmbed from "./desktop/TerminalEmbed";
 import { useIceCreamCart } from "../ice-cream/IceCreamCartContext";
+import { useAppContext } from "../AppContext";
 
 import SmallProfile from "../../images/small-profile.webp";
 import MobileLayout from "./MobileLayout";
 
 const Page = (props: {
-    shouldBootUp: boolean;
-    setShouldBootUp: Dispatch<SetStateAction<boolean>>;
     inputRef: RefObject<HTMLInputElement | null>;
     scrollContainerRef: RefObject<HTMLDivElement | null>;
 }) => {
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
+    const { shouldBootUp } = useAppContext();
 
-    const [bootingUp, setBootingUp] = useState(props.shouldBootUp);
+    const [bootingUp, setBootingUp] = useState(shouldBootUp);
 
     const creationDate = new Date();
     creationDate.setMinutes(creationDate.getMinutes() - 8);
@@ -32,13 +32,7 @@ const Page = (props: {
     }
 
     if (bootingUp) {
-        return (
-            <BootUp
-                setBootingUp={setBootingUp}
-                setShouldBootUp={props.setShouldBootUp}
-                creationDate={creationDate.toString()}
-            />
-        );
+        return <BootUp setBootingUp={setBootingUp} creationDate={creationDate.toString()} />;
     }
 
     return <TerminalEmbed ref={props.inputRef} scrollContainerRef={props.scrollContainerRef} />;

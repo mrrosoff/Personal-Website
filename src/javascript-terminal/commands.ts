@@ -32,6 +32,7 @@ import rmdir from "./commands/rmdir";
 import sed from "./commands/sed";
 import snake from "./commands/snake";
 import sort from "./commands/sort";
+import su from "./commands/su";
 import sudo from "./commands/sudo";
 import tail from "./commands/tail";
 import tee from "./commands/tee";
@@ -76,6 +77,7 @@ const commands: Record<string, any> = {
     sed,
     snake,
     sort,
+    su,
     sudo,
     tail,
     tee,

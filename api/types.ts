@@ -28,3 +28,18 @@ export type DatabasePasskey = {
     credentialId: string;
     publicKey: string;
 };
+
+export enum UserType {
+    ADMIN,
+    FRIEND,
+    SHARE
+}
+
+export type AccessToken = {
+    id: string;
+    userType: UserType;
+    iss: string;
+    sub?: string;
+    iat: number;
+    exp: number;
+};

@@ -20,11 +20,11 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     }
 
     const environmentVariables = state.getEnvVariables();
-    if (environmentVariables["AUTH_TOKEN"]) {
-        const targetCommand = argv[0];
-        const targetOptions = argv.slice(1);
-        const commandMapping = state.getCommandMapping();
+    const targetCommand = argv[0];
+    const targetOptions = argv.slice(1);
 
+    if (environmentVariables["AUTH_TOKEN"] || targetCommand === "su") {
+        const commandMapping = state.getCommandMapping();
         const commandFn: any = CommandMappingUtil.getCommandFn(commandMapping, targetCommand);
         if (!commandFn) {
             return { output: "Command Not Found", type: "error" };
@@ -38,10 +38,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         }
     }
 
-    state.setPasswordPromptState({
-        targetCommand: argv[0],
-        targetOptions: argv.slice(1)
-    });
+    state.setPasswordPromptState({ targetCommand, targetOptions });
     return { output: "", type: "text" };
 };
 
@@ -51,6 +48,20 @@ export const authenticateWithPasskey = async (
 ): Promise<void> => {
     const promptState = emulatorState.getPasswordPromptState();
     if (!promptState) return;
+
+    // @ts-expect-error
+    if (import.meta.env.DEV) {
+        emulatorState.setPasswordPromptState(undefined);
+        const outputs = emulatorState.getOutputs();
+        if (outputs.length > 0) {
+            const lastOutput = outputs[outputs.length - 1];
+            lastOutput.output = [
+                { output: "Passkey Auth Unavailable In Local Environment", type: "error" }
+            ];
+            emulatorState.setOutputs([...outputs]);
+        }
+        return;
+    }
 
     try {
         const { data: authOptions } = await axios.post(`${API_URL}/admin/passkey-auth-options`);
@@ -67,6 +78,12 @@ export const authenticateWithPasskey = async (
         emulatorState.setEnvVariables({ ...existingVars, AUTH_TOKEN: authResult.token });
 
         const commandMapping = emulatorState.getCommandMapping();
+        emulatorState.setPasswordPromptState(undefined);
+
+        if (!promptState.targetCommand || !promptState.targetOptions) {
+            return;
+        }
+
         const result = emulator.runCommand(commandMapping, promptState.targetCommand, [
             emulatorState,
             promptState.targetOptions

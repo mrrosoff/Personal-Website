@@ -7,22 +7,10 @@ import { JWK } from "node-jose";
 import keys from "./jwks/keys.json";
 import keyMapping from "./jwks/keyMapping.json";
 
-import { API_ENDPOINT_URL } from "./types";
+import { AccessToken, API_ENDPOINT_URL, UserType } from "./types";
 
-export enum UserType {
-    ADMIN,
-    FRIEND,
-    SHARE
-}
-
-export type AccessToken = {
-    id: string;
-    userType: UserType;
-    iss: string;
-    sub?: string;
-    iat: number;
-    exp: number;
-};
+export { UserType };
+export type { AccessToken };
 
 export async function verifyJWTFromURI(
     token: string,
