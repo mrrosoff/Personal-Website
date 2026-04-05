@@ -39,6 +39,11 @@ export type ProvisionFlavorForm = {
     currentField: "flavorName" | "initialQuantity" | "color" | "type";
 };
 
+export type FriendInvite = {
+    friendName: string;
+    url?: string;
+};
+
 export type AdminConsoleState = {
     screen?: AdminConsoleScreen;
     selectedOption?: MainMenuOption | IceCreamInventoryMenuOption | number | "yes" | "no";
@@ -48,7 +53,7 @@ export type AdminConsoleState = {
     provisionForm?: ProvisionFlavorForm;
     currentPage?: number;
     loading?: boolean;
-    friendInviteUrl?: string;
+    friendInvite?: FriendInvite;
 };
 
 export type PasswordPromptState = {

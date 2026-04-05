@@ -19,6 +19,11 @@ const RegisterFriend = () => {
         return <Navigate to={"/"} replace />;
     }
 
+    const decodedToken = decodeToken(token);
+    if (!decodedToken) {
+        return <Navigate to={"/"} replace />;
+    }
+
     const handleRegister = async () => {
         setIsLoading(true);
         try {
@@ -38,8 +43,6 @@ const RegisterFriend = () => {
             setError("Registration Failed. Ask For A New Link.");
         }
     };
-
-    const decodedToken = decodeToken(token);
 
     return (
         <Box

@@ -19,7 +19,13 @@ import RegisterFriend from "./RegisterFriend";
 
 export const API_URL = "https://api.maxrosoff.com";
 
-export const decodeToken = (token: string): AccessToken => jwtDecode<AccessToken>(token);
+export const decodeToken = (token: string): AccessToken | null => {
+    try {
+        return jwtDecode<AccessToken>(token);
+    } catch {
+        return null;
+    }
+};
 
 const App = () => {
     const theme = createTheme({

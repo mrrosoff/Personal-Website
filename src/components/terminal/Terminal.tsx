@@ -68,15 +68,15 @@ const Terminal = (
     }, [emulatorState.getPasswordPromptState()]);
 
     const authToken = emulatorState.getEnvVariables()["AUTH_TOKEN"];
-    const promptSymbol = `${authToken ? decodeToken(authToken).id : "dev"}@rosoff`;
+    const authPayload = authToken ? decodeToken(authToken) : null;
+    const promptSymbol = `${authPayload?.id ?? "dev"}@rosoff`;
 
     useEffect(() => {
-        if (!authToken) {
+        if (!authToken || !authPayload) {
             setFriendToken("");
             return;
         }
-        const payload = decodeToken(authToken);
-        setFriendToken(payload.userType === UserType.FRIEND ? authToken : "");
+        setFriendToken(authPayload.userType === UserType.FRIEND ? authToken : "");
     }, [authToken]);
 
     const scrollToBottom = () => {

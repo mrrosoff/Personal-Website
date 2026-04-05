@@ -105,7 +105,7 @@ export const handleAdminConsoleKeyPress = async (
     } else if (mode.screen === "confirm-provision-flavor") {
         return await handleConfirmProvisionFlavor(key, emulatorState);
     } else if (mode.screen === "create-friend-invite") {
-        return handleCreateFriendInvite(key, emulatorState);
+        return await handleCreateFriendInvite(key, emulatorState);
     }
 
     return emulatorState;
@@ -153,7 +153,7 @@ const handleMainMenu = (key: string, state: EmulatorState): EmulatorState => {
                     state.setAdminConsoleMode({
                         ...mode,
                         screen: AdminConsoleScreen.CreateFriendInvite,
-                        friendInviteUrl: undefined
+                        friendInvite: { friendName: "" }
                     });
                     break;
                 case MainMenuOption.Exit:
@@ -637,17 +637,70 @@ const handleProvisionFormInput = (key: string, state: EmulatorState) => {
     }
 };
 
-const handleCreateFriendInvite = (key: string, state: EmulatorState): EmulatorState => {
+const handleCreateFriendInvite = async (
+    key: string,
+    state: EmulatorState
+): Promise<EmulatorState> => {
     const mode = state.getAdminConsoleMode()!;
+    const invite = mode.friendInvite ?? { friendName: "" };
+
     if (key === "Escape") {
         state.setAdminConsoleMode({
             ...mode,
             screen: AdminConsoleScreen.Main,
             selectedOption: MainMenuOption.CreateFriendInvite,
-            friendInviteUrl: undefined
+            friendInvite: undefined
+        });
+        return state;
+    }
+
+    if (invite.url) {
+        return state;
+    }
+
+    if (key === "Enter") {
+        if (!invite.friendName) return state;
+        const authToken = state.getEnvVariables()["AUTH_TOKEN"];
+        state.setAdminConsoleMode({ ...mode, loading: true });
+        const url = await createFriendInvite(invite.friendName, authToken);
+        state.setAdminConsoleMode({
+            ...state.getAdminConsoleMode(),
+            friendInvite: { ...invite, url },
+            loading: false
+        });
+        return state;
+    }
+
+    if (key === "Backspace") {
+        state.setAdminConsoleMode({
+            ...mode,
+            friendInvite: { ...invite, friendName: invite.friendName.slice(0, -1) }
+        });
+        return state;
+    }
+
+    if (key.length === 1) {
+        state.setAdminConsoleMode({
+            ...mode,
+            friendInvite: { ...invite, friendName: invite.friendName + key }
         });
     }
+
     return state;
+};
+
+const createFriendInvite = async (friendName: string, authToken: string): Promise<string> => {
+    try {
+        const { data } = await axios.post<{ url: string }>(
+            `${API_URL}/admin/create-friend-invite`,
+            { friendName },
+            { headers: { Authorization: `Bearer ${authToken}` } }
+        );
+        return data.url;
+    } catch (err) {
+        console.error("Failed to create friend invite", err);
+        return "Failed To Create Friend Invite";
+    }
 };
 
 const handleConfirmProvisionFlavor = async (

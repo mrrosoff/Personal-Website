@@ -57,7 +57,9 @@ const OrderConfirmation = (props: { customerEmail: string | null }) => {
     const navigate = useNavigate();
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
+
     const { friendToken } = useAppContext();
+    const decodedToken = decodeToken(friendToken);
 
     return (
         <Box
@@ -93,10 +95,10 @@ const OrderConfirmation = (props: { customerEmail: string | null }) => {
                         color: "text.primary"
                     }}
                 >
-                    {friendToken ? (
+                    {decodedToken ? (
                         <>
-                            Thanks for dropping by, {decodeToken(friendToken).id}! I'll deliver
-                            your ice cream soon.
+                            Thanks for dropping by, {decodedToken.id}! I'll deliver your ice cream
+                            soon.
                         </>
                     ) : (
                         <>

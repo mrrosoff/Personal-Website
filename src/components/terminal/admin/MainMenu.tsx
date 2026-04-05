@@ -73,7 +73,7 @@ const MainMenu = (props: { theme?: TerminalTheme; emulatorState: EmulatorState }
                     props.emulatorState.setAdminConsoleMode({
                         ...mode,
                         screen: AdminConsoleScreen.CreateFriendInvite,
-                        friendInviteUrl: undefined
+                        friendInvite: { friendName: "" }
                     })
                 }
             >
