@@ -67,12 +67,20 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
             credential: webAuthnCredential
         });
     } catch (error) {
-        console.error("Passkey Authentication Error:", error);
-        return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Authentication Failed");
+        console.error(error);
+        return buildErrorResponse(
+            event,
+            HttpResponseStatus.UNAUTHORIZED,
+            "Authentication Failed"
+        );
     }
 
     if (!verification.verified) {
-        return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Authentication Failed");
+        return buildErrorResponse(
+            event,
+            HttpResponseStatus.UNAUTHORIZED,
+            "Passkey Verification Returned Unverified"
+        );
     }
 
     await deleteItem(PASSKEY_CHALLENGES_TABLE, challengeRecord.id);
