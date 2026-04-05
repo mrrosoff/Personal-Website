@@ -180,7 +180,13 @@ const Terminal = (
 
             case "Enter":
                 e.preventDefault();
-                setEmulatorState(emulator.execute(emulatorState, input, props.errorStr));
+                const newState = emulator.execute(emulatorState, input, props.errorStr);
+                const outputs = newState.getOutputs();
+                if (outputs.length > 0) {
+                    outputs[outputs.length - 1].promptSymbol = promptSymbol;
+                    newState.setOutputs([...outputs]);
+                }
+                setEmulatorState(newState);
                 setInput("");
                 setHistoryIndex(-1);
                 setRenderedOutputs(calculateOutputs());
@@ -200,7 +206,11 @@ const Terminal = (
         return emulatorState.getOutputs().map((content: any, index: number) => (
             <Grid key={index} container direction={"column"}>
                 <Grid>
-                    <OutputHeader {...props} promptSymbol={promptSymbol} cwd={content.cwd}>
+                    <OutputHeader
+                        {...props}
+                        promptSymbol={content.promptSymbol ?? promptSymbol}
+                        cwd={content.cwd}
+                    >
                         {content.command}
                     </OutputHeader>
                 </Grid>

@@ -5,7 +5,7 @@ import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../com
 import { RP_ORIGIN } from "./passkeyAuthOptions";
 
 type CreateFriendInvitePayload = {
-    name: string;
+    friendName: string;
 };
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
@@ -22,7 +22,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     }
 
     const body: CreateFriendInvitePayload = JSON.parse(event.body);
-    const friendName = body.name.trim();
+    const friendName = body.friendName.trim();
 
     const inviteToken = await generateToken(friendName, {
         userType: UserType.SHARE,
