@@ -30,6 +30,7 @@ import { AttributeType, BillingMode, Table } from "aws-cdk-lib/aws-dynamodb";
 
 export const FLAVORS_TABLE = "website-flavors";
 export const PASSKEY_CHALLENGES_TABLE = "website-passkey-challenges";
+export const PASSKEYS_TABLE = "website-passkeys";
 
 class WebsiteAPIStack extends Stack {
     constructor(scope: Construct, id: string, props: StackProps) {
@@ -37,13 +38,18 @@ class WebsiteAPIStack extends Stack {
 
         const flavorsTable = this.createFlavorsTable();
         const passkeyChallengesTable = this.createPasskeyChallengesTable();
+        const passkeysTable = this.createPasskeysTable();
 
         const certificate = new Certificate(this, "websiteCertificate", {
             domainName: "maxrosoff.com",
             subjectAlternativeNames: ["*.maxrosoff.com"],
             validation: CertificateValidation.fromDns()
         });
-        const apiRole = this.createAPILambdaRole(flavorsTable, passkeyChallengesTable);
+        const apiRole = this.createAPILambdaRole(
+            flavorsTable,
+            passkeyChallengesTable,
+            passkeysTable
+        );
         const restApi = this.createAPI(
             certificate,
             apiRole,
@@ -71,6 +77,16 @@ class WebsiteAPIStack extends Stack {
             removalPolicy: RemovalPolicy.DESTROY,
             deletionProtection: true,
             timeToLiveAttribute: "expiresAt"
+        });
+    }
+
+    private createPasskeysTable(): Table {
+        return new Table(this, "websitePasskeysTable", {
+            tableName: PASSKEYS_TABLE,
+            partitionKey: { name: "credentialId", type: AttributeType.STRING },
+            billingMode: BillingMode.PAY_PER_REQUEST,
+            removalPolicy: RemovalPolicy.DESTROY,
+            deletionProtection: true
         });
     }
 
@@ -106,8 +122,11 @@ class WebsiteAPIStack extends Stack {
         const provisionFlavorLambda = this.createProvisionFlavorLambda(apiRole);
         const updateInventoryLambda = this.createUpdateInventoryLambda(apiRole);
 
+        const passkeyRegisterOptionsLambda = this.createPasskeyRegisterOptionsLambda(apiRole);
+        const passkeyRegisterLambda = this.createPasskeyRegisterLambda(apiRole);
         const passkeyAuthOptionsLambda = this.createPasskeyAuthOptionsLambda(apiRole);
         const passkeyAuthLambda = this.createPasskeyAuthLambda(apiRole);
+        const createFriendInviteLambda = this.createCreateFriendInviteLambda(apiRole);
 
         const adminResource = api.root.addResource("admin");
         adminResource
@@ -117,11 +136,21 @@ class WebsiteAPIStack extends Stack {
             .addResource("update-inventory")
             .addMethod("POST", new LambdaIntegration(updateInventoryLambda));
         adminResource
+            .addResource("passkey-register-options")
+            .addMethod("POST", new LambdaIntegration(passkeyRegisterOptionsLambda));
+        adminResource
+            .addResource("passkey-register")
+            .addMethod("POST", new LambdaIntegration(passkeyRegisterLambda));
+        adminResource
             .addResource("passkey-auth-options")
             .addMethod("POST", new LambdaIntegration(passkeyAuthOptionsLambda));
         adminResource
             .addResource("passkey-auth")
             .addMethod("POST", new LambdaIntegration(passkeyAuthLambda));
+        adminResource
+            .addResource("create-friend-invite")
+            .addMethod("POST", new LambdaIntegration(createFriendInviteLambda));
+        
     }
 
     private createEmailRoutes(api: RestApi, apiRole: Role) {
@@ -285,6 +314,28 @@ class WebsiteAPIStack extends Stack {
             ...this.createLambdaParams(functionName, role)
         });
     }
+    
+    private createPasskeyRegisterOptionsLambda(role: Role): LambdaFunction {
+        const functionName = "website-passkey-register-options";
+        return new LambdaFunction(this, "websitePasskeyRegisterOptionsLambda", {
+            functionName,
+            handler: "passkeyRegisterOptions.handler",
+            code: Code.fromAsset("dist/lambda/admin/passkeyRegisterOptions"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(functionName, role)
+        });
+    }
+
+    private createPasskeyRegisterLambda(role: Role): LambdaFunction {
+        const functionName = "website-passkey-register";
+        return new LambdaFunction(this, "websitePasskeyRegisterLambda", {
+            functionName,
+            handler: "passkeyRegister.handler",
+            code: Code.fromAsset("dist/lambda/admin/passkeyRegister"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(functionName, role)
+        });
+    }
 
     private createPasskeyAuthOptionsLambda(role: Role): LambdaFunction {
         const functionName = "website-passkey-auth-options";
@@ -303,6 +354,17 @@ class WebsiteAPIStack extends Stack {
             functionName,
             handler: "passkeyAuth.handler",
             code: Code.fromAsset("dist/lambda/admin/passkeyAuth"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(functionName, role)
+        });
+    }
+
+    private createCreateFriendInviteLambda(role: Role): LambdaFunction {
+        const functionName = "website-create-friend-invite";
+        return new LambdaFunction(this, "websiteCreateFriendInviteLambda", {
+            functionName,
+            handler: "createFriendInvite.handler",
+            code: Code.fromAsset("dist/lambda/admin/createFriendInvite"),
             runtime: Runtime.NODEJS_22_X,
             ...this.createLambdaParams(functionName, role)
         });

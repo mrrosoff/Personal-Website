@@ -6,7 +6,7 @@ import { getParameter } from "../../aws/services/parameterStore";
 import { FLAVORS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
 import { buildResponse, buildErrorResponse, HttpResponseStatus } from "../../common";
 import { DatabaseFlavor, FlavorType } from "../../types";
-import { isAuthenticated } from "../../auth";
+import { isAdmin } from "../../auth";
 
 type UpdateInventoryPayload = {
     productId: string;
@@ -23,7 +23,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 
     const body: UpdateInventoryPayload = JSON.parse(event.body);
 
-    if (!(await isAuthenticated(event))) {
+    if (!(await isAdmin(event))) {
         return buildErrorResponse(
             event,
             HttpResponseStatus.UNAUTHORIZED,

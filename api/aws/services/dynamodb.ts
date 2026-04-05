@@ -8,18 +8,29 @@ import {
     DeleteCommand
 } from "@aws-sdk/lib-dynamodb";
 
-import { FLAVORS_TABLE, PASSKEY_CHALLENGES_TABLE } from "../../../infrastructure/WebsiteAPIStack";
-import { DatabaseFlavor, DatabasePasskeyChallenge, DynamoDBFieldValue } from "../../types";
+import {
+    FLAVORS_TABLE,
+    PASSKEY_CHALLENGES_TABLE,
+    PASSKEYS_TABLE
+} from "../../../infrastructure/WebsiteAPIStack";
+import {
+    DatabaseFlavor,
+    DatabasePasskey,
+    DatabasePasskeyChallenge,
+    DynamoDBFieldValue
+} from "../../types";
 
 // prettier-ignore
 export type Table =
     typeof FLAVORS_TABLE |
-    typeof PASSKEY_CHALLENGES_TABLE;
+    typeof PASSKEY_CHALLENGES_TABLE |
+    typeof PASSKEYS_TABLE;
 
 // prettier-ignore
 type ItemKeyInput<T extends Table> =
     T extends typeof FLAVORS_TABLE ? string :
     T extends typeof PASSKEY_CHALLENGES_TABLE ? string :
+    T extends typeof PASSKEYS_TABLE ? string :
     never;
 
 type UpdateItemInput<T extends Table> = Partial<
@@ -30,6 +41,7 @@ type UpdateItemInput<T extends Table> = Partial<
 export type TableObject<T extends Table> =
     T extends typeof FLAVORS_TABLE ? DatabaseFlavor :
     T extends typeof PASSKEY_CHALLENGES_TABLE ? DatabasePasskeyChallenge :
+    T extends typeof PASSKEYS_TABLE ? DatabasePasskey :
     never;
 
 // prettier-ignore
@@ -42,17 +54,21 @@ export const documentClient = DynamoDBDocument.from(dynamodbClient);
 
 const primaryKeys: Record<Table, string> = {
     [FLAVORS_TABLE]: "productId",
-    [PASSKEY_CHALLENGES_TABLE]: "id"
+    [PASSKEY_CHALLENGES_TABLE]: "id",
+    [PASSKEYS_TABLE]: "credentialId"
 };
 
 // Generic helper functions for passkey tables
-export async function getItem<T extends Table>(table: T, key: ItemKeyInput<T>): Promise<any> {
+export async function getItem<T extends Table>(
+    table: T,
+    key: ItemKeyInput<T>
+): Promise<TableObject<T> | undefined> {
     console.debug(`Getting item from ${table} with key ${JSON.stringify(key)}`);
     const compositeKey = generateCompositeKey(table, key);
 
     const getItemRequest = new GetCommand({ TableName: table, Key: compositeKey });
     const itemOutput = await documentClient.send(getItemRequest);
-    return itemOutput.Item;
+    return itemOutput.Item as TableObject<T> | undefined;
 }
 
 export async function getAllItems<T extends Table>(table: T): Promise<TableObject<T>[]> {

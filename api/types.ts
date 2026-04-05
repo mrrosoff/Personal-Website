@@ -23,3 +23,8 @@ export type DatabasePasskeyChallenge = {
     id: string;
     expiresAt: number;
 };
+
+export type DatabasePasskey = {
+    credentialId: string;
+    publicKey: string;
+};

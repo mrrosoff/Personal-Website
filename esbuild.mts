@@ -51,3 +51,15 @@ await buildLambdaFunction(
     "api/endpoints/admin/updateInventory.ts",
     "dist/lambda/admin/updateInventory"
 );
+await buildLambdaFunction(
+    "api/endpoints/admin/createFriendInvite.ts",
+    "dist/lambda/admin/createFriendInvite"
+);
+await buildLambdaFunction(
+    "api/endpoints/admin/passkeyRegisterOptions.ts",
+    "dist/lambda/admin/passkeyRegisterOptions"
+);
+await buildLambdaFunction(
+    "api/endpoints/admin/passkeyRegister.ts",
+    "dist/lambda/admin/passkeyRegister"
+);

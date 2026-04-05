@@ -6,7 +6,7 @@ import { getParameter } from "../../aws/services/parameterStore";
 import { putItem } from "../../aws/services/dynamodb";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
 import { FlavorType } from "../../types";
-import { isAuthenticated } from "../../auth";
+import { isAdmin } from "../../auth";
 
 type ProvisionFlavorPayload = {
     flavorName: string;
@@ -22,11 +22,11 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 
     const body: ProvisionFlavorPayload = JSON.parse(event.body);
 
-    if (!(await isAuthenticated(event))) {
+    if (!(await isAdmin(event))) {
         return buildErrorResponse(
             event,
             HttpResponseStatus.UNAUTHORIZED,
-            "Authentication required"
+            "Authentication Required"
         );
     }
 

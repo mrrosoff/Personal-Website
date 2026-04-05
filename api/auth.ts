@@ -1,7 +1,7 @@
 import { APIGatewayProxyEvent } from "aws-lambda";
 import axios from "axios";
 import { IncomingMessage } from "http";
-import { decode, JwtPayload, sign, verify, VerifyOptions } from "jsonwebtoken";
+import { decode, JwtPayload, sign, SignOptions, verify, VerifyOptions } from "jsonwebtoken";
 import { JWK } from "node-jose";
 
 import keys from "./jwks/keys.json";
@@ -9,8 +9,15 @@ import keyMapping from "./jwks/keyMapping.json";
 
 import { API_ENDPOINT_URL } from "./types";
 
+export enum UserType {
+    ADMIN,
+    FRIEND,
+    SHARE
+}
+
 export type AccessToken = {
     id: string;
+    userType: UserType;
     iss: string;
     sub?: string;
     iat: number;
@@ -37,14 +44,20 @@ export async function verifyJWTFromURI(
     }
 }
 
-export async function generateToken(id: string): Promise<string> {
+export async function generateToken(
+    id: string,
+    options: {
+        userType?: UserType;
+        expiresIn?: SignOptions["expiresIn"];
+    }
+): Promise<string> {
     console.debug(`Generating auth token for user ${id}`);
     const keyStore = await JWK.asKeyStore(keys);
     const key = keyStore.get(keyMapping.authentication).toPEM(true);
-    return sign({ id }, key, {
+    return sign({ id, userType: options.userType ?? UserType.ADMIN }, key, {
         algorithm: "ES256",
         issuer: API_ENDPOINT_URL,
-        expiresIn: "6h"
+        expiresIn: options.expiresIn ?? "6h"
     });
 }
 
@@ -57,7 +70,7 @@ export async function decryptToken(token: string): Promise<AccessToken> {
 
 export async function authenticateHTTPAccessToken(
     req: IncomingMessage | APIGatewayProxyEvent
-): Promise<string | null> {
+): Promise<AccessToken | null> {
     const authHeader = req.headers.authorization ?? req.headers.Authorization;
     if (!authHeader || Array.isArray(authHeader)) {
         return null;
@@ -71,20 +84,17 @@ export async function authenticateHTTPAccessToken(
     }
 
     try {
-        const payload = await decryptToken(token);
-        return payload.id;
+        return await decryptToken(token);
     } catch (err) {
         console.info(err);
         throw new Error("Invalid Authentication Token");
     }
 }
 
-export async function isAuthenticated(
-    event: IncomingMessage | APIGatewayProxyEvent
-): Promise<boolean> {
+export async function isAdmin(event: IncomingMessage | APIGatewayProxyEvent): Promise<boolean> {
     try {
-        const userId = await authenticateHTTPAccessToken(event);
-        return userId === "admin";
+        const payload = await authenticateHTTPAccessToken(event);
+        return payload?.userType === UserType.ADMIN;
     } catch (err) {
         return false;
     }

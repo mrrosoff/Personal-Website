@@ -2,10 +2,10 @@ import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import { AuthenticationResponseJSON, verifyAuthenticationResponse } from "@simplewebauthn/server";
 import { DateTime } from "luxon";
 
-import { PASSKEY_CHALLENGES_TABLE } from "../../../infrastructure/WebsiteAPIStack";
+import { PASSKEY_CHALLENGES_TABLE, PASSKEYS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
 import { deleteItem, getItem } from "../../aws/services/dynamodb";
-import { getParameters } from "../../aws/services/parameterStore";
-import { generateToken } from "../../auth";
+import { getParameter } from "../../aws/services/parameterStore";
+import { generateToken, UserType } from "../../auth";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
 import { RP_ID, RP_ORIGIN } from "./passkeyAuthOptions";
 
@@ -36,49 +36,50 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Challenge Expired");
     }
 
-    try {
-        const parameters = await getParameters(
-            "/website/admin/passkeyId",
-            "/website/admin/publicKey"
+    const presentedCredentialId = body.response.id;
+
+    const adminCredentialId = await getParameter("/website/admin/passkeyId");
+    const isAdmin = presentedCredentialId === adminCredentialId;
+
+    const storedPasskey = await getItem(PASSKEYS_TABLE, presentedCredentialId);
+    if (!storedPasskey) {
+        return buildErrorResponse(
+            event,
+            HttpResponseStatus.UNAUTHORIZED,
+            "Credential Not Recognized"
         );
-        const storedCredentialId = parameters["/website/admin/passkeyId"];
-        const storedPublicKey = parameters["/website/admin/publicKey"];
+    }
 
-        const webAuthnCredential = {
-            id: storedCredentialId,
-            publicKey: Buffer.from(storedPublicKey, "base64"),
-            counter: 0 // Not tracking counter for simplicity
-        };
+    const userType = isAdmin ? UserType.ADMIN : UserType.FRIEND;
+    const webAuthnCredential: Parameters<typeof verifyAuthenticationResponse>[0]["credential"] = {
+        id: storedPasskey.credentialId,
+        publicKey: Buffer.from(storedPasskey.publicKey, "base64"),
+        counter: 0 // Not tracking counter for simplicity
+    };
 
-        const verification = await verifyAuthenticationResponse({
+    let verification;
+    try {
+        verification = await verifyAuthenticationResponse({
             response: body.response,
             expectedChallenge: challengeRecord.id,
             expectedOrigin: RP_ORIGIN,
             expectedRPID: RP_ID,
             credential: webAuthnCredential
         });
-
-        if (!verification.verified) {
-            return buildErrorResponse(
-                event,
-                HttpResponseStatus.UNAUTHORIZED,
-                "Authentication Failed"
-            );
-        }
-
-        await deleteItem(PASSKEY_CHALLENGES_TABLE, challengeRecord.id);
-
-        return buildResponse(event, HttpResponseStatus.OK, {
-            verified: true,
-            message: "Authentication successful",
-            token: await generateToken("admin")
-        });
     } catch (error) {
         console.error("Passkey Authentication Error:", error);
-        return buildErrorResponse(
-            event,
-            HttpResponseStatus.INTERNAL_SERVER_ERROR,
-            "Authentication Failed"
-        );
+        return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Authentication Failed");
     }
+
+    if (!verification.verified) {
+        return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Authentication Failed");
+    }
+
+    await deleteItem(PASSKEY_CHALLENGES_TABLE, challengeRecord.id);
+
+    return buildResponse(event, HttpResponseStatus.OK, {
+        verified: true,
+        message: "Authentication Successful",
+        token: await generateToken(storedPasskey.credentialId, { userType })
+    });
 };
