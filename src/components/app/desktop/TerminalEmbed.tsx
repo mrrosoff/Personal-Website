@@ -20,7 +20,12 @@ const TerminalEmbed = (
         commandMapping: CommandMapping.create({
             ...DefaultCommandMapping,
             exit: {
-                functionDef: () => {
+                functionDef: (state) => {
+                    if (state.getEnvVariables()["AUTH_TOKEN"]) {
+                        const { AUTH_TOKEN: _removed, ...rest } = state.getEnvVariables();
+                        state.setEnvVariables(rest);
+                        return { output: "", type: "text" };
+                    }
                     close();
                     return { output: "Can't Close Window", type: "error" };
                 },
