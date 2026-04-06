@@ -60,7 +60,8 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     const passkey: DatabasePasskey = {
         credentialId: credential.id,
         publicKey: Buffer.from(credential.publicKey).toString("base64"),
-        userType: UserType.FRIEND
+        userType: UserType.FRIEND,
+        name: sharePayload.id
     };
     await putItem(PASSKEYS_TABLE, passkey);
     await deleteItem(PASSKEY_CHALLENGES_TABLE, challengeRecord.id);
