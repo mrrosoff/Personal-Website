@@ -1,9 +1,7 @@
 import { Box, Typography } from "@mui/material";
 
 import EmulatorState, {
-    AdminConsoleScreen,
     MainMenuOption,
-    IceCreamInventoryMenuOption,
     AdminConsoleState
 } from "../../../javascript-terminal/emulator-state/EmulatorState";
 import { TerminalTheme } from "../Terminal";
@@ -25,70 +23,24 @@ const MainMenu = (props: { theme?: TerminalTheme; emulatorState: EmulatorState }
             <MenuItem
                 selected={mode.selectedOption === MainMenuOption.IceCreamInventory}
                 theme={props.theme}
-                onMouseEnter={() =>
-                    props.emulatorState.setAdminConsoleMode({
-                        ...mode,
-                        selectedOption: MainMenuOption.IceCreamInventory
-                    })
-                }
-                onClick={() =>
-                    props.emulatorState.setAdminConsoleMode({
-                        ...mode,
-                        screen: AdminConsoleScreen.IceCreamInventory,
-                        selectedOption: IceCreamInventoryMenuOption.ProvisionNewFlavor
-                    })
-                }
             >
                 1. Ice Cream Inventory
             </MenuItem>
             <MenuItem
                 selected={mode.selectedOption === MainMenuOption.SendMarketingEmails}
                 theme={props.theme}
-                onMouseEnter={() =>
-                    props.emulatorState.setAdminConsoleMode({
-                        ...mode,
-                        selectedOption: MainMenuOption.SendMarketingEmails
-                    })
-                }
-                onClick={() =>
-                    props.emulatorState.setAdminConsoleMode({
-                        ...mode,
-                        screen: AdminConsoleScreen.ConfirmSendEmails,
-                        selectedOption: "yes"
-                    })
-                }
             >
                 2. Send Marketing Emails
             </MenuItem>
             <MenuItem
                 selected={mode.selectedOption === MainMenuOption.CreateFriendInvite}
                 theme={props.theme}
-                onMouseEnter={() =>
-                    props.emulatorState.setAdminConsoleMode({
-                        ...mode,
-                        selectedOption: MainMenuOption.CreateFriendInvite
-                    })
-                }
-                onClick={() =>
-                    props.emulatorState.setAdminConsoleMode({
-                        ...mode,
-                        screen: AdminConsoleScreen.CreateFriendInvite,
-                        friendInvite: { friendName: "" }
-                    })
-                }
             >
                 3. Create Friend Invite
             </MenuItem>
             <MenuItem
                 selected={mode.selectedOption === MainMenuOption.Exit}
                 theme={props.theme}
-                onMouseEnter={() =>
-                    props.emulatorState.setAdminConsoleMode({
-                        ...mode,
-                        selectedOption: MainMenuOption.Exit
-                    })
-                }
-                onClick={() => props.emulatorState.setAdminConsoleMode(undefined)}
             >
                 4. Exit
             </MenuItem>

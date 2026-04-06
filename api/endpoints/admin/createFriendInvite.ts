@@ -28,7 +28,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         userType: UserType.SHARE,
         expiresIn: "5m"
     });
-    const url = `${RP_ORIGIN}/friend-register?token=${encodeURIComponent(inviteToken)}`;
+    const url = `${RP_ORIGIN}/register-friend?token=${encodeURIComponent(inviteToken)}`;
 
     return buildResponse(event, HttpResponseStatus.OK, { url, token: inviteToken });
 };

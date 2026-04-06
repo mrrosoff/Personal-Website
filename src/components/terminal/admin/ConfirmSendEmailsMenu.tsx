@@ -1,10 +1,7 @@
-import axios from "axios";
 import { Box, Typography } from "@mui/material";
 
 import EmulatorState, {
-    AdminConsoleState,
-    AdminConsoleScreen,
-    MainMenuOption
+    AdminConsoleState
 } from "../../../javascript-terminal/emulator-state/EmulatorState";
 import { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
@@ -12,38 +9,6 @@ import MenuItem from "./common/MenuItem";
 const ConfirmSendEmailsMenu = (props: { theme?: TerminalTheme; emulatorState: EmulatorState }) => {
     const mode = props.emulatorState.getAdminConsoleMode() as AdminConsoleState;
     const selectedOption = mode.selectedOption as "yes" | "no";
-
-    const sendMarketingEmails = async () => {
-        const authToken = props.emulatorState.getEnvVariables()["AUTH_TOKEN"];
-        try {
-            await axios.post(
-                "https://api.maxrosoff.com/admin/send-marketing-emails",
-                {},
-                {
-                    headers: { Authorization: `Bearer ${authToken}` }
-                }
-            );
-        } catch (err) {
-            console.error("Failed to send marketing emails", err);
-        }
-    };
-
-    const handleYesClick = async () => {
-        await sendMarketingEmails();
-        props.emulatorState.setAdminConsoleMode({
-            ...mode,
-            screen: AdminConsoleScreen.Main,
-            selectedOption: MainMenuOption.SendMarketingEmails
-        });
-    };
-
-    const handleNoClick = () => {
-        props.emulatorState.setAdminConsoleMode({
-            ...mode,
-            screen: AdminConsoleScreen.Main,
-            selectedOption: MainMenuOption.SendMarketingEmails
-        });
-    };
 
     return (
         <Box sx={{ paddingTop: 1 }}>
@@ -65,30 +30,10 @@ const ConfirmSendEmailsMenu = (props: { theme?: TerminalTheme; emulatorState: Em
                 Are you sure you want to send marketing emails to all subscribers?
             </Typography>
             <Box sx={{ display: "flex", gap: 2, mb: 1 }}>
-                <MenuItem
-                    selected={selectedOption === "yes"}
-                    theme={props.theme}
-                    onMouseEnter={() =>
-                        props.emulatorState.setAdminConsoleMode({
-                            ...mode,
-                            selectedOption: "yes"
-                        })
-                    }
-                    onClick={handleYesClick}
-                >
+                <MenuItem selected={selectedOption === "yes"} theme={props.theme}>
                     Yes
                 </MenuItem>
-                <MenuItem
-                    selected={selectedOption === "no"}
-                    theme={props.theme}
-                    onMouseEnter={() =>
-                        props.emulatorState.setAdminConsoleMode({
-                            ...mode,
-                            selectedOption: "no"
-                        })
-                    }
-                    onClick={handleNoClick}
-                >
+                <MenuItem selected={selectedOption === "no"} theme={props.theme}>
                     No
                 </MenuItem>
             </Box>

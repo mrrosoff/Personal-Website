@@ -39,7 +39,17 @@ const CreateFriendInviteMenu = (props: { theme?: TerminalTheme; emulatorState: E
 
             {invite?.url ? (
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1, px: 1 }}>
-                    <Typography sx={{ color: outputColor }}>{invite.url}</Typography>
+                    <Typography
+                        sx={{
+                            color: outputColor,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                            maxWidth: "80%"
+                        }}
+                    >
+                        {invite.url}
+                    </Typography>
                     <Tooltip title={copied ? "Copied" : "Copy"} placement="right">
                         <IconButton
                             size="small"
@@ -80,7 +90,7 @@ const CreateFriendInviteMenu = (props: { theme?: TerminalTheme; emulatorState: E
                 {mode.loading
                     ? `Loading${dots}`
                     : invite?.url
-                      ? "escape: back"
+                      ? "click copy for full url | escape: back"
                       : "type to edit | enter: create | escape: cancel"}
             </Typography>
         </Box>

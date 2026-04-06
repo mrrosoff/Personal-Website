@@ -1,11 +1,8 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { Box, Typography } from "@mui/material";
 
 import EmulatorState, {
-    AdminConsoleState,
-    AdminConsoleScreen,
-    IceCreamInventoryMenuOption
+    AdminConsoleState
 } from "../../../javascript-terminal/emulator-state/EmulatorState";
 import { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
@@ -27,50 +24,6 @@ const ConfirmProvisionFlavorMenu = (props: {
     const selectedOption = mode.selectedOption as "yes" | "no";
     const form = mode.provisionForm;
     if (!form) return null;
-
-    const provisionFlavor = async () => {
-        const authToken = props.emulatorState.getEnvVariables()["AUTH_TOKEN"];
-        try {
-            await axios.post(
-                "https://api.maxrosoff.com/admin/provision-flavor",
-                {
-                    flavorName: form.flavorName,
-                    initialQuantity: form.initialQuantity,
-                    color: form.color,
-                    type: form.type
-                },
-                {
-                    headers: { Authorization: `Bearer ${authToken}` }
-                }
-            );
-        } catch (err) {
-            console.error("Failed to provision flavor", err);
-        }
-    };
-
-    const handleYesClick = async () => {
-        props.emulatorState.setAdminConsoleMode({ ...mode, loading: true });
-        try {
-            await provisionFlavor();
-            props.emulatorState.setAdminConsoleMode({
-                ...mode,
-                screen: AdminConsoleScreen.IceCreamInventory,
-                selectedOption: IceCreamInventoryMenuOption.ProvisionNewFlavor,
-                provisionForm: undefined,
-                loading: false
-            });
-        } catch {
-            props.emulatorState.setAdminConsoleMode({ ...mode, loading: false });
-        }
-    };
-
-    const handleNoClick = () => {
-        props.emulatorState.setAdminConsoleMode({
-            ...mode,
-            screen: AdminConsoleScreen.ProvisionFlavorForm,
-            selectedOption: 0
-        });
-    };
 
     return (
         <Box sx={{ paddingTop: 1 }}>
@@ -122,32 +75,10 @@ const ConfirmProvisionFlavorMenu = (props: {
                 Provision this flavor?
             </Typography>
             <Box sx={{ display: "flex", gap: 2, marginBottom: 8 }}>
-                <MenuItem
-                    selected={selectedOption === "yes"}
-                    theme={props.theme}
-                    disabled={mode.loading}
-                    onMouseEnter={() =>
-                        props.emulatorState.setAdminConsoleMode({
-                            ...mode,
-                            selectedOption: "yes"
-                        })
-                    }
-                    onClick={handleYesClick}
-                >
+                <MenuItem selected={selectedOption === "yes"} theme={props.theme} disabled={mode.loading}>
                     Yes
                 </MenuItem>
-                <MenuItem
-                    selected={selectedOption === "no"}
-                    theme={props.theme}
-                    disabled={mode.loading}
-                    onMouseEnter={() =>
-                        props.emulatorState.setAdminConsoleMode({
-                            ...mode,
-                            selectedOption: "no"
-                        })
-                    }
-                    onClick={handleNoClick}
-                >
+                <MenuItem selected={selectedOption === "no"} theme={props.theme} disabled={mode.loading}>
                     No
                 </MenuItem>
             </Box>

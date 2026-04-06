@@ -27,15 +27,16 @@ const RegisterFriend = () => {
     const handleRegister = async () => {
         setIsLoading(true);
         try {
+            const authHeaders = { headers: { Authorization: `Bearer ${token}` } };
             const optionsUrl = `${API_URL}/admin/passkey-register-options`;
-            const { data: options } = await axios.post(optionsUrl, { token });
+            const { data: options } = await axios.post(optionsUrl, {}, authHeaders);
 
             const registrationResponse = await startRegistration({ optionsJSON: options });
-            await axios.post(`${API_URL}/admin/passkey-register`, {
-                token,
-                challenge: options.challenge,
-                response: registrationResponse
-            });
+            await axios.post(
+                `${API_URL}/admin/passkey-register`,
+                { challenge: options.challenge, response: registrationResponse },
+                authHeaders
+            );
             return navigate("/");
         } catch (err: unknown) {
             console.error(err);
@@ -74,7 +75,7 @@ const RegisterFriend = () => {
             >
                 Register Passkey
             </Button>
-            {error && <Typography mt={3}>{error}</Typography>}
+            {error && <Typography mt={3} color="error">{error}</Typography>}
         </Box>
     );
 };

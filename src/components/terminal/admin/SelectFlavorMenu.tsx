@@ -3,8 +3,7 @@ import { useMemo, useState, useEffect } from "react";
 
 import { sortInventory } from "../../../javascript-terminal/commands/console";
 import EmulatorState, {
-    AdminConsoleState,
-    AdminConsoleScreen
+    AdminConsoleState
 } from "../../../javascript-terminal/emulator-state/EmulatorState";
 import { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
@@ -99,21 +98,6 @@ const SelectFlavorMenu = (props: { theme?: TerminalTheme; emulatorState: Emulato
                         key={item.productId}
                         selected={selectedIndex === globalIndex}
                         theme={props.theme}
-                        onMouseEnter={() =>
-                            props.emulatorState.setAdminConsoleMode({
-                                ...mode,
-                                selectedOption: globalIndex
-                            })
-                        }
-                        onClick={() =>
-                            props.emulatorState.setAdminConsoleMode({
-                                ...mode,
-                                screen: AdminConsoleScreen.IceCreamInventory,
-                                editingFlavor: item,
-                                inventoryData: undefined,
-                                currentPage: 0
-                            })
-                        }
                     >
                         {globalIndex + 1}. {item.name} ({item.count} pints)
                     </MenuItem>
