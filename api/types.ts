@@ -28,6 +28,7 @@ export type DatabasePasskey = {
     credentialId: string;
     publicKey: string;
     userType?: UserType;
+    name: string;
 };
 
 export enum UserType {

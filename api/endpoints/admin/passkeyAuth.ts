@@ -11,7 +11,6 @@ import { RP_ID, RP_ORIGIN } from "./passkeyAuthOptions";
 type PasskeyAuthPayload = {
     response: AuthenticationResponseJSON;
     challenge: string;
-    name: string | undefined;
 };
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
@@ -81,6 +80,6 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     return buildResponse(event, HttpResponseStatus.OK, {
         verified: true,
         message: "Authentication Successful",
-        token: await generateToken(body.name || storedPasskey.credentialId, { userType })
+        token: await generateToken(storedPasskey.name, { userType })
     });
 };
