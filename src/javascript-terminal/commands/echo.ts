@@ -7,7 +7,7 @@ const VARIABLE_GROUP_REGEX = /\$(\w+)/g;
 const DOUBLE_SPACE_REGEX = /\s\s+/g;
 
 const substituteEnvVariables = (
-    environmentVariables: { [x: string]: string },
+    environmentVariables: Record<string, string | undefined>,
     inputStr: string
 ) => {
     return inputStr.replace(

@@ -5,7 +5,7 @@ import EmulatorState from "../emulator-state/EmulatorState";
 import { parseOptions } from "../parser";
 import * as CommandMappingUtil from "../emulator-state/CommandMapping";
 import Emulator from "../emulator";
-import { API_URL } from "../../components/App";
+import { API_URL, decodeToken } from "../../components/App";
 
 export const optDef = {};
 
@@ -68,10 +68,14 @@ export const authenticateWithPasskey = async (
 
         emulatorState.setPasswordPromptState({ ...promptState, loading: true });
 
+        const currentToken = emulatorState.getEnvVariables()["AUTH_TOKEN"];
+        let name = currentToken ? decodeToken(currentToken)?.id : undefined;
+        
         const authResponse = await startAuthentication({ optionsJSON: authOptions });
         const { data: authResult } = await axios.post(`${API_URL}/admin/passkey-auth`, {
             response: authResponse,
-            challenge: authOptions.challenge
+            challenge: authOptions.challenge,
+            name
         });
 
         const existingVars = emulatorState.getEnvVariables();

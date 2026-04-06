@@ -451,7 +451,7 @@ const handleConfirmSendEmails = async (
     state: EmulatorState
 ): Promise<EmulatorState> => {
     const mode = state.getAdminConsoleMode()!;
-    const authToken = state.getEnvVariables()["AUTH_TOKEN"];
+    const authToken = state.getEnvVariables()["AUTH_TOKEN"]!;
     const currentOption = mode.selectedOption as "yes" | "no";
 
     switch (key) {
@@ -660,7 +660,7 @@ const handleCreateFriendInvite = async (
 
     if (key === "Enter") {
         if (!invite.friendName) return state;
-        const authToken = state.getEnvVariables()["AUTH_TOKEN"];
+        const authToken = state.getEnvVariables()["AUTH_TOKEN"]!;
         state.setAdminConsoleMode({ ...mode, loading: true });
         const url = await createFriendInvite(invite.friendName, authToken);
         state.setAdminConsoleMode({
@@ -708,7 +708,7 @@ const handleConfirmProvisionFlavor = async (
     state: EmulatorState
 ): Promise<EmulatorState> => {
     const mode = state.getAdminConsoleMode()!;
-    const authToken = state.getEnvVariables()["AUTH_TOKEN"];
+    const authToken = state.getEnvVariables()["AUTH_TOKEN"]!;
     const currentOption = mode.selectedOption as "yes" | "no";
 
     switch (key) {

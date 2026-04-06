@@ -47,7 +47,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
 
     try {
         const searchPath =
-            argv.length > 0 ? relativeToAbsolutePath(state, argv[0]) : state.getEnvVariables().cwd;
+            argv.length > 0 ? relativeToAbsolutePath(state, argv[0]) : state.getEnvVariables().cwd!;
         const namePattern = options.name as string | undefined;
         const results = findInDirectory(state.getFileSystem(), searchPath, namePattern);
 

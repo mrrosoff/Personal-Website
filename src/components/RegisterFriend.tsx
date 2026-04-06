@@ -8,7 +8,7 @@ import { DateTime } from "luxon";
 
 import { API_URL, decodeToken } from "./App";
 
-const RegisterForm = (props: { token: string }) => {
+const RegisterForm = (props: { token: string; friendName: string }) => {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -47,7 +47,7 @@ const RegisterForm = (props: { token: string }) => {
                         fontFamily: "monospace"
                     }}
                 >
-                    sudo su friend
+                    sudo su ${props.friendName}
                 </code>{" "}
                 in the terminal.
             </Typography>
@@ -87,6 +87,7 @@ const RegisterFriend = () => {
         return <Navigate to={"/"} replace />;
     }
 
+    const friendName = decodedToken.id;
     const isExpired = DateTime.fromSeconds(decodedToken.exp) < DateTime.now();
 
     return (
@@ -99,14 +100,14 @@ const RegisterFriend = () => {
             textAlign={"center"}
         >
             <Typography variant={"h1"} mb={3}>
-                Welcome, {decodedToken.id}
+                Welcome, {friendName}
             </Typography>
             {isExpired ? (
                 <Typography variant={"body1"} color="error">
                     This invite link has expired. Ask for a new one.
                 </Typography>
             ) : (
-                <RegisterForm token={token} />
+                <RegisterForm token={token} friendName={friendName} />
             )}
         </Box>
     );

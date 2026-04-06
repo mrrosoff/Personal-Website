@@ -79,7 +79,7 @@ const BLOCKING_MODE_KEY = "blockingMode";
 type EmulatorStateType = {
     [TAB_COUNT_KEY]?: number;
     [FS_KEY]: FileSystem;
-    [ENVIRONMENT_VARIABLES_KEY]: Record<string, string>;
+    [ENVIRONMENT_VARIABLES_KEY]: Record<string, string | undefined>;
     [HISTORY_KEY]?: any;
     [OUTPUTS_KEY]?: any;
     [COMMAND_MAPPING_KEY]: CommandMapping;
@@ -136,7 +136,7 @@ export default class EmulatorState {
         return this.state[ENVIRONMENT_VARIABLES_KEY];
     }
 
-    setEnvVariables(newEnvVariables: Record<string, string>) {
+    setEnvVariables(newEnvVariables: Record<string, string | undefined>) {
         this.state[ENVIRONMENT_VARIABLES_KEY] = newEnvVariables;
     }
 
@@ -190,5 +190,5 @@ export default class EmulatorState {
 }
 
 export const relativeToAbsolutePath = (state: EmulatorState, path: string) => {
-    return PathUtil.toAbsolutePath(path, state.getEnvVariables().cwd);
+    return PathUtil.toAbsolutePath(path, state.getEnvVariables().cwd!);
 };
