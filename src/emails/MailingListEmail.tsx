@@ -60,9 +60,9 @@ const MailingListEmail = (props: {
                             }}
                         >
                             If you are in San Fransisco, buy online at{" "}
-                            <a target={"_blank"} href="https://maxrosoff.com/ice-cream">
+                            <Link target={"_blank"} href="https://maxrosoff.com/ice-cream">
                                 maxrosoff.com/ice-cream
-                            </a>
+                            </Link>
                         </Text>
                     </Section>
                     <FlavorsList
@@ -219,19 +219,7 @@ const Footer = () => {
                             color: "rgb(17,24,39)"
                         }}
                     >
-                        Max's
-                    </Text>
-                    <Text
-                        style={{
-                            marginTop: "0px",
-                            marginBottom: "4px",
-                            lineHeight: undefined,
-                            margin: "0px",
-                            fontSize: 12,
-                            color: "rgb(17,24,39)"
-                        }}
-                    >
-                        Ice Cream Factory
+                        Max's Freezer Stash
                     </Text>
                     <Link href="https://maxrosoff.com/ice-cream/mailing-list/unsubscribe">
                         <Text
@@ -319,6 +307,55 @@ const Footer = () => {
             </Row>
         </Section>
     );
+};
+
+MailingListEmail.PreviewProps = {
+    currentFlavors: [
+        {
+            productId: "1",
+            priceId: "p1",
+            name: "Strawberry Basil 🍓",
+            color: "pink",
+            count: 12,
+            type: "currentFlavor" as const
+        },
+        {
+            productId: "2",
+            priceId: "p2",
+            name: "Mango Sticky Rice 🥭",
+            color: "orange",
+            count: 8,
+            type: "currentFlavor" as const
+        }
+    ],
+    lastBatch: [
+        {
+            productId: "3",
+            priceId: "p3",
+            name: "Dark Chocolate Sea Salt 🍫",
+            color: "brown",
+            count: 3,
+            type: "lastBatch" as const
+        }
+    ],
+    upcoming: [
+        {
+            productId: "4",
+            priceId: "",
+            name: "Lavender Honey 💜",
+            color: "purple",
+            count: 0,
+            type: "upcoming" as const
+        },
+        {
+            productId: "5",
+            priceId: "",
+            name: "Ube Coconut 🥥",
+            color: "violet",
+            count: 0,
+            type: "upcoming" as const
+        }
+    ]
 };
 
 export default MailingListEmail;
