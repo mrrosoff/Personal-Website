@@ -26,7 +26,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 
     const inviteToken = await generateToken(friendName, {
         userType: UserType.SHARE,
-        expiresIn: "5m"
+        expiresIn: "15m"
     });
     const url = `${RP_ORIGIN}/register-friend?token=${encodeURIComponent(inviteToken)}`;
 
