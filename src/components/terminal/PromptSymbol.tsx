@@ -2,15 +2,15 @@ import { Grid, Typography } from "@mui/material";
 
 import FolderIcon from "@mui/icons-material/Folder";
 
-import { EmulatorState } from "../../javascript-terminal";
+import { useAppContext } from "../AppContext";
 import { TerminalTheme } from "./Terminal";
 
 const PromptSymbol = (props: {
     theme: TerminalTheme;
-    emulatorState: EmulatorState;
     cwd?: string;
     children: string;
 }) => {
+    const { emulatorState } = useAppContext();
     return (
         <Grid container alignContent={"center"} alignItems={"center"} spacing={1}>
             <Grid>
@@ -27,7 +27,7 @@ const PromptSymbol = (props: {
             </Grid>
             <Grid>
                 <Typography style={{ color: props.theme.promptSymbolColor }}>
-                    {props.cwd ? props.cwd : props.emulatorState.getEnvVariables().cwd}
+                    {props.cwd ? props.cwd : emulatorState.getEnvVariables().cwd}
                 </Typography>
             </Grid>
         </Grid>

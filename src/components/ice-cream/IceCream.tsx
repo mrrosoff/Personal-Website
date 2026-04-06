@@ -31,8 +31,8 @@ export const rainbowTextSx = {
     color: "transparent",
     animation: "friendRainbow 3s linear infinite",
     "@keyframes friendRainbow": {
-        "0%": { backgroundPosition: "0% 50%" },
-        "100%": { backgroundPosition: "200% 50%" }
+        "0%": { backgroundPosition: "200% 50%" },
+        "100%": { backgroundPosition: "0% 50%" }
     }
 } as const;
 

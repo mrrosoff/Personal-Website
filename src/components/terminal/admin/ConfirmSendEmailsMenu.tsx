@@ -1,13 +1,13 @@
 import { Box, Typography } from "@mui/material";
 
-import EmulatorState, {
-    AdminConsoleState
-} from "../../../javascript-terminal/emulator-state/EmulatorState";
+import { AdminConsoleState } from "../../../javascript-terminal/emulator-state/EmulatorState";
+import { useAppContext } from "../../AppContext";
 import { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
 
-const ConfirmSendEmailsMenu = (props: { theme?: TerminalTheme; emulatorState: EmulatorState }) => {
-    const mode = props.emulatorState.getAdminConsoleMode() as AdminConsoleState;
+const ConfirmSendEmailsMenu = (props: { theme?: TerminalTheme }) => {
+    const { emulatorState } = useAppContext();
+    const mode = emulatorState.getAdminConsoleMode() as AdminConsoleState;
     const selectedOption = mode.selectedOption as "yes" | "no";
 
     return (

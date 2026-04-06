@@ -1,15 +1,12 @@
 import { Box, Typography } from "@mui/material";
 
-import EmulatorState, {
-    AdminConsoleState
-} from "../../../javascript-terminal/emulator-state/EmulatorState";
+import { AdminConsoleState } from "../../../javascript-terminal/emulator-state/EmulatorState";
+import { useAppContext } from "../../AppContext";
 import { TerminalTheme } from "../Terminal";
 
-const ProvisionFlavorFormMenu = (props: {
-    theme?: TerminalTheme;
-    emulatorState: EmulatorState;
-}) => {
-    const mode = props.emulatorState.getAdminConsoleMode() as AdminConsoleState;
+const ProvisionFlavorFormMenu = (props: { theme?: TerminalTheme }) => {
+    const { emulatorState } = useAppContext();
+    const mode = emulatorState.getAdminConsoleMode() as AdminConsoleState;
     const form = mode.provisionForm;
     if (!form) return null;
 

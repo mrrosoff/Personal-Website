@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { Box, Typography } from "@mui/material";
-import EmulatorState from "../../../javascript-terminal/emulator-state/EmulatorState";
+
+import { useAppContext } from "../../AppContext";
 
 type Position = { x: number; y: number };
 
@@ -11,7 +12,8 @@ const INITIAL_SNAKE: Position[] = [{ x: 12, y: 6 }];
 const INITIAL_DIRECTION: Position = { x: 1, y: 0 };
 const GAME_SPEED = 150;
 
-const SnakeGame = ({ emulatorState }: { emulatorState: EmulatorState }) => {
+const SnakeGame = () => {
+    const { emulatorState } = useAppContext();
     const [snake, setSnake] = useState<Position[]>(INITIAL_SNAKE);
     const [direction, setDirection] = useState<Position>(INITIAL_DIRECTION);
     const [food, setFood] = useState<Position>({ x: 18, y: 6 });

@@ -3,13 +3,13 @@ import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CheckIcon from "@mui/icons-material/Check";
 
-import EmulatorState, {
-    AdminConsoleState
-} from "../../../javascript-terminal/emulator-state/EmulatorState";
+import { AdminConsoleState } from "../../../javascript-terminal/emulator-state/EmulatorState";
+import { useAppContext } from "../../AppContext";
 import { TerminalTheme } from "../Terminal";
 
-const CreateFriendInviteMenu = (props: { theme?: TerminalTheme; emulatorState: EmulatorState }) => {
-    const mode = props.emulatorState.getAdminConsoleMode() as AdminConsoleState;
+const CreateFriendInviteMenu = (props: { theme?: TerminalTheme }) => {
+    const { emulatorState } = useAppContext();
+    const mode = emulatorState.getAdminConsoleMode() as AdminConsoleState;
     const invite = mode.friendInvite;
     const [copied, setCopied] = useState(false);
     const [dots, setDots] = useState(".");

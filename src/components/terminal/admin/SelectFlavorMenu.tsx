@@ -2,14 +2,14 @@ import { Box, Typography } from "@mui/material";
 import { useMemo, useState, useEffect } from "react";
 
 import { sortInventory } from "../../../javascript-terminal/commands/console";
-import EmulatorState, {
-    AdminConsoleState
-} from "../../../javascript-terminal/emulator-state/EmulatorState";
+import { AdminConsoleState } from "../../../javascript-terminal/emulator-state/EmulatorState";
+import { useAppContext } from "../../AppContext";
 import { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
 
-const SelectFlavorMenu = (props: { theme?: TerminalTheme; emulatorState: EmulatorState }) => {
-    const mode = props.emulatorState.getAdminConsoleMode() as AdminConsoleState;
+const SelectFlavorMenu = (props: { theme?: TerminalTheme }) => {
+    const { emulatorState } = useAppContext();
+    const mode = emulatorState.getAdminConsoleMode() as AdminConsoleState;
     const [dots, setDots] = useState(".");
 
     useEffect(() => {

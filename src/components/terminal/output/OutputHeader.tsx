@@ -3,12 +3,10 @@ import { Grid } from "@mui/material";
 import PromptSymbol from "../PromptSymbol";
 import OutputText from "./OutputText";
 import { TerminalTheme } from "../Terminal";
-import { EmulatorState } from "../../../javascript-terminal";
 
 const OutputHeader = (props: {
     theme: TerminalTheme;
     promptSymbol: string;
-    emulatorState: EmulatorState;
     children: string;
     cwd?: string;
 }) => (

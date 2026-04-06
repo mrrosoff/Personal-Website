@@ -2,14 +2,12 @@ import { ChangeEvent, KeyboardEvent, forwardRef, Ref, useEffect, useState } from
 
 import { Box, Grid, InputBase, Typography } from "@mui/material";
 
-import { EmulatorState } from "../../javascript-terminal";
 import PromptSymbol from "./PromptSymbol";
 import { TerminalTheme } from "./Terminal";
 
 const CommandInput = (
     props: {
         theme: TerminalTheme;
-        emulatorState: EmulatorState;
         promptSymbol: string;
         value: string;
         onChange: (e: ChangeEvent<HTMLInputElement>) => void;

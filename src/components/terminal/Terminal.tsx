@@ -2,7 +2,7 @@ import { ChangeEvent, KeyboardEvent, Ref, forwardRef, useEffect, useState } from
 import { Box, Grid } from "@mui/material";
 
 import { UserType } from "../../../api/types";
-import { Emulator, EmulatorState } from "../../javascript-terminal";
+import { Emulator } from "../../javascript-terminal";
 import { handleAdminConsoleKeyPress } from "../../javascript-terminal/commands/console";
 import { authenticateWithPasskey } from "../../javascript-terminal/commands/sudo";
 import { decodeToken } from "../App";
@@ -26,17 +26,15 @@ export type TerminalTheme = {
 
 const Terminal = (
     props: {
-        emulatorState: EmulatorState;
         errorStr: string;
         theme: TerminalTheme;
         scrollContainerRef: React.RefObject<HTMLDivElement | null>;
     },
     ref: Ref<HTMLInputElement | null>
 ) => {
-    const { setFriendToken } = useAppContext();
+    const { setFriendToken, emulatorState, setEmulatorState } = useAppContext();
     const [showMOTD, setShowMOTD] = useState(true);
     const [input, setInput] = useState("");
-    const [emulatorState, setEmulatorState] = useState(props.emulatorState);
     const [renderedOutputs, setRenderedOutputs] = useState([]);
     const [_, setHistoryIndex] = useState(-1);
     const [loadingDots, setLoadingDots] = useState(0);
@@ -195,10 +193,6 @@ const Terminal = (
         }
     };
 
-    if (!emulatorState) {
-        return null;
-    }
-
     const calculateOutputs = () => {
         if (showMOTD && emulatorState.getHistory().includes("clear")) {
             setShowMOTD(false);
@@ -297,7 +291,7 @@ const Terminal = (
                 {renderedOutputs}
                 {emulatorState.getAdminConsoleMode()?.screen && (
                     <Box height={280}>
-                        <AdminConsole emulatorState={emulatorState} theme={props.theme} />
+                        <AdminConsole theme={props.theme} />
                     </Box>
                 )}
                 {emulatorState.getBlockingMode()?.content && (
@@ -368,7 +362,6 @@ const Terminal = (
                         onKeyDown={onKeyDown}
                         promptSymbol={promptSymbol}
                         theme={props.theme}
-                        emulatorState={emulatorState}
                     />
                 )}
             </Grid>

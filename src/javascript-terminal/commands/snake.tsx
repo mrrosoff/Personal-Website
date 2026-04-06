@@ -9,7 +9,7 @@ const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
     try {
         state.setBlockingMode({});
         return {
-            output: <Snake emulatorState={state} />,
+            output: <Snake />,
             type: "react"
         };
     } catch (err: unknown) {

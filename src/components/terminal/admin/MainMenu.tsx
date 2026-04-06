@@ -1,14 +1,13 @@
 import { Box, Typography } from "@mui/material";
 
-import EmulatorState, {
-    MainMenuOption,
-    AdminConsoleState
-} from "../../../javascript-terminal/emulator-state/EmulatorState";
+import { MainMenuOption, AdminConsoleState } from "../../../javascript-terminal/emulator-state/EmulatorState";
+import { useAppContext } from "../../AppContext";
 import { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
 
-const MainMenu = (props: { theme?: TerminalTheme; emulatorState: EmulatorState }) => {
-    const mode = props.emulatorState.getAdminConsoleMode() as AdminConsoleState;
+const MainMenu = (props: { theme?: TerminalTheme }) => {
+    const { emulatorState } = useAppContext();
+    const mode = emulatorState.getAdminConsoleMode() as AdminConsoleState;
     return (
         <Box sx={{ paddingTop: 1 }}>
             <Typography

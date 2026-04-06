@@ -20,7 +20,7 @@ import {
     StripeCheckoutValue
 } from "@stripe/react-stripe-js/checkout";
 
-import { API_URL } from "../../App";
+import { API_URL, decodeToken } from "../../App";
 import { useAppContext } from "../../AppContext";
 import { useIceCreamCart } from "../IceCreamCartContext";
 import { DatabaseFlavor } from "../../../../api/types";
@@ -117,10 +117,18 @@ const FriendCheckoutForm = ({
         }
     };
 
+    const friendName = decodeToken(friendToken)?.id;
     return (
         <Box pb={4}>
-            <Typography variant={"h1"} mb={4}>
+            <Typography variant={"h1"} mb={2}>
                 Checkout
+            </Typography>
+            <Typography variant={"body1"} mb={4}>
+                Thanks for being a friend,{" "}
+                <Typography component={"span"} sx={{ fontSize: "inherit", ...rainbowTextSx }}>
+                    {friendName}
+                </Typography>
+                . This one's on me.
             </Typography>
             <Grid
                 container

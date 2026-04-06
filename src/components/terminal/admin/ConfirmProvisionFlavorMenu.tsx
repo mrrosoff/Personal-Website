@@ -1,17 +1,14 @@
 import { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 
-import EmulatorState, {
-    AdminConsoleState
-} from "../../../javascript-terminal/emulator-state/EmulatorState";
+import { AdminConsoleState } from "../../../javascript-terminal/emulator-state/EmulatorState";
+import { useAppContext } from "../../AppContext";
 import { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
 
-const ConfirmProvisionFlavorMenu = (props: {
-    theme?: TerminalTheme;
-    emulatorState: EmulatorState;
-}) => {
-    const mode = props.emulatorState.getAdminConsoleMode() as AdminConsoleState;
+const ConfirmProvisionFlavorMenu = (props: { theme?: TerminalTheme }) => {
+    const { emulatorState } = useAppContext();
+    const mode = emulatorState.getAdminConsoleMode() as AdminConsoleState;
     const [dots, setDots] = useState(".");
 
     useEffect(() => {
@@ -75,10 +72,18 @@ const ConfirmProvisionFlavorMenu = (props: {
                 Provision this flavor?
             </Typography>
             <Box sx={{ display: "flex", gap: 2, marginBottom: 8 }}>
-                <MenuItem selected={selectedOption === "yes"} theme={props.theme} disabled={mode.loading}>
+                <MenuItem
+                    selected={selectedOption === "yes"}
+                    theme={props.theme}
+                    disabled={mode.loading}
+                >
                     Yes
                 </MenuItem>
-                <MenuItem selected={selectedOption === "no"} theme={props.theme} disabled={mode.loading}>
+                <MenuItem
+                    selected={selectedOption === "no"}
+                    theme={props.theme}
+                    disabled={mode.loading}
+                >
                     No
                 </MenuItem>
             </Box>

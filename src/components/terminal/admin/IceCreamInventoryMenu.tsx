@@ -1,15 +1,17 @@
 import { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 
-import EmulatorState, {
+import {
     AdminConsoleState,
     IceCreamInventoryMenuOption
 } from "../../../javascript-terminal/emulator-state/EmulatorState";
+import { useAppContext } from "../../AppContext";
 import { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
 
-const IceCreamInventoryMenu = (props: { theme?: TerminalTheme; emulatorState: EmulatorState }) => {
-    const mode = props.emulatorState.getAdminConsoleMode() as AdminConsoleState;
+const IceCreamInventoryMenu = (props: { theme?: TerminalTheme }) => {
+    const { emulatorState } = useAppContext();
+    const mode = emulatorState.getAdminConsoleMode() as AdminConsoleState;
     const [dots, setDots] = useState(".");
 
     useEffect(() => {
