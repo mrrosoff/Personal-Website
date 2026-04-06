@@ -45,7 +45,7 @@ const CreateFriendInviteMenu = (props: { theme?: TerminalTheme; emulatorState: E
                             overflow: "hidden",
                             textOverflow: "ellipsis",
                             whiteSpace: "nowrap",
-                            maxWidth: 400
+                            maxWidth: 500
                         }}
                     >
                         {invite.url}

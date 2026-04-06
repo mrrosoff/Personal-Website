@@ -17,7 +17,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     const options = await generateRegistrationOptions({
         rpName: RP_NAME,
         rpID: RP_ID,
-        userName: `friend-${Date.now()}`,
+        userName: payload.id,
         attestationType: "none",
         authenticatorSelection: {
             residentKey: "preferred",

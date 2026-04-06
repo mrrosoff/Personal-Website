@@ -38,7 +38,18 @@ const RegisterForm = (props: { token: string }) => {
         <>
             <Typography variant={"body1"}>Register a passkey to unlock friend mode.</Typography>
             <Typography variant={"body1"} mb={4}>
-                Then run <code>sudo su friend</code> in the terminal.
+                Then run{" "}
+                <code
+                    style={{
+                        backgroundColor: "rgba(255,255,255,0.1)",
+                        padding: "2px 6px",
+                        borderRadius: 4,
+                        fontFamily: "monospace"
+                    }}
+                >
+                    sudo su friend
+                </code>{" "}
+                in the terminal.
             </Typography>
             <Button
                 variant={"contained"}
