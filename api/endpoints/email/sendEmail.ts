@@ -4,7 +4,8 @@ import { Resend } from "resend";
 import { FLAVORS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
 import { getParameter } from "../../aws/services/parameterStore";
 import { getAllItems } from "../../aws/services/dynamodb";
-import MailingListEmail from "../../../src/components/emails/MailingListEmail";
+import MailingListEmail from "../../../src/emails/MailingListEmail";
+import OrderSuccessEmail from "../../../src/emails/OrderSuccessEmail";
 import { buildResponse, HttpResponseStatus } from "../../common";
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
@@ -27,7 +28,7 @@ async function createBroadcast(resend: Resend): Promise<string> {
     const { data, error } = await resend.broadcasts.create({
         name: "Ice Cream Flavor Drop",
         audienceId: id,
-        from: "Max and Josette <drops@ice-cream.maxrosoff.com>",
+        from: "Max <drops@ice-cream.maxrosoff.com>",
         replyTo: "me@maxrosoff.com",
         subject: "New Ice Cream Flavor Drop!",
         react: MailingListEmail({ currentFlavors, lastBatch, upcoming })
@@ -44,4 +45,32 @@ async function sendBroadcast(resend: Resend, broadcastId: string): Promise<strin
         throw Error(`Error Sending Broadcast: ${error?.message}`);
     }
     return data.id;
+}
+
+type OrderItem = {
+    name: string;
+    quantity: number;
+};
+
+export async function sendOrderSuccessEmail(params: {
+    customerName?: string;
+    customerEmail?: string;
+    items: OrderItem[];
+}) {
+    const apiKey = await getParameter("/website/resend/api-key");
+    const resend = new Resend(apiKey);
+
+    const { error } = await resend.emails.send({
+        from: "Max <drops@ice-cream.maxrosoff.com>",
+        to: "me@maxrosoff.com",
+        subject: params.customerName
+            ? `New Ice Cream Order From ${params.customerName}`
+            : "New Ice Cream Order",
+        react: OrderSuccessEmail(params)
+    });
+
+    if (error) {
+        console.error(error);
+        throw Error("Error Sending Order Success Email");
+    }
 }

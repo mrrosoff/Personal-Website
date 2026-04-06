@@ -112,6 +112,7 @@ class WebsiteAPIStack extends Stack {
         });
 
         this.createAdminRoutes(api, apiRole);
+        this.createFriendsRoutes(api, apiRole);
         this.createEmailRoutes(api, apiRole);
         this.createJWKRoutes(api, apiRole);
         this.createIceCreamRoutes(api, apiRole);
@@ -121,9 +122,6 @@ class WebsiteAPIStack extends Stack {
     private createAdminRoutes(api: RestApi, apiRole: Role) {
         const provisionFlavorLambda = this.createProvisionFlavorLambda(apiRole);
         const updateInventoryLambda = this.createUpdateInventoryLambda(apiRole);
-
-        const passkeyRegisterOptionsLambda = this.createPasskeyRegisterOptionsLambda(apiRole);
-        const passkeyRegisterLambda = this.createPasskeyRegisterLambda(apiRole);
         const passkeyAuthOptionsLambda = this.createPasskeyAuthOptionsLambda(apiRole);
         const passkeyAuthLambda = this.createPasskeyAuthLambda(apiRole);
         const createFriendInviteLambda = this.createCreateFriendInviteLambda(apiRole);
@@ -136,12 +134,6 @@ class WebsiteAPIStack extends Stack {
             .addResource("update-inventory")
             .addMethod("POST", new LambdaIntegration(updateInventoryLambda));
         adminResource
-            .addResource("passkey-register-options")
-            .addMethod("POST", new LambdaIntegration(passkeyRegisterOptionsLambda));
-        adminResource
-            .addResource("passkey-register")
-            .addMethod("POST", new LambdaIntegration(passkeyRegisterLambda));
-        adminResource
             .addResource("passkey-auth-options")
             .addMethod("POST", new LambdaIntegration(passkeyAuthOptionsLambda));
         adminResource
@@ -150,7 +142,19 @@ class WebsiteAPIStack extends Stack {
         adminResource
             .addResource("create-friend-invite")
             .addMethod("POST", new LambdaIntegration(createFriendInviteLambda));
-        
+    }
+
+    private createFriendsRoutes(api: RestApi, apiRole: Role) {
+        const passkeyRegisterOptionsLambda = this.createPasskeyRegisterOptionsLambda(apiRole);
+        const passkeyRegisterLambda = this.createPasskeyRegisterLambda(apiRole);
+
+        const friendsResource = api.root.addResource("friends");
+        friendsResource
+            .addResource("passkey-register-options")
+            .addMethod("POST", new LambdaIntegration(passkeyRegisterOptionsLambda));
+        friendsResource
+            .addResource("passkey-register")
+            .addMethod("POST", new LambdaIntegration(passkeyRegisterLambda));
     }
 
     private createEmailRoutes(api: RestApi, apiRole: Role) {
@@ -320,7 +324,7 @@ class WebsiteAPIStack extends Stack {
         return new LambdaFunction(this, "websitePasskeyRegisterOptionsLambda", {
             functionName,
             handler: "passkeyRegisterOptions.handler",
-            code: Code.fromAsset("dist/lambda/admin/passkeyRegisterOptions"),
+            code: Code.fromAsset("dist/lambda/friends/passkeyRegisterOptions"),
             runtime: Runtime.NODEJS_22_X,
             ...this.createLambdaParams(functionName, role)
         });
@@ -331,7 +335,7 @@ class WebsiteAPIStack extends Stack {
         return new LambdaFunction(this, "websitePasskeyRegisterLambda", {
             functionName,
             handler: "passkeyRegister.handler",
-            code: Code.fromAsset("dist/lambda/admin/passkeyRegister"),
+            code: Code.fromAsset("dist/lambda/friends/passkeyRegister"),
             runtime: Runtime.NODEJS_22_X,
             ...this.createLambdaParams(functionName, role)
         });

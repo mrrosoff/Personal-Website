@@ -17,12 +17,12 @@ const RegisterForm = (props: { token: string; friendName: string }) => {
         setIsLoading(true);
         try {
             const authHeaders = { headers: { Authorization: `Bearer ${props.token}` } };
-            const optionsUrl = `${API_URL}/admin/passkey-register-options`;
+            const optionsUrl = `${API_URL}/friends/passkey-register-options`;
             const { data: options } = await axios.post(optionsUrl, {}, authHeaders);
 
             const registrationResponse = await startRegistration({ optionsJSON: options });
             await axios.post(
-                `${API_URL}/admin/passkey-register`,
+                `${API_URL}/friends/passkey-register`,
                 { challenge: options.challenge, response: registrationResponse },
                 authHeaders
             );

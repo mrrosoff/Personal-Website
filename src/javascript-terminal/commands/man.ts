@@ -8,6 +8,7 @@ import { manPage as catManPage } from "./cat";
 import { manPage as cdManPage } from "./cd";
 import { manPage as clearManPage } from "./clear";
 import { manPage as consoleManPage } from "./console";
+import { manPage as cowsayManPage } from "./cowsay";
 import { manPage as cpManPage } from "./cp";
 import { manPage as cutManPage } from "./cut";
 import { manPage as dateManPage } from "./date";
@@ -18,18 +19,22 @@ import { manPage as echoManPage } from "./echo";
 import { manPage as exportManPage } from "./export";
 import { manPage as findManPage } from "./find";
 import { manPage as grepManPage } from "./grep";
+import { manPage as hauntManPage } from "./haunt";
 import { manPage as headManPage } from "./head";
 import { manPage as historyManPage } from "./history";
 import { manPage as icecreamManPage } from "./icecream";
 import { manPage as lsManPage } from "./ls";
 import { manPage as mkdirManPage } from "./mkdir";
 import { manPage as mvManPage } from "./mv";
+import { manPage as playManPage } from "./play";
 import { manPage as printenvManPage } from "./printenv";
 import { manPage as pwdManPage } from "./pwd";
 import { manPage as rmManPage } from "./rm";
 import { manPage as rmdirManPage } from "./rmdir";
 import { manPage as sedManPage } from "./sed";
+import { manPage as snakeManPage } from "./snake";
 import { manPage as sortManPage } from "./sort";
+import { manPage as suManPage } from "./su";
 import { manPage as sudoManPage } from "./sudo";
 import { manPage as tailManPage } from "./tail";
 import { manPage as teeManPage } from "./tee";
@@ -48,6 +53,7 @@ const manPages: Record<string, string> = {
     cd: cdManPage,
     clear: clearManPage,
     console: consoleManPage,
+    cowsay: cowsayManPage,
     cp: cpManPage,
     cut: cutManPage,
     date: dateManPage,
@@ -58,18 +64,22 @@ const manPages: Record<string, string> = {
     export: exportManPage,
     find: findManPage,
     grep: grepManPage,
+    haunt: hauntManPage,
     head: headManPage,
     history: historyManPage,
     icecream: icecreamManPage,
     ls: lsManPage,
     mkdir: mkdirManPage,
     mv: mvManPage,
+    play: playManPage,
     printenv: printenvManPage,
     pwd: pwdManPage,
     rm: rmManPage,
     rmdir: rmdirManPage,
     sed: sedManPage,
+    snake: snakeManPage,
     sort: sortManPage,
+    su: suManPage,
     sudo: sudoManPage,
     tail: tailManPage,
     tee: teeManPage,

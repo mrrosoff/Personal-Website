@@ -6,7 +6,7 @@ import { PASSKEY_CHALLENGES_TABLE } from "../../../infrastructure/WebsiteAPIStac
 import { putItem } from "../../aws/services/dynamodb";
 import { authenticateHTTPAccessToken, UserType } from "../../auth";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
-import { RP_ID, RP_NAME } from "./passkeyAuthOptions";
+import { RP_ID, RP_NAME } from "../admin/passkeyAuthOptions";
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     const payload = await authenticateHTTPAccessToken(event);

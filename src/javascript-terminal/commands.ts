@@ -25,6 +25,7 @@ import ls from "./commands/ls";
 import man from "./commands/man";
 import mkdir from "./commands/mkdir";
 import mv from "./commands/mv";
+import play from "./commands/play";
 import printenv from "./commands/printenv";
 import pwd from "./commands/pwd";
 import rm from "./commands/rm";
@@ -70,6 +71,7 @@ const commands: Record<string, any> = {
     man,
     mkdir,
     mv,
+    play,
     printenv,
     pwd,
     rm,

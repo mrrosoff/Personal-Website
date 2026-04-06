@@ -7,7 +7,7 @@ import { deleteItem, getItem, putItem } from "../../aws/services/dynamodb";
 import { authenticateHTTPAccessToken, UserType } from "../../auth";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
 import { DatabasePasskey } from "../../types";
-import { RP_ID, RP_ORIGIN } from "./passkeyAuthOptions";
+import { RP_ID, RP_ORIGIN } from "../admin/passkeyAuthOptions";
 
 type Payload = {
     challenge: string;

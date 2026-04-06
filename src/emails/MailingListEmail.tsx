@@ -14,7 +14,7 @@ import {
     Text
 } from "@react-email/components";
 
-import { DatabaseFlavor } from "../../../api/types";
+import { DatabaseFlavor } from "../../api/types";
 
 const MailingListEmail = (props: {
     currentFlavors: DatabaseFlavor[];
@@ -219,7 +219,7 @@ const Footer = () => {
                             color: "rgb(17,24,39)"
                         }}
                     >
-                        Max and Josette's
+                        Max's
                     </Text>
                     <Text
                         style={{

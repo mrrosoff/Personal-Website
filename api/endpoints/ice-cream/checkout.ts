@@ -6,6 +6,7 @@ import { decrementField, getAllItems } from "../../aws/services/dynamodb";
 import { getParameter } from "../../aws/services/parameterStore";
 import { authenticateHTTPAccessToken, UserType } from "../../auth";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
+import { sendOrderSuccessEmail } from "../email/sendEmail";
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     const priceIdsParam = event.queryStringParameters?.priceIds || "";
@@ -49,6 +50,12 @@ const handleFriendCheckout = async (
     await Promise.all(
         selectedFlavors.map((flavor) => decrementField(FLAVORS_TABLE, flavor.productId, "count"))
     );
+
+    const payload = await authenticateHTTPAccessToken(event);
+    await sendOrderSuccessEmail({
+        customerName: payload?.id,
+        items: selectedFlavors.map((flavor) => ({ name: flavor.name, quantity: 1 }))
+    });
 
     return buildResponse(event, HttpResponseStatus.OK, { friendCheckout: true });
 };

@@ -6,6 +6,7 @@ import { decrementField, incrementField } from "../../aws/services/dynamodb";
 import { getParameters } from "../../aws/services/parameterStore";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
 import { registerNewMailingListUser } from "../email/register";
+import { sendOrderSuccessEmail } from "../email/sendEmail";
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     if (!event.body) {
@@ -38,6 +39,15 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 
     const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
     const productIds = lineItems.data.map((item) => item.price?.product as string);
+
+    await sendOrderSuccessEmail({
+        customerName: session.customer_details?.name ?? undefined,
+        customerEmail: session.customer_email ?? undefined,
+        items: lineItems.data.map((item) => ({
+            name: item.description ?? "Unknown Item",
+            quantity: item.quantity ?? 1
+        }))
+    });
 
     const decrementResults = await Promise.all(
         productIds.map(async (productId) => {

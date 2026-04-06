@@ -827,7 +827,7 @@ const updateFlavorInventory = async (
 const sendMarketingEmails = async (authToken: string) => {
     try {
         const { data } = await axios.post(
-            "https://api.maxrosoff.com/email/send-emails",
+            "https://api.maxrosoff.com/email/send-email",
             {},
             {
                 headers: { Authorization: `Bearer ${authToken}` }

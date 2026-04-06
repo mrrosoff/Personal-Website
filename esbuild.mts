@@ -56,10 +56,10 @@ await buildLambdaFunction(
     "dist/lambda/admin/createFriendInvite"
 );
 await buildLambdaFunction(
-    "api/endpoints/admin/passkeyRegisterOptions.ts",
-    "dist/lambda/admin/passkeyRegisterOptions"
+    "api/endpoints/friends/passkeyRegisterOptions.ts",
+    "dist/lambda/friends/passkeyRegisterOptions"
 );
 await buildLambdaFunction(
-    "api/endpoints/admin/passkeyRegister.ts",
-    "dist/lambda/admin/passkeyRegister"
+    "api/endpoints/friends/passkeyRegister.ts",
+    "dist/lambda/friends/passkeyRegister"
 );
