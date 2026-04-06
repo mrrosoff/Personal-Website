@@ -14,7 +14,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length === 0) {
-        return {};
+        return { output: "usage: mkdir [-p] directory_name", type: "error" };
     }
 
     try {

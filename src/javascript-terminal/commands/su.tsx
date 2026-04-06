@@ -9,7 +9,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length === 0) {
-        return {};
+        return { output: "usage: su <user>", type: "error" };
     }
 
     const environmentVariables = state.getEnvVariables();

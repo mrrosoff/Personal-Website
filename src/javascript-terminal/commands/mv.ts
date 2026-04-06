@@ -10,7 +10,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length < 2) {
-        return {};
+        return { output: "usage: mv [-v] source target", type: "error" };
     }
 
     try {

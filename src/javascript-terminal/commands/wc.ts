@@ -14,7 +14,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length === 0) {
-        return {};
+        return { output: "usage: wc [-lwc] [file]", type: "error" };
     }
 
     try {

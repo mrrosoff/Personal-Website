@@ -14,7 +14,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length < 2) {
-        return {};
+        return { output: "usage: cp [-rv] source dest", type: "error" };
     }
 
     try {

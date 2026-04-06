@@ -33,7 +33,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length === 0) {
-        return {};
+        return { output: "usage: display [file ...]", type: "error" };
     }
 
     try {
