@@ -19,11 +19,15 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     }
 
     const payload = decodeToken(token);
-    if (!payload || !(payload.userType === UserType.ADMIN || payload.userType === UserType.FRIEND)) {
+    if (!payload) {
+        return { output: "Permission Denied", type: "error" };
+    } else if (payload.userType === UserType.ADMIN) {
+        return { output: "Already Authenticated As Admin", type: "error" };
+    } else if (payload.userType !== UserType.FRIEND) {
         return { output: "Permission Denied", type: "error" };
     }
 
-    const targetUser = argv[0];
+    const targetUser = argv.join(" ");
     if (targetUser !== payload.id) {
         return { output: `Unknown User "${targetUser}"`, type: "error" };
     }
