@@ -17,9 +17,9 @@ import {
 import { DatabaseFlavor } from "../../api/types";
 
 const MailingListEmail = (props: {
-    currentFlavors: DatabaseFlavor[];
-    lastBatch: DatabaseFlavor[];
-    upcoming: DatabaseFlavor[];
+    currentFlavors?: DatabaseFlavor[];
+    lastBatch?: DatabaseFlavor[];
+    upcoming?: DatabaseFlavor[];
 }) => {
     return (
         <Html>
@@ -89,8 +89,8 @@ const MailingListEmail = (props: {
     );
 };
 
-const FlavorsList = (props: { title: string; description: string; flavors: DatabaseFlavor[] }) => {
-    if (props.flavors.length === 0) {
+const FlavorsList = (props: { title: string; description: string; flavors?: DatabaseFlavor[] }) => {
+    if (!props.flavors?.length) {
         return null;
     }
 
@@ -130,7 +130,7 @@ const FlavorsList = (props: { title: string; description: string; flavors: Datab
                     borderColor: "rgb(209,213,219) !important"
                 }}
             />
-            {props.flavors.map((flavor, index) => (
+            {props.flavors!.map((flavor, index) => (
                 <>
                     <Section key={flavor.name}>
                         <Row>

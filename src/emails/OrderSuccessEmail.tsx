@@ -18,8 +18,9 @@ type OrderItem = {
 const OrderSuccessEmail = (props: {
     customerName?: string;
     customerEmail?: string;
-    items: OrderItem[];
+    items?: OrderItem[];
 }) => {
+    const items = props.items ?? [];
     return (
         <Html>
             <Head />
@@ -78,7 +79,7 @@ const OrderSuccessEmail = (props: {
                         >
                             Items Ordered
                         </Text>
-                        {props.items.map((item, index) => (
+                        {items.map((item, index) => (
                             <Text
                                 key={index}
                                 style={{
