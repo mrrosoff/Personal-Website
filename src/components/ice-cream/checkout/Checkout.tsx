@@ -109,7 +109,7 @@ const FriendCheckoutForm = ({
                 { email },
                 { headers: { Authorization: `Bearer ${friendToken}` } }
             );
-            navigate("/ice-cream/checkout/return?friend=1");
+            navigate("/ice-cream/checkout/return");
         } catch (err: any) {
             console.error(err);
             setMessage(err?.response?.data?.message ?? "Checkout Failed");

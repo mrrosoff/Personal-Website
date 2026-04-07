@@ -129,7 +129,7 @@ const OrderConfirmation = (props: { customerEmail: string | null }) => {
                     .
                 </Typography>
                 <Typography mt={2} align={smallScreen ? "center" : undefined}>
-                    Or even better, head
+                    Or even better, head{" "}
                     <Link
                         component="button"
                         onClick={() => navigate("mailto:help@maxrosoff.com")}
@@ -147,7 +147,7 @@ const OrderConfirmation = (props: { customerEmail: string | null }) => {
                         here
                         <LaunchIcon sx={{ fontSize: 10, position: "relative", top: -4 }} />
                     </Link>
-                    to buy more ice cream.
+                    {" "}to buy more ice cream.
                 </Typography>
             </Box>
             <Box height={smallScreen ? 320 : 320} overflow="hidden">
