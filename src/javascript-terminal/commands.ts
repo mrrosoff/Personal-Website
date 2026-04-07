@@ -16,6 +16,7 @@ import display from "./commands/display";
 import echo from "./commands/echo";
 import exportCmd from "./commands/export";
 import find from "./commands/find";
+import flavor from "./commands/flavor";
 import grep from "./commands/grep";
 import haunt from "./commands/haunt";
 import head from "./commands/head";
@@ -63,6 +64,7 @@ const commands: Record<string, any> = {
     echo,
     export: exportCmd,
     find,
+    flavor,
     grep,
     head,
     history,

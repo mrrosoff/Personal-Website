@@ -55,6 +55,7 @@ await buildLambdaFunction(
     "api/endpoints/admin/createFriendInvite.ts",
     "dist/lambda/admin/createFriendInvite"
 );
+
 await buildLambdaFunction(
     "api/endpoints/friends/passkeyRegisterOptions.ts",
     "dist/lambda/friends/passkeyRegisterOptions"
@@ -62,4 +63,8 @@ await buildLambdaFunction(
 await buildLambdaFunction(
     "api/endpoints/friends/passkeyRegister.ts",
     "dist/lambda/friends/passkeyRegister"
+);
+await buildLambdaFunction(
+    "api/endpoints/friends/suggestFlavor.ts",
+    "dist/lambda/friends/suggestFlavor"
 );

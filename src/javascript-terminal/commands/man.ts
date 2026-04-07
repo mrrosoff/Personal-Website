@@ -18,6 +18,7 @@ import { manPage as displayManPage } from "./display";
 import { manPage as echoManPage } from "./echo";
 import { manPage as exportManPage } from "./export";
 import { manPage as findManPage } from "./find";
+import { manPage as flavorManPage } from "./flavor";
 import { manPage as grepManPage } from "./grep";
 import { manPage as hauntManPage } from "./haunt";
 import { manPage as headManPage } from "./head";
@@ -63,6 +64,7 @@ const manPages: Record<string, string> = {
     echo: echoManPage,
     export: exportManPage,
     find: findManPage,
+    flavor: flavorManPage,
     grep: grepManPage,
     haunt: hauntManPage,
     head: headManPage,
