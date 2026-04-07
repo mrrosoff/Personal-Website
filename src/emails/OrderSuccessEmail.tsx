@@ -19,12 +19,22 @@ type OrderItem = {
     quantity: number;
 };
 
+const subtitles = [
+    "Time to fire up the ice cream machine!",
+    "Another happy customer incoming!",
+    "Scoops away!",
+    "The freezer is calling!",
+    "Let's get churning!",
+    "Ice cream waits for no one!"
+];
+
 const OrderSuccessEmail = (props: {
     customerName?: string;
     customerEmail?: string;
     items?: OrderItem[];
 }) => {
     const items = props.items ?? [];
+    const subtitle = subtitles[Math.floor(Math.random() * subtitles.length)];
     return (
         <Html>
             <Head />
@@ -46,34 +56,34 @@ const OrderSuccessEmail = (props: {
                     }}
                 >
                     <Section>
-                        <Heading style={{ marginBottom: 0 }}>🍦 New Order!</Heading>
-                        <Row style={{ marginTop: 8 }}>
-                            <Column>
-                                <Text
-                                    style={{
-                                        fontSize: 16,
-                                        color: "rgb(107,114,128)",
-                                        margin: 0
-                                    }}
-                                >
-                                    {props.customerName
-                                        ? `${props.customerName} just placed an order`
-                                        : "Someone just placed an order"}
-                                </Text>
-                            </Column>
+                        <Heading style={{ marginBottom: 0 }}>
+                            {props.customerName ? `Order From ${props.customerName}` : "New Order"}
+                        </Heading>
+                        <Text
+                            style={{
+                                fontSize: 16,
+                                color: "rgb(107,114,128)",
+                                marginTop: 8,
+                                marginBottom: 0
+                            }}
+                        >
+                            {subtitle}
                             {props.customerEmail && (
-                                <Column align="right" style={{ width: 40 }}>
+                                <>
+                                    {" "}
+                                    Reach them at{" "}
                                     <Link
                                         href={`mailto:${props.customerEmail}`}
-                                        style={{ textDecoration: "none", fontSize: 20 }}
+                                        style={{ color: "rgb(79,70,229)" }}
                                     >
-                                        ↩️
+                                        {props.customerEmail}
                                     </Link>
-                                </Column>
+                                    .
+                                </>
                             )}
-                        </Row>
+                        </Text>
                     </Section>
-                    <Section style={{ marginTop: 8, marginBottom: 16 }}>
+                    <Section style={{ marginTop: 16, marginBottom: 16 }}>
                         {items.map((item, index) => (
                             <Section key={index} style={{ marginBottom: 8 }}>
                                 <Row>
@@ -84,7 +94,7 @@ const OrderSuccessEmail = (props: {
                                                 style={{
                                                     height: 30,
                                                     width: 30,
-                                                    backgroundColor: "rgb(199,210,254)",
+                                                    backgroundColor: "rgb(254,215,170)",
                                                     borderRadius: 9999,
                                                     padding: "0px"
                                                 }}
@@ -93,10 +103,10 @@ const OrderSuccessEmail = (props: {
                                                     style={{
                                                         fontWeight: 600,
                                                         margin: "0px",
-                                                        color: "rgb(79,70,229)"
+                                                        color: "rgb(234,88,12)"
                                                     }}
                                                 >
-                                                    {item.quantity}
+                                                    {item.quantity}x
                                                 </Text>
                                             </td>
                                         </table>

@@ -53,9 +53,9 @@ const MailingListEmail = (props: {
                         </Text>
                         <Text
                             style={{
-                                marginTop: "5px",
+                                marginTop: "0px",
                                 fontSize: 14,
-                                lineHeight: "10px",
+                                lineHeight: "24px",
                                 color: "rgb(107,114,128)"
                             }}
                         >
