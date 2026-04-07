@@ -46,7 +46,8 @@ const OrderSuccessEmail = (props: {
                 }}
             >
                 <Preview>
-                    New order from {props.customerName || props.customerEmail || "a customer"}
+                    New order from {props.customerName || props.customerEmail || "a customer"} for{" "}
+                    {items.length.toString()} {items.length === 1 ? "pint" : "pints"}
                 </Preview>
                 <Container
                     style={{

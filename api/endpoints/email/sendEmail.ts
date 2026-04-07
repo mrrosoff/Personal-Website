@@ -61,11 +61,9 @@ export async function sendOrderSuccessEmail(params: {
     const resend = new Resend(apiKey);
 
     const { error } = await resend.emails.send({
-        from: "Max <drops@ice-cream.maxrosoff.com>",
+        from: "Max's Freezer Stash <orders@ice-cream.maxrosoff.com>",
         to: "me@maxrosoff.com",
-        subject: params.customerName
-            ? `New Ice Cream Order From ${params.customerName}`
-            : "New Ice Cream Order",
+        subject: "Ice Cream Order",
         react: OrderSuccessEmail(params)
     });
 
