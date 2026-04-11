@@ -1,12 +1,24 @@
 import { DateTime } from "luxon";
 
-type FileType = "-" | "d" | "l";
-
-export type File = {
-    type: FileType;
+export type RegularFile = {
+    type: "-";
     permissions: string;
-    contents: FileSystem | string;
+    contents: string;
 };
+
+export type Directory = {
+    type: "d";
+    permissions: string;
+    contents: FileSystem;
+};
+
+export type SymLink = {
+    type: "l";
+    permissions: string;
+    contents: string;
+};
+
+export type File = RegularFile | Directory | SymLink;
 
 export type FileSystem = Record<string, File>;
 

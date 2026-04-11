@@ -1,5 +1,6 @@
 import { DateTime } from "luxon";
 
+import type { CommandMapping } from "./emulator-state/CommandMapping";
 import alias from "./commands/alias";
 import basename from "./commands/basename";
 import cat from "./commands/cat";
@@ -47,7 +48,7 @@ import whoami from "./commands/whoami";
 const currentDate = DateTime.now();
 const isHalloween = currentDate.month === 10 && currentDate.day === 31;
 
-const commands: Record<string, any> = {
+const commands: CommandMapping = {
     alias,
     basename,
     cat,

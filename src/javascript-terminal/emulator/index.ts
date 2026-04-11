@@ -4,7 +4,7 @@ import * as CommandMappingUtil from "../emulator-state/CommandMapping";
 import * as PathUtil from "../fs/util/path-util";
 import { fsSearchParent } from "../fs/operations/base-operations";
 import EmulatorState from "../emulator-state/EmulatorState";
-import { CommandMapping } from "../emulator-state/CommandMapping";
+import { CommandMapping, CommandResult } from "../emulator-state/CommandMapping";
 
 export default class Emulator {
     autocomplete(state: EmulatorState, partialStr: string) {
@@ -123,7 +123,7 @@ export default class Emulator {
         state.setHistory([...state.getHistory(), command]);
     }
 
-    addCommandOutput(state: EmulatorState, outputs: any[], cwd = state.getEnvVariables().cwd) {
+    addCommandOutput(state: EmulatorState, outputs: CommandResult[], cwd = state.getEnvVariables().cwd) {
         state.setOutputs([
             ...state.getOutputs(),
             {

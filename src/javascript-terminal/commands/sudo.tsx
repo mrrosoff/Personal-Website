@@ -25,7 +25,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
 
     if (environmentVariables["AUTH_TOKEN"]) {
         const commandMapping = state.getCommandMapping();
-        const commandFn: any = CommandMappingUtil.getCommandFn(commandMapping, targetCommand);
+        const commandFn = CommandMappingUtil.getCommandFn(commandMapping, targetCommand);
         if (!commandFn) {
             return { output: "Command Not Found", type: "error" };
         }

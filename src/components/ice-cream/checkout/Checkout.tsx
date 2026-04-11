@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import {
     Box,
     Button,
@@ -110,9 +110,8 @@ const FriendCheckoutForm = ({
                 { headers: { Authorization: `Bearer ${friendToken}` } }
             );
             navigate("/ice-cream/checkout/return");
-        } catch (err: any) {
-            console.error(err);
-            setMessage(err?.response?.data?.message ?? "Checkout Failed");
+        } catch (err) {
+            setMessage("Checkout Failed");
             setIsLoading(false);
         }
     };

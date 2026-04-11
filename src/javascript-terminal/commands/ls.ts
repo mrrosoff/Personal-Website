@@ -3,7 +3,9 @@ import assert from "assert";
 import { parseOptions } from "../parser";
 import * as PathUtil from "../fs/util/path-util";
 import * as DirOp from "../fs/operations/directory-operations";
+import { fsSearch } from "../fs/operations/base-operations";
 import EmulatorState from "../emulator-state/EmulatorState";
+import { FileSystem } from "../../FileSystem";
 
 const IMPLIED_DIRECTORY_ENTRIES = [".", ".."];
 
@@ -21,11 +23,8 @@ const makeSortedReturn = (listing: string[]) => {
     return { output: listing.sort().join("\n") };
 };
 
-const makeLongFormatReturn = (fs: any, dirPath: string, listing: string[]) => {
-    const dirContents = PathUtil.toPathParts(dirPath).reduce(
-        (section, part) => section[part]?.contents || section,
-        fs
-    );
+const makeLongFormatReturn = (fs: FileSystem, dirPath: string, listing: string[]) => {
+    const dirContents = fsSearch(fs, dirPath);
 
     const formattedLines = listing
         .sort()

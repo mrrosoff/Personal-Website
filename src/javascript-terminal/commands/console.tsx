@@ -757,7 +757,7 @@ const fetchInventoryData = async (state: EmulatorState) => {
             }
         );
 
-        const inventoryData = data.inventory.map((item: any) => ({
+        const inventoryData = (data.inventory as Partial<DatabaseFlavor>[]).map((item) => ({
             productId: item.productId || "",
             priceId: item.priceId || "",
             name: item.name || "Unknown Flavor",

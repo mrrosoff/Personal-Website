@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-import { CommandMapping, create as createCommandMapping } from "./CommandMapping";
+import { CommandMapping, CommandResult, create as createCommandMapping } from "./CommandMapping";
 import * as FileUtil from "../fs/util/file-util";
 import * as PathUtil from "../fs/util/path-util";
 import { FileSystem } from "../../FileSystem";
@@ -80,8 +80,13 @@ type EmulatorStateType = {
     [TAB_COUNT_KEY]?: number;
     [FS_KEY]: FileSystem;
     [ENVIRONMENT_VARIABLES_KEY]: Record<string, string | undefined>;
-    [HISTORY_KEY]?: any;
-    [OUTPUTS_KEY]?: any;
+    [HISTORY_KEY]: string[];
+    [OUTPUTS_KEY]: Array<{
+        command?: string;
+        cwd?: string;
+        output: CommandResult[];
+        promptSymbol?: string;
+    }>;
     [COMMAND_MAPPING_KEY]: CommandMapping;
     [ADMIN_CONSOLE_KEY]?: AdminConsoleState;
     [PASSWORD_PROMPT_KEY]?: PasswordPromptState;
@@ -144,7 +149,7 @@ export default class EmulatorState {
         return this.state[HISTORY_KEY];
     }
 
-    setHistory(newHistory: any) {
+    setHistory(newHistory: EmulatorStateType[typeof HISTORY_KEY]) {
         this.state[HISTORY_KEY] = newHistory;
     }
 
@@ -152,7 +157,7 @@ export default class EmulatorState {
         return this.state[OUTPUTS_KEY];
     }
 
-    setOutputs(newOutputs: any) {
+    setOutputs(newOutputs: EmulatorStateType[typeof OUTPUTS_KEY]) {
         this.state[OUTPUTS_KEY] = newOutputs;
     }
 

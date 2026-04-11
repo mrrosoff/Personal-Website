@@ -6,6 +6,7 @@ import {
     isCommandSet
 } from "../emulator-state/CommandMapping";
 import { fsSearchAutoComplete } from "../fs/operations/base-operations";
+import { FileSystem } from "../../FileSystem";
 
 export const suggestCommands = (cmdMapping: CommandMapping, partialStr: string) => {
     const commandNameSeq = getCommandNames(cmdMapping);
@@ -27,7 +28,7 @@ export const suggestCommandOptions = (
     return optDefSeq.filter((option) => partialStr === option.substr(0, partialStr.length));
 };
 
-export const suggestFileSystemNames = (fs: any, cwd: string, partialStr: string) => {
+export const suggestFileSystemNames = (fs: FileSystem, cwd: string, partialStr: string) => {
     const path = PathUtil.toAbsolutePath(partialStr, cwd);
     const fsPart = fsSearchAutoComplete(fs, path);
     return Object.keys(fsPart)

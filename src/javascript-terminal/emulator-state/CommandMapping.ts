@@ -2,12 +2,15 @@ import { JSX } from "react";
 import commands from "../commands.js";
 import EmulatorState from "./EmulatorState.js";
 
+export type CommandResult = {
+    output?: JSX.Element | JSX.Element[] | string;
+    type?: string;
+    oldCwdPath?: string;
+};
+
 export type CommandMapping = {
     [key: string]: {
-        functionDef: (
-            state: EmulatorState,
-            _commandOptions: string[]
-        ) => { output?: JSX.Element | JSX.Element[] | string; type?: string };
+        functionDef: (state: EmulatorState, _commandOptions: string[]) => CommandResult;
         optDef: { [key: string]: string };
     };
 };

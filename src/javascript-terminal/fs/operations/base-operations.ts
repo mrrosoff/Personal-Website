@@ -1,8 +1,15 @@
 import { getLastPathPart, toPathParts } from "../util/path-util";
 import { File, FileSystem } from "../../../FileSystem";
 
-export const fsSearchParent = (fs: any, path: string) => {
-    let fsSection = fs;
+const descend = (entry: File): FileSystem => {
+    if (entry.type !== "d") {
+        throw Error("Cannot Descend Into File");
+    }
+    return entry.contents;
+};
+
+export const fsSearchParent = (fs: FileSystem, path: string): FileSystem => {
+    let fsSection: FileSystem = fs;
     let pathParts = toPathParts(path);
 
     for (const pathPart of pathParts.slice(0, pathParts.length - 1)) {
@@ -10,14 +17,14 @@ export const fsSearchParent = (fs: any, path: string) => {
             return fsSection;
         }
 
-        fsSection = fsSection[pathPart].contents;
+        fsSection = descend(fsSection[pathPart]);
     }
 
     return fsSection;
 };
 
-export const fsSearchAutoComplete = (fs: any, path: string) => {
-    let fsSection = fs;
+export const fsSearchAutoComplete = (fs: FileSystem, path: string): FileSystem => {
+    let fsSection: FileSystem = fs;
     let pathParts = toPathParts(path);
 
     for (const pathPart of pathParts) {
@@ -25,14 +32,14 @@ export const fsSearchAutoComplete = (fs: any, path: string) => {
             return fsSection;
         }
 
-        fsSection = fsSection[pathPart].contents;
+        fsSection = descend(fsSection[pathPart]);
     }
 
     return fsSection;
 };
 
-export const fsSearch = (fs: any, path: string) => {
-    let fsSection = fs;
+export const fsSearch = (fs: FileSystem, path: string): FileSystem => {
+    let fsSection: FileSystem = fs;
     let pathParts = toPathParts(path);
 
     for (const pathPart of pathParts) {
@@ -40,7 +47,7 @@ export const fsSearch = (fs: any, path: string) => {
             throw Error("Specified Path Not In Filesystem");
         }
 
-        fsSection = fsSection[pathPart].contents;
+        fsSection = descend(fsSection[pathPart]);
     }
 
     return fsSection;

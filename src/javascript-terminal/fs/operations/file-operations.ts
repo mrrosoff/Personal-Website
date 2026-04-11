@@ -3,14 +3,15 @@ import { fsSearchParent } from "./base-operations";
 import { getLastPathPart } from "../util/path-util";
 import { File, FileSystem } from "../../../FileSystem";
 
-export const read = (fs: FileSystem, path: string) => {
+export const read = (fs: FileSystem, path: string): string => {
     const fsPart = fsSearchParent(fs, path);
+    const file = fsPart[getLastPathPart(path)];
 
-    if (!fsPart[getLastPathPart(path)] || fsPart[getLastPathPart(path)].type !== "-") {
+    if (!file || file.type !== "-") {
         throw Error("Not A File At Specified Path: " + path);
     }
 
-    return fsPart[getLastPathPart(path)].contents;
+    return file.contents;
 };
 
 export const write = (fs: FileSystem, path: string, file: File) => {

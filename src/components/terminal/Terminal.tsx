@@ -1,4 +1,12 @@
-import { ChangeEvent, KeyboardEvent, Ref, forwardRef, useEffect, useState } from "react";
+import {
+    ChangeEvent,
+    KeyboardEvent,
+    ReactElement,
+    Ref,
+    forwardRef,
+    useEffect,
+    useState
+} from "react";
 import { Box, Grid } from "@mui/material";
 
 import { UserType } from "../../../api/types";
@@ -35,7 +43,7 @@ const Terminal = (
     const { setFriendToken, emulatorState, setEmulatorState } = useAppContext();
     const [showMOTD, setShowMOTD] = useState(true);
     const [input, setInput] = useState("");
-    const [renderedOutputs, setRenderedOutputs] = useState([]);
+    const [renderedOutputs, setRenderedOutputs] = useState<ReactElement[]>([]);
     const [_, setHistoryIndex] = useState(-1);
     const [loadingDots, setLoadingDots] = useState(0);
 
@@ -197,7 +205,7 @@ const Terminal = (
         if (showMOTD && emulatorState.getHistory().includes("clear")) {
             setShowMOTD(false);
         }
-        return emulatorState.getOutputs().map((content: any, index: number) => (
+        return emulatorState.getOutputs().map((content, index) => (
             <Grid key={index} container direction={"column"}>
                 <Grid>
                     <OutputHeader
@@ -205,25 +213,25 @@ const Terminal = (
                         promptSymbol={content.promptSymbol ?? promptSymbol}
                         cwd={content.cwd}
                     >
-                        {content.command}
+                        {content.command ?? ""}
                     </OutputHeader>
                 </Grid>
-                {content.output.map((output: any, index: number) => {
+                {content.output.map((output, index) => {
+                    if (output.type === "react") {
+                        return <Grid key={index}>{output.output}</Grid>;
+                    }
                     if (output.type === "error") {
                         return (
                             <Grid key={index}>
-                                <OutputError {...props}>{output.output}</OutputError>
-                            </Grid>
-                        );
-                    } else if (output.type === "react") {
-                        return <Grid key={index}>{output.output}</Grid>;
-                    } else {
-                        return (
-                            <Grid key={index}>
-                                <OutputText {...props}>{output.output}</OutputText>
+                                <OutputError {...props}>{output.output as string}</OutputError>
                             </Grid>
                         );
                     }
+                    return (
+                        <Grid key={index}>
+                            <OutputText {...props}>{output.output as string}</OutputText>
+                        </Grid>
+                    );
                 })}
             </Grid>
         ));
