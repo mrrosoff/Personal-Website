@@ -28,7 +28,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     }
 
     const targetUser = argv.join(" ");
-    if (targetUser !== payload.id) {
+    if (targetUser.toLowerCase() !== payload.id.toLowerCase()) {
         return { output: `Unknown User "${targetUser}"`, type: "error" };
     }
 
