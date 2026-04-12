@@ -89,6 +89,11 @@ export const authenticateWithPasskey = async (
             promptState.targetOptions
         ]);
 
+        if (promptState.targetCommand === "su" && result.type === "error") {
+            const { AUTH_TOKEN: _, ...remainingVars } = emulatorState.getEnvVariables();
+            emulatorState.setEnvVariables(remainingVars);
+        }
+
         emulatorState.setPasswordPromptState(undefined);
 
         const outputs = emulatorState.getOutputs();

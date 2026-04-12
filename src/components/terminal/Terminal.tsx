@@ -11,6 +11,7 @@ import { Box, Grid } from "@mui/material";
 
 import { UserType } from "../../../api/types";
 import { Emulator } from "../../javascript-terminal";
+import EmulatorState from "../../javascript-terminal/emulator-state/EmulatorState";
 import { handleAdminConsoleKeyPress } from "../../javascript-terminal/commands/console";
 import { authenticateWithPasskey } from "../../javascript-terminal/commands/sudo";
 import { decodeToken } from "../App";
@@ -32,6 +33,43 @@ export type TerminalTheme = {
     height: string | number;
 };
 
+const renderOutputs = (
+    emulatorState: EmulatorState,
+    props: { theme: TerminalTheme },
+    promptSymbol: string = "dev@rosoff"
+) => {
+    return emulatorState.getOutputs().map((content, index) => (
+        <Grid key={index} container direction={"column"}>
+            <Grid>
+                <OutputHeader
+                    {...props}
+                    promptSymbol={content.promptSymbol ?? promptSymbol}
+                    cwd={content.cwd}
+                >
+                    {content.command ?? ""}
+                </OutputHeader>
+            </Grid>
+            {content.output.map((output, idx) => {
+                if (output.type === "react") {
+                    return <Grid key={idx}>{output.output}</Grid>;
+                }
+                if (output.type === "error") {
+                    return (
+                        <Grid key={idx}>
+                            <OutputError {...props}>{output.output as string}</OutputError>
+                        </Grid>
+                    );
+                }
+                return (
+                    <Grid key={idx}>
+                        <OutputText {...props}>{output.output as string}</OutputText>
+                    </Grid>
+                );
+            })}
+        </Grid>
+    ));
+};
+
 const Terminal = (
     props: {
         errorStr: string;
@@ -43,7 +81,9 @@ const Terminal = (
     const { setFriendToken, emulatorState, setEmulatorState } = useAppContext();
     const [showMOTD, setShowMOTD] = useState(true);
     const [input, setInput] = useState("");
-    const [renderedOutputs, setRenderedOutputs] = useState<ReactElement[]>([]);
+    const [renderedOutputs, setRenderedOutputs] = useState<ReactElement[]>(() =>
+        renderOutputs(emulatorState, props)
+    );
     const [_, setHistoryIndex] = useState(-1);
     const [loadingDots, setLoadingDots] = useState(0);
 
@@ -205,36 +245,7 @@ const Terminal = (
         if (showMOTD && emulatorState.getHistory().includes("clear")) {
             setShowMOTD(false);
         }
-        return emulatorState.getOutputs().map((content, index) => (
-            <Grid key={index} container direction={"column"}>
-                <Grid>
-                    <OutputHeader
-                        {...props}
-                        promptSymbol={content.promptSymbol ?? promptSymbol}
-                        cwd={content.cwd}
-                    >
-                        {content.command ?? ""}
-                    </OutputHeader>
-                </Grid>
-                {content.output.map((output, index) => {
-                    if (output.type === "react") {
-                        return <Grid key={index}>{output.output}</Grid>;
-                    }
-                    if (output.type === "error") {
-                        return (
-                            <Grid key={index}>
-                                <OutputError {...props}>{output.output as string}</OutputError>
-                            </Grid>
-                        );
-                    }
-                    return (
-                        <Grid key={index}>
-                            <OutputText {...props}>{output.output as string}</OutputText>
-                        </Grid>
-                    );
-                })}
-            </Grid>
-        ));
+        return renderOutputs(emulatorState, props, promptSymbol);
     };
 
     const MOTDText = `
