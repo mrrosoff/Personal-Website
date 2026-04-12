@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { startRegistration } from "@simplewebauthn/browser";
 import axios from "axios";
 import { DateTime } from "luxon";
@@ -10,6 +10,8 @@ import { API_URL, decodeToken } from "./App";
 
 const RegisterForm = (props: { token: string; friendName: string }) => {
     const navigate = useNavigate();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -37,20 +39,26 @@ const RegisterForm = (props: { token: string; friendName: string }) => {
     return (
         <>
             <Typography variant={"body1"}>Register a passkey to unlock friend mode.</Typography>
-            <Typography variant={"body1"} mb={4}>
-                Then run{" "}
-                <code
-                    style={{
-                        backgroundColor: "rgba(255,255,255,0.1)",
-                        padding: "2px 6px",
-                        borderRadius: 4,
-                        fontFamily: "monospace"
-                    }}
-                >
-                    sudo su ${props.friendName}
-                </code>{" "}
-                in the terminal.
-            </Typography>
+            {isMobile ? (
+                <Typography variant={"body1"} mb={4}>
+                    Then press and hold on my photo from the home screen.
+                </Typography>
+            ) : (
+                <Typography variant={"body1"} mb={4}>
+                    Then run{" "}
+                    <code
+                        style={{
+                            backgroundColor: "rgba(255,255,255,0.1)",
+                            padding: "2px 6px",
+                            borderRadius: 4,
+                            fontFamily: "monospace"
+                        }}
+                    >
+                        sudo su {props.friendName}
+                    </code>{" "}
+                    in the terminal.
+                </Typography>
+            )}
             <Button
                 variant={"contained"}
                 size={"large"}
