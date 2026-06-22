@@ -52,7 +52,8 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
             response: body.response,
             expectedChallenge: body.challenge,
             expectedOrigin: RP_ORIGIN,
-            expectedRPID: RP_ID
+            expectedRPID: RP_ID,
+            requireUserVerification: true
         });
     } catch (error) {
         console.error("Passkey Registration Error:", error);

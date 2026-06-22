@@ -2,11 +2,25 @@ import { useState } from "react";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 
 import { Box, Button, TextField, Typography, useMediaQuery, useTheme } from "@mui/material";
-import { startRegistration } from "@simplewebauthn/browser";
+import { browserSupportsWebAuthn, startRegistration, WebAuthnError } from "@simplewebauthn/browser";
 import axios from "axios";
 import { DateTime } from "luxon";
 
 import { API_URL, decodeToken } from "./App";
+
+const registrationErrorMessage = (err: unknown): string => {
+    if (err instanceof WebAuthnError) {
+        switch (err.code) {
+            case "ERROR_AUTHENTICATOR_MISSING_USER_VERIFICATION_SUPPORT":
+                return "This Device Doesn't Support Biometric Passkeys";
+            case "ERROR_AUTHENTICATOR_PREVIOUSLY_REGISTERED":
+                return "A Passkey Is Already Registered With This Device";
+            case "ERROR_CEREMONY_ABORTED":
+                return "Registration Cancelled. Try Again";
+        }
+    }
+    return "Registration Failed. Ask For A New Link.";
+};
 
 const RegisterForm = (props: { token: string; friendName: string }) => {
     const navigate = useNavigate();
@@ -21,6 +35,10 @@ const RegisterForm = (props: { token: string; friendName: string }) => {
     const handleRegister = async () => {
         if (!isValidEmail) {
             setError("Enter A Valid Email");
+            return;
+        }
+        if (!browserSupportsWebAuthn()) {
+            setError("This Browser / Device Doesn't Support Biometric Passkeys.");
             return;
         }
         setIsLoading(true);
@@ -43,7 +61,7 @@ const RegisterForm = (props: { token: string; friendName: string }) => {
         } catch (err: unknown) {
             console.error(err);
             setIsLoading(false);
-            setError("Registration Failed. Ask For A New Link.");
+            setError(registrationErrorMessage(err));
         }
     };
 

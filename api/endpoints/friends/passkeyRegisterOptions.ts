@@ -21,7 +21,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         attestationType: "none",
         authenticatorSelection: {
             residentKey: "preferred",
-            userVerification: "preferred"
+            userVerification: "required"
         }
     });
 
