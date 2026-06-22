@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 
-import { Box, Button, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Button, TextField, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { startRegistration } from "@simplewebauthn/browser";
 import axios from "axios";
 import { DateTime } from "luxon";
@@ -14,8 +14,15 @@ const RegisterForm = (props: { token: string; friendName: string }) => {
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [email, setEmail] = useState("");
+
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 
     const handleRegister = async () => {
+        if (!isValidEmail) {
+            setError("Enter A Valid Email");
+            return;
+        }
         setIsLoading(true);
         try {
             const authHeaders = { headers: { Authorization: `Bearer ${props.token}` } };
@@ -25,7 +32,11 @@ const RegisterForm = (props: { token: string; friendName: string }) => {
             const registrationResponse = await startRegistration({ optionsJSON: options });
             await axios.post(
                 `${API_URL}/friends/passkey-register`,
-                { challenge: options.challenge, response: registrationResponse },
+                {
+                    challenge: options.challenge,
+                    response: registrationResponse,
+                    email: email.trim()
+                },
                 authHeaders
             );
             return navigate("/");
@@ -59,11 +70,20 @@ const RegisterForm = (props: { token: string; friendName: string }) => {
                     in the terminal.
                 </Typography>
             )}
+            <TextField
+                type={"email"}
+                label={"Email"}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                sx={{ mb: 3, width: 320, maxWidth: "100%" }}
+            />
             <Button
                 variant={"contained"}
                 size={"large"}
                 onClick={handleRegister}
                 loading={isLoading}
+                disabled={!isValidEmail}
                 sx={{
                     fontSize: 20,
                     backgroundColor: "#52535F",

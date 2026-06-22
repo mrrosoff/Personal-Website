@@ -80,6 +80,6 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     return buildResponse(event, HttpResponseStatus.OK, {
         verified: true,
         message: "Authentication Successful",
-        token: await generateToken(storedPasskey.name, { userType })
+        token: await generateToken(storedPasskey.name, { userType, email: storedPasskey.email })
     });
 };

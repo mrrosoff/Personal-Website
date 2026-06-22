@@ -68,3 +68,6 @@ await buildLambdaFunction(
     "api/endpoints/friends/suggestFlavor.ts",
     "dist/lambda/friends/suggestFlavor"
 );
+
+await buildLambdaFunction("api/endpoints/spotify/connect.ts", "dist/lambda/spotify/connect");
+await buildLambdaFunction("api/endpoints/spotify/exchange.ts", "dist/lambda/spotify/exchange");

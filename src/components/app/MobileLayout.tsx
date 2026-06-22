@@ -56,9 +56,7 @@ const MobileLayout = () => {
                 console.warn("Passkey Auth Unavailable In Local Environment");
                 return;
             }
-            const { data: authOptions } = await axios.post(
-                `${API_URL}/admin/passkey-auth-options`
-            );
+            const { data: authOptions } = await axios.post(`${API_URL}/admin/passkey-auth-options`);
             const authResponse = await startAuthentication({ optionsJSON: authOptions });
             const { data: authResult } = await axios.post(`${API_URL}/admin/passkey-auth`, {
                 response: authResponse,

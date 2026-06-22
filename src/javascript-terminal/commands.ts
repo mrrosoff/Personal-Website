@@ -35,6 +35,7 @@ import rmdir from "./commands/rmdir";
 import sed from "./commands/sed";
 import snake from "./commands/snake";
 import sort from "./commands/sort";
+import spotify from "./commands/spotify";
 import su from "./commands/su";
 import sudo from "./commands/sudo";
 import tail from "./commands/tail";
@@ -82,6 +83,7 @@ const commands: CommandMapping = {
     sed,
     snake,
     sort,
+    spotify,
     su,
     sudo,
     tail,

@@ -50,10 +50,7 @@ class WebsiteAPIStack extends Stack {
             passkeyChallengesTable,
             passkeysTable
         );
-        const restApi = this.createAPI(
-            certificate,
-            apiRole,
-        );
+        const restApi = this.createAPI(certificate, apiRole);
 
         const alarmTopic = this.createAlarmActions();
         this.createRestAPIErrorsAlarm(alarmTopic, restApi);
@@ -90,10 +87,7 @@ class WebsiteAPIStack extends Stack {
         });
     }
 
-    private createAPI(
-        certificate: Certificate,
-        apiRole: Role
-    ): RestApi {
+    private createAPI(certificate: Certificate, apiRole: Role): RestApi {
         const api = new RestApi(this, "websiteRestApi", {
             restApiName: "Website API",
             description: "The service endpoint for Personal Website API",
@@ -116,6 +110,7 @@ class WebsiteAPIStack extends Stack {
         this.createEmailRoutes(api, apiRole);
         this.createJWKRoutes(api, apiRole);
         this.createIceCreamRoutes(api, apiRole);
+        this.createSpotifyRoutes(api, apiRole);
         return api;
     }
 
@@ -168,8 +163,12 @@ class WebsiteAPIStack extends Stack {
         const unsubscribeLambda = this.createUnsubscribeLambda(apiRole);
 
         const emailResource = api.root.addResource("email");
-        emailResource.addResource("receive").addMethod("POST", new LambdaIntegration(receiveLambda));
-        emailResource.addResource("register").addMethod("POST", new LambdaIntegration(registerLambda));
+        emailResource
+            .addResource("receive")
+            .addMethod("POST", new LambdaIntegration(receiveLambda));
+        emailResource
+            .addResource("register")
+            .addMethod("POST", new LambdaIntegration(registerLambda));
         emailResource
             .addResource("send-email")
             .addMethod("POST", new LambdaIntegration(sendEmailLambda));
@@ -192,14 +191,53 @@ class WebsiteAPIStack extends Stack {
         const checkoutSuccessLambda = this.createCheckoutSuccessLambda(apiRole);
 
         const iceCreamResource = api.root.addResource("ice-cream");
-        iceCreamResource.addResource("inventory").addMethod("POST", new LambdaIntegration(inventoryLambda));
-        iceCreamResource.addResource("checkout").addMethod("POST", new LambdaIntegration(checkoutLambda));
+        iceCreamResource
+            .addResource("inventory")
+            .addMethod("POST", new LambdaIntegration(inventoryLambda));
+        iceCreamResource
+            .addResource("checkout")
+            .addMethod("POST", new LambdaIntegration(checkoutLambda));
         iceCreamResource
             .addResource("checkout-status")
             .addMethod("POST", new LambdaIntegration(checkoutStatusLambda));
         iceCreamResource
             .addResource("checkout-success")
             .addMethod("POST", new LambdaIntegration(checkoutSuccessLambda));
+    }
+
+    private createSpotifyRoutes(api: RestApi, apiRole: Role) {
+        const spotifyConnectLambda = this.createSpotifyConnectLambda(apiRole);
+        const spotifyExchangeLambda = this.createSpotifyExchangeLambda(apiRole);
+
+        const spotifyResource = api.root.addResource("spotify");
+        spotifyResource
+            .addResource("connect")
+            .addMethod("POST", new LambdaIntegration(spotifyConnectLambda));
+        spotifyResource
+            .addResource("exchange")
+            .addMethod("POST", new LambdaIntegration(spotifyExchangeLambda));
+    }
+
+    private createSpotifyConnectLambda(role: Role): LambdaFunction {
+        const functionName = "website-spotify-connect";
+        return new LambdaFunction(this, "websiteSpotifyConnectLambda", {
+            functionName,
+            handler: "connect.handler",
+            code: Code.fromAsset("dist/lambda/spotify/connect"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(functionName, role)
+        });
+    }
+
+    private createSpotifyExchangeLambda(role: Role): LambdaFunction {
+        const functionName = "website-spotify-exchange";
+        return new LambdaFunction(this, "websiteSpotifyExchangeLambda", {
+            functionName,
+            handler: "exchange.handler",
+            code: Code.fromAsset("dist/lambda/spotify/exchange"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(functionName, role)
+        });
     }
 
     private createJWKLambda(role: Role): LambdaFunction {
@@ -322,7 +360,7 @@ class WebsiteAPIStack extends Stack {
             ...this.createLambdaParams(functionName, role)
         });
     }
-    
+
     private createPasskeyRegisterOptionsLambda(role: Role): LambdaFunction {
         const functionName = "website-passkey-register-options";
         return new LambdaFunction(this, "websitePasskeyRegisterOptionsLambda", {
@@ -389,10 +427,7 @@ class WebsiteAPIStack extends Stack {
         });
     }
 
-    private createLambdaParams(
-        functionName: string,
-        role: Role
-    ): Partial<FunctionProps> {
+    private createLambdaParams(functionName: string, role: Role): Partial<FunctionProps> {
         return {
             role,
             memorySize: 2048,
@@ -420,14 +455,18 @@ class WebsiteAPIStack extends Stack {
             ],
             inlinePolicies: {
                 SSMAccessPolicy: new PolicyDocument({
-                    statements: [
-                        new PolicyStatement({ actions: ["ssm:*"], resources: ["*"] })
-                    ]
+                    statements: [new PolicyStatement({ actions: ["ssm:*"], resources: ["*"] })]
                 }),
                 TableAccessPolicy: new PolicyDocument({
                     statements: [
                         new PolicyStatement({
-                            actions: ["dynamodb:GetItem", "dynamodb:DeleteItem", "dynamodb:PutItem", "dynamodb:Scan", "dynamodb:UpdateItem"],
+                            actions: [
+                                "dynamodb:GetItem",
+                                "dynamodb:DeleteItem",
+                                "dynamodb:PutItem",
+                                "dynamodb:Scan",
+                                "dynamodb:UpdateItem"
+                            ],
                             resources: tables.flatMap((table) => [table.tableArn])
                         })
                     ]

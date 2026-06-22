@@ -1,6 +1,7 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import { RegistrationResponseJSON, verifyRegistrationResponse } from "@simplewebauthn/server";
 import { DateTime } from "luxon";
+import { validate } from "email-validator";
 
 import { PASSKEY_CHALLENGES_TABLE, PASSKEYS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
 import { deleteItem, getItem, putItem } from "../../aws/services/dynamodb";
@@ -12,6 +13,7 @@ import { RP_ID, RP_ORIGIN } from "../admin/passkeyAuthOptions";
 type Payload = {
     challenge: string;
     response: RegistrationResponseJSON;
+    email: string;
 };
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
@@ -25,6 +27,11 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     }
 
     const body: Payload = JSON.parse(event.body);
+    const email = body.email?.trim();
+    if (!email || !validate(email)) {
+        return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Valid Email Required");
+    }
+
     const challengeRecord = await getItem(PASSKEY_CHALLENGES_TABLE, body.challenge);
     if (!challengeRecord) {
         return buildErrorResponse(
@@ -61,7 +68,8 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         credentialId: credential.id,
         publicKey: Buffer.from(credential.publicKey).toString("base64"),
         userType: UserType.FRIEND,
-        name: sharePayload.id
+        name: sharePayload.id,
+        email
     };
     await putItem(PASSKEYS_TABLE, passkey);
     await deleteItem(PASSKEY_CHALLENGES_TABLE, challengeRecord.id);

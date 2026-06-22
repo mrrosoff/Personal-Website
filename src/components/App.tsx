@@ -16,6 +16,7 @@ import Unsubscribe from "./ice-cream/Unsubscribe";
 import Checkout from "./ice-cream/checkout/Checkout";
 import Return from "./ice-cream/checkout/Return";
 import RegisterFriend from "./RegisterFriend";
+import SpotifyCallback from "./SpotifyCallback";
 
 export const API_URL = "https://api.maxrosoff.com";
 
@@ -129,9 +130,7 @@ const AppRoutes = () => {
             >
                 <Route
                     index
-                    element={
-                        <Page inputRef={inputRef} scrollContainerRef={scrollContainerRef} />
-                    }
+                    element={<Page inputRef={inputRef} scrollContainerRef={scrollContainerRef} />}
                 />
                 <Route path="ice-cream" element={<IceCream />} />
                 <Route path="ice-cream/checkout" element={<Checkout />} />
@@ -139,6 +138,7 @@ const AppRoutes = () => {
                 <Route path="ice-cream/mailing-list/unsubscribe" element={<Unsubscribe />} />
                 <Route path="ice-cream/mailing-list" element={<MailingList />} />
                 <Route path="register-friend" element={<RegisterFriend />} />
+                <Route path="spotify/callback" element={<SpotifyCallback />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

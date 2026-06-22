@@ -123,7 +123,11 @@ export default class Emulator {
         state.setHistory([...state.getHistory(), command]);
     }
 
-    addCommandOutput(state: EmulatorState, outputs: CommandResult[], cwd = state.getEnvVariables().cwd) {
+    addCommandOutput(
+        state: EmulatorState,
+        outputs: CommandResult[],
+        cwd = state.getEnvVariables().cwd
+    ) {
         state.setOutputs([
             ...state.getOutputs(),
             {

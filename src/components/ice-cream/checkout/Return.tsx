@@ -146,8 +146,8 @@ const OrderConfirmation = (props: { customerEmail: string | null }) => {
                     >
                         here
                         <LaunchIcon sx={{ fontSize: 10, position: "relative", top: -4 }} />
-                    </Link>
-                    {" "}to buy more ice cream.
+                    </Link>{" "}
+                    to buy more ice cream.
                 </Typography>
             </Box>
             <Box height={smallScreen ? 320 : 320} overflow="hidden">

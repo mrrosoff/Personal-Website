@@ -1,4 +1,4 @@
-import { GetParametersCommand, SSMClient } from "@aws-sdk/client-ssm";
+import { GetParametersCommand, PutParameterCommand, SSMClient } from "@aws-sdk/client-ssm";
 
 import { SDK_SETTINGS } from "../common";
 
@@ -25,4 +25,14 @@ export async function getParameters<T extends string[]>(
     return Object.fromEntries(
         output.Parameters.map((param) => [param.Name, param.Value])
     ) as MappedStringRecord<T>;
+}
+
+export async function putSecureParameter(parameter: string, value: string): Promise<void> {
+    const putParameterRequest = new PutParameterCommand({
+        Name: parameter,
+        Value: value,
+        Type: "SecureString",
+        Overwrite: true
+    });
+    await ssmClient.send(putParameterRequest);
 }

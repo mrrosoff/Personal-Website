@@ -9,7 +9,10 @@ import { FileSystem } from "../../FileSystem";
 
 const IMPLIED_DIRECTORY_ENTRIES = [".", ".."];
 
-const resolveDirectoryToList = (envVariables: Record<string, string | undefined>, argv: string | string[]) => {
+const resolveDirectoryToList = (
+    envVariables: Record<string, string | undefined>,
+    argv: string | string[]
+) => {
     const cwd = envVariables.cwd!;
 
     if (argv.length > 0) {

@@ -29,6 +29,7 @@ export type DatabasePasskey = {
     publicKey: string;
     userType?: UserType;
     name: string;
+    email: string;
 };
 
 export enum UserType {
@@ -40,6 +41,7 @@ export enum UserType {
 export type AccessToken = {
     id: string;
     userType: UserType;
+    email?: string;
     iss: string;
     sub?: string;
     iat: number;

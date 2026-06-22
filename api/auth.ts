@@ -36,17 +36,26 @@ export async function generateToken(
     id: string,
     options: {
         userType?: UserType;
+        email?: string;
         expiresIn?: SignOptions["expiresIn"];
     }
 ): Promise<string> {
     console.debug(`Generating auth token for user ${id}`);
     const keyStore = await JWK.asKeyStore(keys);
     const key = keyStore.get(keyMapping.authentication).toPEM(true);
-    return sign({ id, userType: options.userType ?? UserType.ADMIN }, key, {
-        algorithm: "ES256",
-        issuer: API_ENDPOINT_URL,
-        expiresIn: options.expiresIn ?? "6h"
-    });
+    return sign(
+        {
+            id,
+            userType: options.userType ?? UserType.ADMIN,
+            ...(options.email && { email: options.email })
+        },
+        key,
+        {
+            algorithm: "ES256",
+            issuer: API_ENDPOINT_URL,
+            expiresIn: options.expiresIn ?? "6h"
+        }
+    );
 }
 
 export async function decryptToken(token: string): Promise<AccessToken> {

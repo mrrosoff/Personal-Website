@@ -1,6 +1,9 @@
 import { Box, Typography } from "@mui/material";
 
-import { MainMenuOption, AdminConsoleState } from "../../../javascript-terminal/emulator-state/EmulatorState";
+import {
+    MainMenuOption,
+    AdminConsoleState
+} from "../../../javascript-terminal/emulator-state/EmulatorState";
 import { useAppContext } from "../../AppContext";
 import { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
@@ -37,10 +40,7 @@ const MainMenu = (props: { theme?: TerminalTheme }) => {
             >
                 3. Create Friend Invite
             </MenuItem>
-            <MenuItem
-                selected={mode.selectedOption === MainMenuOption.Exit}
-                theme={props.theme}
-            >
+            <MenuItem selected={mode.selectedOption === MainMenuOption.Exit} theme={props.theme}>
                 4. Exit
             </MenuItem>
             <Typography

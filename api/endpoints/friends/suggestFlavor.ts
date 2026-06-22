@@ -9,7 +9,11 @@ import FlavorSuggestionEmail from "../../../src/emails/FlavorSuggestionEmail";
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     const payload = await authenticateHTTPAccessToken(event);
     if (payload?.userType !== UserType.FRIEND && payload?.userType !== UserType.ADMIN) {
-        return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Authentication Required");
+        return buildErrorResponse(
+            event,
+            HttpResponseStatus.UNAUTHORIZED,
+            "Authentication Required"
+        );
     }
 
     if (!event.body) {
@@ -34,7 +38,6 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     if (error) {
         console.error(error);
         throw new Error("Error Sending Flavor Email");
-        
     }
 
     return buildResponse(event, HttpResponseStatus.OK, { sent: true });
