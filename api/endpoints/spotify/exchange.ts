@@ -2,12 +2,24 @@ import { timingSafeEqual } from "crypto";
 
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import axios from "axios";
+import { DateTime } from "luxon";
 
 import { getParameters, putSecureParameter } from "../../aws/services/parameterStore";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
 import { REDIRECT_URI, StatePayload, stateHmac } from "./connect";
 
 const REFRESH_TOKEN_PARAM = "/website/spotify/refresh-token";
+const REFRESH_TOKEN_SET_AT_PARAM = "/website/spotify/refresh-token-set-at";
+
+/**
+ * Persists a freshly issued Spotify refresh token and stamps the moment it was
+ * issued. The timestamp drives the proactive reauth reminder (see
+ * reauthReminder.ts): each new token restarts the expiry countdown.
+ */
+export async function saveRefreshToken(token: string): Promise<void> {
+    await putSecureParameter(REFRESH_TOKEN_PARAM, token);
+    await putSecureParameter(REFRESH_TOKEN_SET_AT_PARAM, DateTime.now().toMillis().toString());
+}
 
 type SpotifyTokenResponse = {
     access_token: string;
@@ -26,7 +38,7 @@ function isValidState(state: string, secret: string): boolean {
 
     try {
         const payload = JSON.parse(Buffer.from(encoded, "base64url").toString()) as StatePayload;
-        return payload.exp >= Math.floor(Date.now() / 1000);
+        return payload.exp >= DateTime.now().toSeconds();
     } catch {
         return false;
     }
@@ -73,6 +85,6 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         }
     );
 
-    await putSecureParameter(REFRESH_TOKEN_PARAM, data.refresh_token);
+    await saveRefreshToken(data.refresh_token);
     return buildResponse(event, HttpResponseStatus.OK, { connected: true });
 };

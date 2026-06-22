@@ -35,6 +35,7 @@ export type DatabasePasskey = {
 export enum UserType {
     ADMIN,
     FRIEND,
+    SPOTIFY_OWNER,
     SHARE
 }
 

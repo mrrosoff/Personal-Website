@@ -1,6 +1,7 @@
 import { createHmac } from "crypto";
 
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
+import { DateTime, Duration } from "luxon";
 
 import { getParameters } from "../../aws/services/parameterStore";
 import { authenticateHTTPAccessToken, UserType } from "../../auth";
@@ -8,7 +9,7 @@ import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../com
 
 export const REDIRECT_URI = "https://maxrosoff.com/spotify/callback";
 const SPOTIFY_SCOPE = "user-read-currently-playing";
-const STATE_TTL_SECONDS = 600;
+const STATE_TTL = Duration.fromObject({ minutes: 10 });
 
 export type StatePayload = { exp: number };
 
@@ -31,7 +32,7 @@ export function stateHmac(encodedPayload: string, secret: string): string {
  */
 function signState(secret: string): string {
     const payload: StatePayload = {
-        exp: Math.floor(Date.now() / 1000) + STATE_TTL_SECONDS
+        exp: Math.floor(DateTime.now().plus(STATE_TTL).toSeconds())
     };
     const encoded = Buffer.from(JSON.stringify(payload)).toString("base64url");
     return `${encoded}.${stateHmac(encoded, secret)}`;
@@ -39,7 +40,7 @@ function signState(secret: string): string {
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     const payload = await authenticateHTTPAccessToken(event);
-    if (payload?.userType !== UserType.ADMIN && payload?.userType !== UserType.FRIEND) {
+    if (payload?.userType !== UserType.ADMIN && payload?.userType !== UserType.SPOTIFY_OWNER) {
         return buildErrorResponse(
             event,
             HttpResponseStatus.UNAUTHORIZED,

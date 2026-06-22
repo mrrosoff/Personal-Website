@@ -1,5 +1,7 @@
 import { Duration, RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
 import { Cors, EndpointType, LambdaIntegration, RestApi } from "aws-cdk-lib/aws-apigateway";
+import { Rule, Schedule } from "aws-cdk-lib/aws-events";
+import { LambdaFunction as LambdaTarget } from "aws-cdk-lib/aws-events-targets";
 import { Certificate, CertificateValidation } from "aws-cdk-lib/aws-certificatemanager";
 import { Alarm, ComparisonOperator, TreatMissingData } from "aws-cdk-lib/aws-cloudwatch";
 import { SnsAction } from "aws-cdk-lib/aws-cloudwatch-actions";
@@ -51,6 +53,7 @@ class WebsiteAPIStack extends Stack {
             passkeysTable
         );
         const restApi = this.createAPI(certificate, apiRole);
+        this.createSpotifyReauthSchedule(apiRole);
 
         const alarmTopic = this.createAlarmActions();
         this.createRestAPIErrorsAlarm(alarmTopic, restApi);
@@ -250,6 +253,26 @@ class WebsiteAPIStack extends Stack {
             functionName,
             handler: "token.handler",
             code: Code.fromAsset("dist/lambda/spotify/token"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(functionName, role)
+        });
+    }
+
+    private createSpotifyReauthSchedule(role: Role) {
+        const reminderLambda = this.createSpotifyReauthReminderLambda(role);
+        new Rule(this, "websiteSpotifyReauthReminderRule", {
+            ruleName: "website-spotify-reauth-reminder",
+            schedule: Schedule.rate(Duration.days(7)),
+            targets: [new LambdaTarget(reminderLambda)]
+        });
+    }
+
+    private createSpotifyReauthReminderLambda(role: Role): LambdaFunction {
+        const functionName = "website-spotify-reauth-reminder";
+        return new LambdaFunction(this, "websiteSpotifyReauthReminderLambda", {
+            functionName,
+            handler: "reauthReminder.handler",
+            code: Code.fromAsset("dist/lambda/spotify/reauthReminder"),
             runtime: Runtime.NODEJS_22_X,
             ...this.createLambdaParams(functionName, role)
         });

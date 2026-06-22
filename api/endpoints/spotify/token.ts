@@ -1,10 +1,9 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import axios from "axios";
 
-import { getParameters, putSecureParameter } from "../../aws/services/parameterStore";
+import { getParameters } from "../../aws/services/parameterStore";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
-
-const REFRESH_TOKEN_PARAM = "/website/spotify/refresh-token";
+import { saveRefreshToken } from "./exchange";
 
 type SpotifyRefreshResponse = {
     access_token: string;
@@ -72,7 +71,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     }
 
     if (data.refresh_token && data.refresh_token !== refreshToken) {
-        await putSecureParameter(REFRESH_TOKEN_PARAM, data.refresh_token);
+        await saveRefreshToken(data.refresh_token);
     }
 
     return buildResponse(event, HttpResponseStatus.OK, {
