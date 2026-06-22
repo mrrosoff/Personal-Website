@@ -75,7 +75,6 @@ const RegisterForm = (props: { token: string; friendName: string }) => {
                 label={"Email"}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                required
                 sx={{ mb: 3, width: 320, maxWidth: "100%" }}
             />
             <Button
