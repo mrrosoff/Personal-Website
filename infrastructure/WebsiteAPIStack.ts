@@ -208,6 +208,7 @@ class WebsiteAPIStack extends Stack {
     private createSpotifyRoutes(api: RestApi, apiRole: Role) {
         const spotifyConnectLambda = this.createSpotifyConnectLambda(apiRole);
         const spotifyExchangeLambda = this.createSpotifyExchangeLambda(apiRole);
+        const spotifyTokenLambda = this.createSpotifyTokenLambda(apiRole);
 
         const spotifyResource = api.root.addResource("spotify");
         spotifyResource
@@ -216,6 +217,9 @@ class WebsiteAPIStack extends Stack {
         spotifyResource
             .addResource("exchange")
             .addMethod("POST", new LambdaIntegration(spotifyExchangeLambda));
+        spotifyResource
+            .addResource("token")
+            .addMethod("GET", new LambdaIntegration(spotifyTokenLambda));
     }
 
     private createSpotifyConnectLambda(role: Role): LambdaFunction {
@@ -235,6 +239,17 @@ class WebsiteAPIStack extends Stack {
             functionName,
             handler: "exchange.handler",
             code: Code.fromAsset("dist/lambda/spotify/exchange"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(functionName, role)
+        });
+    }
+
+    private createSpotifyTokenLambda(role: Role): LambdaFunction {
+        const functionName = "website-spotify-token";
+        return new LambdaFunction(this, "websiteSpotifyTokenLambda", {
+            functionName,
+            handler: "token.handler",
+            code: Code.fromAsset("dist/lambda/spotify/token"),
             runtime: Runtime.NODEJS_22_X,
             ...this.createLambdaParams(functionName, role)
         });
