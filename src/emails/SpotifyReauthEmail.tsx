@@ -63,17 +63,16 @@ const SpotifyReauthEmail = (props: { name?: string; daysLeft?: number; reconnect
                             <strong>
                                 {daysLeft} {daysLeft === 1 ? "day" : "days"}
                             </strong>
-                            . Once it lapses, the panel stops showing what's playing until
-                            it's reconnected. You can refresh it now in under a minute. No need
-                            to wait.
+                            . Once it lapses, the panel stops showing what's playing until it's
+                            reconnected. You can refresh it now in under a minute. No need to wait.
                         </Text>
                         <Text style={{ fontSize: 16, color: "rgb(17,24,39)" }}>
                             Open the terminal at{" "}
                             <Link href={reconnectUrl} style={{ color: SPOTIFY_GREEN }}>
                                 maxrosoff.com
                             </Link>{" "}
-                            and run <code>sudo su {props.name}</code> then <code>sudo spotify</code>, then
-                            approve the Spotify prompt.
+                            and run <code>sudo su {props.name}</code> then <code>sudo spotify</code>
+                            , then approve the Spotify prompt.
                         </Text>
                     </Section>
                     <Section style={{ marginTop: 8, marginBottom: 24 }}>
@@ -108,8 +107,8 @@ const SpotifyReauthEmail = (props: { name?: string; daysLeft?: number; reconnect
                             lineHeight: 1.5
                         }}
                     >
-                        You're getting this because you're the Spotify owner for the
-                        display. If you'd like to stop receiving these reminders, you can ignore them.
+                        You're getting this because you're the Spotify owner for the display. If
+                        you'd like to stop receiving these reminders, you can ignore them.
                     </Text>
                 </Container>
             </Body>

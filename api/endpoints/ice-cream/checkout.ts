@@ -18,8 +18,8 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 
     const payload = await authenticateHTTPAccessToken(event);
     const allowedUserTypes = [UserType.FRIEND, UserType.SPOTIFY_OWNER];
-    if (!payload || !allowedUserTypes.includes(payload.userType)) {
-        return handleFriendCheckout(event, priceIds);
+    if (payload && allowedUserTypes.includes(payload.userType)) {
+        return handleFriendCheckout(event, priceIds, payload.id);
     }
 
     const stripe = new Stripe(await getParameter("/website/stripe/api-key"));
@@ -43,7 +43,8 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 
 const handleFriendCheckout = async (
     event: APIGatewayEvent,
-    priceIds: string[]
+    priceIds: string[],
+    customerName: string
 ): Promise<APIGatewayProxyResult> => {
     const allFlavors = await getAllItems(FLAVORS_TABLE);
     const selectedFlavors = allFlavors.filter((flavor) => priceIds.includes(flavor.priceId));
@@ -52,9 +53,8 @@ const handleFriendCheckout = async (
         selectedFlavors.map((flavor) => decrementField(FLAVORS_TABLE, flavor.productId, "count"))
     );
 
-    const payload = await authenticateHTTPAccessToken(event);
     await sendOrderSuccessEmail({
-        customerName: payload?.id,
+        customerName,
         items: selectedFlavors.map((flavor) => ({ name: flavor.name, quantity: 1 }))
     });
 
