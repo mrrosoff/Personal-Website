@@ -1,6 +1,7 @@
 import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useState } from "react";
 
 import { CommandMapping, DefaultCommandMapping, EmulatorState } from "../javascript-terminal";
+import { RECONNECT_TOKEN_KEY } from "../javascript-terminal/commands/spotify";
 import files from "../FileSystem";
 
 type AppContextType = {
@@ -32,6 +33,19 @@ const initialEmulatorState = EmulatorState.create({
         }
     })
 });
+
+/**
+ * Restore the sudo session that the Spotify reconnect flow stashed before
+ * navigating this tab away to Spotify (see RECONNECT_TOKEN_KEY).
+ */
+const persistedAuthToken = sessionStorage.getItem(RECONNECT_TOKEN_KEY);
+if (persistedAuthToken) {
+    sessionStorage.removeItem(RECONNECT_TOKEN_KEY);
+    initialEmulatorState.setEnvVariables({
+        ...initialEmulatorState.getEnvVariables(),
+        AUTH_TOKEN: persistedAuthToken
+    });
+}
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
     // @ts-expect-error

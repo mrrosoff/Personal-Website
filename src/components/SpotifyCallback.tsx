@@ -36,18 +36,25 @@ const ConnectingAnimation = () => (
     </Box>
 );
 
+const REDIRECT_SECONDS = 5;
+
 const SpotifyCallback = () => {
     const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
     const [message, setMessage] = useState("");
+    const [secondsLeft, setSecondsLeft] = useState(REDIRECT_SECONDS);
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (status !== "error") {
+        if (status === "loading") {
             return;
         }
-        const timeout = setTimeout(() => navigate("/"), 5000);
+        if (secondsLeft <= 0) {
+            navigate("/");
+            return;
+        }
+        const timeout = setTimeout(() => setSecondsLeft((seconds) => seconds - 1), 1000);
         return () => clearTimeout(timeout);
-    }, [status, navigate]);
+    }, [status, secondsLeft, navigate]);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -92,7 +99,7 @@ const SpotifyCallback = () => {
                 <>
                     <CheckCircleOutlineIcon sx={{ fontSize: 48 }} />
                     <Typography variant="h1">Spotify Connected</Typography>
-                    <Typography>The display is reconnected. You can close this tab.</Typography>
+                    <Typography>The display is reconnected.</Typography>
                 </>
             )}
             {status === "error" && (
@@ -100,10 +107,12 @@ const SpotifyCallback = () => {
                     <ErrorOutlineIcon sx={{ fontSize: 48 }} color="error" />
                     <Typography variant="h1">Connection Failed</Typography>
                     <Typography color="error">{message}</Typography>
-                    <Typography variant="body2" sx={{ opacity: 0.6 }}>
-                        Taking you back home...
-                    </Typography>
                 </>
+            )}
+            {status !== "loading" && (
+                <Typography variant="body2" sx={{ opacity: 0.6 }}>
+                    Redirecting in {secondsLeft}...
+                </Typography>
             )}
         </Box>
     );
