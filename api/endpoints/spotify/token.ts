@@ -52,20 +52,29 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
                     Authorization: `Basic ${basicAuth}`
-                }
+                },
+                timeout: 10000
             }
         ));
     } catch (err: unknown) {
-        if (
-            axios.isAxiosError(err) &&
-            err.response?.status === 400 &&
-            err.response.data?.error === "invalid_grant"
-        ) {
-            return buildErrorResponse(
-                event,
-                HttpResponseStatus.SPOTIFY_NEEDS_AUTH,
-                "Reauthentication Required"
-            );
+        if (axios.isAxiosError(err)) {
+            if (
+                err.response?.status === 400 &&
+                err.response.data?.error === "invalid_grant"
+            ) {
+                return buildErrorResponse(
+                    event,
+                    HttpResponseStatus.SPOTIFY_NEEDS_AUTH,
+                    "Reauthentication Required"
+                );
+            }
+            if (!err.response || err.response.status >= 500) {
+                return buildErrorResponse(
+                    event,
+                    HttpResponseStatus.SERVICE_UNAVAILABLE,
+                    "Spotify Token Request Failed"
+                );
+            }
         }
         throw err;
     }
