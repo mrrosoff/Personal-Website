@@ -12,8 +12,6 @@ const REMINDER_LEAD = Duration.fromObject({ days: 14 });
 
 const REFRESH_TOKEN_SET_AT_PARAM = "/website/spotify/refresh-token-set-at";
 
-const FROM = "Spotify Display <display@ice-cream.maxrosoff.com>";
-const RECONNECT_URL = "https://maxrosoff.com";
 const FALLBACK_RECIPIENT = "me@maxrosoff.com";
 
 export const handler = async (): Promise<void> => {
@@ -34,11 +32,11 @@ export const handler = async (): Promise<void> => {
     const apiKey = await getParameter("/website/resend/api-key");
     const resend = new Resend(apiKey);
     const { error } = await resend.emails.send({
-        from: FROM,
+        from: "Spotify Display <display@ice-cream.maxrosoff.com>",
         to: email,
         replyTo: "me@maxrosoff.com",
         subject: "Reconnect Spotify to keep the display running",
-        react: SpotifyReauthEmail({ name, daysLeft, reconnectUrl: RECONNECT_URL })
+        react: SpotifyReauthEmail({ name, daysLeft, reconnectUrl: "https://maxrosoff.com" })
     });
     if (error) {
         console.error(error);
