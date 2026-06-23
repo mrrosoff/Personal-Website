@@ -23,7 +23,10 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         return { output: "Permission Denied", type: "error" };
     } else if (payload.userType === UserType.ADMIN) {
         return { output: "Already Authenticated As Admin", type: "error" };
-    } else if (payload.userType !== UserType.FRIEND) {
+    } else if (
+        payload.userType !== UserType.FRIEND &&
+        payload.userType !== UserType.SPOTIFY_OWNER
+    ) {
         return { output: "Permission Denied", type: "error" };
     }
 

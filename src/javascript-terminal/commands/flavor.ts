@@ -20,7 +20,8 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     }
 
     const payload = decodeToken(token);
-    if (!payload || (payload.userType !== UserType.FRIEND && payload.userType !== UserType.ADMIN)) {
+    const allowedUserTypes = [UserType.ADMIN, UserType.FRIEND, UserType.SPOTIFY_OWNER];
+    if (!payload || !allowedUserTypes.includes(payload.userType)) {
         return { output: "Permission Denied", type: "error" };
     }
 

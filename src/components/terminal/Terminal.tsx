@@ -124,7 +124,8 @@ const Terminal = (
             setFriendToken("");
             return;
         }
-        setFriendToken(authPayload.userType === UserType.FRIEND ? authToken : "");
+        const allowedUserTypes = [UserType.FRIEND, UserType.SPOTIFY_OWNER];
+        setFriendToken(allowedUserTypes.includes(authPayload.userType) ? authToken : "");
     }, [authToken]);
 
     const scrollToBottom = () => {
