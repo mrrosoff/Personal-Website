@@ -2,6 +2,7 @@ import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 
 export enum HttpResponseStatus {
     OK = 200,
+    SPOTIFY_NEEDS_AUTH = 246,
     BAD_REQUEST = 400,
     UNAUTHORIZED = 401,
     FORBIDDEN = 403,

@@ -34,7 +34,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     }
 
     if (!refreshToken) {
-        return buildErrorResponse(event, HttpResponseStatus.SERVICE_UNAVAILABLE, "Never Connected");
+        return buildErrorResponse(event, HttpResponseStatus.SPOTIFY_NEEDS_AUTH, "Never Connected");
     }
 
     const body = new URLSearchParams({
@@ -63,7 +63,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         ) {
             return buildErrorResponse(
                 event,
-                HttpResponseStatus.SERVICE_UNAVAILABLE,
+                HttpResponseStatus.SPOTIFY_NEEDS_AUTH,
                 "Reauthentication Required"
             );
         }
