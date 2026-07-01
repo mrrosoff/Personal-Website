@@ -55,7 +55,7 @@ if (persistedAuthToken) {
 }
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
-    const [shouldBootUp, setShouldBootUp] = useState<boolean>(!import.meta.env.PROD);
+    const [shouldBootUp, setShouldBootUp] = useState<boolean>(import.meta.env.PROD);
     const [friendToken, setFriendToken] = useState<string>("");
     const [emulatorState, setEmulatorState] = useState<EmulatorState>(initialEmulatorState);
 
