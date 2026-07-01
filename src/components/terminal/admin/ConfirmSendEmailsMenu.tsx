@@ -1,14 +1,24 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 
 import type { AdminConsoleState } from "../../../javascript-terminal/emulator-state/EmulatorState";
 import { useAppContext } from "../../AppContext";
 import type { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
 
-const ConfirmSendEmailsMenu = (props: { theme?: TerminalTheme }) => {
+const ConfirmSendEmailsMenu = (props: {
+    theme?: TerminalTheme;
+    onAction: (key: string) => void;
+}) => {
     const { emulatorState } = useAppContext();
+    const muiTheme = useTheme();
+    const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
     const mode = emulatorState.getAdminConsoleMode() as AdminConsoleState;
     const selectedOption = mode.selectedOption as "yes" | "no";
+
+    const select = (option: "yes" | "no") => {
+        emulatorState.setAdminConsoleMode({ ...mode, selectedOption: option });
+        props.onAction("Enter");
+    };
 
     return (
         <Box sx={{ paddingTop: 1 }}>
@@ -62,6 +72,7 @@ const ConfirmSendEmailsMenu = (props: { theme?: TerminalTheme }) => {
                     selected={selectedOption === "yes"}
                     theme={props.theme}
                     disabled={mode.loading}
+                    onClick={smallScreen ? () => select("yes") : undefined}
                 >
                     Yes
                 </MenuItem>
@@ -69,6 +80,7 @@ const ConfirmSendEmailsMenu = (props: { theme?: TerminalTheme }) => {
                     selected={selectedOption === "no"}
                     theme={props.theme}
                     disabled={mode.loading}
+                    onClick={smallScreen ? () => select("no") : undefined}
                 >
                     No
                 </MenuItem>
@@ -82,7 +94,9 @@ const ConfirmSendEmailsMenu = (props: { theme?: TerminalTheme }) => {
             >
                 {mode.loading
                     ? "Sending..."
-                    : "type: message | left/right: select option | enter: confirm | escape: cancel"}
+                    : smallScreen
+                      ? "tap Yes or No"
+                      : "type: message | left/right: select option | enter: confirm | escape: cancel"}
             </Typography>
         </Box>
     );

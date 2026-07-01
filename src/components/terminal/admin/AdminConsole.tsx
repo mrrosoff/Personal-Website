@@ -11,7 +11,7 @@ import ProvisionFlavorFormMenu from "./ProvisionFlavorFormMenu";
 import ConfirmProvisionFlavorMenu from "./ConfirmProvisionFlavorMenu";
 import CreateFriendInviteMenu from "./CreateFriendInviteMenu";
 
-const AdminConsole = (props: { theme?: TerminalTheme }) => {
+const AdminConsole = (props: { theme?: TerminalTheme; onAction: (key: string) => void }) => {
     const { emulatorState } = useAppContext();
     const mode = emulatorState.getAdminConsoleMode();
     if (!mode || !mode.screen) return null;
@@ -19,19 +19,19 @@ const AdminConsole = (props: { theme?: TerminalTheme }) => {
     const renderScreen = () => {
         switch (mode.screen) {
             case AdminConsoleScreen.Main:
-                return <MainMenu theme={props.theme} />;
+                return <MainMenu {...props} />;
             case AdminConsoleScreen.IceCreamInventory:
-                return <IceCreamInventoryMenu theme={props.theme} />;
+                return <IceCreamInventoryMenu {...props} />;
             case AdminConsoleScreen.SelectFlavor:
-                return <SelectFlavorMenu theme={props.theme} />;
+                return <SelectFlavorMenu {...props} />;
             case AdminConsoleScreen.ConfirmSendEmails:
-                return <ConfirmSendEmailsMenu theme={props.theme} />;
+                return <ConfirmSendEmailsMenu {...props} />;
             case AdminConsoleScreen.ProvisionFlavorForm:
-                return <ProvisionFlavorFormMenu theme={props.theme} />;
+                return <ProvisionFlavorFormMenu {...props} />;
             case AdminConsoleScreen.ConfirmProvisionFlavor:
-                return <ConfirmProvisionFlavorMenu theme={props.theme} />;
+                return <ConfirmProvisionFlavorMenu {...props} />;
             case AdminConsoleScreen.CreateFriendInvite:
-                return <CreateFriendInviteMenu theme={props.theme} />;
+                return <CreateFriendInviteMenu {...props} />;
         }
     };
 

@@ -3,6 +3,7 @@ import {
     lazy,
     Suspense,
     useEffect,
+    useReducer,
     useState,
     type ChangeEvent,
     type KeyboardEvent,
@@ -99,8 +100,14 @@ const Terminal = (
     );
     const [_, setHistoryIndex] = useState(-1);
     const [loadingDots, setLoadingDots] = useState(0);
+    const [, bumpAdminConsole] = useReducer((count: number) => count + 1, 0);
 
     let emulator = new Emulator();
+
+    const runAdminAction = async (key: string, ctrlKey: boolean = false) => {
+        await handleAdminConsoleKeyPress(key, emulatorState, ctrlKey);
+        bumpAdminConsole();
+    };
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -205,7 +212,8 @@ const Terminal = (
             if (handledKeys.includes(e.key) || (e.ctrlKey && e.key === "c")) {
                 e.preventDefault();
             }
-            return await handleAdminConsoleKeyPress(e.key, emulatorState, e.ctrlKey);
+            void runAdminAction(e.key, e.ctrlKey);
+            return;
         }
 
         switch (e.key) {
@@ -342,7 +350,7 @@ const Terminal = (
                 {emulatorState.getAdminConsoleMode()?.screen && (
                     <Box height={280}>
                         <Suspense fallback={null}>
-                            <AdminConsole theme={props.theme} />
+                            <AdminConsole theme={props.theme} onAction={runAdminAction} />
                         </Suspense>
                     </Box>
                 )}

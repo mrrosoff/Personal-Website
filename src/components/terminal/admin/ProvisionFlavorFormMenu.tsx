@@ -1,14 +1,37 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 
 import type { AdminConsoleState } from "../../../javascript-terminal/emulator-state/EmulatorState";
 import { useAppContext } from "../../AppContext";
 import type { TerminalTheme } from "../Terminal";
+import MenuItem from "./common/MenuItem";
 
-const ProvisionFlavorFormMenu = (props: { theme?: TerminalTheme }) => {
+type FormField = "flavorName" | "initialQuantity" | "color" | "type";
+
+const ProvisionFlavorFormMenu = (props: {
+    theme?: TerminalTheme;
+    onAction: (key: string) => void;
+}) => {
     const { emulatorState } = useAppContext();
+    const muiTheme = useTheme();
+    const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
     const mode = emulatorState.getAdminConsoleMode() as AdminConsoleState;
     const form = mode.provisionForm;
     if (!form) return null;
+
+    const selectField = (field: FormField) => {
+        emulatorState.setAdminConsoleMode({
+            ...mode,
+            provisionForm: { ...form, currentField: field }
+        });
+        props.onAction("");
+    };
+
+    const fields: Array<{ field: FormField; label: string; value: string | number }> = [
+        { field: "flavorName", label: "Flavor Name", value: form.flavorName || "_" },
+        { field: "initialQuantity", label: "Initial Quantity", value: form.initialQuantity },
+        { field: "color", label: "Color", value: form.color || "_" },
+        { field: "type", label: "Type", value: form.type || "Not Listed" }
+    ];
 
     return (
         <Box sx={{ paddingTop: 1 }}>
@@ -23,73 +46,78 @@ const ProvisionFlavorFormMenu = (props: { theme?: TerminalTheme }) => {
             </Typography>
 
             <Box sx={{ mb: 1 }}>
-                <Typography
-                    sx={{
-                        color:
-                            form.currentField === "flavorName"
-                                ? props.theme?.commandColor || "#FFFFFF"
-                                : props.theme?.outputColor || "#FCFCFC",
-                        backgroundColor:
-                            form.currentField === "flavorName"
-                                ? "rgba(255,255,255,0.1)"
-                                : "transparent",
-                        padding: "4px 8px",
-                        mb: 1
-                    }}
-                >
-                    {form.currentField === "flavorName" ? "> " : "  "}Flavor Name:{" "}
-                    {form.flavorName || "_"}
-                </Typography>
-
-                <Typography
-                    sx={{
-                        color:
-                            form.currentField === "initialQuantity"
-                                ? props.theme?.commandColor || "#FFFFFF"
-                                : props.theme?.outputColor || "#FCFCFC",
-                        backgroundColor:
-                            form.currentField === "initialQuantity"
-                                ? "rgba(255,255,255,0.1)"
-                                : "transparent",
-                        padding: "4px 8px",
-                        mb: 1
-                    }}
-                >
-                    {form.currentField === "initialQuantity" ? "> " : "  "}Initial Quantity:{" "}
-                    {form.initialQuantity}
-                </Typography>
-
-                <Typography
-                    sx={{
-                        color:
-                            form.currentField === "color"
-                                ? props.theme?.commandColor || "#FFFFFF"
-                                : props.theme?.outputColor || "#FCFCFC",
-                        backgroundColor:
-                            form.currentField === "color" ? "rgba(255,255,255,0.1)" : "transparent",
-                        padding: "4px 8px",
-                        mb: 1
-                    }}
-                >
-                    {form.currentField === "color" ? "> " : "  "}Color: {form.color || "_"}
-                </Typography>
-
-                <Typography
-                    sx={{
-                        color:
-                            form.currentField === "type"
-                                ? props.theme?.commandColor || "#FFFFFF"
-                                : props.theme?.outputColor || "#FCFCFC",
-                        backgroundColor:
-                            form.currentField === "type" ? "rgba(255,255,255,0.1)" : "transparent",
-                        padding: "4px 8px",
-                        mb: 1
-                    }}
-                >
-                    {form.currentField === "type" ? "> " : "  "}Type: {form.type || "Not Listed"}{" "}
-                    {form.currentField === "type" ? "(←/→ to change)" : ""}
-                </Typography>
+                {fields.map(({ field, label, value }) => {
+                    const active = form.currentField === field;
+                    return (
+                        <Typography
+                            key={field}
+                            onClick={smallScreen ? () => selectField(field) : undefined}
+                            sx={{
+                                color: active
+                                    ? props.theme?.commandColor || "#FFFFFF"
+                                    : props.theme?.outputColor || "#FCFCFC",
+                                backgroundColor: active ? "rgba(255,255,255,0.1)" : "transparent",
+                                padding: "4px 8px",
+                                mb: 1,
+                                cursor: smallScreen ? "pointer" : undefined
+                            }}
+                        >
+                            {active ? "> " : "  "}
+                            {label}: {value}{" "}
+                            {active && field === "type" ? (
+                                smallScreen ? (
+                                    <>
+                                        {"  "}
+                                        <Box
+                                            component="span"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                props.onAction("ArrowLeft");
+                                            }}
+                                            sx={{ cursor: "pointer", px: 1 }}
+                                        >
+                                            ◀
+                                        </Box>
+                                        <Box
+                                            component="span"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                props.onAction("ArrowRight");
+                                            }}
+                                            sx={{ cursor: "pointer", px: 1 }}
+                                        >
+                                            ▶
+                                        </Box>
+                                    </>
+                                ) : (
+                                    "(←/→ to change)"
+                                )
+                            ) : (
+                                ""
+                            )}
+                        </Typography>
+                    );
+                })}
             </Box>
+
+            {smallScreen && (
+                <Box sx={{ display: "flex", gap: 2, mb: 1 }}>
+                    <MenuItem
+                        selected={false}
+                        theme={props.theme}
+                        onClick={() => props.onAction("Enter")}
+                    >
+                        Continue
+                    </MenuItem>
+                    <MenuItem
+                        selected={false}
+                        theme={props.theme}
+                        onClick={() => props.onAction("Escape")}
+                    >
+                        Cancel
+                    </MenuItem>
+                </Box>
+            )}
 
             <Typography
                 sx={{
@@ -98,7 +126,9 @@ const ProvisionFlavorFormMenu = (props: { theme?: TerminalTheme }) => {
                     opacity: 0.7
                 }}
             >
-                up/down: navigate fields | type to edit | enter: continue | escape: cancel
+                {smallScreen
+                    ? "tap a field to edit"
+                    : "up/down: navigate fields | type to edit | enter: continue | escape: cancel"}
             </Typography>
         </Box>
     );

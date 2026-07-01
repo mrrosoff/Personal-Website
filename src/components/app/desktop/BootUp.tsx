@@ -7,7 +7,7 @@ import { useAppContext } from "../../AppContext";
 
 type NetworkInformation = { type?: string; effectiveType?: string };
 
-const getNetworkLabel = (): string => {
+const getNetworkLabel = (): string | null => {
     const connection = (navigator as Navigator & { connection?: NetworkInformation }).connection;
     if (connection?.type && connection.type !== "unknown") {
         return connection.type.toUpperCase();
@@ -15,7 +15,7 @@ const getNetworkLabel = (): string => {
     if (connection?.effectiveType) {
         return connection.effectiveType.toUpperCase();
     }
-    return "LINK";
+    return null;
 };
 
 const BootUp = (props: {
@@ -246,11 +246,12 @@ const NetworkInfo = (props: { state: number }) => {
     const muiTheme = useTheme();
     const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
     const online = navigator.onLine;
+    const networkLabel = getNetworkLabel();
     return (
         <Grid>
             <header>
                 <Typography>
-                    Detecting Network Link ({getNetworkLabel()})
+                    Detecting Network Link{networkLabel ? ` (${networkLabel})` : ""}
                     {smallScreen ? " . . ." : " . . . . . ."}
                     {props.state >= 16 ? (
                         <span style={{ color: online ? "#2BC903" : "#ff0606" }}>

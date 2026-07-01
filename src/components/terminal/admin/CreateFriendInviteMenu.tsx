@@ -1,14 +1,20 @@
 import { useEffect, useState } from "react";
-import { Box, IconButton, Tooltip, Typography } from "@mui/material";
+import { Box, IconButton, Tooltip, Typography, useMediaQuery, useTheme } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CheckIcon from "@mui/icons-material/Check";
 
 import type { AdminConsoleState } from "../../../javascript-terminal/emulator-state/EmulatorState";
 import { useAppContext } from "../../AppContext";
 import type { TerminalTheme } from "../Terminal";
+import MenuItem from "./common/MenuItem";
 
-const CreateFriendInviteMenu = (props: { theme?: TerminalTheme }) => {
+const CreateFriendInviteMenu = (props: {
+    theme?: TerminalTheme;
+    onAction: (key: string) => void;
+}) => {
     const { emulatorState } = useAppContext();
+    const muiTheme = useTheme();
+    const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
     const mode = emulatorState.getAdminConsoleMode() as AdminConsoleState;
     const invite = mode.friendInvite;
     const [copied, setCopied] = useState(false);
@@ -80,6 +86,28 @@ const CreateFriendInviteMenu = (props: { theme?: TerminalTheme }) => {
                 </Box>
             )}
 
+            {smallScreen && !mode.loading && (
+                <Box sx={{ display: "flex", gap: 2, mb: 1 }}>
+                    {!invite?.url && (
+                        <MenuItem
+                            selected={false}
+                            theme={props.theme}
+                            disabled={!invite?.friendName}
+                            onClick={() => props.onAction("Enter")}
+                        >
+                            Create
+                        </MenuItem>
+                    )}
+                    <MenuItem
+                        selected={false}
+                        theme={props.theme}
+                        onClick={() => props.onAction("Escape")}
+                    >
+                        {invite?.url ? "Back" : "Cancel"}
+                    </MenuItem>
+                </Box>
+            )}
+
             <Typography
                 sx={{
                     color: outputColor,
@@ -90,8 +118,12 @@ const CreateFriendInviteMenu = (props: { theme?: TerminalTheme }) => {
                 {mode.loading
                     ? `Loading${dots}`
                     : invite?.url
-                      ? "click copy for full url | escape: back"
-                      : "type to edit | enter: create | escape: cancel"}
+                      ? smallScreen
+                          ? "tap copy for full url"
+                          : "click copy for full url | escape: back"
+                      : smallScreen
+                        ? "type a name, then Create"
+                        : "type to edit | enter: create | escape: cancel"}
             </Typography>
         </Box>
     );
