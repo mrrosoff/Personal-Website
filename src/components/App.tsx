@@ -1,7 +1,7 @@
 import { lazy, type RefObject, Suspense, useEffect, useRef, useState } from "react";
 import { BrowserRouter, Navigate, Outlet, Route, Routes, useMatch } from "react-router-dom";
 
-import { Box, Skeleton, useMediaQuery } from "@mui/material";
+import { Box, useMediaQuery } from "@mui/material";
 import { createTheme, ThemeProvider, StyledEngineProvider, useTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { jwtDecode } from "jwt-decode";
@@ -9,35 +9,15 @@ import { jwtDecode } from "jwt-decode";
 import type { AccessToken } from "../../api/types";
 import { AppProvider } from "./AppContext";
 import { IceCreamCartProvider } from "./ice-cream/IceCreamCartContext";
+import IceCream from "./ice-cream/IceCream";
+import MailingList from "./ice-cream/MailingList";
+import Unsubscribe from "./ice-cream/Unsubscribe";
+import Return from "./ice-cream/checkout/Return";
+import RegisterFriend from "./RegisterFriend";
+import SpotifyCallback from "./SpotifyCallback";
 import Page, { LinksAndMenu } from "./app/Page";
 
-const importIceCream = () => import("./ice-cream/IceCream");
-const importMailingList = () => import("./ice-cream/MailingList");
-const importUnsubscribe = () => import("./ice-cream/Unsubscribe");
-const importCheckout = () => import("./ice-cream/checkout/Checkout");
-const importReturn = () => import("./ice-cream/checkout/Return");
-const importRegisterFriend = () => import("./RegisterFriend");
-const importSpotifyCallback = () => import("./SpotifyCallback");
-
-const IceCream = lazy(importIceCream);
-const MailingList = lazy(importMailingList);
-const Unsubscribe = lazy(importUnsubscribe);
-const Checkout = lazy(importCheckout);
-const Return = lazy(importReturn);
-const RegisterFriend = lazy(importRegisterFriend);
-const SpotifyCallback = lazy(importSpotifyCallback);
-
-const prefetchRoutes = () => {
-    [
-        importIceCream,
-        importMailingList,
-        importUnsubscribe,
-        importCheckout,
-        importReturn,
-        importRegisterFriend,
-        importSpotifyCallback
-    ].forEach((load) => load().catch(() => {}));
-};
+const Checkout = lazy(() => import("./ice-cream/checkout/Checkout"));
 
 export const API_URL = "https://api.maxrosoff.com";
 
@@ -50,15 +30,6 @@ export const decodeToken = (token: string): AccessToken | null => {
 };
 
 const App = () => {
-    useEffect(() => {
-        if ("requestIdleCallback" in window) {
-            const id = window.requestIdleCallback(prefetchRoutes, { timeout: 3000 });
-            return () => window.cancelIdleCallback(id);
-        }
-        const timer = setTimeout(prefetchRoutes, 2000);
-        return () => clearTimeout(timer);
-    }, []);
-
     const theme = createTheme({
         palette: {
             mode: "dark",
@@ -222,20 +193,12 @@ const Layout = (props: {
                         })
                 }}
             >
-                <Suspense fallback={<RouteFallback />}>
+                <Suspense fallback={null}>
                     <Outlet />
                 </Suspense>
             </Box>
         </Box>
     );
 };
-
-const RouteFallback = () => (
-    <Box sx={{ maxWidth: 900, mx: "auto", pt: 4 }}>
-        <Skeleton variant="text" width="45%" height={48} />
-        <Skeleton variant="rounded" height={160} sx={{ mt: 2 }} />
-        <Skeleton variant="rounded" height={160} sx={{ mt: 2 }} />
-    </Box>
-);
 
 export default App;

@@ -6,7 +6,22 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
     plugins: [react()],
     build: {
-        sourcemap: "inline"
+        sourcemap: true,
+        rollupOptions: {
+            output: {
+                manualChunks(id) {
+                    if (id.includes("node_modules")) {
+                        if (
+                            id.includes("/@mui/") ||
+                            id.includes("/@emotion/") ||
+                            id.includes("/@popperjs/")
+                        ) {
+                            return "mui";
+                        }
+                    }
+                }
+            }
+        }
     },
     server: {
         port: 3000,

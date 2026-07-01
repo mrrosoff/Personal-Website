@@ -1,7 +1,7 @@
 import {
+    forwardRef,
     lazy,
     Suspense,
-    forwardRef,
     useEffect,
     useState,
     type ChangeEvent,
@@ -20,12 +20,12 @@ import { authenticateWithPasskey } from "../../javascript-terminal/commands/sudo
 import { decodeToken } from "../App";
 import { useAppContext } from "../AppContext";
 
-const AdminConsole = lazy(() => import("./admin/AdminConsole"));
-
 import CommandInput from "./CommandInput";
 import OutputHeader from "./output/OutputHeader";
 import OutputText from "./output/OutputText";
 import OutputError from "./output/OutputError";
+
+const AdminConsole = lazy(() => import("./admin/AdminConsole"));
 
 export type TerminalTheme = {
     background: string;
