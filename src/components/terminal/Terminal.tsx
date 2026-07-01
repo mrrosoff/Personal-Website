@@ -7,7 +7,8 @@ import {
     useEffect,
     useState
 } from "react";
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, useMediaQuery, useTheme } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 import { UserType } from "../../../api/types";
 import { Emulator } from "../../javascript-terminal";
@@ -31,6 +32,12 @@ export type TerminalTheme = {
     errorColor: string;
     width: string | number;
     height: string | number;
+};
+
+const MOTD_LINKS: Record<string, { mobile?: string; path?: string }> = {
+    "https://maxrosoff.com/ice-cream": { mobile: "maxrosoff.com", path: "/ice-cream" },
+    "https://github.com/mrrosoff/Personal-Website": { mobile: "github.com/mrrosoff" },
+    "https://linkedin.com/in/max-rosoff": { mobile: "linkedin.com/in/max-rosoff" }
 };
 
 const renderOutputs = (
@@ -79,6 +86,9 @@ const Terminal = (
     ref: Ref<HTMLInputElement | null>
 ) => {
     const { setFriendToken, emulatorState, setEmulatorState } = useAppContext();
+    const muiTheme = useTheme();
+    const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
+    const navigate = useNavigate();
     const [showMOTD, setShowMOTD] = useState(true);
     const [input, setInput] = useState("");
     const [renderedOutputs, setRenderedOutputs] = useState<ReactElement[]>(() =>
@@ -155,14 +165,16 @@ const Terminal = (
                 });
             }
         } else if (adminConsoleMode?.screen && adminConsoleMode.editingFlavor) {
+            const editingField = adminConsoleMode.editingField;
             e.preventDefault();
             const pastedText = e.clipboardData.getData("text");
 
+            if (!editingField) return;
             emulatorState.setAdminConsoleMode({
                 ...adminConsoleMode,
                 editingFlavor: {
                     ...adminConsoleMode.editingFlavor,
-                    name: adminConsoleMode.editingFlavor.name + pastedText
+                    [editingField]: adminConsoleMode.editingFlavor[editingField] + pastedText
                 }
             });
         }
@@ -249,8 +261,11 @@ const Terminal = (
         return renderOutputs(emulatorState, props, promptSymbol);
     };
 
+    const iceCreamLine = smallScreen
+        ? "\n\t\t\t* Ice Cream: ~https://maxrosoff.com/ice-cream~"
+        : "";
     const MOTDText = `
-		Welcome To Rosoff OS BETA v4.1.2
+		Welcome To Rosoff OS BETA v4.1.2${iceCreamLine}
 			* Documentation: ~https://github.com/mrrosoff/Personal-Website~
 			* Management: ~https://linkedin.com/in/max-rosoff~
 			* Support: ~me@maxrosoff.com~
@@ -280,19 +295,31 @@ const Terminal = (
                             const backIndex = trimmedLine.indexOf("~", index + 1);
                             const middle = trimmedLine.substring(index + 1, backIndex);
                             const back = trimmedLine.substring(backIndex + 1);
-                            const href = middle.includes("@") ? "mailto:" : "";
+                            const link = MOTD_LINKS[middle];
+                            const isEmail = middle.includes("@");
+                            const href = isEmail ? `mailto:${middle}` : middle;
+                            const displayText = smallScreen ? (link?.mobile ?? middle) : middle;
+                            const internalPath = link?.path;
                             outputs[outputs.length - 1] = (
                                 <Box key={"link-line"} style={{ color: props.theme.outputColor }}>
                                     {front}
                                     <a
                                         href={href}
-                                        target="_blank"
+                                        target={internalPath ? undefined : "_blank"}
+                                        onClick={
+                                            internalPath
+                                                ? (e) => {
+                                                      e.preventDefault();
+                                                      navigate(internalPath);
+                                                  }
+                                                : undefined
+                                        }
                                         style={{
                                             color: "#FCFCFC",
                                             fontSize: 20
                                         }}
                                     >
-                                        {middle}
+                                        {displayText}
                                     </a>
                                     {back}
                                 </Box>

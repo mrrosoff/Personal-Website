@@ -1,4 +1,4 @@
-import { Box, Button, Grid, IconButton, SxProps, Theme, Typography } from "@mui/material";
+import { Box, Button, IconButton, SxProps, Theme, Typography } from "@mui/material";
 
 import DescriptionIcon from "@mui/icons-material/Description";
 import EmailIcon from "@mui/icons-material/Email";
@@ -6,12 +6,11 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
-import IcecreamIcon from "@mui/icons-material/Icecream";
 import { useNavigate } from "react-router-dom";
 
 const socialList = [
     {
-        name: "Resume",
+        name: "Résumé",
         url: "https://docs.google.com/document/d/1Uo8gSufMpN4ELAqIEYm6zDiLB6f-bbuES9xcQPcX1_c/edit?usp=sharing",
         icon: DescriptionIcon
     },
@@ -62,36 +61,6 @@ export const DesktopSocialButtonList = (props: { sx?: SxProps<Theme> | undefined
                 );
             })}
         </Box>
-    );
-};
-
-export const MobileSocialButtonList = () => {
-    return (
-        <Grid
-            container
-            direction={"column"}
-            spacing={0.5}
-            justifyContent={"center"}
-            alignItems={"center"}
-        >
-            {socialList.slice(1).map((socialDetails, index) => (
-                <Grid key={index}>
-                    <CustomIconButton
-                        href={socialDetails.url}
-                        icon={socialDetails.icon}
-                        text={socialDetails.name}
-                    />
-                </Grid>
-            ))}
-            <Grid>
-                <CustomIconButton
-                    href={"ice-cream"}
-                    icon={IcecreamIcon}
-                    text={"Ice Cream"}
-                    isLink={true}
-                />
-            </Grid>
-        </Grid>
     );
 };
 

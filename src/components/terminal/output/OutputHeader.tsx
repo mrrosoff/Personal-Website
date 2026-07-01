@@ -1,7 +1,6 @@
-import { Grid } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 import PromptSymbol from "../PromptSymbol";
-import OutputText from "./OutputText";
 import { TerminalTheme } from "../Terminal";
 
 const OutputHeader = (props: {
@@ -10,16 +9,21 @@ const OutputHeader = (props: {
     children: string;
     cwd?: string;
 }) => (
-    <Grid container alignContent={"center"} alignItems={"center"} spacing={2}>
-        <Grid>
+    <Typography
+        component={"div"}
+        style={{
+            color: props.theme.outputColor,
+            whiteSpace: "pre-wrap",
+            wordBreak: "break-all"
+        }}
+    >
+        <Box component={"span"} sx={{ display: "inline-flex", verticalAlign: "middle", mr: 1 }}>
             <PromptSymbol {...props} cwd={props.cwd}>
                 {props.promptSymbol}
             </PromptSymbol>
-        </Grid>
-        <Grid>
-            <OutputText {...props}>{props.children}</OutputText>
-        </Grid>
-    </Grid>
+        </Box>
+        {props.children}
+    </Typography>
 );
 
 export default OutputHeader;

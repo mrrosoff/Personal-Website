@@ -8,7 +8,7 @@ import LaunchIcon from "@mui/icons-material/Launch";
 
 import { API_URL, decodeToken } from "../../App";
 import { useAppContext } from "../../AppContext";
-import Stripe from "stripe";
+import type Stripe from "stripe";
 import icecreamImage from "../../../images/ice-cream.webp";
 
 const Return = () => {

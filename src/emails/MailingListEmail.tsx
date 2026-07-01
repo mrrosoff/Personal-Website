@@ -20,6 +20,7 @@ const MailingListEmail = (props: {
     currentFlavors?: DatabaseFlavor[];
     lastBatch?: DatabaseFlavor[];
     upcoming?: DatabaseFlavor[];
+    message?: string;
 }) => {
     return (
         <Html>
@@ -65,6 +66,20 @@ const MailingListEmail = (props: {
                             </Link>
                         </Text>
                     </Section>
+                    {props.message && (
+                        <Section>
+                            <Text
+                                style={{
+                                    fontSize: 15,
+                                    lineHeight: "24px",
+                                    color: "rgb(17,24,39)",
+                                    whiteSpace: "pre-wrap"
+                                }}
+                            >
+                                {props.message}
+                            </Text>
+                        </Section>
+                    )}
                     <FlavorsList
                         title="New Flavors"
                         description={"Our current rotation of flavors."}
@@ -310,6 +325,7 @@ const Footer = () => {
 };
 
 MailingListEmail.PreviewProps = {
+    message: "I found some berries in the basement, so naturally I churned them into ice cream.",
     currentFlavors: [
         {
             productId: "1",

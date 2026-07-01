@@ -46,7 +46,7 @@ const App = () => {
                 fontSize: 26
             },
             body1: {
-                fontSize: 22
+                fontSize: "clamp(18px, 5.3vw, 22px)"
             }
         },
         components: {
@@ -171,20 +171,25 @@ const Layout = (props: {
             component="main"
             height={"100dvh"}
             sx={{
-                p: mdScreen ? (isHome ? 0 : 3) : 8,
+                p: mdScreen ? (isHome ? 2 : 3) : 8,
                 ...(mdScreen && { pt: 4, pb: screenBottomPadding }),
                 boxSizing: "border-box",
                 overflow: isHome ? "hidden" : undefined
             }}
             onClick={() => props.inputRef?.current && props.inputRef?.current.focus()}
         >
-            {!mdScreen && <LinksAndMenu />}
+            {(!mdScreen || isHome) && <LinksAndMenu />}
             <Box
                 ref={props.scrollContainerRef}
                 sx={{
                     width: "100%",
                     height: "100%",
-                    overflowY: isHome ? "auto" : undefined
+                    overflowY: isHome ? "auto" : undefined,
+                    ...(mdScreen &&
+                        isHome && {
+                            "& *": { overflowWrap: "break-word" },
+                            "& a": { wordBreak: "break-all" }
+                        })
                 }}
             >
                 <Outlet />

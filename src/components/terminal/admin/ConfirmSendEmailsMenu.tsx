@@ -29,11 +29,47 @@ const ConfirmSendEmailsMenu = (props: { theme?: TerminalTheme }) => {
             >
                 Are you sure you want to send marketing emails to all subscribers?
             </Typography>
+            <Box sx={{ mb: 1 }}>
+                <Typography
+                    sx={{ color: props.theme?.outputColor || "#FCFCFC", fontSize: "0.9em" }}
+                >
+                    Message:
+                </Typography>
+                <Typography
+                    sx={{
+                        color: props.theme?.outputColor || "#FCFCFC",
+                        paddingLeft: 2,
+                        whiteSpace: "pre-wrap",
+                        overflowWrap: "anywhere"
+                    }}
+                >
+                    {mode.marketing?.message ? mode.marketing.message : " "}
+                    <Box
+                        component="span"
+                        sx={{
+                            display: "inline-block",
+                            width: "0.55em",
+                            transform: "translateY(2px)",
+                            backgroundColor: props.theme?.outputColor || "#FCFCFC"
+                        }}
+                    >
+                        &nbsp;
+                    </Box>
+                </Typography>
+            </Box>
             <Box sx={{ display: "flex", gap: 2, mb: 1 }}>
-                <MenuItem selected={selectedOption === "yes"} theme={props.theme}>
+                <MenuItem
+                    selected={selectedOption === "yes"}
+                    theme={props.theme}
+                    disabled={mode.loading}
+                >
                     Yes
                 </MenuItem>
-                <MenuItem selected={selectedOption === "no"} theme={props.theme}>
+                <MenuItem
+                    selected={selectedOption === "no"}
+                    theme={props.theme}
+                    disabled={mode.loading}
+                >
                     No
                 </MenuItem>
             </Box>
@@ -44,7 +80,9 @@ const ConfirmSendEmailsMenu = (props: { theme?: TerminalTheme }) => {
                     opacity: 0.7
                 }}
             >
-                left/right: select option | enter: confirm | escape: cancel
+                {mode.loading
+                    ? "Sending..."
+                    : "type: message | left/right: select option | enter: confirm | escape: cancel"}
             </Typography>
         </Box>
     );

@@ -58,10 +58,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         ));
     } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
-            if (
-                err.response?.status === 400 &&
-                err.response.data?.error === "invalid_grant"
-            ) {
+            if (err.response?.status === 400 && err.response.data?.error === "invalid_grant") {
                 return buildErrorResponse(
                     event,
                     HttpResponseStatus.SPOTIFY_NEEDS_AUTH,

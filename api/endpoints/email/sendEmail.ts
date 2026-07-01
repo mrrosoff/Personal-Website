@@ -6,17 +6,28 @@ import { getParameter } from "../../aws/services/parameterStore";
 import { getAllItems } from "../../aws/services/dynamodb";
 import MailingListEmail from "../../../src/emails/MailingListEmail";
 import OrderSuccessEmail from "../../../src/emails/OrderSuccessEmail";
-import { buildResponse, HttpResponseStatus } from "../../common";
+import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
+
+type SendEmailPayload = {
+    message: string;
+};
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
+    if (!event.body) {
+        return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Request Body");
+    }
+
+    const body: SendEmailPayload = JSON.parse(event.body);
+    const message = body.message.trim();
+
     const apiKey = await getParameter("/website/resend/api-key");
     const resend = new Resend(apiKey);
-    const broadcastId = await createBroadcast(resend);
+    const broadcastId = await createBroadcast(resend, message);
     const sendBroadcastId = await sendBroadcast(resend, broadcastId);
     return buildResponse(event, HttpResponseStatus.OK, { broadcastId: sendBroadcastId });
 };
 
-async function createBroadcast(resend: Resend): Promise<string> {
+async function createBroadcast(resend: Resend, message?: string): Promise<string> {
     const id = await getParameter("/website/resend/audience-id");
 
     const allFlavors = await getAllItems(FLAVORS_TABLE);
@@ -31,7 +42,7 @@ async function createBroadcast(resend: Resend): Promise<string> {
         from: "Max <drops@ice-cream.maxrosoff.com>",
         replyTo: "me@maxrosoff.com",
         subject: "New Ice Cream Flavor Drop!",
-        react: MailingListEmail({ currentFlavors, lastBatch, upcoming })
+        react: MailingListEmail({ currentFlavors, lastBatch, upcoming, message })
     });
     if (error || !data) {
         throw Error(`Error Creating Broadcast: ${error?.message}`);

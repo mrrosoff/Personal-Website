@@ -10,14 +10,11 @@ import { useIceCreamCart } from "../ice-cream/IceCreamCartContext";
 import { useAppContext } from "../AppContext";
 
 import SmallProfile from "../../images/small-profile.webp";
-import MobileLayout from "./MobileLayout";
 
 const Page = (props: {
     inputRef: RefObject<HTMLInputElement | null>;
     scrollContainerRef: RefObject<HTMLDivElement | null>;
 }) => {
-    const theme = useTheme();
-    const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
     const { shouldBootUp } = useAppContext();
 
     const [bootingUp, setBootingUp] = useState(shouldBootUp);
@@ -26,10 +23,6 @@ const Page = (props: {
     creationDate.setMinutes(creationDate.getMinutes() - 8);
     creationDate.setHours(creationDate.getHours() - 2);
     creationDate.setDate(creationDate.getDate() - 5);
-
-    if (smallScreen) {
-        return <MobileLayout />;
-    }
 
     if (bootingUp) {
         return <BootUp setBootingUp={setBootingUp} creationDate={creationDate.toString()} />;
@@ -40,9 +33,11 @@ const Page = (props: {
 
 export const LinksAndMenu = (props: {}) => {
     const [open, setOpen] = useState(false);
+    const theme = useTheme();
+    const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
     return (
         <Box sx={{ position: "relative" }}>
-            <Links open={open} setOpen={setOpen} {...props} />
+            {!smallScreen && <Links open={open} setOpen={setOpen} {...props} />}
             <Box sx={{ position: "absolute", top: 65, right: 0, zIndex: 10 }}>
                 {open && (
                     <Paper sx={{ width: 270 }}>

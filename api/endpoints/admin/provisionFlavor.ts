@@ -3,7 +3,7 @@ import Stripe from "stripe";
 
 import { FLAVORS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
 import { getParameter } from "../../aws/services/parameterStore";
-import { putItem } from "../../aws/services/dynamodb";
+import { getAllItems, putItem } from "../../aws/services/dynamodb";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
 import { FlavorType } from "../../types";
 import { isAdmin } from "../../auth";
@@ -27,6 +27,19 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
             event,
             HttpResponseStatus.UNAUTHORIZED,
             "Authentication Required"
+        );
+    }
+
+    const existingFlavors = await getAllItems(FLAVORS_TABLE);
+    const normalizedName = body.flavorName.trim().toLowerCase();
+    const duplicate = existingFlavors.find(
+        (flavor) => flavor.name.trim().toLowerCase() === normalizedName
+    );
+    if (duplicate) {
+        return buildErrorResponse(
+            event,
+            HttpResponseStatus.BAD_REQUEST,
+            `A Flavor Named "${duplicate.name}" Already Exists`
         );
     }
 

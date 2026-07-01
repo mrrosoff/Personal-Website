@@ -1,6 +1,6 @@
 import { ChangeEvent, KeyboardEvent, forwardRef, Ref, useEffect, useState } from "react";
 
-import { Box, Grid, InputBase, Typography } from "@mui/material";
+import { Box, InputBase, Typography } from "@mui/material";
 
 import PromptSymbol from "./PromptSymbol";
 import { TerminalTheme } from "./Terminal";
@@ -25,40 +25,39 @@ const CommandInput = (
     }, []);
 
     return (
-        <Grid container alignItems={"center"} spacing={2}>
-            <Grid>
+        <Typography
+            component={"div"}
+            style={{
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-all"
+            }}
+        >
+            <Box component={"span"} sx={{ display: "inline-flex", verticalAlign: "middle", mr: 1 }}>
                 <PromptSymbol {...props}>{props.promptSymbol}</PromptSymbol>
-            </Grid>
-            <Grid>
-                <Grid container justifyContent={"center"} alignItems={"center"}>
-                    <Grid>
-                        <Typography style={{ whiteSpace: "pre" }}>{props.value}</Typography>
-                    </Grid>
-                    <Grid>
-                        <Box
-                            id={"cursor"}
-                            width={8}
-                            height={18}
-                            sx={{
-                                visibility: visibleCursor ? "visible" : "hidden",
-                                background: "#FFFFFF"
-                            }}
-                        />
-                    </Grid>
-                    <Grid style={{ width: 0, height: 0 }}>
-                        <InputBase
-                            autoFocus
-                            inputRef={ref}
-                            value={props.value}
-                            onChange={props.onChange}
-                            onKeyDown={props.onKeyDown}
-                            style={{ width: 0, height: 0, opacity: 0 }}
-                            aria-label={"Terminal command input"}
-                        />
-                    </Grid>
-                </Grid>
-            </Grid>
-        </Grid>
+            </Box>
+            {props.value}
+            <Box
+                id={"cursor"}
+                component={"span"}
+                sx={{
+                    display: "inline-block",
+                    width: "8px",
+                    height: "18px",
+                    verticalAlign: "middle",
+                    visibility: visibleCursor ? "visible" : "hidden",
+                    background: "#FFFFFF"
+                }}
+            />
+            <InputBase
+                autoFocus
+                inputRef={ref}
+                value={props.value}
+                onChange={props.onChange}
+                onKeyDown={props.onKeyDown}
+                style={{ width: 0, height: 0, opacity: 0, position: "absolute" }}
+                aria-label={"Terminal command input"}
+            />
+        </Typography>
     );
 };
 

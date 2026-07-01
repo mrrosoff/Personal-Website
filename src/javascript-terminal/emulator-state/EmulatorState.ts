@@ -44,6 +44,10 @@ export type FriendInvite = {
     url?: string;
 };
 
+export type Marketing = {
+    message: string;
+};
+
 export type AdminConsoleState = {
     screen?: AdminConsoleScreen;
     selectedOption?: MainMenuOption | IceCreamInventoryMenuOption | number | "yes" | "no";
@@ -53,6 +57,8 @@ export type AdminConsoleState = {
     provisionForm?: ProvisionFlavorForm;
     currentPage?: number;
     loading?: boolean;
+    error?: string;
+    marketing?: Marketing;
     friendInvite?: FriendInvite;
 };
 

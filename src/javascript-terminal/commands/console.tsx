@@ -92,6 +92,10 @@ export const handleAdminConsoleKeyPress = async (
 
     if (mode.loading) return emulatorState;
 
+    if (mode.error) {
+        emulatorState.setAdminConsoleMode({ ...mode, error: undefined });
+    }
+
     if (mode.screen === "main") {
         return handleMainMenu(key, emulatorState);
     } else if (mode.screen === "ice-cream-inventory") {
@@ -109,6 +113,22 @@ export const handleAdminConsoleKeyPress = async (
     }
 
     return emulatorState;
+};
+
+const getErrorMessage = (err: unknown, fallback: string): string => {
+    if (axios.isAxiosError(err)) {
+        return (err.response?.data as { message?: string } | undefined)?.message ?? fallback;
+    }
+    return fallback;
+};
+
+const setAdminConsoleError = (state: EmulatorState, err: unknown, fallback: string) => {
+    console.error(fallback, err);
+    state.setAdminConsoleMode({
+        ...state.getAdminConsoleMode()!,
+        loading: false,
+        error: getErrorMessage(err, fallback)
+    });
 };
 
 const handleMainMenu = (key: string, state: EmulatorState): EmulatorState => {
@@ -146,7 +166,8 @@ const handleMainMenu = (key: string, state: EmulatorState): EmulatorState => {
                     state.setAdminConsoleMode({
                         ...mode,
                         screen: AdminConsoleScreen.ConfirmSendEmails,
-                        selectedOption: "yes"
+                        selectedOption: "yes",
+                        marketing: { message: "" }
                     });
                     break;
                 case MainMenuOption.CreateFriendInvite:
@@ -275,14 +296,19 @@ const handleFlavorEdit = async (key: string, state: EmulatorState): Promise<Emul
             break;
         case "Enter":
             state.setAdminConsoleMode({ ...mode, loading: true });
-            await updateFlavorInventory(
-                state,
-                mode.editingFlavor.productId,
-                mode.editingFlavor.name,
-                mode.editingFlavor.color,
-                mode.editingFlavor.count,
-                mode.editingFlavor.type
-            );
+            try {
+                await updateFlavorInventory(
+                    state,
+                    mode.editingFlavor.productId,
+                    mode.editingFlavor.name,
+                    mode.editingFlavor.color,
+                    mode.editingFlavor.count,
+                    mode.editingFlavor.type
+                );
+            } catch (err) {
+                setAdminConsoleError(state, err, "Failed To Update Flavor");
+                break;
+            }
             state.setAdminConsoleMode({
                 ...mode,
                 screen: AdminConsoleScreen.SelectFlavor,
@@ -464,7 +490,13 @@ const handleConfirmSendEmails = async (
             break;
         case "Enter":
             if (currentOption === "yes") {
-                await sendMarketingEmails(authToken);
+                state.setAdminConsoleMode({ ...mode, loading: true });
+                try {
+                    await sendMarketingEmails(authToken, mode.marketing?.message);
+                } catch (err) {
+                    setAdminConsoleError(state, err, "Failed To Send Marketing Emails");
+                    break;
+                }
             }
             state.setAdminConsoleMode({
                 ...mode,
@@ -478,6 +510,20 @@ const handleConfirmSendEmails = async (
                 screen: AdminConsoleScreen.Main,
                 selectedOption: MainMenuOption.SendMarketingEmails
             });
+            break;
+        case "Backspace":
+            state.setAdminConsoleMode({
+                ...mode,
+                marketing: { message: (mode.marketing?.message ?? "").slice(0, -1) }
+            });
+            break;
+        default:
+            if (key.length === 1) {
+                state.setAdminConsoleMode({
+                    ...mode,
+                    marketing: { message: (mode.marketing?.message ?? "") + key }
+                });
+            }
             break;
     }
 
@@ -662,12 +708,16 @@ const handleCreateFriendInvite = async (
         if (!invite.friendName) return state;
         const authToken = state.getEnvVariables()["AUTH_TOKEN"]!;
         state.setAdminConsoleMode({ ...mode, loading: true });
-        const url = await createFriendInvite(invite.friendName, authToken);
-        state.setAdminConsoleMode({
-            ...state.getAdminConsoleMode(),
-            friendInvite: { ...invite, url },
-            loading: false
-        });
+        try {
+            const url = await createFriendInvite(invite.friendName, authToken);
+            state.setAdminConsoleMode({
+                ...state.getAdminConsoleMode(),
+                friendInvite: { ...invite, url },
+                loading: false
+            });
+        } catch (err) {
+            setAdminConsoleError(state, err, "Failed To Create Friend Invite");
+        }
         return state;
     }
 
@@ -690,17 +740,12 @@ const handleCreateFriendInvite = async (
 };
 
 const createFriendInvite = async (friendName: string, authToken: string): Promise<string> => {
-    try {
-        const { data } = await axios.post<{ url: string }>(
-            `${API_URL}/admin/create-friend-invite`,
-            { friendName },
-            { headers: { Authorization: `Bearer ${authToken}` } }
-        );
-        return data.url;
-    } catch (err) {
-        console.error("Failed to create friend invite", err);
-        return "Failed To Create Friend Invite";
-    }
+    const { data } = await axios.post<{ url: string }>(
+        `${API_URL}/admin/create-friend-invite`,
+        { friendName },
+        { headers: { Authorization: `Bearer ${authToken}` } }
+    );
+    return data.url;
 };
 
 const handleConfirmProvisionFlavor = async (
@@ -722,7 +767,12 @@ const handleConfirmProvisionFlavor = async (
         case "Enter":
             if (currentOption === "yes" && mode.provisionForm) {
                 state.setAdminConsoleMode({ ...mode, loading: true });
-                await provisionNewFlavor(mode.provisionForm, authToken);
+                try {
+                    await provisionNewFlavor(mode.provisionForm, authToken);
+                } catch (err) {
+                    setAdminConsoleError(state, err, "Failed To Provision Flavor");
+                    break;
+                }
             }
             state.setAdminConsoleMode({
                 ...mode,
@@ -774,30 +824,26 @@ const fetchInventoryData = async (state: EmulatorState) => {
         console.error("Failed To Fetch Inventory", err);
         state.setAdminConsoleMode({
             ...mode,
-            inventoryData: []
+            inventoryData: [],
+            error: getErrorMessage(err, "Failed To Fetch Inventory")
         });
     }
 };
 
 const provisionNewFlavor = async (form: ProvisionFlavorForm, authToken: string) => {
-    try {
-        const { data } = await axios.post(
-            "https://api.maxrosoff.com/admin/provision-flavor",
-            {
-                flavorName: form.flavorName,
-                initialQuantity: form.initialQuantity,
-                color: form.color,
-                type: form.type
-            },
-            {
-                headers: { Authorization: `Bearer ${authToken}` }
-            }
-        );
-        console.log("Provision flavor result:", data);
-        return data;
-    } catch (err) {
-        console.error("Failed to provision flavor", err);
-    }
+    const { data } = await axios.post(
+        "https://api.maxrosoff.com/admin/provision-flavor",
+        {
+            flavorName: form.flavorName,
+            initialQuantity: form.initialQuantity,
+            color: form.color,
+            type: form.type
+        },
+        {
+            headers: { Authorization: `Bearer ${authToken}` }
+        }
+    );
+    return data;
 };
 
 const updateFlavorInventory = async (
@@ -809,34 +855,25 @@ const updateFlavorInventory = async (
     type: FlavorType | null
 ) => {
     const authToken = state.getEnvVariables()["AUTH_TOKEN"];
-    try {
-        const { data } = await axios.post(
-            "https://api.maxrosoff.com/admin/update-inventory",
-            { productId, name, color, count, type },
-            {
-                headers: { Authorization: `Bearer ${authToken}` }
-            }
-        );
-        console.log("Update inventory result:", data);
-        return data;
-    } catch (err) {
-        console.error("Failed to update inventory", err);
-    }
+    const { data } = await axios.post(
+        "https://api.maxrosoff.com/admin/update-inventory",
+        { productId, name, color, count, type },
+        {
+            headers: { Authorization: `Bearer ${authToken}` }
+        }
+    );
+    return data;
 };
 
-const sendMarketingEmails = async (authToken: string) => {
-    try {
-        const { data } = await axios.post(
-            "https://api.maxrosoff.com/email/send-email",
-            {},
-            {
-                headers: { Authorization: `Bearer ${authToken}` }
-            }
-        );
-        return data;
-    } catch (err) {
-        console.error("Failed to send marketing emails", err);
-    }
+const sendMarketingEmails = async (authToken: string, message?: string) => {
+    const { data } = await axios.post(
+        "https://api.maxrosoff.com/email/send-email",
+        { message: message ?? "" },
+        {
+            headers: { Authorization: `Bearer ${authToken}` }
+        }
+    );
+    return data;
 };
 
 export const sortInventory = (inventoryData: DatabaseFlavor[]) => {

@@ -1,3 +1,5 @@
+import { Typography } from "@mui/material";
+
 import { AdminConsoleScreen } from "../../../javascript-terminal/emulator-state/EmulatorState";
 import { useAppContext } from "../../AppContext";
 import { TerminalTheme } from "../Terminal";
@@ -14,22 +16,35 @@ const AdminConsole = (props: { theme?: TerminalTheme }) => {
     const mode = emulatorState.getAdminConsoleMode();
     if (!mode || !mode.screen) return null;
 
-    switch (mode.screen) {
-        case AdminConsoleScreen.Main:
-            return <MainMenu theme={props.theme} />;
-        case AdminConsoleScreen.IceCreamInventory:
-            return <IceCreamInventoryMenu theme={props.theme} />;
-        case AdminConsoleScreen.SelectFlavor:
-            return <SelectFlavorMenu theme={props.theme} />;
-        case AdminConsoleScreen.ConfirmSendEmails:
-            return <ConfirmSendEmailsMenu theme={props.theme} />;
-        case AdminConsoleScreen.ProvisionFlavorForm:
-            return <ProvisionFlavorFormMenu theme={props.theme} />;
-        case AdminConsoleScreen.ConfirmProvisionFlavor:
-            return <ConfirmProvisionFlavorMenu theme={props.theme} />;
-        case AdminConsoleScreen.CreateFriendInvite:
-            return <CreateFriendInviteMenu theme={props.theme} />;
-    }
+    const renderScreen = () => {
+        switch (mode.screen) {
+            case AdminConsoleScreen.Main:
+                return <MainMenu theme={props.theme} />;
+            case AdminConsoleScreen.IceCreamInventory:
+                return <IceCreamInventoryMenu theme={props.theme} />;
+            case AdminConsoleScreen.SelectFlavor:
+                return <SelectFlavorMenu theme={props.theme} />;
+            case AdminConsoleScreen.ConfirmSendEmails:
+                return <ConfirmSendEmailsMenu theme={props.theme} />;
+            case AdminConsoleScreen.ProvisionFlavorForm:
+                return <ProvisionFlavorFormMenu theme={props.theme} />;
+            case AdminConsoleScreen.ConfirmProvisionFlavor:
+                return <ConfirmProvisionFlavorMenu theme={props.theme} />;
+            case AdminConsoleScreen.CreateFriendInvite:
+                return <CreateFriendInviteMenu theme={props.theme} />;
+        }
+    };
+
+    return (
+        <>
+            {renderScreen()}
+            {mode.error && (
+                <Typography sx={{ color: props.theme?.errorColor || "#ff0606", mt: 1 }}>
+                    {mode.error}
+                </Typography>
+            )}
+        </>
+    );
 };
 
 export default AdminConsole;
