@@ -21,7 +21,7 @@ export const optDef = {
 };
 
 const functionDef = (state: EmulatorState, commandOptions: string[]) => {
-    const { options, argv } = parseOptions(commandOptions, optDef);
+    const { argv } = parseOptions(commandOptions, optDef);
 
     try {
         const input = argv.join(" ");

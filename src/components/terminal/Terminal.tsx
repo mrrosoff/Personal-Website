@@ -1,11 +1,13 @@
 import {
-    ChangeEvent,
-    KeyboardEvent,
-    ReactElement,
-    Ref,
+    lazy,
+    Suspense,
     forwardRef,
     useEffect,
-    useState
+    useState,
+    type ChangeEvent,
+    type KeyboardEvent,
+    type ReactElement,
+    type Ref
 } from "react";
 import { Box, Grid, useMediaQuery, useTheme } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -17,7 +19,8 @@ import { handleAdminConsoleKeyPress } from "../../javascript-terminal/commands/c
 import { authenticateWithPasskey } from "../../javascript-terminal/commands/sudo";
 import { decodeToken } from "../App";
 import { useAppContext } from "../AppContext";
-import AdminConsole from "./admin/AdminConsole";
+
+const AdminConsole = lazy(() => import("./admin/AdminConsole"));
 
 import CommandInput from "./CommandInput";
 import OutputHeader from "./output/OutputHeader";
@@ -338,7 +341,9 @@ const Terminal = (
                 {renderedOutputs}
                 {emulatorState.getAdminConsoleMode()?.screen && (
                     <Box height={280}>
-                        <AdminConsole theme={props.theme} />
+                        <Suspense fallback={null}>
+                            <AdminConsole theme={props.theme} />
+                        </Suspense>
                     </Box>
                 )}
                 {emulatorState.getBlockingMode()?.content && (

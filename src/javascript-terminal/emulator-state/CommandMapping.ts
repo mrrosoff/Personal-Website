@@ -1,4 +1,4 @@
-import { JSX } from "react";
+import type { JSX } from "react";
 import commands from "../commands.js";
 import EmulatorState from "./EmulatorState.js";
 

@@ -1,4 +1,11 @@
-import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useState } from "react";
+import {
+    createContext,
+    useContext,
+    useState,
+    type Dispatch,
+    type ReactNode,
+    type SetStateAction
+} from "react";
 
 import { CommandMapping, DefaultCommandMapping, EmulatorState } from "../javascript-terminal";
 import { RECONNECT_TOKEN_KEY } from "../javascript-terminal/commands/spotify";
@@ -48,8 +55,7 @@ if (persistedAuthToken) {
 }
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
-    // @ts-expect-error
-    const [shouldBootUp, setShouldBootUp] = useState<boolean>(import.meta.env.PROD);
+    const [shouldBootUp, setShouldBootUp] = useState<boolean>(!import.meta.env.PROD);
     const [friendToken, setFriendToken] = useState<string>("");
     const [emulatorState, setEmulatorState] = useState<EmulatorState>(initialEmulatorState);
 

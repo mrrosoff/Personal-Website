@@ -1,5 +1,5 @@
 import { Typography } from "@mui/material";
-import { TerminalTheme } from "../Terminal";
+import type { TerminalTheme } from "../Terminal";
 
 const OutputError = (props: { theme: TerminalTheme; children: string }) => {
     return props.children.split("\n").map((line: string, key: number) => (

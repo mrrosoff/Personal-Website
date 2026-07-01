@@ -1,12 +1,12 @@
 import { timingSafeEqual } from "crypto";
 
-import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
+import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import axios from "axios";
 import { DateTime } from "luxon";
 
 import { getParameters, putSecureParameter } from "../../aws/services/parameterStore";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
-import { REDIRECT_URI, StatePayload, stateHmac } from "./connect";
+import { REDIRECT_URI, type StatePayload, stateHmac } from "./connect";
 
 const REFRESH_TOKEN_PARAM = "/website/spotify/refresh-token";
 const REFRESH_TOKEN_SET_AT_PARAM = "/website/spotify/refresh-token-set-at";

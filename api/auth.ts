@@ -1,13 +1,20 @@
-import { APIGatewayProxyEvent } from "aws-lambda";
+import type { APIGatewayProxyEvent } from "aws-lambda";
 import axios from "axios";
 import { IncomingMessage } from "http";
-import { decode, JwtPayload, sign, SignOptions, verify, VerifyOptions } from "jsonwebtoken";
+import {
+    decode,
+    sign,
+    verify,
+    type JwtPayload,
+    type SignOptions,
+    type VerifyOptions
+} from "jsonwebtoken";
 import { JWK } from "node-jose";
 
 import keys from "./jwks/keys.json";
 import keyMapping from "./jwks/keyMapping.json";
 
-import { AccessToken, API_ENDPOINT_URL, UserType } from "./types";
+import { type AccessToken, API_ENDPOINT_URL, UserType } from "./types";
 
 export { UserType };
 export type { AccessToken };

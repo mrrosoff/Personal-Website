@@ -2,7 +2,7 @@ import {
     ApplicationAssociator,
     TargetApplication
 } from "@aws-cdk/aws-servicecatalogappregistry-alpha";
-import { App, Environment } from "aws-cdk-lib";
+import { App, type Environment } from "aws-cdk-lib";
 import WebsiteAPIStack from "./WebsiteAPIStack";
 
 const app = new App();

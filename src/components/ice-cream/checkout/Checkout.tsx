@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 
-import axios, { isAxiosError } from "axios";
+import axios from "axios";
 import {
     Box,
     Button,
@@ -12,18 +12,18 @@ import {
     useMediaQuery,
     useTheme
 } from "@mui/material";
-import { Appearance, loadStripe } from "@stripe/stripe-js";
+import { type Appearance, loadStripe } from "@stripe/stripe-js";
 import {
     CheckoutProvider,
     useCheckout,
     PaymentElement,
-    StripeCheckoutValue
+    type StripeCheckoutValue
 } from "@stripe/react-stripe-js/checkout";
 
 import { API_URL, decodeToken } from "../../App";
 import { useAppContext } from "../../AppContext";
 import { useIceCreamCart } from "../IceCreamCartContext";
-import { DatabaseFlavor } from "../../../../api/types";
+import type { DatabaseFlavor } from "../../../../api/types";
 import { rainbowTextSx } from "../IceCream";
 
 const stripePublishableApiKey =

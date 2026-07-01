@@ -1,5 +1,5 @@
 import { getLastPathPart, toPathParts } from "../util/path-util";
-import { File, FileSystem } from "../../../FileSystem";
+import type { File, FileSystem } from "../../../FileSystem";
 
 const descend = (entry: File): FileSystem => {
     if (entry.type !== "d") {

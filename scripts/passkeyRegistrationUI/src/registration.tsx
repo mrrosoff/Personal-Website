@@ -5,7 +5,7 @@ import { Box, Button, Typography } from "@mui/material";
 import axios from "axios";
 
 const Registration = () => {
-    const [loading, setLoading] = useState(false);
+    const [loading, _setLoading] = useState(false);
     const [message, setMessage] = useState("");
 
     const handleClick = async () => {

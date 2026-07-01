@@ -14,10 +14,10 @@ import {
     PASSKEYS_TABLE
 } from "../../../infrastructure/WebsiteAPIStack";
 import {
-    DatabaseFlavor,
-    DatabasePasskey,
-    DatabasePasskeyChallenge,
-    DynamoDBFieldValue
+    type DatabaseFlavor,
+    type DatabasePasskey,
+    type DatabasePasskeyChallenge,
+    type DynamoDBFieldValue
 } from "../../types";
 
 // prettier-ignore

@@ -1,14 +1,14 @@
 import assert from "assert";
 import axios from "axios";
 
-import { DatabaseFlavor, FLAVOR_TYPES, FlavorType, UserType } from "../../../api/types";
+import { type DatabaseFlavor, FLAVOR_TYPES, type FlavorType, UserType } from "../../../api/types";
 import { API_URL, decodeToken } from "../../components/App";
 import EmulatorState, {
     AdminConsoleScreen,
-    EditField,
+    type EditField,
     MainMenuOption,
     IceCreamInventoryMenuOption,
-    ProvisionFlavorForm
+    type ProvisionFlavorForm
 } from "../emulator-state/EmulatorState";
 
 export const optDef = {};

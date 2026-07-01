@@ -1,6 +1,6 @@
 import { createHmac } from "crypto";
 
-import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
+import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import { DateTime, Duration } from "luxon";
 
 import { getParameters } from "../../aws/services/parameterStore";

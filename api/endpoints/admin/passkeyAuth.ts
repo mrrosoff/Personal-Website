@@ -1,5 +1,8 @@
-import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
-import { AuthenticationResponseJSON, verifyAuthenticationResponse } from "@simplewebauthn/server";
+import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
+import {
+    type AuthenticationResponseJSON,
+    verifyAuthenticationResponse
+} from "@simplewebauthn/server";
 import { DateTime } from "luxon";
 
 import { PASSKEY_CHALLENGES_TABLE, PASSKEYS_TABLE } from "../../../infrastructure/WebsiteAPIStack";

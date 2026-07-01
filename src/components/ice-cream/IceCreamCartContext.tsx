@@ -1,7 +1,7 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, type ReactNode } from "react";
 import axios from "axios";
 
-import { DatabaseFlavor } from "../../../api/types";
+import type { DatabaseFlavor } from "../../../api/types";
 import { API_URL } from "../App";
 
 type IceCreamCartContextType = {

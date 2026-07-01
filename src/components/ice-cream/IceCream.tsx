@@ -19,7 +19,7 @@ import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import { useIceCreamCart } from "./IceCreamCartContext";
 import { useAppContext } from "../AppContext";
 import { useEffect } from "react";
-import { DatabaseFlavor } from "../../../api/types";
+import type { DatabaseFlavor } from "../../../api/types";
 
 export const rainbowTextSx = {
     background:

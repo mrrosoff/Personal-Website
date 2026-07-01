@@ -1,9 +1,16 @@
-import { ChangeEvent, KeyboardEvent, forwardRef, Ref, useEffect, useState } from "react";
+import {
+    forwardRef,
+    useEffect,
+    useState,
+    type ChangeEvent,
+    type KeyboardEvent,
+    type Ref
+} from "react";
 
 import { Box, InputBase, Typography } from "@mui/material";
 
 import PromptSymbol from "./PromptSymbol";
-import { TerminalTheme } from "./Terminal";
+import type { TerminalTheme } from "./Terminal";
 
 const CommandInput = (
     props: {

@@ -2,7 +2,7 @@ import { Typography } from "@mui/material";
 
 import { AdminConsoleScreen } from "../../../javascript-terminal/emulator-state/EmulatorState";
 import { useAppContext } from "../../AppContext";
-import { TerminalTheme } from "../Terminal";
+import type { TerminalTheme } from "../Terminal";
 import MainMenu from "./MainMenu";
 import IceCreamInventoryMenu from "./IceCreamInventoryMenu";
 import SelectFlavorMenu from "./SelectFlavorMenu";

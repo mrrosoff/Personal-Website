@@ -1,10 +1,9 @@
 {
     "compilerOptions": {
         "lib": ["DOM", "ESNext"],
-        "isolatedModules": true,
+        "types": ["node", "vite/client"],
         "resolveJsonModule": true,
-        "noEmit": true,
-        "jsx": "react-jsx"
+        "erasableSyntaxOnly": false
     },
     "ts-node": {
         "transpileOnly": true,
@@ -14,8 +13,7 @@
             "sourceMap": true
         }
     },
-    "references": [{ "path": "./tsconfig.node.json" }],
     "exclude": ["vite.config.mts"],
-    "extends": "@tsconfig/node22/tsconfig.json",
+    "extends": "@tsconfig/vite-react/tsconfig.json",
     "$schema": "https://json.schemastore.org/tsconfig"
 }

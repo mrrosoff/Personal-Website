@@ -14,7 +14,7 @@ import {
     Text
 } from "@react-email/components";
 
-import { DatabaseFlavor } from "../../api/types";
+import type { DatabaseFlavor } from "../../api/types";
 
 const MailingListEmail = (props: {
     currentFlavors?: DatabaseFlavor[];

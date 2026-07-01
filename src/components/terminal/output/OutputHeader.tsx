@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 
 import PromptSymbol from "../PromptSymbol";
-import { TerminalTheme } from "../Terminal";
+import type { TerminalTheme } from "../Terminal";
 
 const OutputHeader = (props: {
     theme: TerminalTheme;

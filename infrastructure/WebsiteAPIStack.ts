@@ -1,4 +1,4 @@
-import { Duration, RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
+import { Duration, RemovalPolicy, Stack, type StackProps } from "aws-cdk-lib";
 import { Cors, EndpointType, LambdaIntegration, RestApi } from "aws-cdk-lib/aws-apigateway";
 import { Rule, Schedule } from "aws-cdk-lib/aws-events";
 import { LambdaFunction as LambdaTarget } from "aws-cdk-lib/aws-events-targets";
@@ -15,7 +15,7 @@ import {
 import {
     ApplicationLogLevel,
     Code,
-    FunctionProps,
+    type FunctionProps,
     Function as LambdaFunction,
     LoggingFormat,
     Runtime,

@@ -1,4 +1,17 @@
 User-agent: *
 Allow: /
 
+# Please don't use this site to train AI/ML models. See /llms.txt.
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
 Sitemap: https://maxrosoff.com/sitemap.xml

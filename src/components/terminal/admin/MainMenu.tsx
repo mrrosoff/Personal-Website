@@ -2,10 +2,10 @@ import { Box, Typography } from "@mui/material";
 
 import {
     MainMenuOption,
-    AdminConsoleState
+    type AdminConsoleState
 } from "../../../javascript-terminal/emulator-state/EmulatorState";
 import { useAppContext } from "../../AppContext";
-import { TerminalTheme } from "../Terminal";
+import type { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
 
 const MainMenu = (props: { theme?: TerminalTheme }) => {

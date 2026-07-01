@@ -1,4 +1,4 @@
-import { forwardRef, Ref, useEffect } from "react";
+import { forwardRef, type Ref, useEffect } from "react";
 
 import Terminal from "../../terminal/Terminal";
 

@@ -2,9 +2,9 @@ import { Box, Typography } from "@mui/material";
 import { useMemo, useState, useEffect } from "react";
 
 import { sortInventory } from "../../../javascript-terminal/commands/console";
-import { AdminConsoleState } from "../../../javascript-terminal/emulator-state/EmulatorState";
+import type { AdminConsoleState } from "../../../javascript-terminal/emulator-state/EmulatorState";
 import { useAppContext } from "../../AppContext";
-import { TerminalTheme } from "../Terminal";
+import type { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
 
 const SelectFlavorMenu = (props: { theme?: TerminalTheme }) => {

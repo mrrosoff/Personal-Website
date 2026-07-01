@@ -1,4 +1,4 @@
-import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
+import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import { generateRegistrationOptions } from "@simplewebauthn/server";
 import { DateTime } from "luxon";
 

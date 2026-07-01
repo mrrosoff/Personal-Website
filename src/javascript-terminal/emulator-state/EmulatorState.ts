@@ -1,10 +1,14 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
-import { CommandMapping, CommandResult, create as createCommandMapping } from "./CommandMapping";
+import {
+    type CommandMapping,
+    type CommandResult,
+    create as createCommandMapping
+} from "./CommandMapping";
 import * as FileUtil from "../fs/util/file-util";
 import * as PathUtil from "../fs/util/path-util";
-import { FileSystem } from "../../FileSystem";
-import { DatabaseFlavor, FlavorType } from "../../../api/types";
+import type { FileSystem } from "../../FileSystem";
+import type { DatabaseFlavor, FlavorType } from "../../../api/types";
 
 export enum MainMenuOption {
     IceCreamInventory = "IceCreamInventory",

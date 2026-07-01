@@ -3,9 +3,9 @@ import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CheckIcon from "@mui/icons-material/Check";
 
-import { AdminConsoleState } from "../../../javascript-terminal/emulator-state/EmulatorState";
+import type { AdminConsoleState } from "../../../javascript-terminal/emulator-state/EmulatorState";
 import { useAppContext } from "../../AppContext";
-import { TerminalTheme } from "../Terminal";
+import type { TerminalTheme } from "../Terminal";
 
 const CreateFriendInviteMenu = (props: { theme?: TerminalTheme }) => {
     const { emulatorState } = useAppContext();

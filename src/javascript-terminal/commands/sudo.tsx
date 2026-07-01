@@ -5,7 +5,7 @@ import EmulatorState from "../emulator-state/EmulatorState";
 import { parseOptions } from "../parser";
 import * as CommandMappingUtil from "../emulator-state/CommandMapping";
 import Emulator from "../emulator";
-import { API_URL, decodeToken } from "../../components/App";
+import { API_URL } from "../../components/App";
 
 export const optDef = {};
 
@@ -49,7 +49,6 @@ export const authenticateWithPasskey = async (
     const promptState = emulatorState.getPasswordPromptState();
     if (!promptState) return;
 
-    // @ts-expect-error
     if (import.meta.env.DEV) {
         emulatorState.setPasswordPromptState(undefined);
         const outputs = emulatorState.getOutputs();

@@ -3,7 +3,7 @@ import assert from "assert";
 import { parseOptions } from "../parser";
 import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import { fsSearch } from "../fs/operations/base-operations";
-import { FileSystem } from "../../FileSystem";
+import type { FileSystem } from "../../FileSystem";
 
 export const optDef = {
     "-name": "<pattern>"

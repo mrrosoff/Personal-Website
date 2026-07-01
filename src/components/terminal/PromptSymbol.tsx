@@ -3,7 +3,7 @@ import { Grid, Typography } from "@mui/material";
 import FolderIcon from "@mui/icons-material/Folder";
 
 import { useAppContext } from "../AppContext";
-import { TerminalTheme } from "./Terminal";
+import type { TerminalTheme } from "./Terminal";
 
 const PromptSymbol = (props: { theme: TerminalTheme; cwd?: string; children: string }) => {
     const { emulatorState } = useAppContext();

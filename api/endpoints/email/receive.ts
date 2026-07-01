@@ -1,5 +1,9 @@
-import { APIGatewayEvent, APIGatewayProxyEventHeaders, APIGatewayProxyResult } from "aws-lambda";
-import { CreateEmailOptions, GetReceivingEmailResponseSuccess, Resend } from "resend";
+import type {
+    APIGatewayEvent,
+    APIGatewayProxyEventHeaders,
+    APIGatewayProxyResult
+} from "aws-lambda";
+import { type CreateEmailOptions, type GetReceivingEmailResponseSuccess, Resend } from "resend";
 
 import { getParameter } from "../../aws/services/parameterStore";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";

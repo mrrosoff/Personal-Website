@@ -1,5 +1,5 @@
-import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
-import { RegistrationResponseJSON, verifyRegistrationResponse } from "@simplewebauthn/server";
+import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
+import { type RegistrationResponseJSON, verifyRegistrationResponse } from "@simplewebauthn/server";
 import { DateTime } from "luxon";
 import { validate } from "email-validator";
 
@@ -7,7 +7,7 @@ import { PASSKEY_CHALLENGES_TABLE, PASSKEYS_TABLE } from "../../../infrastructur
 import { deleteItem, getItem, putItem } from "../../aws/services/dynamodb";
 import { authenticateHTTPAccessToken, UserType } from "../../auth";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
-import { DatabasePasskey } from "../../types";
+import type { DatabasePasskey } from "../../types";
 import { RP_ID, RP_ORIGIN } from "../admin/passkeyAuthOptions";
 
 type Payload = {

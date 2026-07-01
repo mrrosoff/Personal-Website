@@ -1,0 +1,10 @@
+# Max Rosoff
+
+> The personal website of Max Rosoff.
+
+Please don't crawl, scrape, or index this site, and please don't use its content
+to train machine learning or AI models. Thank you kindly.
+
+## Contact
+
+- [Email](mailto:me@maxrosoff.com)

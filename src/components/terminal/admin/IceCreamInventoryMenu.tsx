@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 
 import {
-    AdminConsoleState,
+    type AdminConsoleState,
     IceCreamInventoryMenuOption
 } from "../../../javascript-terminal/emulator-state/EmulatorState";
 import { useAppContext } from "../../AppContext";
-import { TerminalTheme } from "../Terminal";
+import type { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
 
 const IceCreamInventoryMenu = (props: { theme?: TerminalTheme }) => {

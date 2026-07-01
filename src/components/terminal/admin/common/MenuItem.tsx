@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material";
 
-import { TerminalTheme } from "../../Terminal";
+import type { TerminalTheme } from "../../Terminal";
 
 const MenuItem = (props: {
     selected: boolean;

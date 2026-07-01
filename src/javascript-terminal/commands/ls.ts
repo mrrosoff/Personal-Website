@@ -5,7 +5,7 @@ import * as PathUtil from "../fs/util/path-util";
 import * as DirOp from "../fs/operations/directory-operations";
 import { fsSearch } from "../fs/operations/base-operations";
 import EmulatorState from "../emulator-state/EmulatorState";
-import { FileSystem } from "../../FileSystem";
+import type { FileSystem } from "../../FileSystem";
 
 const IMPLIED_DIRECTORY_ENTRIES = [".", ".."];
 

@@ -1,4 +1,4 @@
-import { File } from "../../../FileSystem";
+import type { File } from "../../../FileSystem";
 
 export function isFile(obj: File): boolean {
     return obj.type === "-";

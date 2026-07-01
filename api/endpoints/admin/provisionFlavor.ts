@@ -1,11 +1,11 @@
-import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
+import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import Stripe from "stripe";
 
 import { FLAVORS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
 import { getParameter } from "../../aws/services/parameterStore";
 import { getAllItems, putItem } from "../../aws/services/dynamodb";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
-import { FlavorType } from "../../types";
+import type { FlavorType } from "../../types";
 import { isAdmin } from "../../auth";
 
 type ProvisionFlavorPayload = {

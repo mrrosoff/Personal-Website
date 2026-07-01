@@ -1,9 +1,22 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
 
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography, useMediaQuery, useTheme } from "@mui/material";
 
 import Logo from "../../../images/logo.webp";
 import { useAppContext } from "../../AppContext";
+
+type NetworkInformation = { type?: string; effectiveType?: string };
+
+const getNetworkLabel = (): string => {
+    const connection = (navigator as Navigator & { connection?: NetworkInformation }).connection;
+    if (connection?.type && connection.type !== "unknown") {
+        return connection.type.toUpperCase();
+    }
+    if (connection?.effectiveType) {
+        return connection.effectiveType.toUpperCase();
+    }
+    return "LINK";
+};
 
 const BootUp = (props: {
     setBootingUp: Dispatch<SetStateAction<boolean>>;
@@ -14,27 +27,28 @@ const BootUp = (props: {
 
     useEffect(() => {
         setTimeout(() => setState(1), 300);
-        setTimeout(() => setState(2), 500);
-        setTimeout(() => setState(3), 8000);
-        setTimeout(() => setState(4), 1200);
-        setTimeout(() => setState(5), 1500);
-        setTimeout(() => setState(6), 1600);
-        setTimeout(() => setState(7), 1700);
-        setTimeout(() => setState(8), 1800);
-        setTimeout(() => setState(9), 1900);
-        setTimeout(() => setState(10), 2100);
-        setTimeout(() => setState(11), 2400);
-        setTimeout(() => setState(12), 3000);
-        setTimeout(() => setState(13), 3500);
-        setTimeout(() => setState(14), 4000);
-        setTimeout(() => setState(15), 4500);
-        setTimeout(() => setState(16), 5000);
-        setTimeout(() => setState(17), 5500);
-        setTimeout(() => setState(18), 5800);
+        setTimeout(() => setState(2), 450);
+        setTimeout(() => setState(3), 650);
+        setTimeout(() => setState(4), 850);
+        setTimeout(() => setState(5), 1050);
+        setTimeout(() => setState(6), 1200);
+        setTimeout(() => setState(7), 1350);
+        setTimeout(() => setState(8), 1500);
+        setTimeout(() => setState(9), 1650);
+        setTimeout(() => setState(10), 1800);
+        setTimeout(() => setState(11), 1950);
+        setTimeout(() => setState(12), 2200);
+        setTimeout(() => setState(13), 2500);
+        setTimeout(() => setState(14), 3000);
+        setTimeout(() => setState(15), 3500);
+        setTimeout(() => setState(16), 3850);
+        setTimeout(() => setState(17), 4350);
+        setTimeout(() => setState(18), 4700);
+        setTimeout(() => setState(19), 5250);
         setTimeout(() => {
             setShouldBootUp(false);
             props.setBootingUp(false);
-        }, 8000);
+        }, 6400);
     }, []);
 
     return (
@@ -56,21 +70,36 @@ const BootUp = (props: {
                     <DriveInfo state={state} />
                 </Grid>
             ) : null}
-            {state >= 16 ? (
+            {state >= 15 ? (
                 <Grid>
-                    <Typography>
-                        {" "}
-                        Initializing OS . . . . . .
-                        {state >= 17 ? <span style={{ color: "#2BC903" }}> SUCCESS </span> : null}
-                    </Typography>
+                    <Grid container direction={"column"} spacing={1}>
+                        <NetworkInfo state={state} />
+                        {state >= 17 ? (
+                            <Grid>
+                                <Typography>
+                                    {" "}
+                                    Initializing OS . . . . . .
+                                    {state >= 18 ? (
+                                        <span style={{ color: "#2BC903" }}> SUCCESS </span>
+                                    ) : null}
+                                </Typography>
+                            </Grid>
+                        ) : null}
+                    </Grid>
                 </Grid>
             ) : null}
-            {state >= 18 ? <Grid>Starting Computer . . .</Grid> : null}
+            {state >= 19 ? (
+                <Grid>
+                    <StartingComputer />
+                </Grid>
+            ) : null}
         </Grid>
     );
 };
 
 const Header = () => {
+    const muiTheme = useTheme();
+    const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
     return (
         <Grid container spacing={4}>
             <Grid>
@@ -86,7 +115,14 @@ const Header = () => {
                     style={{ height: "100%" }}
                 >
                     <Grid>
-                        <Typography>Rosoff OS (BETA PROGRAM)</Typography>
+                        {smallScreen ? (
+                            <>
+                                <Typography>Rosoff OS</Typography>
+                                <Typography>(BETA PROGRAM)</Typography>
+                            </>
+                        ) : (
+                            <Typography>Rosoff OS (BETA PROGRAM)</Typography>
+                        )}
                     </Grid>
                 </Grid>
             </Grid>
@@ -173,13 +209,16 @@ const SystemInfo = (props: { state: number }) => {
 };
 
 const DriveInfo = (props: { state: number }) => {
+    const muiTheme = useTheme();
+    const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
     return (
         <Grid container direction={"column"} spacing={1}>
             {props.state >= 12 ? (
                 <Grid>
                     <header>
                         <Typography>
-                            Detecting Primary Drive (/dev/sda1) . . . . . .
+                            Detecting {smallScreen ? "" : "Primary "}Drive (/dev/sda1)
+                            {smallScreen ? " . . . ." : " . . . . . ."}
                             {props.state >= 13 ? (
                                 <span style={{ color: "#2BC903" }}> SUCCESS </span>
                             ) : null}
@@ -187,12 +226,13 @@ const DriveInfo = (props: { state: number }) => {
                     </header>
                 </Grid>
             ) : null}
-            {props.state >= 14 ? (
+            {props.state >= 12 ? (
                 <Grid>
                     <header>
                         <Typography>
-                            Detecting Secondary Drive (/dev/sda2) . . . . . .
-                            {props.state >= 15 ? (
+                            Detecting {smallScreen ? "" : "Secondary "}Drive (/dev/sda2)
+                            {smallScreen ? " . . . ." : " . . . . . ."}
+                            {props.state >= 14 ? (
                                 <span style={{ color: "#2BC903" }}> SUCCESS </span>
                             ) : null}
                         </Typography>
@@ -202,4 +242,36 @@ const DriveInfo = (props: { state: number }) => {
         </Grid>
     );
 };
+const NetworkInfo = (props: { state: number }) => {
+    const muiTheme = useTheme();
+    const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
+    const online = navigator.onLine;
+    return (
+        <Grid>
+            <header>
+                <Typography>
+                    Detecting Network Link ({getNetworkLabel()})
+                    {smallScreen ? " . . ." : " . . . . . ."}
+                    {props.state >= 16 ? (
+                        <span style={{ color: online ? "#2BC903" : "#ff0606" }}>
+                            {online ? " CONNECTED " : " OFFLINE "}
+                        </span>
+                    ) : null}
+                </Typography>
+            </header>
+        </Grid>
+    );
+};
+
+const StartingComputer = () => {
+    const [dots, setDots] = useState(".");
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setDots((prev) => (prev.length >= 3 ? "." : prev + "."));
+        }, 250);
+        return () => clearInterval(interval);
+    }, []);
+    return <Grid>Starting Computer {dots}</Grid>;
+};
+
 export default BootUp;

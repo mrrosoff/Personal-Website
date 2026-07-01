@@ -6,7 +6,7 @@ import { parseOptions } from "../parser";
 export const optDef = {};
 
 const functionDef = (state: EmulatorState, commandOptions: string[]) => {
-    const { options, argv } = parseOptions(commandOptions, optDef);
+    const { argv } = parseOptions(commandOptions, optDef);
     const envVariables = state.getEnvVariables();
 
     if (argv.length === 0) {

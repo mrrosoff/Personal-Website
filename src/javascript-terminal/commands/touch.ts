@@ -8,7 +8,7 @@ import * as FileOp from "../fs/operations/file-operations";
 export const optDef = {};
 
 const functionDef = (state: EmulatorState, commandOptions: string[]) => {
-    const { options, argv } = parseOptions(commandOptions, optDef);
+    const { argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length === 0) {
         return { output: "usage: touch file", type: "error" };

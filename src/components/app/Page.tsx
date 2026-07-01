@@ -1,4 +1,4 @@
-import { Dispatch, RefObject, SetStateAction, useState } from "react";
+import { type Dispatch, type RefObject, type SetStateAction, useState } from "react";
 import { Link, useMatch, useNavigate } from "react-router-dom";
 
 import { Avatar, Box, Button, Paper, useMediaQuery, useTheme } from "@mui/material";

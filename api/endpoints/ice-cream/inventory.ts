@@ -1,4 +1,4 @@
-import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
+import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 
 import { FLAVORS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
 import { getAllItems } from "../../aws/services/dynamodb";

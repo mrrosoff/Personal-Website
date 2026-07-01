@@ -1,5 +1,5 @@
 import { Typography, useMediaQuery, useTheme } from "@mui/material";
-import { TerminalTheme } from "../Terminal";
+import type { TerminalTheme } from "../Terminal";
 
 const OutputText = (props: { theme: TerminalTheme; children: string }) => {
     const theme = useTheme();
