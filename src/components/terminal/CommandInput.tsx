@@ -62,7 +62,6 @@ const CommandInput = (
                 onChange={props.onChange}
                 onKeyDown={props.onKeyDown}
                 style={{ width: 0, height: 0, opacity: 0, position: "absolute" }}
-                aria-label={"Terminal command input"}
             />
         </Typography>
     );
