@@ -158,13 +158,18 @@ const Layout = (props: {
 
     useEffect(() => {
         function handleResize() {
-            const smallHeight = window.innerHeight < 620;
+            const height = window.visualViewport?.height ?? window.innerHeight;
+            const smallHeight = height < 620;
             setBottomScreenPadding(smallHeight ? 0 : 4);
         }
 
         handleResize();
         window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
+        window.visualViewport?.addEventListener("resize", handleResize);
+        return () => {
+            window.removeEventListener("resize", handleResize);
+            window.visualViewport?.removeEventListener("resize", handleResize);
+        };
     }, []);
 
     return (

@@ -81,6 +81,7 @@ const CustomIconButton = (props: {
             target={props.isLink ? undefined : "_blank"}
             rel={props.isLink ? undefined : "noopener"}
             size={"large"}
+            aria-label={props.social ? props.text : undefined}
             onClick={props.isLink ? () => navigate(props.href) : undefined}
         >
             <Box sx={{ display: "flex", alignItems: "center", color: "white" }}>
