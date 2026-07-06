@@ -24,6 +24,8 @@ const BootUp = (props: {
 }) => {
     const [state, setState] = useState(0);
     const { setShouldBootUp } = useAppContext();
+    const muiTheme = useTheme();
+    const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
 
     useEffect(() => {
         setTimeout(() => setState(1), 300);
@@ -74,7 +76,7 @@ const BootUp = (props: {
                 <Grid>
                     <Grid container direction={"column"} spacing={1}>
                         <NetworkInfo state={state} />
-                        {state >= 17 ? (
+                        {state >= 17 && !smallScreen ? (
                             <Grid>
                                 <Typography>
                                     {" "}
@@ -226,12 +228,12 @@ const DriveInfo = (props: { state: number }) => {
                     </header>
                 </Grid>
             ) : null}
-            {props.state >= 12 ? (
+            {props.state >= 12 && !smallScreen ? (
                 <Grid>
                     <header>
                         <Typography>
-                            Detecting {smallScreen ? "" : "Secondary "}Drive (/dev/sda2)
-                            {smallScreen ? " . . . ." : " . . . . . ."}
+                            Detecting Secondary Drive (/dev/sda2)
+                            {" . . . . . ."}
                             {props.state >= 14 ? (
                                 <span style={{ color: "#2BC903" }}> SUCCESS </span>
                             ) : null}
