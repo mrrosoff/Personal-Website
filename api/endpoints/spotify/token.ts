@@ -66,6 +66,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
                 );
             }
             if (!err.response || err.response.status >= 500) {
+                console.error("Spotify Token Request Failed", err.response?.data ?? err.message);
                 return buildErrorResponse(
                     event,
                     HttpResponseStatus.SERVICE_UNAVAILABLE,
@@ -73,6 +74,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
                 );
             }
         }
+        console.error(err);
         throw err;
     }
 
