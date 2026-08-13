@@ -70,7 +70,7 @@ class WebsiteAPIStack extends Stack {
     private createResourceGroup(): CfnGroup {
         return new CfnGroup(this, "websiteResourceGroup", {
             name: "Personal-Website",
-            description: "© Max Rosoff",
+            description: "Copyright Max Rosoff",
             resourceQuery: {
                 type: "CLOUDFORMATION_STACK_1_0",
                 query: {
