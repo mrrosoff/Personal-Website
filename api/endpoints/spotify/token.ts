@@ -2,6 +2,7 @@ import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import axios from "axios";
 
 import { getParameters } from "../../aws/services/parameterStore";
+import { isDevice } from "../../auth";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
 import { saveRefreshToken } from "./exchange";
 
@@ -10,11 +11,6 @@ type SpotifyRefreshResponse = {
     expires_in: number;
     refresh_token?: string;
 };
-
-function bearerToken(event: APIGatewayEvent): string | undefined {
-    const header = event.headers?.Authorization ?? event.headers?.authorization;
-    return header?.split(" ")[1];
-}
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     const {
@@ -29,7 +25,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         "/website/spotify/refresh-token"
     );
 
-    if (!deviceSecret || bearerToken(event) !== deviceSecret) {
+    if (!isDevice(event, deviceSecret)) {
         return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Invalid Device Token");
     }
 

@@ -14,7 +14,8 @@
         "build-cdk": "npm run types && ts-node esbuild.mts",
         "bootstrap": "cdk bootstrap",
         "deploy": "cdk deploy --require-approval=never --all",
-        "register-passkey": "ts-node scripts/registerPasskey.ts"
+        "register-passkey": "ts-node scripts/registerPasskey.ts",
+        "test": "vitest run"
     },
     "author": "Max Rosoff",
     "license": "MIT",
@@ -26,6 +27,7 @@
         "@aws-sdk/credential-providers": "^3.915.0",
         "@aws-sdk/lib-dynamodb": "^3.914.0",
         "@aws-sdk/lib-storage": "^3.914.0",
+        "@aws-sdk/s3-request-presigner": "^3.931.0",
         "@emotion/react": "^11.14.0",
         "@emotion/styled": "^11.14.1",
         "@mui/icons-material": "^7.3.4",
@@ -41,7 +43,10 @@
         "axios": "^1.12.2",
         "constructs": "^10.4.2",
         "email-validator": "^2.0.4",
+        "fast-png": "^8.0.0",
         "get-options": "^1.2.0",
+        "heic-decode": "^2.1.0",
+        "jpeg-js": "^0.4.4",
         "jsonwebtoken": "^9.0.3",
         "jwt-decode": "^4.0.0",
         "luxon": "^3.7.2",
@@ -69,6 +74,7 @@
         "react-email": "4.3.1",
         "ts-node": "^10.9.2",
         "typescript": "^5.9.3",
-        "vite": "^7.1.11"
+        "vite": "^7.1.11",
+        "vitest": "^3.0.5"
     }
 }

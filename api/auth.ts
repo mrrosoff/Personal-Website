@@ -72,15 +72,34 @@ export async function decryptToken(token: string): Promise<AccessToken> {
     return verify(token, key) as AccessToken;
 }
 
+function authorizationHeader(req: IncomingMessage | APIGatewayProxyEvent): string | undefined {
+    const header = req.headers?.authorization ?? req.headers?.Authorization;
+    return Array.isArray(header) ? undefined : (header ?? undefined);
+}
+
+export function bearerToken(req: IncomingMessage | APIGatewayProxyEvent): string | undefined {
+    return authorizationHeader(req)?.split(" ")[1];
+}
+
+export function isDevice(
+    req: IncomingMessage | APIGatewayProxyEvent,
+    deviceSecret: string | undefined
+): boolean {
+    const token = bearerToken(req);
+    if (!token || !deviceSecret) {
+        return false;
+    }
+    return token === deviceSecret;
+}
+
 export async function authenticateHTTPAccessToken(
     req: IncomingMessage | APIGatewayProxyEvent
 ): Promise<AccessToken | null> {
-    const authHeader = req.headers.authorization ?? req.headers.Authorization;
-    if (!authHeader || Array.isArray(authHeader)) {
+    if (!authorizationHeader(req)) {
         return null;
     }
 
-    const token = authHeader.split(" ")[1];
+    const token = bearerToken(req);
     if (!token) {
         const message = "Authentication Token Not Specified";
         console.info(message);

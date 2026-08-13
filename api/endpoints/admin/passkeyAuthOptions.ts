@@ -3,7 +3,7 @@ import { generateAuthenticationOptions } from "@simplewebauthn/server";
 import { DateTime } from "luxon";
 
 import { putItem } from "../../aws/services/dynamodb";
-import { HttpResponseStatus, buildResponse, PASSKEY_CHALLENGES_TABLE } from "../../common";
+import { HttpResponseStatus, PASSKEY_CHALLENGES_TABLE, buildResponse } from "../../common";
 
 export const RP_NAME = `Max's Personal Website`;
 export const RP_ID = "maxrosoff.com";

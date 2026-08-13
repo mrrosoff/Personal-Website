@@ -9,10 +9,10 @@ import { deleteItem, getItem } from "../../aws/services/dynamodb";
 import { generateToken, UserType } from "../../auth";
 import {
     HttpResponseStatus,
-    buildErrorResponse,
-    buildResponse,
     PASSKEYS_TABLE,
-    PASSKEY_CHALLENGES_TABLE
+    PASSKEY_CHALLENGES_TABLE,
+    buildErrorResponse,
+    buildResponse
 } from "../../common";
 import { RP_ID, RP_ORIGIN } from "./passkeyAuthOptions";
 

@@ -4,6 +4,7 @@ export type DynamoDBFieldValue =
     | DynamoDBScalar[]
     | { [key: string]: DynamoDBFieldValue };
 
+export type PolaroidObjectKey = `framebuffer/${string}.bin` | `preview/${string}.png`;
 export const API_ENDPOINT_URL = "https://api.maxrosoff.com";
 export const JWKS_URI = `${API_ENDPOINT_URL}/jwks`;
 
@@ -36,6 +37,7 @@ export enum UserType {
     ADMIN,
     FRIEND,
     SPOTIFY_OWNER,
+    POLAROID_OWNER,
     SHARE
 }
 

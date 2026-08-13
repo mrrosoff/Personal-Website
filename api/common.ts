@@ -4,6 +4,9 @@ export const FLAVORS_TABLE = "website-flavors";
 export const PASSKEY_CHALLENGES_TABLE = "website-passkey-challenges";
 export const PASSKEYS_TABLE = "website-passkeys";
 
+export const POLAROID_PHOTOS_BUCKET = "website-polaroid-photos";
+export const MAX_PHOTOS = 50;
+
 export enum HttpResponseStatus {
     OK = 200,
     SPOTIFY_NEEDS_AUTH = 246,
@@ -35,8 +38,8 @@ export function buildResponse(
         statusCode,
         headers: {
             "Access-Control-Allow-Origin": otherOrigin ?? "https://maxrosoff.com",
-            "Access-Control-Allow-Headers": "Content-Type",
-            "Access-Control-Allow-Methods": "OPTIONS,POST"
+            "Access-Control-Allow-Headers": "Content-Type,Authorization",
+            "Access-Control-Allow-Methods": "OPTIONS,GET,POST,DELETE"
         },
         body: JSON.stringify(body)
     };
