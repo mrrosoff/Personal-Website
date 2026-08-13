@@ -30,6 +30,7 @@ import { Construct } from "constructs";
 import { EmailSubscription } from "aws-cdk-lib/aws-sns-subscriptions";
 import { AttributeType, BillingMode, Table } from "aws-cdk-lib/aws-dynamodb";
 import { BlockPublicAccess, Bucket } from "aws-cdk-lib/aws-s3";
+import { CfnGroup } from "aws-cdk-lib/aws-resourcegroups";
 
 import {
     FLAVORS_TABLE,
@@ -62,6 +63,22 @@ class WebsiteAPIStack extends Stack {
 
         const alarmTopic = this.createAlarmActions();
         this.createRestAPIErrorsAlarm(alarmTopic, restApi);
+
+        this.createResourceGroup();
+    }
+
+    private createResourceGroup(): CfnGroup {
+        return new CfnGroup(this, "websiteResourceGroup", {
+            name: "Personal-Website",
+            description: "© Max Rosoff",
+            resourceQuery: {
+                type: "CLOUDFORMATION_STACK_1_0",
+                query: {
+                    stackIdentifier: this.stackId,
+                    resourceTypeFilters: ["AWS::AllSupported"]
+                }
+            }
+        });
     }
 
     private createFlavorsTable(): Table {
