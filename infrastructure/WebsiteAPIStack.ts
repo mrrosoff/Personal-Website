@@ -29,8 +29,14 @@ import { Construct } from "constructs";
 
 import { EmailSubscription } from "aws-cdk-lib/aws-sns-subscriptions";
 import { AttributeType, BillingMode, Table } from "aws-cdk-lib/aws-dynamodb";
+import { BlockPublicAccess, Bucket } from "aws-cdk-lib/aws-s3";
 
-import { FLAVORS_TABLE, PASSKEY_CHALLENGES_TABLE, PASSKEYS_TABLE } from "../api/common";
+import {
+    FLAVORS_TABLE,
+    PASSKEY_CHALLENGES_TABLE,
+    PASSKEYS_TABLE,
+    POLAROID_PHOTOS_BUCKET
+} from "../api/common";
 
 class WebsiteAPIStack extends Stack {
     constructor(scope: Construct, id: string, props: StackProps) {
@@ -50,6 +56,7 @@ class WebsiteAPIStack extends Stack {
             passkeyChallengesTable,
             passkeysTable
         );
+        this.createPolaroidPhotosBucket(apiRole);
         const restApi = this.createAPI(certificate, apiRole);
         this.createSpotifyReauthSchedule(apiRole);
 
@@ -112,6 +119,7 @@ class WebsiteAPIStack extends Stack {
         this.createJWKRoutes(api, apiRole);
         this.createIceCreamRoutes(api, apiRole);
         this.createSpotifyRoutes(api, apiRole);
+        this.createPolaroidRoutes(api, apiRole);
         return api;
     }
 
@@ -221,6 +229,25 @@ class WebsiteAPIStack extends Stack {
         spotifyResource
             .addResource("token")
             .addMethod("GET", new LambdaIntegration(spotifyTokenLambda));
+    }
+
+    private createPolaroidRoutes(api: RestApi, apiRole: Role) {
+        const photoLambda = this.createPolaroidPhotoLambda(apiRole);
+        const photosLambda = this.createPolaroidPhotosLambda(apiRole);
+        const uploadLambda = this.createPolaroidUploadLambda(apiRole);
+        const removeLambda = this.createPolaroidRemoveLambda(apiRole);
+
+        const polaroidResource = api.root.addResource("polaroid");
+        polaroidResource
+            .addResource("photos")
+            .addMethod("GET", new LambdaIntegration(photosLambda));
+        polaroidResource
+            .addResource("upload")
+            .addMethod("POST", new LambdaIntegration(uploadLambda));
+        polaroidResource.addResource("photo").addMethod("POST", new LambdaIntegration(photoLambda));
+        polaroidResource
+            .addResource("remove")
+            .addMethod("POST", new LambdaIntegration(removeLambda));
     }
 
     private createSpotifyConnectLambda(role: Role): LambdaFunction {
@@ -481,6 +508,52 @@ class WebsiteAPIStack extends Stack {
         };
     }
 
+    private createPolaroidPhotoLambda(role: Role): LambdaFunction {
+        const functionName = "website-polaroid-photo";
+        return new LambdaFunction(this, "websitePolaroidPhotoLambda", {
+            functionName,
+            handler: "photo.handler",
+            code: Code.fromAsset("dist/lambda/polaroid/photo"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(functionName, role),
+            timeout: Duration.seconds(10)
+        });
+    }
+
+    private createPolaroidPhotosLambda(role: Role): LambdaFunction {
+        const functionName = "website-polaroid-photos";
+        return new LambdaFunction(this, "websitePolaroidPhotosLambda", {
+            functionName,
+            handler: "photos.handler",
+            code: Code.fromAsset("dist/lambda/polaroid/photos"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(functionName, role),
+            timeout: Duration.seconds(10)
+        });
+    }
+
+    private createPolaroidUploadLambda(role: Role): LambdaFunction {
+        const functionName = "website-polaroid-upload";
+        return new LambdaFunction(this, "websitePolaroidUploadLambda", {
+            functionName,
+            handler: "upload.handler",
+            code: Code.fromAsset("dist/lambda/polaroid/upload"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(functionName, role)
+        });
+    }
+
+    private createPolaroidRemoveLambda(role: Role): LambdaFunction {
+        const functionName = "website-polaroid-remove";
+        return new LambdaFunction(this, "websitePolaroidRemoveLambda", {
+            functionName,
+            handler: "remove.handler",
+            code: Code.fromAsset("dist/lambda/polaroid/remove"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(functionName, role)
+        });
+    }
+
     private createAPILambdaRole(...tables: Table[]): Role {
         return new Role(this, "websiteApiLambdaRole", {
             roleName: "APILambdaRole",
@@ -509,6 +582,17 @@ class WebsiteAPIStack extends Stack {
                 })
             }
         });
+    }
+
+    private createPolaroidPhotosBucket(role: Role): Bucket {
+        const bucket = new Bucket(this, "websitePolaroidPhotosBucket", {
+            bucketName: POLAROID_PHOTOS_BUCKET,
+            blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
+            removalPolicy: RemovalPolicy.RETAIN
+        });
+
+        bucket.grantReadWrite(role);
+        return bucket;
     }
 
     private createRestAPIErrorsAlarm(alarmTopic: Topic, api: RestApi): Alarm {

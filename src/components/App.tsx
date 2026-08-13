@@ -18,6 +18,7 @@ import SpotifyCallback from "./SpotifyCallback";
 import Page, { LinksAndMenu } from "./app/Page";
 
 const Checkout = lazy(() => import("./ice-cream/checkout/Checkout"));
+const Polaroid = lazy(() => import("./polaroid/Polaroid"));
 
 export const API_URL = "https://api.maxrosoff.com";
 
@@ -138,6 +139,7 @@ const AppRoutes = () => {
                 <Route path="ice-cream/checkout/return" element={<Return />} />
                 <Route path="ice-cream/mailing-list/unsubscribe" element={<Unsubscribe />} />
                 <Route path="ice-cream/mailing-list" element={<MailingList />} />
+                <Route path="polaroid" element={<Polaroid />} />
                 <Route path="register-friend" element={<RegisterFriend />} />
                 <Route path="spotify/callback" element={<SpotifyCallback />} />
             </Route>

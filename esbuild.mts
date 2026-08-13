@@ -83,3 +83,8 @@ await buildLambdaFunction(
     "api/endpoints/spotify/reauthReminder.ts",
     "dist/lambda/spotify/reauthReminder"
 );
+
+await buildLambdaFunction("api/endpoints/polaroid/photo.ts", "dist/lambda/polaroid/photo");
+await buildLambdaFunction("api/endpoints/polaroid/photos.ts", "dist/lambda/polaroid/photos");
+await buildLambdaFunction("api/endpoints/polaroid/remove.ts", "dist/lambda/polaroid/remove");
+await buildLambdaFunction("api/endpoints/polaroid/upload.ts", "dist/lambda/polaroid/upload");
