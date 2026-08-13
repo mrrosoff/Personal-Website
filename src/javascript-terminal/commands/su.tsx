@@ -19,15 +19,13 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     }
 
     const payload = decodeToken(token);
-    if (!payload) {
-        return { output: "Permission Denied", type: "error" };
-    } else if (payload.userType === UserType.ADMIN) {
-        return { output: "Already Authenticated As Admin", type: "error" };
-    } else if (
-        payload.userType !== UserType.FRIEND &&
-        payload.userType !== UserType.SPOTIFY_OWNER &&
-        payload.userType !== UserType.POLAROID_OWNER
-    ) {
+    const allowedUserTypes = [
+        UserType.ADMIN,
+        UserType.FRIEND,
+        UserType.SPOTIFY_OWNER,
+        UserType.POLAROID_OWNER
+    ];
+    if (!payload || !allowedUserTypes.includes(payload.userType)) {
         return { output: "Permission Denied", type: "error" };
     }
 
@@ -36,7 +34,10 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         return { output: `Unknown User "${targetUser}"`, type: "error" };
     }
 
-    state.setPasswordPromptState({});
+    if (payload.userType !== UserType.ADMIN) {
+        state.setPasswordPromptState({});
+    }
+
     return { output: "", type: "text" };
 };
 
