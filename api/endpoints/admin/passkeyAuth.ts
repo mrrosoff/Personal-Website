@@ -54,7 +54,6 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         );
     }
 
-    const userType = storedPasskey.userType ?? UserType.ADMIN;
     const webAuthnCredential: Parameters<typeof verifyAuthenticationResponse>[0]["credential"] = {
         id: storedPasskey.credentialId,
         publicKey: Buffer.from(storedPasskey.publicKey, "base64"),
@@ -85,9 +84,13 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 
     await deleteItem(PASSKEY_CHALLENGES_TABLE, challengeRecord.id);
 
+    const userName = storedPasskey.userType === UserType.ADMIN ? "admin" : storedPasskey.name;
     return buildResponse(event, HttpResponseStatus.OK, {
         verified: true,
         message: "Authentication Successful",
-        token: await generateToken(storedPasskey.name, { userType, email: storedPasskey.email })
+        token: await generateToken(userName, {
+            userType: storedPasskey.userType,
+            email: storedPasskey.email
+        })
     });
 };

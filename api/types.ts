@@ -28,7 +28,7 @@ export type DatabasePasskeyChallenge = {
 export type DatabasePasskey = {
     credentialId: string;
     publicKey: string;
-    userType?: UserType;
+    userType: UserType;
     name: string;
     email: string;
 };
