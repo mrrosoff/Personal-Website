@@ -16,7 +16,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     }
 
     const payload = await authenticateHTTPAccessToken(event);
-    const allowedUserTypes = [UserType.FRIEND, UserType.SPOTIFY_OWNER];
+    const allowedUserTypes = [UserType.FRIEND, UserType.SPOTIFY_OWNER, UserType.POLAROID_OWNER];
     if (payload && allowedUserTypes.includes(payload.userType)) {
         return handleFriendCheckout(event, priceIds, payload.id);
     }

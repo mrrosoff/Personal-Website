@@ -61,6 +61,9 @@ const renderOutputs = (
                 </OutputHeader>
             </Grid>
             {content.output.map((output, idx) => {
+                if (output.type === "navigate") {
+                    return null;
+                }
                 if (output.type === "react") {
                     return <Grid key={idx}>{output.output}</Grid>;
                 }
@@ -144,7 +147,7 @@ const Terminal = (
             setFriendToken("");
             return;
         }
-        const allowedUserTypes = [UserType.FRIEND, UserType.SPOTIFY_OWNER];
+        const allowedUserTypes = [UserType.FRIEND, UserType.SPOTIFY_OWNER, UserType.POLAROID_OWNER];
         setFriendToken(allowedUserTypes.includes(authPayload.userType) ? authToken : "");
     }, [authToken]);
 
@@ -252,8 +255,9 @@ const Terminal = (
                 e.preventDefault();
                 const newState = emulator.execute(emulatorState, input, props.errorStr);
                 const outputs = newState.getOutputs();
-                if (outputs.length > 0) {
-                    outputs[outputs.length - 1].promptSymbol = promptSymbol;
+                const latest = outputs[outputs.length - 1];
+                if (latest) {
+                    latest.promptSymbol = promptSymbol;
                     newState.setOutputs([...outputs]);
                 }
                 setEmulatorState(newState);
@@ -261,6 +265,11 @@ const Terminal = (
                 setHistoryIndex(-1);
                 setRenderedOutputs(calculateOutputs());
                 scrollToBottom();
+
+                const target = latest?.output.find((result) => result.type === "navigate");
+                if (target) {
+                    navigate(target.output as string, { replace: true });
+                }
                 break;
         }
     };

@@ -8,7 +8,12 @@ import FlavorSuggestionEmail from "../../../src/emails/FlavorSuggestionEmail";
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     const payload = await authenticateHTTPAccessToken(event);
-    const allowedUserTypes = [UserType.ADMIN, UserType.FRIEND, UserType.SPOTIFY_OWNER];
+    const allowedUserTypes = [
+        UserType.ADMIN,
+        UserType.FRIEND,
+        UserType.SPOTIFY_OWNER,
+        UserType.POLAROID_OWNER
+    ];
     if (!payload || !allowedUserTypes.includes(payload.userType)) {
         return buildErrorResponse(
             event,

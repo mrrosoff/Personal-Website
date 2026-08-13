@@ -28,6 +28,7 @@ import man from "./commands/man";
 import mkdir from "./commands/mkdir";
 import mv from "./commands/mv";
 import play from "./commands/play";
+import polaroid from "./commands/polaroid";
 import printenv from "./commands/printenv";
 import pwd from "./commands/pwd";
 import rm from "./commands/rm";
@@ -76,6 +77,7 @@ const commands: CommandMapping = {
     mkdir,
     mv,
     play,
+    polaroid,
     printenv,
     pwd,
     rm,

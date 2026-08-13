@@ -3,7 +3,7 @@ import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
 import { Box, Grid, Typography, useMediaQuery, useTheme } from "@mui/material";
 
 import Logo from "../../../images/logo.webp";
-import { useAppContext } from "../../AppContext";
+import { HAS_BOOTED_KEY, useAppContext } from "../../AppContext";
 
 type NetworkInformation = { type?: string; effectiveType?: string };
 
@@ -48,6 +48,7 @@ const BootUp = (props: {
         setTimeout(() => setState(18), 4700);
         setTimeout(() => setState(19), 5250);
         setTimeout(() => {
+            sessionStorage.setItem(HAS_BOOTED_KEY, "true");
             setShouldBootUp(false);
             props.setBootingUp(false);
         }, 6400);

@@ -11,6 +11,8 @@ import { CommandMapping, DefaultCommandMapping, EmulatorState } from "../javascr
 import { RECONNECT_TOKEN_KEY } from "../javascript-terminal/commands/spotify";
 import files from "../FileSystem";
 
+export const HAS_BOOTED_KEY = "HAS_BOOTED_UP";
+
 type AppContextType = {
     shouldBootUp: boolean;
     setShouldBootUp: Dispatch<SetStateAction<boolean>>;
@@ -55,7 +57,9 @@ if (persistedAuthToken) {
 }
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
-    const [shouldBootUp, setShouldBootUp] = useState<boolean>(import.meta.env.PROD);
+    const hasBootedUp = sessionStorage.getItem(HAS_BOOTED_KEY) !== null;
+    const [shouldBootUp, setShouldBootUp] = useState<boolean>(import.meta.env.PROD && !hasBootedUp);
+
     const [friendToken, setFriendToken] = useState<string>("");
     const [emulatorState, setEmulatorState] = useState<EmulatorState>(initialEmulatorState);
 

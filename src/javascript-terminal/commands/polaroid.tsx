@@ -1,16 +1,25 @@
 import assert from "assert";
 
-import { Navigate } from "react-router-dom";
+import { decodeToken } from "../../components/App";
+import { UserType } from "../../../api/types";
 import EmulatorState from "../emulator-state/EmulatorState";
 
 export const optDef = {};
 
-const functionDef = (_state: EmulatorState, _commandOptions: string[]) => {
+const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
     try {
-        return {
-            output: <Navigate to="/polaroid" replace={true} />,
-            type: "react"
-        };
+        const environmentVariables = state.getEnvVariables();
+        const token = environmentVariables["AUTH_TOKEN"];
+        if (!token) {
+            return { output: "Permission Denied", type: "error" };
+        }
+
+        const payload = decodeToken(token);
+        if (payload?.userType !== UserType.ADMIN && payload?.userType !== UserType.POLAROID_OWNER) {
+            return { output: "Permission Denied", type: "error" };
+        }
+
+        return { output: "/polaroid", type: "navigate" };
     } catch (err: unknown) {
         assert(err instanceof Error);
         return { output: err.message, type: "error" };
