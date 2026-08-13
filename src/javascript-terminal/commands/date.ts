@@ -1,5 +1,7 @@
 import assert from "assert";
 
+import { DateTime } from "luxon";
+
 import { parseOptions } from "../parser";
 import EmulatorState from "../emulator-state/EmulatorState";
 
@@ -11,39 +13,25 @@ const functionDef = (_state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
 
     try {
-        const now = new Date();
+        const now = options.utc ? DateTime.utc() : DateTime.now();
 
         if (argv.length > 0 && argv[0].startsWith("+")) {
             const format = argv[0].slice(1);
             let output = format;
 
-            const replacements: Record<string, string> = options.utc
-                ? {
-                      "%Y": now.getUTCFullYear().toString(),
-                      "%y": now.getUTCFullYear().toString().slice(-2),
-                      "%m": String(now.getUTCMonth() + 1).padStart(2, "0"),
-                      "%d": String(now.getUTCDate()).padStart(2, "0"),
-                      "%H": String(now.getUTCHours()).padStart(2, "0"),
-                      "%M": String(now.getUTCMinutes()).padStart(2, "0"),
-                      "%S": String(now.getUTCSeconds()).padStart(2, "0"),
-                      "%A": now.toLocaleDateString("en-US", { weekday: "long", timeZone: "UTC" }),
-                      "%a": now.toLocaleDateString("en-US", { weekday: "short", timeZone: "UTC" }),
-                      "%B": now.toLocaleDateString("en-US", { month: "long", timeZone: "UTC" }),
-                      "%b": now.toLocaleDateString("en-US", { month: "short", timeZone: "UTC" })
-                  }
-                : {
-                      "%Y": now.getFullYear().toString(),
-                      "%y": now.getFullYear().toString().slice(-2),
-                      "%m": String(now.getMonth() + 1).padStart(2, "0"),
-                      "%d": String(now.getDate()).padStart(2, "0"),
-                      "%H": String(now.getHours()).padStart(2, "0"),
-                      "%M": String(now.getMinutes()).padStart(2, "0"),
-                      "%S": String(now.getSeconds()).padStart(2, "0"),
-                      "%A": now.toLocaleDateString("en-US", { weekday: "long" }),
-                      "%a": now.toLocaleDateString("en-US", { weekday: "short" }),
-                      "%B": now.toLocaleDateString("en-US", { month: "long" }),
-                      "%b": now.toLocaleDateString("en-US", { month: "short" })
-                  };
+            const replacements: Record<string, string> = {
+                "%Y": now.toFormat("yyyy"),
+                "%y": now.toFormat("yy"),
+                "%m": now.toFormat("MM"),
+                "%d": now.toFormat("dd"),
+                "%H": now.toFormat("HH"),
+                "%M": now.toFormat("mm"),
+                "%S": now.toFormat("ss"),
+                "%A": now.toFormat("EEEE"),
+                "%a": now.toFormat("EEE"),
+                "%B": now.toFormat("MMMM"),
+                "%b": now.toFormat("MMM")
+            };
 
             Object.entries(replacements).forEach(([key, value]) => {
                 output = output.replace(new RegExp(key, "g"), value);
@@ -52,9 +40,7 @@ const functionDef = (_state: EmulatorState, commandOptions: string[]) => {
             return { output };
         }
 
-        const defaultFormat = options.utc
-            ? now.toUTCString()
-            : now.toDateString() + " " + now.toTimeString().split(" ")[0];
+        const defaultFormat = options.utc ? now.toHTTP() : now.toFormat("EEE MMM dd yyyy HH:mm:ss");
         return { output: defaultFormat };
     } catch (err: unknown) {
         assert(err instanceof Error);

@@ -1,6 +1,8 @@
 import { type Dispatch, type RefObject, type SetStateAction, useState } from "react";
 import { Link, useMatch, useNavigate } from "react-router-dom";
 
+import { DateTime } from "luxon";
+
 import { Avatar, Box, Button, Paper, useMediaQuery, useTheme } from "@mui/material";
 
 import { DesktopSocialButtonList } from "./SocialButtons";
@@ -19,13 +21,15 @@ const Page = (props: {
 
     const [bootingUp, setBootingUp] = useState(shouldBootUp);
 
-    const creationDate = new Date();
-    creationDate.setMinutes(creationDate.getMinutes() - 8);
-    creationDate.setHours(creationDate.getHours() - 2);
-    creationDate.setDate(creationDate.getDate() - 5);
+    const creationDate = DateTime.now().minus({ days: 5, hours: 2, minutes: 8 });
 
     if (bootingUp) {
-        return <BootUp setBootingUp={setBootingUp} creationDate={creationDate.toString()} />;
+        return (
+            <BootUp
+                setBootingUp={setBootingUp}
+                creationDate={creationDate.toFormat("EEE MMM dd yyyy HH:mm:ss 'GMT'ZZZ (ZZZZZ)")}
+            />
+        );
     }
 
     return <TerminalEmbed ref={props.inputRef} scrollContainerRef={props.scrollContainerRef} />;
