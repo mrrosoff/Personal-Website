@@ -7,11 +7,15 @@ import {
     type SetStateAction
 } from "react";
 
+import { jwtDecode } from "jwt-decode";
+import { DateTime } from "luxon";
+
+import type { AccessToken } from "../../api/types";
 import { CommandMapping, DefaultCommandMapping, EmulatorState } from "../javascript-terminal";
-import { RECONNECT_TOKEN_KEY } from "../javascript-terminal/commands/spotify";
 import files from "../FileSystem";
 
 export const HAS_BOOTED_KEY = "HAS_BOOTED_UP";
+export const AUTH_TOKEN_KEY = "AUTH_TOKEN";
 
 type AppContextType = {
     shouldBootUp: boolean;
@@ -33,6 +37,7 @@ const initialEmulatorState = EmulatorState.create({
                 if (state.getEnvVariables()["AUTH_TOKEN"]) {
                     const { AUTH_TOKEN: _removed, ...rest } = state.getEnvVariables();
                     state.setEnvVariables(rest);
+                    sessionStorage.removeItem(AUTH_TOKEN_KEY);
                     return { output: "", type: "text" };
                 }
                 close();
@@ -43,17 +48,23 @@ const initialEmulatorState = EmulatorState.create({
     })
 });
 
-/**
- * Restore the sudo session that the Spotify reconnect flow stashed before
- * navigating this tab away to Spotify (see RECONNECT_TOKEN_KEY).
- */
-const persistedAuthToken = sessionStorage.getItem(RECONNECT_TOKEN_KEY);
+const storedAuthToken = sessionStorage.getItem(AUTH_TOKEN_KEY);
+
+let persistedAuthToken: string | null = null;
+try {
+    const { exp } = jwtDecode<AccessToken>(storedAuthToken ?? "");
+    persistedAuthToken = DateTime.fromSeconds(exp) > DateTime.now() ? storedAuthToken : null;
+} catch (err) {
+    console.error("Stored Auth Token Invalid:", err);
+}
+
 if (persistedAuthToken) {
-    sessionStorage.removeItem(RECONNECT_TOKEN_KEY);
     initialEmulatorState.setEnvVariables({
         ...initialEmulatorState.getEnvVariables(),
         AUTH_TOKEN: persistedAuthToken
     });
+} else {
+    sessionStorage.removeItem(AUTH_TOKEN_KEY);
 }
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {

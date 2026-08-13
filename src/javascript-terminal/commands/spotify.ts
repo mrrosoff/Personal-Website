@@ -7,14 +7,6 @@ import { parseOptions } from "../parser";
 
 export const optDef = {};
 
-/**
- * The auth flow navigates this tab away to Spotify, which unloads the app and
- * drops the in-memory AUTH_TOKEN session. Stash it here so the app can restore
- * it when Spotify redirects back. sessionStorage survives a same-tab,
- * cross-origin round trip and is scoped to this tab.
- */
-export const RECONNECT_TOKEN_KEY = "SPOTIFY_RECONNECT_AUTH_TOKEN";
-
 async function openAuthorization(token: string) {
     try {
         const { data } = await axios.post(
@@ -22,7 +14,6 @@ async function openAuthorization(token: string) {
             {},
             { headers: { Authorization: `Bearer ${token}` } }
         );
-        sessionStorage.setItem(RECONNECT_TOKEN_KEY, token);
         window.location.assign(data.authorizeUrl);
     } catch (err) {
         console.error("Spotify Authentication Failed:", err);

@@ -6,6 +6,7 @@ import { parseOptions } from "../parser";
 import * as CommandMappingUtil from "../emulator-state/CommandMapping";
 import Emulator from "../emulator";
 import { API_URL } from "../../components/App";
+import { AUTH_TOKEN_KEY } from "../../components/AppContext";
 
 export const optDef = {};
 
@@ -75,6 +76,7 @@ export const authenticateWithPasskey = async (
 
         const existingVars = emulatorState.getEnvVariables();
         emulatorState.setEnvVariables({ ...existingVars, AUTH_TOKEN: authResult.token });
+        sessionStorage.setItem(AUTH_TOKEN_KEY, authResult.token);
 
         const commandMapping = emulatorState.getCommandMapping();
         emulatorState.setPasswordPromptState(undefined);
@@ -91,6 +93,7 @@ export const authenticateWithPasskey = async (
         if (promptState.targetCommand === "su" && result.type === "error") {
             const { AUTH_TOKEN: _, ...remainingVars } = emulatorState.getEnvVariables();
             emulatorState.setEnvVariables(remainingVars);
+            sessionStorage.removeItem(AUTH_TOKEN_KEY);
         }
 
         emulatorState.setPasswordPromptState(undefined);
