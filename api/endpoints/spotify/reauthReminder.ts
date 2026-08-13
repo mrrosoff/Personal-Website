@@ -1,7 +1,7 @@
 import { DateTime, Duration } from "luxon";
 import { Resend } from "resend";
+import { PASSKEYS_TABLE } from "../../common";
 
-import { PASSKEYS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
 import SpotifyReauthEmail from "../../../src/emails/SpotifyReauthEmail";
 import { getAllItems } from "../../aws/services/dynamodb";
 import { getParameter } from "../../aws/services/parameterStore";

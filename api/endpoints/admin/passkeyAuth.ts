@@ -5,10 +5,15 @@ import {
 } from "@simplewebauthn/server";
 import { DateTime } from "luxon";
 
-import { PASSKEY_CHALLENGES_TABLE, PASSKEYS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
 import { deleteItem, getItem } from "../../aws/services/dynamodb";
 import { generateToken, UserType } from "../../auth";
-import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
+import {
+    HttpResponseStatus,
+    buildErrorResponse,
+    buildResponse,
+    PASSKEYS_TABLE,
+    PASSKEY_CHALLENGES_TABLE
+} from "../../common";
 import { RP_ID, RP_ORIGIN } from "./passkeyAuthOptions";
 
 type PasskeyAuthPayload = {

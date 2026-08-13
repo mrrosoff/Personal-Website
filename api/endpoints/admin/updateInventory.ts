@@ -3,8 +3,7 @@ import Stripe from "stripe";
 
 import { updateItemFields } from "../../aws/services/dynamodb";
 import { getParameter } from "../../aws/services/parameterStore";
-import { FLAVORS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
-import { buildResponse, buildErrorResponse, HttpResponseStatus } from "../../common";
+import { FLAVORS_TABLE, HttpResponseStatus, buildErrorResponse, buildResponse } from "../../common";
 import type { DatabaseFlavor, FlavorType } from "../../types";
 import { isAdmin } from "../../auth";
 

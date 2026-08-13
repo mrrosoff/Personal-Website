@@ -4,8 +4,15 @@ const isDevelopment = process.env.NODE_ENV === "development";
 
 async function buildLambdaFunction(entrypoint: string, directory: string, watch = false) {
     const targetOptions: BuildOptions = { platform: "node", target: "node22" };
-    const bundleOptions: BuildOptions = { bundle: true, sourcemap: true };
-    const productionOptions: BuildOptions = { minify: true, treeShaking: true };
+    // sourcesContent: false drops the original source text from the .map, which
+    // is most of its bytes. Stack traces still resolve to file, line and column
+    // under --enable-source-maps; you just lose the snippet inline.
+    const bundleOptions: BuildOptions = { bundle: true, sourcemap: true, sourcesContent: false };
+    const productionOptions: BuildOptions = {
+        minify: true,
+        treeShaking: true,
+        legalComments: "none"
+    };
     const options: BuildOptions = {
         entryPoints: [entrypoint],
         outdir: directory,

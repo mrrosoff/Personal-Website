@@ -3,10 +3,15 @@ import { type RegistrationResponseJSON, verifyRegistrationResponse } from "@simp
 import { DateTime } from "luxon";
 import { validate } from "email-validator";
 
-import { PASSKEY_CHALLENGES_TABLE, PASSKEYS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
 import { deleteItem, getItem, putItem } from "../../aws/services/dynamodb";
 import { authenticateHTTPAccessToken, UserType } from "../../auth";
-import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
+import {
+    HttpResponseStatus,
+    buildErrorResponse,
+    buildResponse,
+    PASSKEYS_TABLE,
+    PASSKEY_CHALLENGES_TABLE
+} from "../../common";
 import type { DatabasePasskey } from "../../types";
 import { RP_ID, RP_ORIGIN } from "../admin/passkeyAuthOptions";
 

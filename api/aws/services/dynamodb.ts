@@ -8,11 +8,7 @@ import {
     DeleteCommand
 } from "@aws-sdk/lib-dynamodb";
 
-import {
-    FLAVORS_TABLE,
-    PASSKEY_CHALLENGES_TABLE,
-    PASSKEYS_TABLE
-} from "../../../infrastructure/WebsiteAPIStack";
+import { FLAVORS_TABLE, PASSKEY_CHALLENGES_TABLE, PASSKEYS_TABLE } from "../../common";
 import {
     type DatabaseFlavor,
     type DatabasePasskey,

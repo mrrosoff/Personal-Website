@@ -1,12 +1,11 @@
 import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import { Resend } from "resend";
 
-import { FLAVORS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
 import { getParameter } from "../../aws/services/parameterStore";
 import { getAllItems } from "../../aws/services/dynamodb";
 import MailingListEmail from "../../../src/emails/MailingListEmail";
 import OrderSuccessEmail from "../../../src/emails/OrderSuccessEmail";
-import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
+import { FLAVORS_TABLE, HttpResponseStatus, buildErrorResponse, buildResponse } from "../../common";
 
 type SendEmailPayload = {
     message: string;

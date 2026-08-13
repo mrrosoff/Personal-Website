@@ -30,9 +30,7 @@ import { Construct } from "constructs";
 import { EmailSubscription } from "aws-cdk-lib/aws-sns-subscriptions";
 import { AttributeType, BillingMode, Table } from "aws-cdk-lib/aws-dynamodb";
 
-export const FLAVORS_TABLE = "website-flavors";
-export const PASSKEY_CHALLENGES_TABLE = "website-passkey-challenges";
-export const PASSKEYS_TABLE = "website-passkeys";
+import { FLAVORS_TABLE, PASSKEY_CHALLENGES_TABLE, PASSKEYS_TABLE } from "../api/common";
 
 class WebsiteAPIStack extends Stack {
     constructor(scope: Construct, id: string, props: StackProps) {

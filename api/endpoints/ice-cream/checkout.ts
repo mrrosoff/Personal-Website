@@ -1,11 +1,10 @@
 import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import Stripe from "stripe";
 
-import { FLAVORS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
 import { decrementField, getAllItems } from "../../aws/services/dynamodb";
 import { getParameter } from "../../aws/services/parameterStore";
 import { authenticateHTTPAccessToken, UserType } from "../../auth";
-import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
+import { FLAVORS_TABLE, HttpResponseStatus, buildErrorResponse, buildResponse } from "../../common";
 import { sendOrderSuccessEmail } from "../email/sendEmail";
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {

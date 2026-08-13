@@ -1,5 +1,9 @@
 import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 
+export const FLAVORS_TABLE = "website-flavors";
+export const PASSKEY_CHALLENGES_TABLE = "website-passkey-challenges";
+export const PASSKEYS_TABLE = "website-passkeys";
+
 export enum HttpResponseStatus {
     OK = 200,
     SPOTIFY_NEEDS_AUTH = 246,

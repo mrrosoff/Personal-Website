@@ -1,10 +1,9 @@
 import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import Stripe from "stripe";
 
-import { FLAVORS_TABLE } from "../../../infrastructure/WebsiteAPIStack";
 import { decrementField, incrementField } from "../../aws/services/dynamodb";
 import { getParameters } from "../../aws/services/parameterStore";
-import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
+import { FLAVORS_TABLE, HttpResponseStatus, buildErrorResponse, buildResponse } from "../../common";
 import { registerNewMailingListUser } from "../email/register";
 import { sendOrderSuccessEmail } from "../email/sendEmail";
 
