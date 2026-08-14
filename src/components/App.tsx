@@ -179,7 +179,7 @@ const Layout = (props: {
             component="main"
             height={"100dvh"}
             sx={{
-                p: mdScreen ? (isHome ? 2 : 3) : 8,
+                p: mdScreen ? (isHome ? 2 : 3) : 6,
                 ...(mdScreen && { pt: 4, pb: screenBottomPadding }),
                 boxSizing: "border-box",
                 overflow: isHome ? "hidden" : undefined
