@@ -10,6 +10,10 @@ export default class Emulator {
     autocomplete(state: EmulatorState, partialStr: string) {
         try {
             const suggestions = this.suggest(state, partialStr);
+            if (suggestions.length === 0) {
+                return partialStr;
+            }
+
             if (suggestions.length > 1) {
                 if (state.getTabCount() === 0) {
                     state.setTabCount(state.getTabCount() + 1);
