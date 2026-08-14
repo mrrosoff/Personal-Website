@@ -122,6 +122,9 @@ class WebsiteAPIStack extends Stack {
                 certificate
             },
             disableExecuteApiEndpoint: true,
+            // Without this the polaroid upload arrives UTF-8 decoded and its
+            // bytes are already corrupt by the time the Lambda sees them.
+            binaryMediaTypes: ["image/jpeg"],
             deployOptions: {
                 stageName: "production",
                 tracingEnabled: true
