@@ -84,17 +84,18 @@ for (let i = 0; i < 256; i++) {
 
 const DITHER_STRENGTH = 0.88;
 const DITHER_ERROR_CLAMP = 0.35;
+const DITHER_NOISE = 0.05;
 
 const LIGHTNESS_WEIGHT = 1.0;
 const CHROMA_WEIGHT = 4.0;
 
 const POLAROID_FILM: FilmStock = {
-    blackLift: 0.07,
+    blackLift: 0.02,
     highlightRolloff: 0.8,
     contrast: 1.12,
     pivot: 0.4,
     whiteBalance: [1.04, 1.0, 0.96],
-    shadowTint: [0.015, 0.05, 0.065],
+    shadowTint: [0.008, 0.025, 0.033],
     highlightTint: [0.075, 0.055, 0.0],
     tintStrength: 1.0,
     saturation: 0.9,
@@ -354,7 +355,10 @@ function toneCurve(value: number, stock: FilmStock): number {
     // Asymptotic, so nothing clips hard. The blooming look around windows.
     out = out / (1 + Math.pow(out, 1 / stock.highlightRolloff) * (1 - stock.highlightRolloff));
 
-    // Shadows can never reach zero -- true of the film and of the panel.
+    // Barely any: the panel's black is only ~18% reflectance, so the paper
+    // already lifts the shadows. Lifting much here too puts the darkest pixel
+    // above ink black, and a palette with no grey can only dither that gap
+    // with white dots.
     out = stock.blackLift + out * (1 - stock.blackLift);
 
     return clamp01(out);
@@ -453,7 +457,14 @@ function ditherToPalette(linear: Float32Array, width: number, height: number): U
             const g = work[i + 1]!;
             const b = work[i + 2]!;
 
-            const index = nearestInk(palette, rgbToOklab(...linearToByteTriple(r, g, b)));
+            // Floyd-Steinberg alone organises into worms and checkerboards.
+            // Jittering only the ink choice breaks that up without touching the
+            // error below, so the grain is random but the tone stays exact.
+            const n = pixelNoise(x, y) * DITHER_NOISE;
+            const index = nearestInk(
+                palette,
+                rgbToOklab(...linearToByteTriple(r + n, g + n, b + n))
+            );
             out[y * width + x] = index;
 
             const chosen = palette.inks[index]!.rgb;
@@ -474,6 +485,15 @@ function ditherToPalette(linear: Float32Array, width: number, height: number): U
 
 function clamp(value: number, limit: number): number {
     return value < -limit ? -limit : value > limit ? limit : value;
+}
+
+// Deterministic per-pixel value in [-0.5, 0.5]. Same photo, same grain, so a
+// re-upload does not produce a different hash.
+function pixelNoise(x: number, y: number): number {
+    let h = Math.imul(x, 374761393) + Math.imul(y, 668265263);
+    h = Math.imul(h ^ (h >>> 13), 1274126177);
+    h = h ^ (h >>> 16);
+    return (h >>> 0) / 4294967296 - 0.5;
 }
 
 function nearestInk(palette: PreparedPalette, lab: Lab): number {
