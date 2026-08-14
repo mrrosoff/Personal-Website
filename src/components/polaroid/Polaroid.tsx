@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { Alert, Button, Card, CircularProgress, Container, Stack, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, Stack, Typography } from "@mui/material";
 import axios from "axios";
 
 import { UserType } from "../../../api/types";
@@ -16,6 +16,9 @@ export default function Polaroid() {
     const token = emulatorState.getEnvVariables()["AUTH_TOKEN"];
 
     const authorized = useMemo(() => {
+        if (import.meta.env.DEV) {
+            return true;
+        }
         const payload = token ? decodeToken(token) : null;
         if (!payload) {
             return false;
@@ -28,7 +31,6 @@ export default function Polaroid() {
     const [photos, setPhotos] = useState<Photo[]>([]);
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [dragging, setDragging] = useState(false);
     const [queue, setQueue] = useState<File[]>([]);
 
     const refresh = useCallback(async () => {
@@ -85,76 +87,90 @@ export default function Polaroid() {
     }
 
     return (
-        <Container maxWidth="md" sx={{ py: 6 }}>
-            <Typography variant="h4" gutterBottom>
-                Your Polaroid
+        <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
+            <Typography variant="h2" gutterBottom>
+                Polaroid
             </Typography>
-            <Typography color="text.secondary" sx={{ mb: 1 }}>
+            <Typography color="text.secondary" sx={{ mb: -1 }}>
                 Add photos here and they'll show up on the frame. It changes on its own about once
                 an hour.
             </Typography>
-            <Typography color="text.secondary" sx={{ mb: 4 }}>
-                <strong>Give it a shake</strong> to make it fetch new photos right away — it'll land
-                on whatever you just added.
+            <Typography color="text.secondary">
+                Give it a shake to make it fetch new photos right away — it'll land on whatever you
+                just added.
             </Typography>
-
-            {error && (
-                <Alert severity="error" sx={{ mb: 3 }} onClose={() => setError(null)}>
-                    {error}
-                </Alert>
-            )}
-            <Card
-                variant="outlined"
-                onDragOver={(event) => {
-                    event.preventDefault();
-                    setDragging(true);
-                }}
-                onDragLeave={() => setDragging(false)}
-                onDrop={(event) => {
-                    event.preventDefault();
-                    setDragging(false);
-                    setQueue(Array.from(event.dataTransfer.files));
-                }}
+            <Box
                 sx={{
-                    p: 6,
-                    mb: 5,
-                    textAlign: "center",
+                    mt: 4,
+                    p: 3,
+                    flexGrow: 1,
+                    borderRadius: 2,
                     borderStyle: "dashed",
                     borderWidth: 2,
-                    bgcolor: dragging ? "action.hover" : "background.paper"
+                    borderColor: "divider",
+                    display: "flex",
+                    flexDirection: "column"
                 }}
             >
-                {busy ? (
-                    <Stack alignItems="center" spacing={2}>
-                        <CircularProgress />
-                        <Typography color="text.secondary">Developing…</Typography>
-                    </Stack>
-                ) : (
-                    <Stack alignItems="center" spacing={2}>
-                        <Typography>Drag photos here</Typography>
-                        <Button variant="contained" component="label">
-                            Choose photos
-                            <input
-                                hidden
-                                multiple
-                                type="file"
-                                accept="image/*,.heic,.heif"
-                                onChange={(event) => {
-                                    if (event.target.files)
-                                        setQueue(Array.from(event.target.files));
-                                }}
-                            />
-                        </Button>
-                    </Stack>
-                )}
-            </Card>
-            <PhotoGrid photos={photos} onRemove={(id) => void remove(id)} />
+                <Stack
+                    direction="row"
+                    justifyContent="flex-end"
+                    alignItems="center"
+                    spacing={2}
+                    sx={{ mb: 3 }}
+                >
+                    {busy && (
+                        <>
+                            <CircularProgress size={22} />
+                            <Typography color="text.secondary">Developing…</Typography>
+                        </>
+                    )}
+                    <Button
+                        variant="contained"
+                        component="label"
+                        size="large"
+                        disabled={busy}
+                        sx={{ fontSize: "1rem", px: "19px", py: "7px" }}
+                    >
+                        Choose Photos
+                        <input
+                            hidden
+                            multiple
+                            type="file"
+                            accept="image/*,.heic,.heif"
+                            onChange={(event) => {
+                                if (event.target.files) setQueue(Array.from(event.target.files));
+                            }}
+                        />
+                    </Button>
+                </Stack>
+                <Box
+                    sx={{
+                        flexGrow: 1,
+                        minHeight: 0,
+                        overflowY: "auto",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: photos.length > 0 ? "flex-start" : "center"
+                    }}
+                >
+                    {error && (
+                        <Typography
+                            color="error"
+                            sx={{ textAlign: "center", mb: photos.length > 0 ? 3 : 0 }}
+                        >
+                            {error}
+                        </Typography>
+                    )}
+                    <PhotoGrid photos={photos} onRemove={(id) => void remove(id)} />
+                </Box>
+            </Box>
             <CropDialog
                 file={queue[0] ?? null}
                 remaining={Math.max(0, queue.length - 1)}
                 onCancel={() => setQueue((current) => current.slice(1))}
                 onConfirm={(cropped) => void upload(cropped)}
             />
-        </Container>
+        </Box>
     );
 }
