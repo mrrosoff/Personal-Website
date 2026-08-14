@@ -1,7 +1,6 @@
 import { type ReactNode, useState } from "react";
-import { Box, CircularProgress, Dialog, IconButton, Stack, useMediaQuery } from "@mui/material";
+import { Box, CircularProgress, Dialog, IconButton, useMediaQuery } from "@mui/material";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import OpenInFullIcon from "@mui/icons-material/OpenInFull";
 
 import { MAX_PHOTOS } from "../../../api/common";
 
@@ -19,6 +18,7 @@ type PhotoGridProps = {
 
 const ROWS = 2;
 const EMPTY_SLOTS = 18;
+const GLOW = 12;
 
 const overlayButton = {
     width: 24,
@@ -36,11 +36,8 @@ const intoRows = <T,>(items: T[]) =>
 
 export default function PhotoGrid({ photos, uploading, onRemove }: PhotoGridProps) {
     const [enlarged, setEnlarged] = useState<Photo | null>(null);
-    // On a phone the overlay buttons give way to tapping the photo.
     const compact = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
-    // Enough empty slots to read as room for more without scrolling through the
-    // whole cap, and fewer as the frame fills up.
     const empty = Math.max(0, Math.min(EMPTY_SLOTS, MAX_PHOTOS - photos.length));
     // Leading, because the list is newest first and that is where the finished
     // photo lands. Trailing would put the spinner at the far end from it.
@@ -55,7 +52,10 @@ export default function PhotoGrid({ photos, uploading, onRemove }: PhotoGridProp
             <Box
                 sx={{
                     position: "absolute",
-                    inset: 0,
+                    // Overflow clips at the edges, so the hover glow needs room
+                    // inside the scroller rather than beyond it.
+                    inset: `-${GLOW}px`,
+                    padding: `${GLOW}px`,
                     display: "flex",
                     flexDirection: "column",
                     gap: 3,
@@ -87,7 +87,6 @@ export default function PhotoGrid({ photos, uploading, onRemove }: PhotoGridProp
                                     photo={slot}
                                     compact={compact}
                                     onEnlarge={() => setEnlarged(slot)}
-                                    onRemove={() => onRemove(slot.id)}
                                 />
                             )
                         )}
@@ -116,16 +115,22 @@ export default function PhotoGrid({ photos, uploading, onRemove }: PhotoGridProp
                             imageRendering: "pixelated"
                         }}
                     />
-                    {compact && enlarged && (
+                    {enlarged && (
                         <IconButton
-                            size="small"
                             onClick={() => {
                                 onRemove(enlarged.id);
                                 setEnlarged(null);
                             }}
-                            sx={{ ...overlayButton, position: "absolute", top: 8, right: 8 }}
+                            sx={{
+                                ...overlayButton,
+                                width: 40,
+                                height: 40,
+                                position: "absolute",
+                                top: 12,
+                                right: 12
+                            }}
                         >
-                            <DeleteOutlineIcon sx={{ fontSize: 13 }} />
+                            <DeleteOutlineIcon />
                         </IconButton>
                     )}
                 </Box>
@@ -137,13 +142,11 @@ export default function PhotoGrid({ photos, uploading, onRemove }: PhotoGridProp
 function PhotoCell({
     photo,
     compact,
-    onEnlarge,
-    onRemove
+    onEnlarge
 }: {
     photo: Photo;
     compact: boolean;
     onEnlarge: () => void;
-    onRemove: () => void;
 }) {
     const [loaded, setLoaded] = useState(false);
 
@@ -151,14 +154,20 @@ function PhotoCell({
         // The ratio is reserved up front. Sizing from the image's intrinsic
         // width instead would collapse the cell until it decodes, then pop.
         <Box
-            onClick={compact ? onEnlarge : undefined}
+            onClick={onEnlarge}
             sx={{
                 position: "relative",
                 height: "100%",
                 aspectRatio: "2 / 3",
                 borderRadius: 1,
                 bgcolor: "grey.900",
-                cursor: compact ? "pointer" : "default"
+                cursor: "pointer",
+                transition: "box-shadow 160ms ease-out",
+                // Shadow only. Rotating or scaling resamples the dither and it
+                // shimmers like glare.
+                ...(!compact && {
+                    "&:hover": { boxShadow: `0 0 ${GLOW}px rgba(255, 255, 255, 0.2)` }
+                })
             }}
         >
             {/* The dithered framebuffer, so this is exactly what the panel shows. */}
@@ -176,20 +185,6 @@ function PhotoCell({
                     transition: "opacity 200ms ease"
                 }}
             />
-            {!compact && (
-                <Stack
-                    direction="row"
-                    spacing={0.75}
-                    sx={{ position: "absolute", top: 8, right: 8 }}
-                >
-                    <IconButton size="small" onClick={onEnlarge} sx={overlayButton}>
-                        <OpenInFullIcon sx={{ fontSize: 12 }} />
-                    </IconButton>
-                    <IconButton size="small" onClick={onRemove} sx={overlayButton}>
-                        <DeleteOutlineIcon sx={{ fontSize: 13 }} />
-                    </IconButton>
-                </Stack>
-            )}
         </Box>
     );
 }

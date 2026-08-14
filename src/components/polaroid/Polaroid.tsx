@@ -113,11 +113,15 @@ export default function Polaroid() {
             <Typography variant="h2" gutterBottom>
                 Polaroid
             </Typography>
-            <Typography color="text.secondary" sx={{ mb: -1 }}>
+            <Typography color="text.secondary" sx={{ mb: -1, fontSize: { xs: 18, sm: 22 } }}>
                 Drop photos in and they'll develop onto the frame, a new one every hour or so.
                 {compact && " " + secondaryText}
             </Typography>
-            {!compact && <Typography color="text.secondary">{secondaryText}</Typography>}
+            {!compact && (
+                <Typography color="text.secondary" sx={{ fontSize: { xs: 18, sm: 22 } }}>
+                    {secondaryText}
+                </Typography>
+            )}
             <DropArea dragging={dragging} setDragging={setDragging} onFiles={acceptFiles}>
                 <UploadControls onFiles={acceptFiles} />
                 <Gallery
@@ -162,7 +166,7 @@ function DropArea(props: {
                 props.onFiles(Array.from(event.dataTransfer.files));
             }}
             sx={{
-                mt: compact ? 6 : 2,
+                mt: compact ? 4 : 2,
                 p: compact ? 2 : 3,
                 pt: 5,
                 flex: "1 1 0",
@@ -189,8 +193,7 @@ function UploadControls(props: { onFiles: (files: File[]) => void }) {
             component="label"
             size="large"
             sx={{
-                // Straddling the border, so the photos below start at the very
-                // top of the box instead of below a row of controls.
+                // Straddles the border so the photos below start at the box's top.
                 position: "absolute",
                 top: 0,
                 right: 24,
@@ -231,7 +234,6 @@ function Gallery(props: {
             sx={{
                 flex: "1 1 0",
                 minHeight: 0,
-                overflow: "hidden",
                 display: "flex",
                 flexDirection: "column"
             }}
