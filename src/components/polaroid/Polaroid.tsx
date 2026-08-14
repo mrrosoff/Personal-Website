@@ -1,6 +1,6 @@
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, useMediaQuery } from "@mui/material";
 import axios from "axios";
 
 import { UserType } from "../../../api/types";
@@ -100,16 +100,32 @@ export default function Polaroid() {
         [authHeader, refresh]
     );
 
+    const compact = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+
     if (!authorized) {
         return <Navigate to="/" replace />;
     }
 
+    const secondaryText =
+        "Can't wait? Shake it like a Polaroid picture and it'll pull down whatever you just added.";
     return (
         <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
-            <Intro />
+            <Typography variant="h2" gutterBottom>
+                Polaroid
+            </Typography>
+            <Typography color="text.secondary" sx={{ mb: -1 }}>
+                Drop photos in and they'll develop onto the frame, a new one every hour or so.
+                {compact && " " + secondaryText}
+            </Typography>
+            {!compact && <Typography color="text.secondary">{secondaryText}</Typography>}
             <DropArea dragging={dragging} setDragging={setDragging} onFiles={acceptFiles}>
-                <UploadControls busy={busy} onFiles={acceptFiles} />
-                <Gallery photos={photos} error={error} onRemove={(id) => void remove(id)} />
+                <UploadControls onFiles={acceptFiles} />
+                <Gallery
+                    photos={photos}
+                    uploading={busy}
+                    error={error}
+                    onRemove={(id) => void remove(id)}
+                />
             </DropArea>
             <CropDialog
                 file={queue[0] ?? null}
@@ -121,55 +137,33 @@ export default function Polaroid() {
     );
 }
 
-function Intro() {
-    return (
-        <>
-            <Typography variant="h2" gutterBottom>
-                Polaroid
-            </Typography>
-            <Typography color="text.secondary" sx={{ mb: -1 }}>
-                Add photos here and they'll show up on the frame. It changes on its own about once
-                an hour.
-            </Typography>
-            <Typography color="text.secondary">
-                Give it a shake to make it fetch new photos right away — it'll land on whatever you
-                just added.
-            </Typography>
-        </>
-    );
-}
-
-function DropArea({
-    dragging,
-    setDragging,
-    onFiles,
-    children
-}: {
+function DropArea(props: {
     dragging: boolean;
     setDragging: (dragging: boolean) => void;
     onFiles: (files: File[]) => void;
     children: ReactNode;
 }) {
+    const compact = useMediaQuery((theme) => theme.breakpoints.down("lg"));
     return (
         <Box
             onDragOver={(event) => {
                 event.preventDefault();
-                setDragging(true);
+                props.setDragging(true);
             }}
             onDragLeave={(event) => {
                 // Fires when crossing into a child too, so ignore those.
                 if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
-                    setDragging(false);
+                    props.setDragging(false);
                 }
             }}
             onDrop={(event) => {
                 event.preventDefault();
-                setDragging(false);
-                onFiles(Array.from(event.dataTransfer.files));
+                props.setDragging(false);
+                props.onFiles(Array.from(event.dataTransfer.files));
             }}
             sx={{
-                mt: 4,
-                p: 3,
+                mt: compact ? 6 : 2,
+                p: compact ? 2 : 3,
                 pt: 5,
                 flex: "1 1 0",
                 minHeight: 0,
@@ -177,24 +171,23 @@ function DropArea({
                 borderRadius: 2,
                 borderStyle: "dashed",
                 borderWidth: 2,
-                borderColor: dragging ? "primary.main" : "divider",
-                bgcolor: dragging ? "action.hover" : "transparent",
+                borderColor: props.dragging ? "primary.main" : "divider",
+                bgcolor: props.dragging ? "action.hover" : "transparent",
                 display: "flex",
                 flexDirection: "column"
             }}
         >
-            {children}
+            {props.children}
         </Box>
     );
 }
 
-function UploadControls({ busy, onFiles }: { busy: boolean; onFiles: (files: File[]) => void }) {
+function UploadControls(props: { onFiles: (files: File[]) => void }) {
     return (
         <Button
             variant="contained"
             component="label"
             size="large"
-            disabled={busy}
             sx={{
                 // Straddling the border, so the photos below start at the very
                 // top of the box instead of below a row of controls.
@@ -205,32 +198,31 @@ function UploadControls({ busy, onFiles }: { busy: boolean; onFiles: (files: Fil
                 zIndex: 1,
                 fontSize: "1rem",
                 px: "19px",
-                py: "7px",
-                // Disabled defaults to a translucent background, which would let
-                // the dashed border show through the button.
-                "&.Mui-disabled": { bgcolor: "background.paper", color: "text.secondary" }
+                py: "7px"
             }}
         >
-            {busy ? "Developing…" : "Choose Photos"}
+            Choose Photos
             <input
                 hidden
                 multiple
                 type="file"
                 accept={ACCEPT_ATTRIBUTE}
                 onChange={(event) => {
-                    if (event.target.files) onFiles(Array.from(event.target.files));
+                    if (event.target.files) {
+                        props.onFiles(Array.from(event.target.files));
+                    }
+                    // Without this, picking the same files again fires no change
+                    // event and the picker looks broken.
+                    event.target.value = "";
                 }}
             />
         </Button>
     );
 }
 
-function Gallery({
-    photos,
-    error,
-    onRemove
-}: {
+function Gallery(props: {
     photos: Photo[];
+    uploading: boolean;
     error: string | null;
     onRemove: (id: string) => void;
 }) {
@@ -244,16 +236,20 @@ function Gallery({
                 flexDirection: "column"
             }}
         >
-            {error && (
+            {props.error && (
                 <Typography
                     color="error"
-                    sx={{ textAlign: "center", mb: photos.length > 0 ? 3 : 0 }}
+                    sx={{ textAlign: "center", mb: props.photos.length > 0 ? 3 : 0 }}
                 >
-                    {error}
+                    {props.error}
                 </Typography>
             )}
             <Box sx={{ flex: "1 1 0", minHeight: 0, position: "relative" }}>
-                <PhotoGrid photos={photos} onRemove={onRemove} />
+                <PhotoGrid
+                    photos={props.photos}
+                    uploading={props.uploading}
+                    onRemove={props.onRemove}
+                />
             </Box>
         </Box>
     );
