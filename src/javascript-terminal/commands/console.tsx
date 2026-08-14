@@ -2,7 +2,8 @@ import assert from "assert";
 import axios from "axios";
 
 import { type DatabaseFlavor, FLAVOR_TYPES, type FlavorType, UserType } from "../../../api/types";
-import { API_URL, decodeToken } from "../../components/App";
+import { API_URL } from "../../components/App";
+import { decodeToken } from "../../auth";
 import EmulatorState, {
     AdminConsoleScreen,
     type EditField,

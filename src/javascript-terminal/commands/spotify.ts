@@ -1,7 +1,8 @@
 import axios from "axios";
 
 import { UserType } from "../../../api/types";
-import { API_URL, decodeToken } from "../../components/App";
+import { API_URL } from "../../components/App";
+import { decodeToken } from "../../auth";
 import EmulatorState from "../emulator-state/EmulatorState";
 import { parseOptions } from "../parser";
 

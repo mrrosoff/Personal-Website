@@ -1,5 +1,5 @@
 import { UserType } from "../../../api/types";
-import { decodeToken } from "../../components/App";
+import { decodeToken } from "../../auth";
 import EmulatorState from "../emulator-state/EmulatorState";
 import { parseOptions } from "../parser";
 

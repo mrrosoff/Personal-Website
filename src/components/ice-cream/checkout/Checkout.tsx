@@ -20,7 +20,8 @@ import {
     type StripeCheckoutValue
 } from "@stripe/react-stripe-js/checkout";
 
-import { API_URL, decodeToken } from "../../App";
+import { API_URL } from "../../App";
+import { decodeToken } from "../../../auth";
 import { useAppContext } from "../../AppContext";
 import { useIceCreamCart } from "../IceCreamCartContext";
 import type { DatabaseFlavor } from "../../../../api/types";

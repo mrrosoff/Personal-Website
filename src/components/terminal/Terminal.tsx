@@ -18,7 +18,7 @@ import { Emulator } from "../../javascript-terminal";
 import EmulatorState from "../../javascript-terminal/emulator-state/EmulatorState";
 import { handleAdminConsoleKeyPress } from "../../javascript-terminal/commands/console";
 import { authenticateWithPasskey } from "../../javascript-terminal/commands/sudo";
-import { decodeToken } from "../App";
+import { decodeToken } from "../../auth";
 import { useAppContext } from "../AppContext";
 
 import CommandInput from "./CommandInput";

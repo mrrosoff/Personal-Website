@@ -6,7 +6,7 @@ import { parseOptions } from "../parser";
 import * as CommandMappingUtil from "../emulator-state/CommandMapping";
 import Emulator from "../emulator";
 import { API_URL } from "../../components/App";
-import { AUTH_TOKEN_KEY } from "../../components/AppContext";
+import { AUTH_TOKEN_KEY } from "../../auth";
 
 export const optDef = {};
 

@@ -6,7 +6,8 @@ import { Box, Link, Typography, useMediaQuery, useTheme } from "@mui/material";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import LaunchIcon from "@mui/icons-material/Launch";
 
-import { API_URL, decodeToken } from "../../App";
+import { API_URL } from "../../App";
+import { decodeToken } from "../../../auth";
 import { useAppContext } from "../../AppContext";
 import type Stripe from "stripe";
 import icecreamImage from "../../../images/ice-cream.webp";

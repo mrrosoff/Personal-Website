@@ -4,9 +4,7 @@ import { BrowserRouter, Navigate, Outlet, Route, Routes, useMatch } from "react-
 import { Box, useMediaQuery } from "@mui/material";
 import { createTheme, ThemeProvider, StyledEngineProvider, useTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import { jwtDecode } from "jwt-decode";
 
-import type { AccessToken } from "../../api/types";
 import { AppProvider } from "./AppContext";
 import { IceCreamCartProvider } from "./ice-cream/IceCreamCartContext";
 import IceCream from "./ice-cream/IceCream";
@@ -21,14 +19,6 @@ const Checkout = lazy(() => import("./ice-cream/checkout/Checkout"));
 const Polaroid = lazy(() => import("./polaroid/Polaroid"));
 
 export const API_URL = "https://api.maxrosoff.com";
-
-export const decodeToken = (token: string): AccessToken | null => {
-    try {
-        return jwtDecode<AccessToken>(token);
-    } catch {
-        return null;
-    }
-};
 
 const App = () => {
     const theme = createTheme({
@@ -180,7 +170,7 @@ const Layout = (props: {
             height={"100dvh"}
             sx={{
                 p: mdScreen ? (isHome ? 2 : 3) : 6,
-                ...(mdScreen && { pt: 4, pb: screenBottomPadding }),
+                ...(mdScreen ? { pt: 4, pb: screenBottomPadding } : { pb: 3 }),
                 boxSizing: "border-box",
                 overflow: isHome ? "hidden" : undefined
             }}

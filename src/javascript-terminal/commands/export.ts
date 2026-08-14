@@ -2,6 +2,7 @@ import assert from "assert";
 
 import { parseOptions } from "../parser";
 import EmulatorState from "../emulator-state/EmulatorState";
+import { AUTH_TOKEN_KEY, unexpiredToken } from "../../auth";
 
 export const optDef = {};
 
@@ -27,6 +28,10 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
 
         const [, varName, varValue] = match;
         const envVariables = state.getEnvVariables();
+
+        if (varName === AUTH_TOKEN_KEY && unexpiredToken(varValue)) {
+            sessionStorage.setItem(AUTH_TOKEN_KEY, varValue!);
+        }
 
         state.setEnvVariables({ ...envVariables, [varName]: varValue });
         return { output: "" };

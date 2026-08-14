@@ -1,6 +1,6 @@
 import assert from "assert";
 
-import { decodeToken } from "../../components/App";
+import { decodeToken } from "../../auth";
 import { UserType } from "../../../api/types";
 import EmulatorState from "../emulator-state/EmulatorState";
 

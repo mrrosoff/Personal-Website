@@ -6,7 +6,8 @@ import { browserSupportsWebAuthn, startRegistration, WebAuthnError } from "@simp
 import axios from "axios";
 import { DateTime } from "luxon";
 
-import { API_URL, decodeToken } from "./App";
+import { API_URL } from "./App";
+import { decodeToken } from "../auth";
 
 const registrationErrorMessage = (err: unknown): string => {
     if (err instanceof WebAuthnError) {

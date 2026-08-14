@@ -7,15 +7,11 @@ import {
     type SetStateAction
 } from "react";
 
-import { jwtDecode } from "jwt-decode";
-import { DateTime } from "luxon";
-
-import type { AccessToken } from "../../api/types";
+import { AUTH_TOKEN_KEY, unexpiredToken } from "../auth";
 import { CommandMapping, DefaultCommandMapping, EmulatorState } from "../javascript-terminal";
 import files from "../FileSystem";
 
 export const HAS_BOOTED_KEY = "HAS_BOOTED_UP";
-export const AUTH_TOKEN_KEY = "AUTH_TOKEN";
 
 type AppContextType = {
     shouldBootUp: boolean;
@@ -48,16 +44,7 @@ const initialEmulatorState = EmulatorState.create({
     })
 });
 
-const storedAuthToken = sessionStorage.getItem(AUTH_TOKEN_KEY);
-
-let persistedAuthToken: string | null = null;
-try {
-    const { exp } = jwtDecode<AccessToken>(storedAuthToken ?? "");
-    persistedAuthToken = DateTime.fromSeconds(exp) > DateTime.now() ? storedAuthToken : null;
-} catch (err) {
-    console.error("Stored Auth Token Invalid:", err);
-}
-
+const persistedAuthToken = unexpiredToken(sessionStorage.getItem(AUTH_TOKEN_KEY));
 if (persistedAuthToken) {
     initialEmulatorState.setEnvVariables({
         ...initialEmulatorState.getEnvVariables(),
