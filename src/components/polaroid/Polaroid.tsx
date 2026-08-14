@@ -1,15 +1,26 @@
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { Box, Button, CircularProgress, Stack, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import axios from "axios";
 
 import { UserType } from "../../../api/types";
-import { API_URL, decodeToken } from "../App";
+import { API_URL } from "../App";
+import { decodeToken } from "../../auth";
 import { useAppContext } from "../AppContext";
 import CropDialog from "./CropDialog";
 import PhotoGrid, { type Photo } from "./PhotoGrid";
 
 const API = `${API_URL}/polaroid`;
+
+// What the browser can decode for the crop step. HEIC often arrives with an
+// empty type, so the extension is the only reliable signal for it.
+const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"];
+const ACCEPTED_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp", ".heic", ".heif"];
+const ACCEPT_ATTRIBUTE = [...ACCEPTED_TYPES, ".heic", ".heif"].join(",");
+
+const isSupportedImage = (file: File) =>
+    ACCEPTED_TYPES.includes(file.type.toLowerCase()) ||
+    ACCEPTED_EXTENSIONS.some((extension) => file.name.toLowerCase().endsWith(extension));
 
 export default function Polaroid() {
     const { emulatorState } = useAppContext();
@@ -30,9 +41,9 @@ export default function Polaroid() {
 
     const [photos, setPhotos] = useState<Photo[]>([]);
     const [busy, setBusy] = useState(false);
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [queue, setQueue] = useState<File[]>([]);
+    const [dragging, setDragging] = useState(false);
 
     const refresh = useCallback(async () => {
         try {
@@ -42,8 +53,6 @@ export default function Polaroid() {
             setPhotos(response.data.photos);
         } catch {
             setError("Couldn't load your photos.");
-        } finally {
-            setLoading(false);
         }
     }, [authHeader]);
 
@@ -72,6 +81,12 @@ export default function Polaroid() {
         [authHeader, refresh]
     );
 
+    const acceptFiles = useCallback((files: File[]) => {
+        const supported = files.filter(isSupportedImage);
+        setError(supported.length < files.length ? "Photos only — JPEG, PNG, WebP or HEIC." : null);
+        setQueue(supported);
+    }, []);
+
     const remove = useCallback(
         async (id: string) => {
             setPhotos((current) => current.filter((photo) => photo.id !== id));
@@ -92,14 +107,9 @@ export default function Polaroid() {
     return (
         <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
             <Intro />
-            <DropArea onFiles={setQueue}>
-                <UploadControls busy={busy} onFiles={setQueue} />
-                <Gallery
-                    photos={photos}
-                    loading={loading}
-                    error={error}
-                    onRemove={(id) => void remove(id)}
-                />
+            <DropArea dragging={dragging} setDragging={setDragging} onFiles={acceptFiles}>
+                <UploadControls busy={busy} onFiles={acceptFiles} />
+                <Gallery photos={photos} error={error} onRemove={(id) => void remove(id)} />
             </DropArea>
             <CropDialog
                 file={queue[0] ?? null}
@@ -130,14 +140,16 @@ function Intro() {
 }
 
 function DropArea({
+    dragging,
+    setDragging,
     onFiles,
     children
 }: {
+    dragging: boolean;
+    setDragging: (dragging: boolean) => void;
     onFiles: (files: File[]) => void;
     children: ReactNode;
 }) {
-    const [dragging, setDragging] = useState(false);
-
     return (
         <Box
             onDragOver={(event) => {
@@ -158,7 +170,10 @@ function DropArea({
             sx={{
                 mt: 4,
                 p: 3,
-                flexGrow: 1,
+                pt: 5,
+                flex: "1 1 0",
+                minHeight: 0,
+                position: "relative",
                 borderRadius: 2,
                 borderStyle: "dashed",
                 borderWidth: 2,
@@ -175,43 +190,47 @@ function DropArea({
 
 function UploadControls({ busy, onFiles }: { busy: boolean; onFiles: (files: File[]) => void }) {
     return (
-        <Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={2} mb={3}>
-            {busy && (
-                <>
-                    <CircularProgress size={22} />
-                    <Typography color="text.secondary">Developing…</Typography>
-                </>
-            )}
-            <Button
-                variant="contained"
-                component="label"
-                size="large"
-                disabled={busy}
-                sx={{ fontSize: "1rem", px: "19px", py: "7px" }}
-            >
-                Choose Photos
-                <input
-                    hidden
-                    multiple
-                    type="file"
-                    accept="image/*,.heic,.heif"
-                    onChange={(event) => {
-                        if (event.target.files) onFiles(Array.from(event.target.files));
-                    }}
-                />
-            </Button>
-        </Stack>
+        <Button
+            variant="contained"
+            component="label"
+            size="large"
+            disabled={busy}
+            sx={{
+                // Straddling the border, so the photos below start at the very
+                // top of the box instead of below a row of controls.
+                position: "absolute",
+                top: 0,
+                right: 24,
+                transform: "translateY(-50%)",
+                zIndex: 1,
+                fontSize: "1rem",
+                px: "19px",
+                py: "7px",
+                // Disabled defaults to a translucent background, which would let
+                // the dashed border show through the button.
+                "&.Mui-disabled": { bgcolor: "background.paper", color: "text.secondary" }
+            }}
+        >
+            {busy ? "Developing…" : "Choose Photos"}
+            <input
+                hidden
+                multiple
+                type="file"
+                accept={ACCEPT_ATTRIBUTE}
+                onChange={(event) => {
+                    if (event.target.files) onFiles(Array.from(event.target.files));
+                }}
+            />
+        </Button>
     );
 }
 
 function Gallery({
     photos,
-    loading,
     error,
     onRemove
 }: {
     photos: Photo[];
-    loading: boolean;
     error: string | null;
     onRemove: (id: string) => void;
 }) {
@@ -222,8 +241,7 @@ function Gallery({
                 minHeight: 0,
                 overflow: "hidden",
                 display: "flex",
-                flexDirection: "column",
-                justifyContent: loading || photos.length > 0 ? "flex-start" : "center"
+                flexDirection: "column"
             }}
         >
             {error && (
@@ -234,7 +252,9 @@ function Gallery({
                     {error}
                 </Typography>
             )}
-            <PhotoGrid photos={photos} loading={loading} onRemove={onRemove} />
+            <Box sx={{ flex: "1 1 0", minHeight: 0, position: "relative" }}>
+                <PhotoGrid photos={photos} onRemove={onRemove} />
+            </Box>
         </Box>
     );
 }

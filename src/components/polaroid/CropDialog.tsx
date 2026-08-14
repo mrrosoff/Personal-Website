@@ -86,7 +86,20 @@ export default function CropDialog({ file, remaining, onCancel, onConfirm }: Cro
     }, [area, onConfirm, source]);
 
     return (
-        <Dialog open={file !== null} maxWidth="sm" fullWidth>
+        <Dialog
+            open={file !== null}
+            maxWidth="sm"
+            fullWidth
+            slotProps={{
+                paper: {
+                    sx: {
+                        borderStyle: "solid",
+                        borderWidth: 2,
+                        borderColor: "grey.800"
+                    }
+                }
+            }}
+        >
             <DialogContent sx={{ p: 0 }}>
                 <Box
                     sx={{
@@ -119,29 +132,37 @@ export default function CropDialog({ file, remaining, onCancel, onConfirm }: Cro
                         />
                     )}
                 </Box>
-                <Box sx={{ px: 3, pt: 2 }}>
-                    <Typography color="text.secondary" variant="body2" gutterBottom>
+                <Box sx={{ px: 3, pt: 2, pb: 1 }}>
+                    <Typography color="text.secondary" variant="body2">
                         Drag to move, pinch or scroll to zoom. The panel shows exactly what you see
                         here.
                     </Typography>
-                    <Slider
-                        value={zoom}
-                        min={1}
-                        max={4}
-                        step={0.01}
-                        disabled={!src}
-                        onChange={(_, value) => setZoom(value as number)}
-                    />
                 </Box>
             </DialogContent>
-            <DialogActions sx={{ px: 3, pb: 2 }}>
+            <DialogActions disableSpacing sx={{ px: 3, pb: 2, gap: 2 }}>
                 {remaining > 0 && (
-                    <Typography color="text.secondary" variant="body2" sx={{ mr: "auto" }}>
-                        {remaining} more after this
+                    <Typography color="text.secondary" variant="body2" noWrap>
+                        {remaining} more
                     </Typography>
                 )}
-                <Button onClick={onCancel}>Skip</Button>
-                <Button variant="contained" onClick={() => void confirm()} disabled={!area}>
+                <Slider
+                    value={zoom}
+                    min={1}
+                    max={4}
+                    step={0.01}
+                    disabled={!src}
+                    onChange={(_, value) => setZoom(value as number)}
+                    sx={{ flex: 1, minWidth: 100, mx: 1 }}
+                />
+                <Button variant="outlined" onClick={onCancel} sx={{ py: 0.25 }}>
+                    Skip
+                </Button>
+                <Button
+                    variant="contained"
+                    onClick={() => void confirm()}
+                    disabled={!area}
+                    sx={{ py: 0.25 }}
+                >
                     Add
                 </Button>
             </DialogActions>
