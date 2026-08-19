@@ -14,11 +14,13 @@ export const decodeToken = (token: string): AccessToken | null => {
 };
 
 export const unexpiredToken = (token: string | null) => {
-    try {
-        const { exp } = jwtDecode<AccessToken>(token ?? "");
-        return DateTime.fromSeconds(exp) > DateTime.now() ? token : null;
-    } catch (err) {
-        console.error("Auth Token Invalid:", err);
+    if (!token) return null;
+
+    const payload = decodeToken(token);
+    if (!payload) {
+        console.error("Auth Token Invalid");
         return null;
     }
+
+    return DateTime.fromSeconds(payload.exp) > DateTime.now() ? token : null;
 };
