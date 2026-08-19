@@ -29,6 +29,9 @@ const ICE_CREAM_INVENTORY_MENU_OPTIONS = [
 
 const FLAVOR_TYPE_OPTIONS: Array<FlavorType | null> = [...FLAVOR_TYPES, null];
 
+const isPrintableKey = (key: string) => [...key].length === 1;
+const dropLastCharacter = (value: string) => [...value].slice(0, -1).join("");
+
 const getNextFlavorType = (currentType: FlavorType | null): FlavorType | null => {
     const currentIndex = FLAVOR_TYPE_OPTIONS.indexOf(currentType);
     const nextIndex = (currentIndex + 1) % FLAVOR_TYPE_OPTIONS.length;
@@ -337,14 +340,14 @@ const handleFlavorEdit = async (key: string, state: EmulatorState): Promise<Emul
                         ...mode,
                         editingFlavor: {
                             ...mode.editingFlavor,
-                            [textField]: current.slice(0, -1)
+                            [textField]: dropLastCharacter(current)
                         }
                     });
                 }
             }
             break;
         default:
-            if (key.length === 1 && (currentField === "name" || currentField === "color")) {
+            if (isPrintableKey(key) && (currentField === "name" || currentField === "color")) {
                 const textField = currentField;
                 state.setAdminConsoleMode({
                     ...mode,
@@ -515,11 +518,11 @@ const handleConfirmSendEmails = async (
         case "Backspace":
             state.setAdminConsoleMode({
                 ...mode,
-                marketing: { message: (mode.marketing?.message ?? "").slice(0, -1) }
+                marketing: { message: dropLastCharacter(mode.marketing?.message ?? "") }
             });
             break;
         default:
-            if (key.length === 1) {
+            if (isPrintableKey(key)) {
                 state.setAdminConsoleMode({
                     ...mode,
                     marketing: { message: (mode.marketing?.message ?? "") + key }
@@ -606,7 +609,7 @@ const handleProvisionFlavorForm = (key: string, state: EmulatorState): EmulatorS
             });
             break;
         default:
-            if (key.length === 1 || key === "Backspace") {
+            if (isPrintableKey(key) || key === "Backspace") {
                 handleProvisionFormInput(key, state);
             }
             break;
@@ -628,10 +631,10 @@ const handleProvisionFormInput = (key: string, state: EmulatorState) => {
                     ...mode,
                     provisionForm: {
                         ...form,
-                        flavorName: form.flavorName.slice(0, -1)
+                        flavorName: dropLastCharacter(form.flavorName)
                     }
                 });
-            } else if (key.length === 1) {
+            } else if (isPrintableKey(key)) {
                 state.setAdminConsoleMode({
                     ...mode,
                     provisionForm: {
@@ -668,10 +671,10 @@ const handleProvisionFormInput = (key: string, state: EmulatorState) => {
                     ...mode,
                     provisionForm: {
                         ...form,
-                        color: form.color.slice(0, -1)
+                        color: dropLastCharacter(form.color)
                     }
                 });
-            } else if (key.length === 1) {
+            } else if (isPrintableKey(key)) {
                 state.setAdminConsoleMode({
                     ...mode,
                     provisionForm: {
@@ -725,12 +728,12 @@ const handleCreateFriendInvite = async (
     if (key === "Backspace") {
         state.setAdminConsoleMode({
             ...mode,
-            friendInvite: { ...invite, friendName: invite.friendName.slice(0, -1) }
+            friendInvite: { ...invite, friendName: dropLastCharacter(invite.friendName) }
         });
         return state;
     }
 
-    if (key.length === 1) {
+    if (isPrintableKey(key)) {
         state.setAdminConsoleMode({
             ...mode,
             friendInvite: { ...invite, friendName: invite.friendName + key }

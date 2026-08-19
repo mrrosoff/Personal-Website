@@ -71,12 +71,19 @@ const IceCream = () => {
     const [params, _] = useSearchParams();
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-    const { selectedPriceIds, isLoadingFlavors, flavors, flavorsError, loadFlavors, toggleFlavor } =
-        useIceCreamCart();
+    const {
+        selectedPriceIds,
+        isLoadingFlavors,
+        flavors,
+        flavorsError,
+        refreshFlavors,
+        toggleFlavor
+    } = useIceCreamCart();
     const { friendToken } = useAppContext();
+    const showSkeletons = isLoadingFlavors && flavors.length === 0;
 
     useEffect(() => {
-        void loadFlavors();
+        void refreshFlavors();
     }, []);
 
     useEffect(() => {
@@ -144,17 +151,17 @@ const IceCream = () => {
                 selectedPriceIds={selectedPriceIds}
                 toggleFlavor={toggleFlavor}
                 flavors={flavors.filter((f) => f.type === "currentFlavor")}
-                isLoading={isLoadingFlavors}
+                isLoading={showSkeletons}
             />
             <LastBatch
                 selectedPriceIds={selectedPriceIds}
                 toggleFlavor={toggleFlavor}
                 flavors={flavors.filter((f) => f.type === "lastBatch")}
-                isLoading={isLoadingFlavors}
+                isLoading={showSkeletons}
             />
             <Schedule
                 flavors={flavors.filter((f) => f.type === "upcoming")}
-                isLoading={isLoadingFlavors}
+                isLoading={showSkeletons}
             />
             {smallScreen && selectedPriceIds.length > 0 && (
                 <Zoom

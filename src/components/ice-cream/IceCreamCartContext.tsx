@@ -9,6 +9,7 @@ type IceCreamCartContextType = {
     isLoadingFlavors: boolean;
     flavorsError: string | null;
     loadFlavors: () => Promise<void>;
+    refreshFlavors: () => Promise<void>;
     selectedPriceIds: string[];
     toggleFlavor: (priceId: string | undefined) => void;
 };
@@ -21,8 +22,8 @@ export const IceCreamCartProvider = ({ children }: { children: ReactNode }) => {
     const [isLoadingFlavors, setIsLoadingFlavors] = useState(false);
     const [flavorsError, setFlavorsError] = useState<string | null>(null);
 
-    const loadFlavors = async () => {
-        if (flavors.length > 0 || isLoadingFlavors) return;
+    const refreshFlavors = async () => {
+        if (isLoadingFlavors) return;
 
         try {
             setIsLoadingFlavors(true);
@@ -37,6 +38,11 @@ export const IceCreamCartProvider = ({ children }: { children: ReactNode }) => {
         } finally {
             setIsLoadingFlavors(false);
         }
+    };
+
+    const loadFlavors = async () => {
+        if (flavors.length > 0) return;
+        await refreshFlavors();
     };
 
     const toggleFlavor = (priceId: string | undefined) => {
@@ -55,7 +61,8 @@ export const IceCreamCartProvider = ({ children }: { children: ReactNode }) => {
                 flavors,
                 isLoadingFlavors,
                 flavorsError,
-                loadFlavors
+                loadFlavors,
+                refreshFlavors
             }}
         >
             {children}

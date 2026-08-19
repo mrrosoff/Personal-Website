@@ -162,32 +162,34 @@ const Terminal = (
 
     const onPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
         const adminConsoleMode = emulatorState.getAdminConsoleMode();
-        if (adminConsoleMode?.screen && adminConsoleMode.provisionForm) {
-            const form = adminConsoleMode.provisionForm;
+        if (!adminConsoleMode?.screen) return;
 
-            if (form.currentField === "flavorName" || form.currentField === "color") {
-                e.preventDefault();
-                const pastedText = e.clipboardData.getData("text");
+        if (adminConsoleMode.editingFlavor) {
+            const editingField = adminConsoleMode.editingField || "name";
+            if (editingField !== "name" && editingField !== "color") return;
 
-                emulatorState.setAdminConsoleMode({
-                    ...adminConsoleMode,
-                    provisionForm: {
-                        ...form,
-                        [form.currentField]: form[form.currentField] + pastedText
-                    }
-                });
-            }
-        } else if (adminConsoleMode?.screen && adminConsoleMode.editingFlavor) {
-            const editingField = adminConsoleMode.editingField;
             e.preventDefault();
             const pastedText = e.clipboardData.getData("text");
 
-            if (!editingField) return;
             emulatorState.setAdminConsoleMode({
                 ...adminConsoleMode,
                 editingFlavor: {
                     ...adminConsoleMode.editingFlavor,
                     [editingField]: adminConsoleMode.editingFlavor[editingField] + pastedText
+                }
+            });
+        } else if (adminConsoleMode.provisionForm) {
+            const form = adminConsoleMode.provisionForm;
+            if (form.currentField !== "flavorName" && form.currentField !== "color") return;
+
+            e.preventDefault();
+            const pastedText = e.clipboardData.getData("text");
+
+            emulatorState.setAdminConsoleMode({
+                ...adminConsoleMode,
+                provisionForm: {
+                    ...form,
+                    [form.currentField]: form[form.currentField] + pastedText
                 }
             });
         }
@@ -400,7 +402,7 @@ const Terminal = (
                             }}
                             autoComplete="off"
                             autoCorrect="off"
-                            autoCapitalize="off"
+                            autoCapitalize="none"
                             spellCheck={false}
                             readOnly
                         />
@@ -421,6 +423,10 @@ const Terminal = (
                                 top: 0,
                                 left: 0
                             }}
+                            autoComplete="off"
+                            autoCorrect="off"
+                            autoCapitalize="none"
+                            spellCheck={false}
                         />
                     </Grid>
                 ) : emulatorState.getBlockingMode() ? null : (

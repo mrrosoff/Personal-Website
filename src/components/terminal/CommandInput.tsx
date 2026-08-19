@@ -61,6 +61,12 @@ const CommandInput = (
                 value={props.value}
                 onChange={props.onChange}
                 onKeyDown={props.onKeyDown}
+                inputProps={{
+                    autoComplete: "off",
+                    autoCorrect: "off",
+                    autoCapitalize: "none",
+                    spellCheck: false
+                }}
                 style={{ width: 0, height: 0, opacity: 0, position: "absolute" }}
             />
         </Typography>
