@@ -44,35 +44,29 @@ const ConfirmSendEmailsMenu = (props: {
             >
                 Are you sure you want to send marketing emails to all subscribers?
             </Typography>
-            <Box sx={{ mb: 1 }}>
-                <Typography
-                    sx={{ color: props.theme?.outputColor || "#FCFCFC", fontSize: "0.9em" }}
-                >
-                    Message:
-                </Typography>
-                <Typography
+            <Typography
+                sx={{
+                    color: props.theme?.outputColor || "#FCFCFC",
+                    mb: 1,
+                    minHeight: "4.5em",
+                    whiteSpace: "pre-wrap",
+                    overflowWrap: "anywhere"
+                }}
+            >
+                {"Message: "}
+                {mode.marketing?.message}
+                <Box
+                    component="span"
                     sx={{
-                        color: props.theme?.outputColor || "#FCFCFC",
-                        paddingLeft: 2,
-                        minHeight: "4.5em",
-                        whiteSpace: "pre-wrap",
-                        overflowWrap: "anywhere"
+                        display: "inline-block",
+                        width: "8px",
+                        height: "18px",
+                        verticalAlign: "middle",
+                        backgroundColor: props.theme?.outputColor || "#FCFCFC",
+                        animation: `${blink} 1.2s step-end infinite`
                     }}
-                >
-                    {mode.marketing?.message ? mode.marketing.message : " "}
-                    <Box
-                        component="span"
-                        sx={{
-                            display: "inline-block",
-                            width: "8px",
-                            height: "18px",
-                            verticalAlign: "middle",
-                            backgroundColor: props.theme?.outputColor || "#FCFCFC",
-                            animation: `${blink} 1.2s step-end infinite`
-                        }}
-                    />
-                </Typography>
-            </Box>
+                />
+            </Typography>
             <Box sx={{ display: "flex", gap: 2, mb: 1 }}>
                 <MenuItem
                     selected={selectedOption === "yes"}
