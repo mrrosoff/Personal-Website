@@ -27,7 +27,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 };
 
 async function createBroadcast(resend: Resend, message?: string): Promise<string> {
-    const id = await getParameter("/website/resend/audience-id");
+    const id = await getParameter("/website/resend/audience");
 
     const allFlavors = await getAllItems(FLAVORS_TABLE);
 
