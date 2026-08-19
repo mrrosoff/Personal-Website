@@ -15,7 +15,9 @@ import { useNavigate } from "react-router-dom";
 
 import { UserType } from "../../../api/types";
 import { Emulator } from "../../javascript-terminal";
-import EmulatorState from "../../javascript-terminal/emulator-state/EmulatorState";
+import EmulatorState, {
+    AdminConsoleScreen
+} from "../../javascript-terminal/emulator-state/EmulatorState";
 import { handleAdminConsoleKeyPress } from "../../javascript-terminal/commands/console";
 import { authenticateWithPasskey } from "../../javascript-terminal/commands/sudo";
 import { decodeToken } from "../../auth";
@@ -162,36 +164,64 @@ const Terminal = (
 
     const onPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
         const adminConsoleMode = emulatorState.getAdminConsoleMode();
-        if (!adminConsoleMode?.screen) return;
+        if (!adminConsoleMode?.screen || adminConsoleMode.loading) return;
 
-        if (adminConsoleMode.editingFlavor) {
-            const editingField = adminConsoleMode.editingField || "name";
-            if (editingField !== "name" && editingField !== "color") return;
+        const pastedText = e.clipboardData.getData("text");
 
-            e.preventDefault();
-            const pastedText = e.clipboardData.getData("text");
+        switch (adminConsoleMode.screen) {
+            case AdminConsoleScreen.IceCreamInventory: {
+                const editingFlavor = adminConsoleMode.editingFlavor;
+                if (!editingFlavor) return;
 
-            emulatorState.setAdminConsoleMode({
-                ...adminConsoleMode,
-                editingFlavor: {
-                    ...adminConsoleMode.editingFlavor,
-                    [editingField]: adminConsoleMode.editingFlavor[editingField] + pastedText
-                }
-            });
-        } else if (adminConsoleMode.provisionForm) {
-            const form = adminConsoleMode.provisionForm;
-            if (form.currentField !== "flavorName" && form.currentField !== "color") return;
+                const editingField = adminConsoleMode.editingField || "name";
+                if (editingField !== "name" && editingField !== "color") return;
 
-            e.preventDefault();
-            const pastedText = e.clipboardData.getData("text");
+                e.preventDefault();
+                emulatorState.setAdminConsoleMode({
+                    ...adminConsoleMode,
+                    editingFlavor: {
+                        ...editingFlavor,
+                        [editingField]: editingFlavor[editingField] + pastedText
+                    }
+                });
+                break;
+            }
+            case AdminConsoleScreen.ProvisionFlavorForm: {
+                const form = adminConsoleMode.provisionForm;
+                if (!form) return;
+                if (form.currentField !== "flavorName" && form.currentField !== "color") return;
 
-            emulatorState.setAdminConsoleMode({
-                ...adminConsoleMode,
-                provisionForm: {
-                    ...form,
-                    [form.currentField]: form[form.currentField] + pastedText
-                }
-            });
+                e.preventDefault();
+                emulatorState.setAdminConsoleMode({
+                    ...adminConsoleMode,
+                    provisionForm: {
+                        ...form,
+                        [form.currentField]: form[form.currentField] + pastedText
+                    }
+                });
+                break;
+            }
+            case AdminConsoleScreen.ConfirmSendEmails: {
+                e.preventDefault();
+                emulatorState.setAdminConsoleMode({
+                    ...adminConsoleMode,
+                    marketing: {
+                        message: (adminConsoleMode.marketing?.message ?? "") + pastedText
+                    }
+                });
+                break;
+            }
+            case AdminConsoleScreen.CreateFriendInvite: {
+                const invite = adminConsoleMode.friendInvite ?? { friendName: "" };
+                if (invite.url) return;
+
+                e.preventDefault();
+                emulatorState.setAdminConsoleMode({
+                    ...adminConsoleMode,
+                    friendInvite: { ...invite, friendName: invite.friendName + pastedText }
+                });
+                break;
+            }
         }
     };
 

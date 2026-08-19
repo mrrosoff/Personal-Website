@@ -1,9 +1,14 @@
-import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Typography, keyframes, useMediaQuery, useTheme } from "@mui/material";
 
 import type { AdminConsoleState } from "../../../javascript-terminal/emulator-state/EmulatorState";
 import { useAppContext } from "../../AppContext";
 import type { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
+
+const blink = keyframes`
+    0%, 50% { visibility: visible; }
+    50.01%, 100% { visibility: hidden; }
+`;
 
 const ConfirmSendEmailsMenu = (props: {
     theme?: TerminalTheme;
@@ -49,6 +54,7 @@ const ConfirmSendEmailsMenu = (props: {
                     sx={{
                         color: props.theme?.outputColor || "#FCFCFC",
                         paddingLeft: 2,
+                        minHeight: "4.5em",
                         whiteSpace: "pre-wrap",
                         overflowWrap: "anywhere"
                     }}
@@ -58,13 +64,13 @@ const ConfirmSendEmailsMenu = (props: {
                         component="span"
                         sx={{
                             display: "inline-block",
-                            width: "0.55em",
-                            transform: "translateY(2px)",
-                            backgroundColor: props.theme?.outputColor || "#FCFCFC"
+                            width: "8px",
+                            height: "18px",
+                            verticalAlign: "middle",
+                            backgroundColor: props.theme?.outputColor || "#FCFCFC",
+                            animation: `${blink} 1.2s step-end infinite`
                         }}
-                    >
-                        &nbsp;
-                    </Box>
+                    />
                 </Typography>
             </Box>
             <Box sx={{ display: "flex", gap: 2, mb: 1 }}>

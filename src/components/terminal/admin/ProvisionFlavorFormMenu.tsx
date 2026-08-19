@@ -4,6 +4,7 @@ import type { AdminConsoleState } from "../../../javascript-terminal/emulator-st
 import { useAppContext } from "../../AppContext";
 import type { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
+import Stepper from "./common/Stepper";
 
 type FormField = "flavorName" | "initialQuantity" | "color" | "type";
 
@@ -63,37 +64,19 @@ const ProvisionFlavorFormMenu = (props: {
                             }}
                         >
                             {active ? "> " : "  "}
-                            {label}: {value}{" "}
-                            {active && field === "type" ? (
-                                smallScreen ? (
-                                    <>
-                                        {"  "}
-                                        <Box
-                                            component="span"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                props.onAction("ArrowLeft");
-                                            }}
-                                            sx={{ cursor: "pointer", px: 1 }}
-                                        >
-                                            ◀
-                                        </Box>
-                                        <Box
-                                            component="span"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                props.onAction("ArrowRight");
-                                            }}
-                                            sx={{ cursor: "pointer", px: 1 }}
-                                        >
-                                            ▶
-                                        </Box>
-                                    </>
-                                ) : (
-                                    "(←/→ to change)"
-                                )
+                            {label}:{" "}
+                            {active && field === "type" && smallScreen ? (
+                                <Stepper
+                                    value={value}
+                                    width={"13ch"}
+                                    theme={props.theme}
+                                    onStep={(key) => props.onAction(key)}
+                                />
                             ) : (
-                                ""
+                                <>
+                                    {value}
+                                    {active && field === "type" ? " (←/→ to change)" : ""}
+                                </>
                             )}
                         </Typography>
                     );

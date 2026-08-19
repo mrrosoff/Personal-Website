@@ -8,6 +8,7 @@ import {
 import { useAppContext } from "../../AppContext";
 import type { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
+import Stepper from "./common/Stepper";
 
 type EditField = "name" | "color" | "type" | "count";
 
@@ -79,35 +80,19 @@ const IceCreamInventoryMenu = (props: {
                                 }}
                             >
                                 {active ? "> " : "  "}
-                                {field.charAt(0).toUpperCase() + field.slice(1)}: {value}
+                                {field.charAt(0).toUpperCase() + field.slice(1)}:{" "}
                                 {active && stepper && smallScreen ? (
-                                    <>
-                                        {"  "}
-                                        <Box
-                                            component="span"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                props.onAction("ArrowLeft");
-                                            }}
-                                            sx={{ cursor: "pointer", px: 1 }}
-                                        >
-                                            ◀
-                                        </Box>
-                                        <Box
-                                            component="span"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                props.onAction("ArrowRight");
-                                            }}
-                                            sx={{ cursor: "pointer", px: 1 }}
-                                        >
-                                            ▶
-                                        </Box>
-                                    </>
-                                ) : active && stepper ? (
-                                    " (←/→ to change)"
+                                    <Stepper
+                                        value={value}
+                                        width={field === "count" ? "4ch" : "13ch"}
+                                        theme={props.theme}
+                                        onStep={(key) => props.onAction(key)}
+                                    />
                                 ) : (
-                                    ""
+                                    <>
+                                        {value}
+                                        {active && stepper ? " (←/→ to change)" : ""}
+                                    </>
                                 )}
                             </Typography>
                         );
