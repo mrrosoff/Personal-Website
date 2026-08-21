@@ -122,9 +122,18 @@ class WebsiteAPIStack extends Stack {
                 certificate
             },
             disableExecuteApiEndpoint: true,
-            // Without this the polaroid upload arrives UTF-8 decoded and its
-            // bytes are already corrupt by the time the Lambda sees them.
-            binaryMediaTypes: ["image/jpeg"],
+            // API Gateway assumes every request and response body is UTF-8
+            // text. A content type not listed here gets decoded on the way in
+            // and re-encoded on the way out, which corrupts an image upload
+            // and turns the 120,000 byte framebuffer into 160,000 base64
+            // characters the device then rejects as the wrong size.
+            binaryMediaTypes: [
+                "image/jpeg",
+                "image/png",
+                "image/heic",
+                "image/heif",
+                "application/octet-stream"
+            ],
             deployOptions: {
                 stageName: "production",
                 tracingEnabled: true
