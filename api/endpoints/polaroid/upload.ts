@@ -98,7 +98,7 @@ const POLAROID_FILM: FilmStock = {
     shadowTint: [0.008, 0.025, 0.033],
     highlightTint: [0.075, 0.055, 0.0],
     tintStrength: 1.0,
-    saturation: 0.9,
+    saturation: 1.05,
     midtoneMagenta: 0.045,
     vignette: 0.22
 };
