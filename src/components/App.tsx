@@ -174,7 +174,11 @@ const Layout = (props: {
                 boxSizing: "border-box",
                 overflow: isHome ? "hidden" : undefined
             }}
-            onClick={() => props.inputRef?.current && props.inputRef?.current.focus()}
+            onClick={() => {
+                const selection = window.getSelection();
+                if (selection && !selection.isCollapsed) return;
+                props.inputRef?.current?.focus();
+            }}
         >
             {(!mdScreen || isHome) && <LinksAndMenu />}
             <Box
