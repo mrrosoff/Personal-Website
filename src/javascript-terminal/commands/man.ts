@@ -1,5 +1,3 @@
-import assert from "assert";
-
 import EmulatorState from "../emulator-state/EmulatorState";
 import { parseOptions } from "../parser";
 import { manPage as aliasManPage } from "./alias";
@@ -28,6 +26,7 @@ import { manPage as lsManPage } from "./ls";
 import { manPage as mkdirManPage } from "./mkdir";
 import { manPage as mvManPage } from "./mv";
 import { manPage as playManPage } from "./play";
+import { manPage as polaroidManPage } from "./polaroid";
 import { manPage as printenvManPage } from "./printenv";
 import { manPage as pwdManPage } from "./pwd";
 import { manPage as rmManPage } from "./rm";
@@ -35,6 +34,7 @@ import { manPage as rmdirManPage } from "./rmdir";
 import { manPage as sedManPage } from "./sed";
 import { manPage as snakeManPage } from "./snake";
 import { manPage as sortManPage } from "./sort";
+import { manPage as spotifyManPage } from "./spotify";
 import { manPage as suManPage } from "./su";
 import { manPage as sudoManPage } from "./sudo";
 import { manPage as tailManPage } from "./tail";
@@ -44,8 +44,18 @@ import { manPage as uniqManPage } from "./uniq";
 import { manPage as wcManPage } from "./wc";
 import { manPage as whichManPage } from "./which";
 import { manPage as whoamiManPage } from "./whoami";
+import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = {};
+
+export const manPage = `NAME
+     man -- display manual pages
+
+SYNOPSIS
+     man command
+
+DESCRIPTION
+     The man utility displays the manual page for the specified command.`;
 
 const manPages: Record<string, string> = {
     alias: aliasManPage,
@@ -71,9 +81,11 @@ const manPages: Record<string, string> = {
     history: historyManPage,
     icecream: icecreamManPage,
     ls: lsManPage,
+    man: manPage,
     mkdir: mkdirManPage,
     mv: mvManPage,
     play: playManPage,
+    polaroid: polaroidManPage,
     printenv: printenvManPage,
     pwd: pwdManPage,
     rm: rmManPage,
@@ -81,6 +93,7 @@ const manPages: Record<string, string> = {
     sed: sedManPage,
     snake: snakeManPage,
     sort: sortManPage,
+    spotify: spotifyManPage,
     su: suManPage,
     sudo: sudoManPage,
     tail: tailManPage,
@@ -109,18 +122,8 @@ const functionDef = (_state: EmulatorState, commandOptions: string[]) => {
 
         return { output: "" };
     } catch (err: unknown) {
-        assert(err instanceof Error);
-        return { output: err.message, type: "error" };
+        return { output: errorMessage(err), type: "error" };
     }
 };
-
-export const manPage = `NAME
-     man -- display manual pages
-
-SYNOPSIS
-     man command
-
-DESCRIPTION
-     The man utility displays the manual page for the specified command.`;
 
 export default { optDef, functionDef };
