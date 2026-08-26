@@ -1,9 +1,8 @@
-import assert from "assert";
-
 import { parseOptions } from "../parser";
 import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import { fsSearch } from "../fs/operations/base-operations";
 import type { FileSystem } from "../../FileSystem";
+import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = {
     "-name": "<pattern>"
@@ -53,8 +52,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
 
         return { output: results.join("\n") };
     } catch (err: unknown) {
-        assert(err instanceof Error);
-        return { output: err.message, type: "error" };
+        return { output: errorMessage(err), type: "error" };
     }
 };
 

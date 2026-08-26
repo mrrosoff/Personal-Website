@@ -1,8 +1,7 @@
-import assert from "assert";
-
 import { parseOptions } from "../parser";
 import EmulatorState from "../emulator-state/EmulatorState";
 import { AUTH_TOKEN_KEY, unexpiredToken } from "../../auth";
+import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = {};
 
@@ -36,8 +35,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         state.setEnvVariables({ ...envVariables, [varName]: varValue });
         return { output: "" };
     } catch (err: unknown) {
-        assert(err instanceof Error);
-        return { output: err.message, type: "error" };
+        return { output: errorMessage(err), type: "error" };
     }
 };
 

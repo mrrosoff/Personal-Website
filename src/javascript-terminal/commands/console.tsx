@@ -1,4 +1,3 @@
-import assert from "assert";
 import axios from "axios";
 
 import { type DatabaseFlavor, FLAVOR_TYPES, type FlavorType, UserType } from "../../../api/types";
@@ -11,6 +10,7 @@ import EmulatorState, {
     IceCreamInventoryMenuOption,
     type ProvisionFlavorForm
 } from "../emulator-state/EmulatorState";
+import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = {};
 
@@ -76,8 +76,7 @@ const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
             type: "text"
         };
     } catch (err: unknown) {
-        assert(err instanceof Error);
-        return { output: err.message, type: "error" };
+        return { output: errorMessage(err), type: "error" };
     }
 };
 

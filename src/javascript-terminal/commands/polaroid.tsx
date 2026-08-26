@@ -1,8 +1,7 @@
-import assert from "assert";
-
 import { decodeToken } from "../../auth";
 import { UserType } from "../../../api/types";
 import EmulatorState from "../emulator-state/EmulatorState";
+import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = {};
 
@@ -21,8 +20,7 @@ const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
 
         return { output: "/polaroid", type: "navigate" };
     } catch (err: unknown) {
-        assert(err instanceof Error);
-        return { output: err.message, type: "error" };
+        return { output: errorMessage(err), type: "error" };
     }
 };
 

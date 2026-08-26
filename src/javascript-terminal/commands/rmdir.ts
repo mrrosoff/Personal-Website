@@ -1,10 +1,9 @@
-import assert from "assert";
-
 import { parseOptions } from "../parser";
 import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import * as DirOp from "../fs/operations/directory-operations";
 import * as PathUtil from "../fs/util/path-util";
 import { fsSearchParent } from "../fs/operations/base-operations";
+import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = { "-p, --parents": "" };
 
@@ -49,8 +48,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
 
         return { output: "" };
     } catch (err: unknown) {
-        assert(err instanceof Error);
-        return { output: err.message, type: "error" };
+        return { output: errorMessage(err), type: "error" };
     }
 };
 

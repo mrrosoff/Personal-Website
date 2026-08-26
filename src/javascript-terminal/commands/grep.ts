@@ -1,11 +1,10 @@
-import assert from "assert";
-
 import { parseOptions } from "../parser";
 import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import * as FileOp from "../fs/operations/file-operations";
 import { fsSearchParent } from "../fs/operations/base-operations";
 import { getLastPathPart } from "../fs/util/path-util";
 import { isDirectory } from "../fs/util/file-util";
+import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = {
     "-i, --ignore-case": "",
@@ -68,8 +67,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
 
         return { output: matchingLines.join("\n") };
     } catch (err: unknown) {
-        assert(err instanceof Error);
-        return { output: err.message, type: "error" };
+        return { output: errorMessage(err), type: "error" };
     }
 };
 

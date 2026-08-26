@@ -15,6 +15,8 @@ export type CommandMapping = {
     };
 };
 
+export const errorMessage = (err: unknown) => (err instanceof Error ? err.message : String(err));
+
 export const create = (commandMapping: CommandMapping = commands): CommandMapping => {
     for (const [commandName, command] of Object.entries(commandMapping)) {
         if (!command.functionDef || !command.optDef) {

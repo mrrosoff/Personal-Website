@@ -1,8 +1,7 @@
-import assert from "assert";
-
 import { parseOptions } from "../parser";
 import EmulatorState from "../emulator-state/EmulatorState";
 import * as CommandMappingUtil from "../emulator-state/CommandMapping";
+import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = {};
 
@@ -26,8 +25,7 @@ const functionDef = (
 
         return { output: `${commandName}: command not found`, type: "error" };
     } catch (err: unknown) {
-        assert(err instanceof Error);
-        return { output: err.message, type: "error" };
+        return { output: errorMessage(err), type: "error" };
     }
 };
 

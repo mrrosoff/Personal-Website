@@ -1,7 +1,6 @@
-import assert from "assert";
-
 import EmulatorState from "../emulator-state/EmulatorState";
 import { parseOptions } from "../parser";
+import { errorMessage } from "../emulator-state/CommandMapping";
 
 const VARIABLE_GROUP_REGEX = /\$(\w+)/g;
 const DOUBLE_SPACE_REGEX = /\s\s+/g;
@@ -34,8 +33,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
 
         return { output: cleanStr };
     } catch (err: unknown) {
-        assert(err instanceof Error);
-        return { output: err.message, type: "error" };
+        return { output: errorMessage(err), type: "error" };
     }
 };
 

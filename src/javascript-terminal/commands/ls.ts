@@ -1,11 +1,10 @@
-import assert from "assert";
-
 import { parseOptions } from "../parser";
 import * as PathUtil from "../fs/util/path-util";
 import * as DirOp from "../fs/operations/directory-operations";
 import { fsSearch } from "../fs/operations/base-operations";
 import EmulatorState from "../emulator-state/EmulatorState";
 import type { FileSystem } from "../../FileSystem";
+import { errorMessage } from "../emulator-state/CommandMapping";
 
 const IMPLIED_DIRECTORY_ENTRIES = [".", ".."];
 
@@ -70,8 +69,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
 
         return makeSortedReturn(listing);
     } catch (err: unknown) {
-        assert(err instanceof Error);
-        return { output: err.message, type: "error" };
+        return { output: errorMessage(err), type: "error" };
     }
 };
 

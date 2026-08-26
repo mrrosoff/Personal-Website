@@ -1,7 +1,6 @@
-import assert from "assert";
-
 import EmulatorState from "../emulator-state/EmulatorState";
 import { parseOptions } from "../parser";
+import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = {};
 
@@ -26,8 +25,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
 
         return {};
     } catch (err: unknown) {
-        assert(err instanceof Error);
-        return { output: err.message, type: "error" };
+        return { output: errorMessage(err), type: "error" };
     }
 };
 

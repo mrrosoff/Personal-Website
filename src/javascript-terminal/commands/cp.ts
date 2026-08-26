@@ -1,9 +1,8 @@
-import assert from "assert";
-
 import { parseOptions } from "../parser";
 import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import * as DirOp from "../fs/operations/directory-operations";
 import * as FileOp from "../fs/operations/file-operations";
+import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = {
     "-r, --recursive": "",
@@ -37,8 +36,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
 
         return { output: "" };
     } catch (err: unknown) {
-        assert(err instanceof Error);
-        return { output: err.message, type: "error" };
+        return { output: errorMessage(err), type: "error" };
     }
 };
 

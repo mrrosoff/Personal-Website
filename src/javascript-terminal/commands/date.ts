@@ -1,9 +1,8 @@
-import assert from "assert";
-
 import { DateTime } from "luxon";
 
 import { parseOptions } from "../parser";
 import EmulatorState from "../emulator-state/EmulatorState";
+import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = {
     "-u, --utc": ""
@@ -43,8 +42,7 @@ const functionDef = (_state: EmulatorState, commandOptions: string[]) => {
         const defaultFormat = options.utc ? now.toHTTP() : now.toFormat("EEE MMM dd yyyy HH:mm:ss");
         return { output: defaultFormat };
     } catch (err: unknown) {
-        assert(err instanceof Error);
-        return { output: err.message, type: "error" };
+        return { output: errorMessage(err), type: "error" };
     }
 };
 
