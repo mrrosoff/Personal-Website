@@ -20,6 +20,19 @@ export type DatabaseFlavor = {
     type: FlavorType | null;
 };
 
+export enum DeviceKind {
+    POLAROID = "POLAROID",
+    SPOTIFY = "SPOTIFY"
+}
+
+export type DatabaseDevice = {
+    ownerEmail: string;
+    kind: DeviceKind;
+    deviceId: string;
+    secretHash: string;
+    lastSeenAt: number;
+};
+
 export type DatabasePasskeyChallenge = {
     id: string;
     expiresAt: number;
@@ -34,11 +47,11 @@ export type DatabasePasskey = {
 };
 
 export enum UserType {
-    ADMIN,
-    FRIEND,
-    SPOTIFY_OWNER,
-    POLAROID_OWNER,
-    SHARE
+    ADMIN = "ADMIN",
+    FRIEND = "FRIEND",
+    SPOTIFY_OWNER = "SPOTIFY_OWNER",
+    POLAROID_OWNER = "POLAROID_OWNER",
+    SHARE = "SHARE"
 }
 
 export type AccessToken = {

@@ -2,14 +2,22 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
     DynamoDBDocument,
     UpdateCommand,
+    QueryCommand,
     ScanCommand,
     PutCommand,
     GetCommand,
     DeleteCommand
 } from "@aws-sdk/lib-dynamodb";
 
-import { FLAVORS_TABLE, PASSKEY_CHALLENGES_TABLE, PASSKEYS_TABLE } from "../../common";
 import {
+    DEVICES_TABLE,
+    FLAVORS_TABLE,
+    PASSKEY_CHALLENGES_TABLE,
+    PASSKEYS_TABLE
+} from "../../common";
+import { SDK_SETTINGS } from "../common";
+import {
+    type DatabaseDevice,
     type DatabaseFlavor,
     type DatabasePasskey,
     type DatabasePasskeyChallenge,
@@ -20,13 +28,15 @@ import {
 export type Table =
     typeof FLAVORS_TABLE |
     typeof PASSKEY_CHALLENGES_TABLE |
-    typeof PASSKEYS_TABLE;
+    typeof PASSKEYS_TABLE |
+    typeof DEVICES_TABLE;
 
 // prettier-ignore
 type ItemKeyInput<T extends Table> =
     T extends typeof FLAVORS_TABLE ? string :
     T extends typeof PASSKEY_CHALLENGES_TABLE ? string :
     T extends typeof PASSKEYS_TABLE ? string :
+    T extends typeof DEVICES_TABLE ? string :
     never;
 
 type UpdateItemInput<T extends Table> = Partial<
@@ -38,6 +48,7 @@ export type TableObject<T extends Table> =
     T extends typeof FLAVORS_TABLE ? DatabaseFlavor :
     T extends typeof PASSKEY_CHALLENGES_TABLE ? DatabasePasskeyChallenge :
     T extends typeof PASSKEYS_TABLE ? DatabasePasskey :
+    T extends typeof DEVICES_TABLE ? DatabaseDevice :
     never;
 
 // prettier-ignore
@@ -45,13 +56,14 @@ export type ValuesOfType<T, TCondition> = {
     [K in keyof T]: T[K] extends TCondition | undefined ? K : never;
 }[keyof T] & string;
 
-const dynamodbClient = new DynamoDBClient();
+const dynamodbClient = new DynamoDBClient(SDK_SETTINGS);
 export const documentClient = DynamoDBDocument.from(dynamodbClient);
 
 const primaryKeys: Record<Table, string> = {
     [FLAVORS_TABLE]: "productId",
     [PASSKEY_CHALLENGES_TABLE]: "id",
-    [PASSKEYS_TABLE]: "credentialId"
+    [PASSKEYS_TABLE]: "credentialId",
+    [DEVICES_TABLE]: "deviceId"
 };
 
 // Generic helper functions for passkey tables
@@ -69,13 +81,29 @@ export async function getItem<T extends Table>(
 
 export async function getAllItems<T extends Table>(table: T): Promise<TableObject<T>[]> {
     console.debug(`Getting all items from ${table}`);
-
     const scanItemsRequest = new ScanCommand({ TableName: table });
     const itemOutput = await documentClient.send(scanItemsRequest);
     if (!itemOutput.Items) {
         return [];
     }
     return itemOutput.Items as TableObject<T>[];
+}
+
+export async function getItemsByIndex<T extends Table>(
+    table: T,
+    key: ValuesOfType<TableObject<T>, string>,
+    value: string
+): Promise<TableObject<T>[]> {
+    console.debug(`Querying items from ${table} with ${key} ${value}`);
+    const queryRequest = new QueryCommand({
+        TableName: table,
+        IndexName: key,
+        KeyConditionExpression: "#indexKey = :value",
+        ExpressionAttributeNames: { "#indexKey": key },
+        ExpressionAttributeValues: { ":value": value }
+    });
+    const itemOutput = await documentClient.send(queryRequest);
+    return (itemOutput.Items ?? []) as TableObject<T>[];
 }
 
 export async function decrementField<T extends Table>(
