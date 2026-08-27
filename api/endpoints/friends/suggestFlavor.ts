@@ -2,23 +2,21 @@ import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import { Resend } from "resend";
 
 import { getParameter } from "../../aws/services/parameterStore";
-import { authenticateHTTPAccessToken, UserType } from "../../auth";
+import { authorizeUserType, UserType } from "../../auth";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
 import FlavorSuggestionEmail from "../../../src/emails/FlavorSuggestionEmail";
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
-    const payload = await authenticateHTTPAccessToken(event);
-    const allowedUserTypes = [
-        UserType.ADMIN,
+    const { token, error: authError } = await authorizeUserType(event, [
         UserType.FRIEND,
         UserType.SPOTIFY_OWNER,
         UserType.POLAROID_OWNER
-    ];
-    if (!payload || !allowedUserTypes.includes(payload.userType)) {
+    ]);
+    if (!token) {
         return buildErrorResponse(
             event,
             HttpResponseStatus.UNAUTHORIZED,
-            "Authentication Required"
+            authError ?? "Authentication Required"
         );
     }
 
@@ -37,8 +35,8 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     const { error } = await resend.emails.send({
         from: "Max's Freezer Stash <suggestions@ice-cream.maxrosoff.com>",
         to: "me@maxrosoff.com",
-        subject: `Flavor Suggestion From ${payload.id}`,
-        react: FlavorSuggestionEmail({ friendName: payload.id, flavor: body.flavor.trim() })
+        subject: `Flavor Suggestion From ${token.id}`,
+        react: FlavorSuggestionEmail({ friendName: token.id, flavor: body.flavor.trim() })
     });
 
     if (error) {

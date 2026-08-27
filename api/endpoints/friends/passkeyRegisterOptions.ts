@@ -3,7 +3,7 @@ import { generateRegistrationOptions } from "@simplewebauthn/server";
 import { DateTime } from "luxon";
 
 import { putItem } from "../../aws/services/dynamodb";
-import { authenticateHTTPAccessToken, UserType } from "../../auth";
+import { authorizeUserType, UserType } from "../../auth";
 import {
     HttpResponseStatus,
     PASSKEY_CHALLENGES_TABLE,
@@ -13,15 +13,19 @@ import {
 import { RP_ID, RP_NAME } from "../admin/passkeyAuthOptions";
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
-    const payload = await authenticateHTTPAccessToken(event);
-    if (payload?.userType !== UserType.SHARE) {
-        return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Invalid Invite Token");
+    const { token, error } = await authorizeUserType(event, [UserType.SHARE]);
+    if (!token) {
+        return buildErrorResponse(
+            event,
+            HttpResponseStatus.UNAUTHORIZED,
+            error ?? "Invalid Invite Token"
+        );
     }
 
     const options = await generateRegistrationOptions({
         rpName: RP_NAME,
         rpID: RP_ID,
-        userName: payload.id,
+        userName: token.id,
         attestationType: "none",
         authenticatorSelection: {
             residentKey: "preferred",

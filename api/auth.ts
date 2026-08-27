@@ -42,7 +42,7 @@ export async function verifyJWTFromURI(
 export async function generateToken(
     id: string,
     options: {
-        userType?: UserType;
+        userType: UserType;
         email?: string;
         expiresIn?: SignOptions["expiresIn"];
     }
@@ -53,7 +53,7 @@ export async function generateToken(
     return sign(
         {
             id,
-            userType: options.userType ?? UserType.ADMIN,
+            userType: options.userType,
             ...(options.email && { email: options.email })
         },
         key,
@@ -94,31 +94,38 @@ export function isDevice(
 
 export async function authenticateHTTPAccessToken(
     req: IncomingMessage | APIGatewayProxyEvent
-): Promise<AccessToken | null> {
+): Promise<{ token?: AccessToken; error?: string }> {
     if (!authorizationHeader(req)) {
-        return null;
+        return {};
     }
 
     const token = bearerToken(req);
     if (!token) {
-        const message = "Authentication Token Not Specified";
-        console.info(message);
-        throw new Error(message);
+        const error = "Authentication Token Not Specified";
+        console.info(error);
+        return { error };
     }
 
     try {
-        return await decryptToken(token);
+        return { token: await decryptToken(token) };
     } catch (err) {
         console.info(err);
-        throw new Error("Invalid Authentication Token");
+        return { error: "Invalid Authentication Token" };
     }
 }
 
-export async function isAdmin(event: IncomingMessage | APIGatewayProxyEvent): Promise<boolean> {
-    try {
-        const payload = await authenticateHTTPAccessToken(event);
-        return payload?.userType === UserType.ADMIN;
-    } catch (err) {
-        return false;
+export async function authorizeUserType(
+    req: IncomingMessage | APIGatewayProxyEvent,
+    allowed: UserType[]
+): Promise<{ token?: AccessToken; error?: string }> {
+    const { token, error } = await authenticateHTTPAccessToken(req);
+    if (error) {
+        return { error };
     }
+    return token && [...allowed, UserType.ADMIN].includes(token.userType) ? { token } : {};
+}
+
+export async function isAdmin(event: IncomingMessage | APIGatewayProxyEvent): Promise<boolean> {
+    const { token } = await authenticateHTTPAccessToken(event);
+    return token?.userType === UserType.ADMIN;
 }

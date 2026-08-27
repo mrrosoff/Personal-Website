@@ -15,10 +15,13 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "No priceIds Provided");
     }
 
-    const payload = await authenticateHTTPAccessToken(event);
+    const { token, error } = await authenticateHTTPAccessToken(event);
+    if (error) {
+        return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, error);
+    }
     const allowedUserTypes = [UserType.FRIEND, UserType.SPOTIFY_OWNER, UserType.POLAROID_OWNER];
-    if (payload && allowedUserTypes.includes(payload.userType)) {
-        return handleFriendCheckout(event, priceIds, payload.id);
+    if (token && allowedUserTypes.includes(token.userType)) {
+        return handleFriendCheckout(event, priceIds, token.id);
     }
 
     const stripe = new Stripe(await getParameter("/website/stripe/api-key"));

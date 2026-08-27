@@ -4,7 +4,7 @@ import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import { DateTime, Duration } from "luxon";
 
 import { getParameters } from "../../aws/services/parameterStore";
-import { authenticateHTTPAccessToken, UserType } from "../../auth";
+import { authorizeUserType, UserType } from "../../auth";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
 
 export const REDIRECT_URI = "https://maxrosoff.com/spotify/callback";
@@ -39,12 +39,12 @@ function signState(secret: string): string {
 }
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
-    const payload = await authenticateHTTPAccessToken(event);
-    if (payload?.userType !== UserType.ADMIN && payload?.userType !== UserType.SPOTIFY_OWNER) {
+    const { token, error } = await authorizeUserType(event, [UserType.SPOTIFY_OWNER]);
+    if (!token) {
         return buildErrorResponse(
             event,
             HttpResponseStatus.UNAUTHORIZED,
-            "Authentication required"
+            error ?? "Authentication required"
         );
     }
 

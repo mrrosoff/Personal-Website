@@ -1,25 +1,24 @@
 import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 
-import { getParameter } from "../../aws/services/parameterStore";
-import { authenticateHTTPAccessToken, isDevice, UserType } from "../../auth";
+import { authorizeUserType, UserType } from "../../auth";
+import { deviceForOwner, resolveDevice } from "../devices";
+
 import {
     buildErrorResponse,
     buildResponse,
     HttpResponseStatus,
     POLAROID_PHOTOS_BUCKET
 } from "../../common";
-import type { PolaroidObjectKey } from "../../types";
+import { DeviceKind, type PolaroidFramebufferKey, type PolaroidPreviewKey } from "../../types";
 import { listObjects, presignGetObject } from "../../aws/services/s3";
 
-export function framebufferKey(photoId: string): PolaroidObjectKey {
-    return `framebuffer/${photoId}.bin`;
+export function framebufferKey(deviceId: string, photoId: string): PolaroidFramebufferKey {
+    return `framebuffer/${deviceId}/${photoId}.bin`;
 }
 
-export function previewKey(photoId: string): PolaroidObjectKey {
-    return `preview/${photoId}.png`;
+export function previewKey(deviceId: string, photoId: string): PolaroidPreviewKey {
+    return `preview/${deviceId}/${photoId}.png`;
 }
-
-export const DEVICE_SECRET_PARAMETER = "/website/polaroid/device-secret";
 
 export type Photo = {
     photoId: string;
@@ -28,7 +27,20 @@ export type Photo = {
 };
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
-    if (!(await isAuthorized(event))) {
+    let device = await resolveDevice(event, DeviceKind.POLAROID);
+    if (!device) {
+        const { token, error } = await authorizeUserType(event, [UserType.POLAROID_OWNER]);
+        if (!token) {
+            return buildErrorResponse(
+                event,
+                HttpResponseStatus.UNAUTHORIZED,
+                error ?? "Authentication Required"
+            );
+        }
+        device = await deviceForOwner(token.email, DeviceKind.POLAROID);
+    }
+
+    if (!device) {
         return buildErrorResponse(
             event,
             HttpResponseStatus.UNAUTHORIZED,
@@ -36,34 +48,21 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         );
     }
 
-    const newestFirst = (await listPhotos()).reverse();
+    const newestFirst = (await listPhotos(device.deviceId)).reverse();
     const photos = await Promise.all(
         newestFirst.map(async (photo) => ({
             id: photo.photoId,
             hash: photo.hash,
             uploadedAt: photo.uploadedAt,
-            previewUrl: await previewUrl(photo.photoId)
+            previewUrl: await previewUrl(device.deviceId, photo.photoId)
         }))
     );
 
     return buildResponse(event, HttpResponseStatus.OK, { photos });
 };
 
-async function isAuthorized(event: APIGatewayEvent): Promise<boolean> {
-    if (await isPolaroidDevice(event)) {
-        return true;
-    }
-    const payload = await authenticateHTTPAccessToken(event);
-    const allowedUserTypes = [UserType.ADMIN, UserType.POLAROID_OWNER];
-    return payload !== null && allowedUserTypes.includes(payload.userType);
-}
-
-export async function isPolaroidDevice(event: APIGatewayEvent): Promise<boolean> {
-    return isDevice(event, await getParameter(DEVICE_SECRET_PARAMETER));
-}
-
-export async function listPhotos(): Promise<Photo[]> {
-    const objects = await listObjects(POLAROID_PHOTOS_BUCKET, "framebuffer/");
+export async function listPhotos(deviceId: string): Promise<Photo[]> {
+    const objects = await listObjects(POLAROID_PHOTOS_BUCKET, `framebuffer/${deviceId}/`);
     return objects
         .flatMap((object) => {
             // Skips S3 console "folder" markers, which would become empty ids.
@@ -73,7 +72,7 @@ export async function listPhotos(): Promise<Photo[]> {
             }
             return [
                 {
-                    photoId: key.replace(/^framebuffer\/|\.bin$/g, ""),
+                    photoId: key.slice(key.lastIndexOf("/") + 1, -".bin".length),
                     hash: (object.ETag ?? "").replace(/"/g, "").slice(0, 8),
                     uploadedAt: Math.floor((object.LastModified?.getTime() ?? 0) / 1000)
                 }
@@ -82,6 +81,6 @@ export async function listPhotos(): Promise<Photo[]> {
         .sort((a, b) => a.uploadedAt - b.uploadedAt);
 }
 
-export async function previewUrl(photoId: string): Promise<string> {
-    return presignGetObject(POLAROID_PHOTOS_BUCKET, previewKey(photoId));
+export async function previewUrl(deviceId: string, photoId: string): Promise<string> {
+    return presignGetObject(POLAROID_PHOTOS_BUCKET, previewKey(deviceId, photoId));
 }

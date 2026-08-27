@@ -4,7 +4,7 @@ import { DateTime } from "luxon";
 import { validate } from "email-validator";
 
 import { deleteItem, getItem, putItem } from "../../aws/services/dynamodb";
-import { authenticateHTTPAccessToken, UserType } from "../../auth";
+import { authorizeUserType, UserType } from "../../auth";
 import {
     HttpResponseStatus,
     PASSKEYS_TABLE,
@@ -26,9 +26,13 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Request Body");
     }
 
-    const sharePayload = await authenticateHTTPAccessToken(event);
-    if (sharePayload?.userType !== UserType.SHARE) {
-        return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Invalid Invite Token");
+    const { token, error } = await authorizeUserType(event, [UserType.SHARE]);
+    if (!token) {
+        return buildErrorResponse(
+            event,
+            HttpResponseStatus.UNAUTHORIZED,
+            error ?? "Invalid Invite Token"
+        );
     }
 
     const body: Payload = JSON.parse(event.body);
@@ -74,7 +78,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         credentialId: credential.id,
         publicKey: Buffer.from(credential.publicKey).toString("base64"),
         userType: UserType.FRIEND,
-        name: sharePayload.id,
+        name: token.id,
         email
     };
     await putItem(PASSKEYS_TABLE, passkey);

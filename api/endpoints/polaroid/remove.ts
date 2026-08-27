@@ -1,6 +1,9 @@
 import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 
-import { authenticateHTTPAccessToken, UserType } from "../../auth";
+import { authorizeUserType, UserType } from "../../auth";
+import { deviceForOwner } from "../devices";
+
+import { DeviceKind } from "../../types";
 import {
     buildErrorResponse,
     buildResponse,
@@ -15,9 +18,17 @@ type RemovePhotoPayload = {
 };
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
-    const payload = await authenticateHTTPAccessToken(event);
-    const allowedUserTypes = [UserType.ADMIN, UserType.POLAROID_OWNER];
-    if (!payload || !allowedUserTypes.includes(payload.userType)) {
+    const { token, error } = await authorizeUserType(event, [UserType.POLAROID_OWNER]);
+    if (!token) {
+        return buildErrorResponse(
+            event,
+            HttpResponseStatus.UNAUTHORIZED,
+            error ?? "Authentication Required"
+        );
+    }
+
+    const device = await deviceForOwner(token.email, DeviceKind.POLAROID);
+    if (!device) {
         return buildErrorResponse(
             event,
             HttpResponseStatus.UNAUTHORIZED,
@@ -34,12 +45,15 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Photo Id");
     }
 
-    const photoExists = await objectExists(POLAROID_PHOTOS_BUCKET, framebufferKey(body.id));
+    const photoExists = await objectExists(
+        POLAROID_PHOTOS_BUCKET,
+        framebufferKey(device.deviceId, body.id)
+    );
     if (!photoExists) {
         return buildErrorResponse(event, HttpResponseStatus.NOT_FOUND, "No Such Photo");
     }
 
-    await deleteObject(POLAROID_PHOTOS_BUCKET, framebufferKey(body.id));
-    await deleteObject(POLAROID_PHOTOS_BUCKET, previewKey(body.id));
+    await deleteObject(POLAROID_PHOTOS_BUCKET, framebufferKey(device.deviceId, body.id));
+    await deleteObject(POLAROID_PHOTOS_BUCKET, previewKey(device.deviceId, body.id));
     return buildResponse(event, HttpResponseStatus.OK, { removed: true, id: body.id });
 };

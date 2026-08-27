@@ -1,9 +1,12 @@
 import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
+
+import { authorizeUserType, UserType } from "../../auth";
+import { deviceForOwner } from "../devices";
 import { createHash, randomUUID } from "node:crypto";
 import { decode as decodeJpeg } from "jpeg-js";
 import { encode as encodePng } from "fast-png";
 import { putObject } from "../../aws/services/s3";
-import { authenticateHTTPAccessToken, UserType } from "../../auth";
+import { DeviceKind } from "../../types";
 import {
     HttpResponseStatus,
     POLAROID_PHOTOS_BUCKET,
@@ -111,9 +114,17 @@ const PANEL_ROW_BYTES = PANEL_WIDTH / 2;
 const PANEL_BYTES = PANEL_ROW_BYTES * PANEL_HEIGHT;
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
-    const payload = await authenticateHTTPAccessToken(event);
-    const allowedUserTypes = [UserType.ADMIN, UserType.POLAROID_OWNER];
-    if (!payload || !allowedUserTypes.includes(payload.userType)) {
+    const { token, error } = await authorizeUserType(event, [UserType.POLAROID_OWNER]);
+    if (!token) {
+        return buildErrorResponse(
+            event,
+            HttpResponseStatus.UNAUTHORIZED,
+            error ?? "Authentication Required"
+        );
+    }
+
+    const device = await deviceForOwner(token.email, DeviceKind.POLAROID);
+    if (!device) {
         return buildErrorResponse(
             event,
             HttpResponseStatus.UNAUTHORIZED,
@@ -142,17 +153,22 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     const photoId = randomUUID().replace(/-/g, "").slice(0, 12);
 
     // Framebuffer last: it is the record, so writing it publishes the photo.
-    await putObject(POLAROID_PHOTOS_BUCKET, previewKey(photoId), rendered.preview, "image/png");
     await putObject(
         POLAROID_PHOTOS_BUCKET,
-        framebufferKey(photoId),
+        previewKey(device.deviceId, photoId),
+        rendered.preview,
+        "image/png"
+    );
+    await putObject(
+        POLAROID_PHOTOS_BUCKET,
+        framebufferKey(device.deviceId, photoId),
         rendered.framebuffer,
         "application/octet-stream"
     );
 
     return buildResponse(event, HttpResponseStatus.OK, {
         id: photoId,
-        previewUrl: await previewUrl(photoId)
+        previewUrl: await previewUrl(device.deviceId, photoId)
     });
 };
 

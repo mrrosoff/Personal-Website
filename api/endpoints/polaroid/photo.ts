@@ -1,17 +1,19 @@
 import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import { getObject } from "../../aws/services/s3";
+import { resolveDevice } from "../devices";
 import { buildErrorResponse, HttpResponseStatus, POLAROID_PHOTOS_BUCKET } from "../../common";
-import { framebufferKey, isPolaroidDevice } from "./photos";
+import { DeviceKind } from "../../types";
+import { framebufferKey } from "./photos";
 
 type GetPhotoPayload = {
     id: string;
 };
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
-    if (!(await isPolaroidDevice(event))) {
+    const device = await resolveDevice(event, DeviceKind.POLAROID);
+    if (!device) {
         return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Device Token Required");
     }
-
     if (!event.body) {
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Request Body");
     }
@@ -21,7 +23,10 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Photo Id");
     }
 
-    const framebuffer = await getObject(POLAROID_PHOTOS_BUCKET, framebufferKey(body.id));
+    const framebuffer = await getObject(
+        POLAROID_PHOTOS_BUCKET,
+        framebufferKey(device.deviceId, body.id)
+    );
     if (!framebuffer) {
         return buildErrorResponse(event, HttpResponseStatus.NOT_FOUND, "No Such Photo");
     }
