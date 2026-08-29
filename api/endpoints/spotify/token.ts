@@ -1,10 +1,11 @@
 import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import axios from "axios";
 
-import { getParameters } from "../../aws/services/parameterStore";
-import { isDevice } from "../../auth";
+import { getParameter, getParameters } from "../../aws/services/parameterStore";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
-import { saveRefreshToken } from "./exchange";
+import { resolveDevice } from "../devices";
+import { DeviceKind } from "../../types";
+import { refreshTokenParam, saveRefreshToken } from "./exchange";
 
 type SpotifyRefreshResponse = {
     access_token: string;
@@ -13,21 +14,17 @@ type SpotifyRefreshResponse = {
 };
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
-    const {
-        "/website/spotify/client-id": clientId,
-        "/website/spotify/client-secret": clientSecret,
-        "/website/spotify/device-secret": deviceSecret,
-        "/website/spotify/refresh-token": refreshToken
-    } = await getParameters(
-        "/website/spotify/client-id",
-        "/website/spotify/client-secret",
-        "/website/spotify/device-secret",
-        "/website/spotify/refresh-token"
-    );
-
-    if (!isDevice(event, deviceSecret)) {
+    const device = await resolveDevice(event, DeviceKind.SPOTIFY);
+    if (!device) {
         return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Invalid Device Token");
     }
+
+    const {
+        "/website/spotify/client-id": clientId,
+        "/website/spotify/client-secret": clientSecret
+    } = await getParameters("/website/spotify/client-id", "/website/spotify/client-secret");
+
+    const refreshToken = await getParameter(refreshTokenParam(device.deviceId));
 
     if (!refreshToken) {
         return buildErrorResponse(event, HttpResponseStatus.SPOTIFY_NEEDS_AUTH, "Never Connected");
@@ -75,7 +72,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     }
 
     if (data.refresh_token && data.refresh_token !== refreshToken) {
-        await saveRefreshToken(data.refresh_token);
+        await saveRefreshToken(device.deviceId, data.refresh_token);
     }
 
     return buildResponse(event, HttpResponseStatus.OK, {

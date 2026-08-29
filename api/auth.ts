@@ -81,17 +81,6 @@ export function bearerToken(req: IncomingMessage | APIGatewayProxyEvent): string
     return authorizationHeader(req)?.split(" ")[1];
 }
 
-export function isDevice(
-    req: IncomingMessage | APIGatewayProxyEvent,
-    deviceSecret: string | undefined
-): boolean {
-    const token = bearerToken(req);
-    if (!token || !deviceSecret) {
-        return false;
-    }
-    return token === deviceSecret;
-}
-
 export async function authenticateHTTPAccessToken(
     req: IncomingMessage | APIGatewayProxyEvent
 ): Promise<{ token?: AccessToken; error?: string }> {

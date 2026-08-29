@@ -1,5 +1,3 @@
-import { timingSafeEqual } from "crypto";
-
 import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import axios from "axios";
 import { DateTime } from "luxon";
@@ -8,17 +6,25 @@ import { getParameters, putSecureParameter } from "../../aws/services/parameterS
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
 import { REDIRECT_URI, type StatePayload, stateHmac } from "./connect";
 
-const REFRESH_TOKEN_PARAM = "/website/spotify/refresh-token";
-const REFRESH_TOKEN_SET_AT_PARAM = "/website/spotify/refresh-token-set-at";
+export function refreshTokenParam(deviceId: string): string {
+    return `/website/spotify/devices/${deviceId}/refresh-token`;
+}
+
+export function refreshTokenSetAtParam(deviceId: string): string {
+    return `/website/spotify/devices/${deviceId}/refresh-token-set-at`;
+}
 
 /**
  * Persists a freshly issued Spotify refresh token and stamps the moment it was
  * issued. The timestamp drives the proactive reauth reminder (see
  * reauthReminder.ts): each new token restarts the expiry countdown.
  */
-export async function saveRefreshToken(token: string): Promise<void> {
-    await putSecureParameter(REFRESH_TOKEN_PARAM, token);
-    await putSecureParameter(REFRESH_TOKEN_SET_AT_PARAM, DateTime.now().toMillis().toString());
+export async function saveRefreshToken(deviceId: string, token: string): Promise<void> {
+    await putSecureParameter(refreshTokenParam(deviceId), token);
+    await putSecureParameter(
+        refreshTokenSetAtParam(deviceId),
+        DateTime.now().toMillis().toString()
+    );
 }
 
 type SpotifyTokenResponse = {
@@ -28,19 +34,19 @@ type SpotifyTokenResponse = {
     scope: string;
 };
 
-function isValidState(state: string, secret: string): boolean {
+/** The payload when the signature checks out and it has not expired, else null. */
+function parseState(state: string, secret: string): StatePayload | null {
     const [encoded, signature] = state.split(".");
-    if (!encoded || !signature) return false;
+    if (!encoded || !signature) return null;
 
-    const a = Buffer.from(signature);
-    const b = Buffer.from(stateHmac(encoded, secret));
-    if (a.length !== b.length || !timingSafeEqual(a, b)) return false;
+    if (stateHmac(encoded, secret) !== signature) return null;
 
     try {
         const payload = JSON.parse(Buffer.from(encoded, "base64url").toString()) as StatePayload;
-        return payload.exp >= DateTime.now().toSeconds();
+        if (payload.exp < DateTime.now().toSeconds() || !payload.deviceId) return null;
+        return payload;
     } catch {
-        return false;
+        return null;
     }
 }
 
@@ -59,7 +65,8 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         "/website/spotify/client-secret": clientSecret
     } = await getParameters("/website/spotify/client-id", "/website/spotify/client-secret");
 
-    if (!isValidState(state, clientSecret)) {
+    const statePayload = parseState(state, clientSecret);
+    if (!statePayload) {
         return buildErrorResponse(
             event,
             HttpResponseStatus.BAD_REQUEST,
@@ -85,6 +92,6 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         }
     );
 
-    await saveRefreshToken(data.refresh_token);
+    await saveRefreshToken(statePayload.deviceId, data.refresh_token);
     return buildResponse(event, HttpResponseStatus.OK, { connected: true });
 };

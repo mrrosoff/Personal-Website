@@ -5,13 +5,15 @@ import { DateTime, Duration } from "luxon";
 
 import { getParameters } from "../../aws/services/parameterStore";
 import { authorizeUserType, UserType } from "../../auth";
+import { deviceForOwner } from "../devices";
+import { DeviceKind } from "../../types";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
 
 export const REDIRECT_URI = "https://maxrosoff.com/spotify/callback";
 const SPOTIFY_SCOPE = "user-read-currently-playing";
 const STATE_TTL = Duration.fromObject({ minutes: 10 });
 
-export type StatePayload = { exp: number };
+export type StatePayload = { exp: number; deviceId: string };
 
 export function stateHmac(encodedPayload: string, secret: string): string {
     return createHmac("sha256", secret).update(encodedPayload).digest("base64url");
@@ -21,18 +23,19 @@ export function stateHmac(encodedPayload: string, secret: string): string {
  * Builds the OAuth `state` as `encoded.signature` (like a JWT), so the public
  * /callback can validate it with no server-side storage.
  *
- * - `encoded`: the base64url JSON payload, carrying the expiry. Readable, but
- *   on its own forgeable.
+ * - `encoded`: the base64url JSON payload, carrying the expiry and the device
+ *   it is for. Readable, but on its own forgeable.
  * - `signature`: an HMAC of `encoded` keyed with the Spotify client secret.
  *   Only we can produce it, and it can't be reversed into the payload.
  *
  * To verify, /callback splits on `.`, recomputes `stateHmac(encoded, secret)`
- * from the received `encoded`, and timing-safe compares it to the received
- * `signature`; a tampered payload won't match, and an expired one is rejected.
+ * from the received `encoded`, and compares it to the received `signature`; a
+ * tampered payload won't match, and an expired one is rejected.
  */
-function signState(secret: string): string {
+function signState(secret: string, deviceId: string): string {
     const payload: StatePayload = {
-        exp: Math.floor(DateTime.now().plus(STATE_TTL).toSeconds())
+        exp: Math.floor(DateTime.now().plus(STATE_TTL).toSeconds()),
+        deviceId
     };
     const encoded = Buffer.from(JSON.stringify(payload)).toString("base64url");
     return `${encoded}.${stateHmac(encoded, secret)}`;
@@ -48,6 +51,15 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         );
     }
 
+    const device = await deviceForOwner(token.email, DeviceKind.SPOTIFY);
+    if (!device) {
+        return buildErrorResponse(
+            event,
+            HttpResponseStatus.NOT_FOUND,
+            "No Spotify Display Registered"
+        );
+    }
+
     const {
         "/website/spotify/client-id": clientId,
         "/website/spotify/client-secret": clientSecret
@@ -58,7 +70,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         response_type: "code",
         redirect_uri: REDIRECT_URI,
         scope: SPOTIFY_SCOPE,
-        state: signState(clientSecret)
+        state: signState(clientSecret, device.deviceId)
     });
     const authorizeUrl = `https://accounts.spotify.com/authorize?${params}`;
 
