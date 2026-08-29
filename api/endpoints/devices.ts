@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { IncomingMessage } from "http";
 
 import { bearerToken } from "../auth";
-import { getAllItems, getItem, getItemsByIndex, updateItem } from "../aws/services/dynamodb";
+import { getItem, getItemsByIndex, updateItem } from "../aws/services/dynamodb";
 import { DEVICES_TABLE } from "../common";
 import type { DatabaseDevice, DeviceKind } from "../types";
 
@@ -11,10 +11,8 @@ function hashDeviceSecret(secret: string): string {
     return createHash("sha256").update(secret).digest("hex");
 }
 
-// A deviceId is the 12 hex characters registerDevice mints, and a secret never
-// contains a dot. Matching the whole token means anything else is treated as a
-// bare secret rather than being split into a lookup that cannot succeed, so a
-// stray JWT costs no read.
+// A deviceId is 12 hex characters and a secret never contains a dot, so
+// matching the whole token keeps a stray JWT from costing a read.
 const DEVICE_TOKEN_PATTERN = /^([0-9a-f]{12})\.([^.]+)$/;
 
 const LAST_SEEN_RESOLUTION_SECONDS = 300;
@@ -23,16 +21,12 @@ export async function resolveDevice(
     req: IncomingMessage | APIGatewayProxyEvent,
     kind: DeviceKind
 ): Promise<DatabaseDevice | undefined> {
-    const token = bearerToken(req);
-    if (!token) {
+    const prefixed = DEVICE_TOKEN_PATTERN.exec(bearerToken(req) ?? "");
+    if (!prefixed) {
         return undefined;
     }
 
-    const prefixed = DEVICE_TOKEN_PATTERN.exec(token);
-    const device = prefixed
-        ? await deviceForId(prefixed[1]!, prefixed[2]!)
-        : await deviceForBareSecret(token);
-
+    const device = await deviceForId(prefixed[1]!, prefixed[2]!);
     if (!device || device.kind !== kind) {
         return undefined;
     }
@@ -46,22 +40,6 @@ async function deviceForId(deviceId: string, secret: string): Promise<DatabaseDe
         return undefined;
     }
     return device.secretHash === hashDeviceSecret(secret) ? device : undefined;
-}
-
-/*
- * For Spotify Display legacy purposes
- */
-async function deviceForBareSecret(secret: string): Promise<DatabaseDevice | undefined> {
-    return matchDevice(await getAllItems(DEVICES_TABLE), secret);
-}
-
-function matchDevice(
-    devices: DatabaseDevice[],
-    secret: string | undefined
-): DatabaseDevice | undefined {
-    return secret
-        ? devices.find((device) => device.secretHash === hashDeviceSecret(secret))
-        : undefined;
 }
 
 export async function deviceForOwner(
