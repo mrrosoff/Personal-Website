@@ -28,9 +28,9 @@ export enum DeviceKind {
 }
 
 export type DatabaseDevice = {
-    ownerEmails: string[];
-    kind: DeviceKind;
     deviceId: string;
+    ownerEmail: string;
+    kind: DeviceKind;
     secretHash: string;
     lastSeenAt: number;
 };

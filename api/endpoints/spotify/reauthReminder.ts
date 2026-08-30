@@ -14,11 +14,16 @@ const REMINDER_LEAD = Duration.fromObject({ days: 14 });
 const FALLBACK_RECIPIENT = "me@maxrosoff.com";
 
 export const handler = async (): Promise<void> => {
-    const devices = await getAllItems(DEVICES_TABLE);
-    const displays = devices.filter((device) => device.kind === DeviceKind.SPOTIFY);
+    const grants = await getAllItems(DEVICES_TABLE);
+    const owners = new Map<string, string[]>();
+    for (const grant of grants) {
+        if (grant.kind === DeviceKind.SPOTIFY) {
+            owners.set(grant.deviceId, [...(owners.get(grant.deviceId) ?? []), grant.ownerEmail]);
+        }
+    }
 
-    for (const display of displays) {
-        await remindIfDue(display.deviceId, display.ownerEmails);
+    for (const [deviceId, ownerEmails] of owners) {
+        await remindIfDue(deviceId, ownerEmails);
     }
 };
 
@@ -42,21 +47,25 @@ async function remindIfDue(deviceId: string, ownerEmails: string[]): Promise<voi
     const passkeys = await getAllItems(PASSKEYS_TABLE);
     const resend = new Resend(await getParameter("/website/resend/api-key"));
 
-    for (const email of recipients) {
-        const { error } = await resend.emails.send({
-            from: "Spotify Display <display@ice-cream.maxrosoff.com>",
-            to: email,
-            replyTo: "me@maxrosoff.com",
-            subject: "Reconnect Spotify to keep the display running",
-            react: SpotifyReauthEmail({
-                name: passkeys.find((passkey) => passkey.email === email)?.name,
-                daysLeft,
-                reconnectUrl: "https://maxrosoff.com"
+    const sent = await Promise.all(
+        recipients.map((email) =>
+            resend.emails.send({
+                from: "Spotify Display <display@ice-cream.maxrosoff.com>",
+                to: email,
+                replyTo: "me@maxrosoff.com",
+                subject: "Reconnect Spotify to keep the display running",
+                react: SpotifyReauthEmail({
+                    name: passkeys.find((passkey) => passkey.email === email)?.name,
+                    daysLeft,
+                    reconnectUrl: "https://maxrosoff.com"
+                })
             })
-        });
-        if (error) {
-            console.error(error);
-            throw new Error("Error Sending Spotify Reauth Email");
-        }
+        )
+    );
+
+    const failures = sent.map(({ error }) => error).filter((error) => error !== null);
+    if (failures.length) {
+        failures.forEach((error) => console.error(error));
+        throw new Error("Error Sending Spotify Reauth Email");
     }
 }

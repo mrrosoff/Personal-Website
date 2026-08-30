@@ -2,6 +2,7 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
     DynamoDBDocument,
     UpdateCommand,
+    QueryCommand,
     ScanCommand,
     PutCommand,
     GetCommand,
@@ -35,7 +36,7 @@ type ItemKeyInput<T extends Table> =
     T extends typeof FLAVORS_TABLE ? string :
     T extends typeof PASSKEY_CHALLENGES_TABLE ? string :
     T extends typeof PASSKEYS_TABLE ? string :
-    T extends typeof DEVICES_TABLE ? string :
+    T extends typeof DEVICES_TABLE ? { deviceId: string; ownerEmail: string } :
     never;
 
 type UpdateItemInput<T extends Table> = Partial<
@@ -86,6 +87,26 @@ export async function getAllItems<T extends Table>(table: T): Promise<TableObjec
         return [];
     }
     return itemOutput.Items as TableObject<T>[];
+}
+
+export async function queryItems<T extends Table>(
+    table: T,
+    key: ValuesOfType<TableObject<T>, string>,
+    value: string,
+    { index = false, limit }: { index?: boolean; limit?: number } = {}
+): Promise<TableObject<T>[]> {
+    console.debug(`Querying ${table} where ${key} is ${value}`);
+
+    const queryRequest = new QueryCommand({
+        TableName: table,
+        ...(index && { IndexName: key }),
+        KeyConditionExpression: "#key = :value",
+        ExpressionAttributeNames: { "#key": key },
+        ExpressionAttributeValues: { ":value": value },
+        ...(limit && { Limit: limit })
+    });
+    const itemOutput = await documentClient.send(queryRequest);
+    return (itemOutput.Items ?? []) as TableObject<T>[];
 }
 
 export async function decrementField<T extends Table>(

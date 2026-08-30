@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { IncomingMessage } from "http";
 
 import { bearerToken } from "../auth";
-import { getAllItems, getItem, updateItem } from "../aws/services/dynamodb";
+import { queryItems, updateItem } from "../aws/services/dynamodb";
 import { DEVICES_TABLE } from "../common";
 import type { DatabaseDevice, DeviceKind } from "../types";
 
@@ -35,7 +35,7 @@ export async function resolveDevice(
 }
 
 async function deviceForId(deviceId: string, secret: string): Promise<DatabaseDevice | undefined> {
-    const device = await getItem(DEVICES_TABLE, deviceId);
+    const [device] = await queryItems(DEVICES_TABLE, "deviceId", deviceId, { limit: 1 });
     if (!device) {
         return undefined;
     }
@@ -49,10 +49,8 @@ export async function deviceForOwner(
     if (!email) {
         return undefined;
     }
-    // A device can have several owners, which a partition key cannot express,
-    // so this reads the table. It runs on page load, not on a device poll.
-    const devices = await getAllItems(DEVICES_TABLE);
-    return devices.find((device) => device.kind === kind && device.ownerEmails.includes(email));
+    const devices = await queryItems(DEVICES_TABLE, "ownerEmail", email, { index: true });
+    return devices.find((device) => device.kind === kind);
 }
 
 async function touchLastSeen(device: DatabaseDevice): Promise<void> {
@@ -61,7 +59,17 @@ async function touchLastSeen(device: DatabaseDevice): Promise<void> {
         return;
     }
     try {
-        await updateItem(DEVICES_TABLE, device.deviceId, "lastSeenAt", now);
+        const grants = await queryItems(DEVICES_TABLE, "deviceId", device.deviceId);
+        await Promise.all(
+            grants.map((grant) =>
+                updateItem(
+                    DEVICES_TABLE,
+                    { deviceId: grant.deviceId, ownerEmail: grant.ownerEmail },
+                    "lastSeenAt",
+                    now
+                )
+            )
+        );
     } catch (err) {
         // The heartbeat is only for us to see the device is alive, so a failed
         // write shouldn't stop it getting its photo. Log it and carry on.
