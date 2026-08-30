@@ -2,7 +2,6 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
     DynamoDBDocument,
     UpdateCommand,
-    QueryCommand,
     ScanCommand,
     PutCommand,
     GetCommand,
@@ -87,23 +86,6 @@ export async function getAllItems<T extends Table>(table: T): Promise<TableObjec
         return [];
     }
     return itemOutput.Items as TableObject<T>[];
-}
-
-export async function getItemsByIndex<T extends Table>(
-    table: T,
-    key: ValuesOfType<TableObject<T>, string>,
-    value: string
-): Promise<TableObject<T>[]> {
-    console.debug(`Querying items from ${table} with ${key} ${value}`);
-    const queryRequest = new QueryCommand({
-        TableName: table,
-        IndexName: key,
-        KeyConditionExpression: "#indexKey = :value",
-        ExpressionAttributeNames: { "#indexKey": key },
-        ExpressionAttributeValues: { ":value": value }
-    });
-    const itemOutput = await documentClient.send(queryRequest);
-    return (itemOutput.Items ?? []) as TableObject<T>[];
 }
 
 export async function decrementField<T extends Table>(

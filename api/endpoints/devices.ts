@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { IncomingMessage } from "http";
 
 import { bearerToken } from "../auth";
-import { getItem, getItemsByIndex, updateItem } from "../aws/services/dynamodb";
+import { getAllItems, getItem, updateItem } from "../aws/services/dynamodb";
 import { DEVICES_TABLE } from "../common";
 import type { DatabaseDevice, DeviceKind } from "../types";
 
@@ -49,8 +49,10 @@ export async function deviceForOwner(
     if (!email) {
         return undefined;
     }
-    const devices = await getItemsByIndex(DEVICES_TABLE, "ownerEmail", email);
-    return devices.find((device) => device.kind === kind);
+    // A device can have several owners, which a partition key cannot express,
+    // so this reads the table. It runs on page load, not on a device poll.
+    const devices = await getAllItems(DEVICES_TABLE);
+    return devices.find((device) => device.kind === kind && device.ownerEmails.includes(email));
 }
 
 async function touchLastSeen(device: DatabaseDevice): Promise<void> {

@@ -28,7 +28,7 @@ import { Topic } from "aws-cdk-lib/aws-sns";
 import { Construct } from "constructs";
 
 import { EmailSubscription } from "aws-cdk-lib/aws-sns-subscriptions";
-import { AttributeType, BillingMode, ProjectionType, Table } from "aws-cdk-lib/aws-dynamodb";
+import { AttributeType, BillingMode, Table } from "aws-cdk-lib/aws-dynamodb";
 import { BlockPublicAccess, Bucket } from "aws-cdk-lib/aws-s3";
 import { CfnGroup } from "aws-cdk-lib/aws-resourcegroups";
 
@@ -116,21 +116,13 @@ class WebsiteAPIStack extends Stack {
     }
 
     private createDevicesTable(): Table {
-        const devicesTable = new Table(this, "websiteDevicesTable", {
+        return new Table(this, "websiteDevicesTable", {
             tableName: DEVICES_TABLE,
             partitionKey: { name: "deviceId", type: AttributeType.STRING },
             billingMode: BillingMode.PAY_PER_REQUEST,
             removalPolicy: RemovalPolicy.DESTROY,
             deletionProtection: true
         });
-        const ownerIndex = "ownerEmail";
-        devicesTable.addGlobalSecondaryIndex({
-            indexName: ownerIndex,
-            partitionKey: { name: ownerIndex, type: AttributeType.STRING },
-            sortKey: { name: "kind", type: AttributeType.STRING },
-            projectionType: ProjectionType.ALL
-        });
-        return devicesTable;
     }
 
     private createAPI(certificate: Certificate, apiRole: Role): RestApi {
@@ -623,14 +615,10 @@ class WebsiteAPIStack extends Stack {
                                 "dynamodb:GetItem",
                                 "dynamodb:DeleteItem",
                                 "dynamodb:PutItem",
-                                "dynamodb:Query",
                                 "dynamodb:Scan",
                                 "dynamodb:UpdateItem"
                             ],
-                            resources: tables.flatMap((table) => [
-                                table.tableArn,
-                                table.tableArn + "/index/*"
-                            ])
+                            resources: tables.flatMap((table) => [table.tableArn])
                         })
                     ]
                 })

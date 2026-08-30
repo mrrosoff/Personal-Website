@@ -18,11 +18,11 @@ export const handler = async (): Promise<void> => {
     const displays = devices.filter((device) => device.kind === DeviceKind.SPOTIFY);
 
     for (const display of displays) {
-        await remindIfDue(display.deviceId, display.ownerEmail);
+        await remindIfDue(display.deviceId, display.ownerEmails);
     }
 };
 
-async function remindIfDue(deviceId: string, ownerEmail: string): Promise<void> {
+async function remindIfDue(deviceId: string, ownerEmails: string[]): Promise<void> {
     const setAt = Number(await getParameter(refreshTokenSetAtParam(deviceId)));
     if (!setAt) {
         return;
@@ -34,28 +34,29 @@ async function remindIfDue(deviceId: string, ownerEmail: string): Promise<void> 
         return;
     }
 
-    const { email, name } = await resolveOwner(ownerEmail);
     const daysLeft = Math.max(0, Math.ceil(expiry.diff(now, "days").days));
+    const recipients = ownerEmails.length ? ownerEmails : [FALLBACK_RECIPIENT];
 
-    const apiKey = await getParameter("/website/resend/api-key");
-    const resend = new Resend(apiKey);
-    const { error } = await resend.emails.send({
-        from: "Spotify Display <display@ice-cream.maxrosoff.com>",
-        to: email,
-        replyTo: "me@maxrosoff.com",
-        subject: "Reconnect Spotify to keep the display running",
-        react: SpotifyReauthEmail({ name, daysLeft, reconnectUrl: "https://maxrosoff.com" })
-    });
-    if (error) {
-        console.error(error);
-        throw new Error("Error Sending Spotify Reauth Email");
-    }
-}
-
-// The passkey is only for the display name; the device row already says who to
-// reach, so an owner without one still gets the mail.
-async function resolveOwner(ownerEmail: string): Promise<{ email: string; name?: string }> {
+    // The passkey is only for the greeting; the device row already says who to
+    // reach, so an owner without one still gets the mail.
     const passkeys = await getAllItems(PASSKEYS_TABLE);
-    const owner = passkeys.find((passkey) => passkey.email === ownerEmail);
-    return { email: ownerEmail || FALLBACK_RECIPIENT, name: owner?.name };
+    const resend = new Resend(await getParameter("/website/resend/api-key"));
+
+    for (const email of recipients) {
+        const { error } = await resend.emails.send({
+            from: "Spotify Display <display@ice-cream.maxrosoff.com>",
+            to: email,
+            replyTo: "me@maxrosoff.com",
+            subject: "Reconnect Spotify to keep the display running",
+            react: SpotifyReauthEmail({
+                name: passkeys.find((passkey) => passkey.email === email)?.name,
+                daysLeft,
+                reconnectUrl: "https://maxrosoff.com"
+            })
+        });
+        if (error) {
+            console.error(error);
+            throw new Error("Error Sending Spotify Reauth Email");
+        }
+    }
 }
