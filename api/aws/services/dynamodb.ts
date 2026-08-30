@@ -39,6 +39,10 @@ type ItemKeyInput<T extends Table> =
     T extends typeof DEVICES_TABLE ? { deviceId: string; ownerEmail: string } :
     never;
 
+type CompositeKeyTable = {
+    [T in Table]: ItemKeyInput<T> extends string ? never : T;
+}[Table];
+
 type UpdateItemInput<T extends Table> = Partial<
     Record<ValuesOfType<TableObject<T>, DynamoDBFieldValue>, DynamoDBFieldValue>
 >;
@@ -66,7 +70,16 @@ const primaryKeys: Record<Table, string> = {
     [DEVICES_TABLE]: "deviceId"
 };
 
-// Generic helper functions for passkey tables
+export async function getEntireTable<T extends Table>(table: T): Promise<TableObject<T>[]> {
+    console.debug(`Getting all items from ${table}`);
+    const scanItemsRequest = new ScanCommand({ TableName: table });
+    const itemOutput = await documentClient.send(scanItemsRequest);
+    if (!itemOutput.Items) {
+        return [];
+    }
+    return itemOutput.Items as TableObject<T>[];
+}
+
 export async function getItem<T extends Table>(
     table: T,
     key: ItemKeyInput<T>
@@ -79,31 +92,35 @@ export async function getItem<T extends Table>(
     return itemOutput.Item as TableObject<T> | undefined;
 }
 
-export async function getAllItems<T extends Table>(table: T): Promise<TableObject<T>[]> {
-    console.debug(`Getting all items from ${table}`);
-    const scanItemsRequest = new ScanCommand({ TableName: table });
-    const itemOutput = await documentClient.send(scanItemsRequest);
-    if (!itemOutput.Items) {
-        return [];
-    }
-    return itemOutput.Items as TableObject<T>[];
-}
-
-export async function queryItems<T extends Table>(
+export async function getItems<T extends CompositeKeyTable>(
     table: T,
-    key: ValuesOfType<TableObject<T>, string>,
-    value: string,
-    { index = false, limit }: { index?: boolean; limit?: number } = {}
+    value: string
 ): Promise<TableObject<T>[]> {
-    console.debug(`Querying ${table} where ${key} is ${value}`);
+    console.debug(`Querying items from ${table} with ${primaryKeys[table]} ${value}`);
 
     const queryRequest = new QueryCommand({
         TableName: table,
-        ...(index && { IndexName: key }),
+        KeyConditionExpression: "#key = :value",
+        ExpressionAttributeNames: { "#key": primaryKeys[table] },
+        ExpressionAttributeValues: { ":value": value }
+    });
+    const itemOutput = await documentClient.send(queryRequest);
+    return (itemOutput.Items ?? []) as TableObject<T>[];
+}
+
+export async function getItemsByIndex<T extends Table>(
+    table: T,
+    key: ValuesOfType<TableObject<T>, string>,
+    value: string
+): Promise<TableObject<T>[]> {
+    console.debug(`Querying items from ${table} with ${key} ${value}`);
+
+    const queryRequest = new QueryCommand({
+        TableName: table,
+        IndexName: key,
         KeyConditionExpression: "#key = :value",
         ExpressionAttributeNames: { "#key": key },
-        ExpressionAttributeValues: { ":value": value },
-        ...(limit && { Limit: limit })
+        ExpressionAttributeValues: { ":value": value }
     });
     const itemOutput = await documentClient.send(queryRequest);
     return (itemOutput.Items ?? []) as TableObject<T>[];

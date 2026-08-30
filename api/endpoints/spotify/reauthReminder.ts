@@ -3,7 +3,7 @@ import { Resend } from "resend";
 import { DEVICES_TABLE, PASSKEYS_TABLE } from "../../common";
 
 import SpotifyReauthEmail from "../../../src/emails/SpotifyReauthEmail";
-import { getAllItems } from "../../aws/services/dynamodb";
+import { getEntireTable } from "../../aws/services/dynamodb";
 import { getParameter } from "../../aws/services/parameterStore";
 import { DeviceKind } from "../../types";
 import { refreshTokenSetAtParam } from "./exchange";
@@ -14,7 +14,7 @@ const REMINDER_LEAD = Duration.fromObject({ days: 14 });
 const FALLBACK_RECIPIENT = "me@maxrosoff.com";
 
 export const handler = async (): Promise<void> => {
-    const grants = await getAllItems(DEVICES_TABLE);
+    const grants = await getEntireTable(DEVICES_TABLE);
     const owners = new Map<string, string[]>();
     for (const grant of grants) {
         if (grant.kind === DeviceKind.SPOTIFY) {
@@ -44,7 +44,7 @@ async function remindIfDue(deviceId: string, ownerEmails: string[]): Promise<voi
 
     // The passkey is only for the greeting; the device row already says who to
     // reach, so an owner without one still gets the mail.
-    const passkeys = await getAllItems(PASSKEYS_TABLE);
+    const passkeys = await getEntireTable(PASSKEYS_TABLE);
     const resend = new Resend(await getParameter("/website/resend/api-key"));
 
     const sent = await Promise.all(

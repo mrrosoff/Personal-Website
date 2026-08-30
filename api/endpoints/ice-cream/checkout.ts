@@ -1,7 +1,7 @@
 import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import Stripe from "stripe";
 
-import { decrementField, getAllItems } from "../../aws/services/dynamodb";
+import { decrementField, getEntireTable } from "../../aws/services/dynamodb";
 import { getParameter } from "../../aws/services/parameterStore";
 import { authenticateHTTPAccessToken, UserType } from "../../auth";
 import { FLAVORS_TABLE, HttpResponseStatus, buildErrorResponse, buildResponse } from "../../common";
@@ -48,7 +48,7 @@ const handleFriendCheckout = async (
     priceIds: string[],
     customerName: string
 ): Promise<APIGatewayProxyResult> => {
-    const allFlavors = await getAllItems(FLAVORS_TABLE);
+    const allFlavors = await getEntireTable(FLAVORS_TABLE);
     const selectedFlavors = allFlavors.filter((flavor) => priceIds.includes(flavor.priceId));
 
     await Promise.all(

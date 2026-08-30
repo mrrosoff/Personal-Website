@@ -2,7 +2,7 @@ import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import Stripe from "stripe";
 
 import { getParameter } from "../../aws/services/parameterStore";
-import { getAllItems, putItem } from "../../aws/services/dynamodb";
+import { getEntireTable, putItem } from "../../aws/services/dynamodb";
 import { FLAVORS_TABLE, HttpResponseStatus, buildErrorResponse, buildResponse } from "../../common";
 import type { FlavorType } from "../../types";
 import { isAdmin } from "../../auth";
@@ -29,7 +29,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         );
     }
 
-    const existingFlavors = await getAllItems(FLAVORS_TABLE);
+    const existingFlavors = await getEntireTable(FLAVORS_TABLE);
     const normalizedName = body.flavorName.trim().toLowerCase();
     const duplicate = existingFlavors.find(
         (flavor) => flavor.name.trim().toLowerCase() === normalizedName

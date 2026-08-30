@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { IncomingMessage } from "http";
 
 import { bearerToken } from "../auth";
-import { queryItems, updateItem } from "../aws/services/dynamodb";
+import { getItemsByIndex, getItems, updateItem } from "../aws/services/dynamodb";
 import { DEVICES_TABLE } from "../common";
 import type { DatabaseDevice, DeviceKind } from "../types";
 
@@ -35,7 +35,7 @@ export async function resolveDevice(
 }
 
 async function deviceForId(deviceId: string, secret: string): Promise<DatabaseDevice | undefined> {
-    const [device] = await queryItems(DEVICES_TABLE, "deviceId", deviceId, { limit: 1 });
+    const [device] = await getItems(DEVICES_TABLE, deviceId);
     if (!device) {
         return undefined;
     }
@@ -49,7 +49,7 @@ export async function deviceForOwner(
     if (!email) {
         return undefined;
     }
-    const devices = await queryItems(DEVICES_TABLE, "ownerEmail", email, { index: true });
+    const devices = await getItemsByIndex(DEVICES_TABLE, "ownerEmail", email);
     return devices.find((device) => device.kind === kind);
 }
 
@@ -59,7 +59,7 @@ async function touchLastSeen(device: DatabaseDevice): Promise<void> {
         return;
     }
     try {
-        const grants = await queryItems(DEVICES_TABLE, "deviceId", device.deviceId);
+        const grants = await getItems(DEVICES_TABLE, device.deviceId);
         await Promise.all(
             grants.map((grant) =>
                 updateItem(

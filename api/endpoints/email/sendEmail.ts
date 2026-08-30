@@ -2,7 +2,7 @@ import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import { Resend } from "resend";
 
 import { getParameter } from "../../aws/services/parameterStore";
-import { getAllItems } from "../../aws/services/dynamodb";
+import { getEntireTable } from "../../aws/services/dynamodb";
 import MailingListEmail from "../../../src/emails/MailingListEmail";
 import OrderSuccessEmail from "../../../src/emails/OrderSuccessEmail";
 import { FLAVORS_TABLE, HttpResponseStatus, buildErrorResponse, buildResponse } from "../../common";
@@ -29,7 +29,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 async function createBroadcast(resend: Resend, message?: string): Promise<string> {
     const id = await getParameter("/website/resend/audience");
 
-    const allFlavors = await getAllItems(FLAVORS_TABLE);
+    const allFlavors = await getEntireTable(FLAVORS_TABLE);
 
     const currentFlavors = allFlavors.filter((f) => f.type === "currentFlavor");
     const lastBatch = allFlavors.filter((f) => f.type === "lastBatch");
