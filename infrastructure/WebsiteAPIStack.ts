@@ -122,7 +122,7 @@ class WebsiteAPIStack extends Stack {
             sortKey: { name: "ownerEmail", type: AttributeType.STRING },
             billingMode: BillingMode.PAY_PER_REQUEST,
             removalPolicy: RemovalPolicy.DESTROY,
-            deletionProtection: false
+            deletionProtection: true
         });
         devicesTable.addGlobalSecondaryIndex({
             indexName: "ownerEmail",
