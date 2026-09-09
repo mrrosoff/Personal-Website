@@ -936,7 +936,7 @@ const fetchInventoryData = async (state: EmulatorState) => {
             name: item.name || "Unknown Flavor",
             color: item.color || "#000000",
             count: typeof item.count === "number" ? item.count : 0,
-            type: item.type || "upcoming"
+            type: item.type ?? null
         }));
 
         state.setAdminConsoleMode({
