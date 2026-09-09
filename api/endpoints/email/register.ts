@@ -3,24 +3,19 @@ import { Resend } from "resend";
 
 import { getParameters } from "../../aws/services/parameterStore";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
-
-type RegisterPayload = {
-    firstName?: string;
-    lastName?: string;
-    email: string;
-};
+import type { MailingListRegistration } from "../../types";
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     if (!event.body) {
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Request Body");
     }
 
-    const payload: RegisterPayload = JSON.parse(event.body);
+    const payload: MailingListRegistration = JSON.parse(event.body);
     const userId = await registerNewMailingListUser(payload);
     return buildResponse(event, HttpResponseStatus.OK, { userId });
 };
 
-export async function registerNewMailingListUser(payload: RegisterPayload) {
+export async function registerNewMailingListUser(payload: MailingListRegistration) {
     const resendKeys = await getParameters("/website/resend/api-key", "/website/resend/audience");
     const resend = new Resend(resendKeys["/website/resend/api-key"]);
 
@@ -50,7 +45,7 @@ async function findUserIfAlreadyRegistered(
 async function registerNewUser(
     resend: Resend,
     audienceId: string,
-    payload: RegisterPayload
+    payload: MailingListRegistration
 ): Promise<string> {
     const { data, error } = await resend.contacts.create({
         email: payload.email,

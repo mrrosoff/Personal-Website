@@ -45,18 +45,25 @@ const MainMenu = (props: { theme?: TerminalTheme; onAction: (key: string) => voi
                 2. Send Marketing Emails
             </MenuItem>
             <MenuItem
+                selected={mode.selectedOption === MainMenuOption.AddMailingListEntry}
+                theme={props.theme}
+                onClick={smallScreen ? () => select(MainMenuOption.AddMailingListEntry) : undefined}
+            >
+                3. Add To Mailing List
+            </MenuItem>
+            <MenuItem
                 selected={mode.selectedOption === MainMenuOption.CreateFriendInvite}
                 theme={props.theme}
                 onClick={smallScreen ? () => select(MainMenuOption.CreateFriendInvite) : undefined}
             >
-                3. Create Friend Invite
+                4. Create Friend Invite
             </MenuItem>
             <MenuItem
                 selected={mode.selectedOption === MainMenuOption.Exit}
                 theme={props.theme}
                 onClick={smallScreen ? () => select(MainMenuOption.Exit) : undefined}
             >
-                4. Exit
+                5. Exit
             </MenuItem>
             <Typography
                 sx={{

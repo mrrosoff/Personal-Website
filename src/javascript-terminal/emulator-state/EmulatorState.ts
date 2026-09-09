@@ -8,12 +8,13 @@ import {
 import * as FileUtil from "../fs/util/file-util";
 import * as PathUtil from "../fs/util/path-util";
 import type { FileSystem } from "../../FileSystem";
-import type { DatabaseFlavor, FlavorType } from "../../../api/types";
+import type { DatabaseFlavor, FlavorType, MailingListRegistration } from "../../../api/types";
 
 export enum MainMenuOption {
     IceCreamInventory = "IceCreamInventory",
     SendMarketingEmails = "SendMarketingEmails",
     CreateFriendInvite = "CreateFriendInvite",
+    AddMailingListEntry = "AddMailingListEntry",
     Exit = "Exit"
 }
 
@@ -30,7 +31,8 @@ export enum AdminConsoleScreen {
     ConfirmSendEmails = "confirm-send-emails",
     ProvisionFlavorForm = "provision-flavor-form",
     ConfirmProvisionFlavor = "confirm-provision-flavor",
-    CreateFriendInvite = "create-friend-invite"
+    CreateFriendInvite = "create-friend-invite",
+    AddMailingListEntry = "add-mailing-list-entry"
 }
 
 export type EditField = Exclude<keyof DatabaseFlavor, "productId" | "priceId">;
@@ -46,6 +48,11 @@ export type ProvisionFlavorForm = {
 export type FriendInvite = {
     friendName: string;
     url?: string;
+};
+
+export type MailingListEntry = Required<MailingListRegistration> & {
+    currentField: keyof MailingListRegistration;
+    added?: boolean;
 };
 
 export type Marketing = {
@@ -64,6 +71,7 @@ export type AdminConsoleState = {
     error?: string;
     marketing?: Marketing;
     friendInvite?: FriendInvite;
+    mailingListEntry?: MailingListEntry;
 };
 
 export type PasswordPromptState = {

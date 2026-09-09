@@ -10,6 +10,7 @@ import ConfirmSendEmailsMenu from "./ConfirmSendEmailsMenu";
 import ProvisionFlavorFormMenu from "./ProvisionFlavorFormMenu";
 import ConfirmProvisionFlavorMenu from "./ConfirmProvisionFlavorMenu";
 import CreateFriendInviteMenu from "./CreateFriendInviteMenu";
+import AddMailingListEntryMenu from "./AddMailingListEntryMenu";
 
 const AdminConsole = (props: { theme?: TerminalTheme; onAction: (key: string) => void }) => {
     const { emulatorState } = useAppContext();
@@ -32,6 +33,8 @@ const AdminConsole = (props: { theme?: TerminalTheme; onAction: (key: string) =>
                 return <ConfirmProvisionFlavorMenu {...props} />;
             case AdminConsoleScreen.CreateFriendInvite:
                 return <CreateFriendInviteMenu {...props} />;
+            case AdminConsoleScreen.AddMailingListEntry:
+                return <AddMailingListEntryMenu {...props} />;
         }
     };
 

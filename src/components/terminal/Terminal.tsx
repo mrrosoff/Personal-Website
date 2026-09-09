@@ -211,6 +211,20 @@ const Terminal = (
                 });
                 break;
             }
+            case AdminConsoleScreen.AddMailingListEntry: {
+                const entry = adminConsoleMode.mailingListEntry;
+                if (!entry || entry.added) return;
+
+                e.preventDefault();
+                emulatorState.setAdminConsoleMode({
+                    ...adminConsoleMode,
+                    mailingListEntry: {
+                        ...entry,
+                        [entry.currentField]: entry[entry.currentField] + pastedText
+                    }
+                });
+                break;
+            }
             case AdminConsoleScreen.CreateFriendInvite: {
                 const invite = adminConsoleMode.friendInvite ?? { friendName: "" };
                 if (invite.url) return;

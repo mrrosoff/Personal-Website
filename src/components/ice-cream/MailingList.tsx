@@ -5,9 +5,18 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import axios, { isAxiosError } from "axios";
 import { validate } from "email-validator";
 
-import { API_URL } from "../App";
-``;
+import type { MailingListRegistration } from "../../../api/types";
 import icecreamImage from "../../images/ice-cream.webp";
+import { API_URL } from "../App";
+
+export const registerMailingListUser = async (registration: MailingListRegistration) => {
+    const { data } = await axios.post(`${API_URL}/email/register`, {
+        firstName: registration.firstName?.trim() || undefined,
+        lastName: registration.lastName?.trim() || undefined,
+        email: registration.email.trim()
+    });
+    return data;
+};
 
 const MailingList = () => {
     const theme = useTheme();
@@ -133,11 +142,7 @@ const MailingListForm = () => {
                 onClick={async () => {
                     try {
                         setLoading(true);
-                        await axios.post(`${API_URL}/email/register`, {
-                            firstName,
-                            lastName,
-                            email
-                        });
+                        await registerMailingListUser({ firstName, lastName, email });
                         setSuccess(true);
                     } catch (error: unknown) {
                         if (isAxiosError(error)) {

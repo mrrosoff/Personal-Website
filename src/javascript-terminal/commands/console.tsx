@@ -1,6 +1,13 @@
 import axios from "axios";
+import { validate } from "email-validator";
 
-import { type DatabaseFlavor, FLAVOR_TYPES, type FlavorType, UserType } from "../../../api/types";
+import {
+    type DatabaseFlavor,
+    FLAVOR_TYPES,
+    type FlavorType,
+    type MailingListRegistration,
+    UserType
+} from "../../../api/types";
 import { API_URL } from "../../components/App";
 import { decodeToken } from "../../auth";
 import EmulatorState, {
@@ -11,6 +18,7 @@ import EmulatorState, {
     type ProvisionFlavorForm
 } from "../emulator-state/EmulatorState";
 import { errorMessage } from "../emulator-state/CommandMapping";
+import { registerMailingListUser } from "../../components/ice-cream/MailingList";
 
 export const optDef = {};
 
@@ -18,6 +26,7 @@ const MAIN_MENU_OPTIONS = [
     MainMenuOption.IceCreamInventory,
     MainMenuOption.SendMarketingEmails,
     MainMenuOption.CreateFriendInvite,
+    MainMenuOption.AddMailingListEntry,
     MainMenuOption.Exit
 ];
 
@@ -25,6 +34,12 @@ const ICE_CREAM_INVENTORY_MENU_OPTIONS = [
     IceCreamInventoryMenuOption.ProvisionNewFlavor,
     IceCreamInventoryMenuOption.ModifyFlavorInventory,
     IceCreamInventoryMenuOption.GoBack
+];
+
+const MAILING_LIST_FIELDS: Array<keyof MailingListRegistration> = [
+    "firstName",
+    "lastName",
+    "email"
 ];
 
 const FLAVOR_TYPE_OPTIONS: Array<FlavorType | null> = [...FLAVOR_TYPES, null];
@@ -113,6 +128,8 @@ export const handleAdminConsoleKeyPress = async (
         return await handleConfirmProvisionFlavor(key, emulatorState);
     } else if (mode.screen === "create-friend-invite") {
         return await handleCreateFriendInvite(key, emulatorState);
+    } else if (mode.screen === "add-mailing-list-entry") {
+        return await handleAddMailingListEntry(key, emulatorState);
     }
 
     return emulatorState;
@@ -178,6 +195,18 @@ const handleMainMenu = (key: string, state: EmulatorState): EmulatorState => {
                         ...mode,
                         screen: AdminConsoleScreen.CreateFriendInvite,
                         friendInvite: { friendName: "" }
+                    });
+                    break;
+                case MainMenuOption.AddMailingListEntry:
+                    state.setAdminConsoleMode({
+                        ...mode,
+                        screen: AdminConsoleScreen.AddMailingListEntry,
+                        mailingListEntry: {
+                            firstName: "",
+                            lastName: "",
+                            email: "",
+                            currentField: "firstName"
+                        }
                     });
                     break;
                 case MainMenuOption.Exit:
@@ -751,6 +780,97 @@ const createFriendInvite = async (friendName: string, authToken: string): Promis
     return data.url;
 };
 
+const handleAddMailingListEntry = async (
+    key: string,
+    state: EmulatorState
+): Promise<EmulatorState> => {
+    const mode = state.getAdminConsoleMode()!;
+    const entry = mode.mailingListEntry;
+    if (!entry) return state;
+
+    const returnToMainMenu = () =>
+        state.setAdminConsoleMode({
+            ...state.getAdminConsoleMode()!,
+            screen: AdminConsoleScreen.Main,
+            selectedOption: MainMenuOption.AddMailingListEntry,
+            mailingListEntry: undefined
+        });
+
+    if (key === "Escape") {
+        returnToMainMenu();
+        return state;
+    }
+
+    if (entry.added) {
+        if (key === "Enter") returnToMainMenu();
+        return state;
+    }
+
+    const fieldIndex = MAILING_LIST_FIELDS.indexOf(entry.currentField);
+
+    switch (key) {
+        case "ArrowDown":
+        case "Tab": {
+            const nextIndex = (fieldIndex + 1) % MAILING_LIST_FIELDS.length;
+            state.setAdminConsoleMode({
+                ...mode,
+                mailingListEntry: { ...entry, currentField: MAILING_LIST_FIELDS[nextIndex] }
+            });
+            break;
+        }
+        case "ArrowUp": {
+            const prevIndex =
+                (fieldIndex - 1 + MAILING_LIST_FIELDS.length) % MAILING_LIST_FIELDS.length;
+            state.setAdminConsoleMode({
+                ...mode,
+                mailingListEntry: { ...entry, currentField: MAILING_LIST_FIELDS[prevIndex] }
+            });
+            break;
+        }
+        case "Enter": {
+            if (!validate(entry.email.trim())) {
+                state.setAdminConsoleMode({ ...mode, error: "Enter A Valid Email Address" });
+                break;
+            }
+            state.setAdminConsoleMode({ ...mode, loading: true });
+            try {
+                await registerMailingListUser(entry);
+            } catch (err) {
+                setAdminConsoleError(state, err, "Failed To Add To Mailing List");
+                break;
+            }
+            state.setAdminConsoleMode({
+                ...state.getAdminConsoleMode()!,
+                mailingListEntry: { ...entry, added: true },
+                loading: false
+            });
+            break;
+        }
+        case "Backspace":
+            state.setAdminConsoleMode({
+                ...mode,
+                mailingListEntry: {
+                    ...entry,
+                    [entry.currentField]: dropLastCharacter(entry[entry.currentField])
+                }
+            });
+            break;
+        default:
+            if (isPrintableKey(key)) {
+                state.setAdminConsoleMode({
+                    ...mode,
+                    mailingListEntry: {
+                        ...entry,
+                        [entry.currentField]: entry[entry.currentField] + key
+                    }
+                });
+            }
+            break;
+    }
+
+    return state;
+};
+
 const handleConfirmProvisionFlavor = async (
     key: string,
     state: EmulatorState
@@ -900,7 +1020,8 @@ SYNOPSIS
      console
 
 DESCRIPTION
-     Opens the administrative console for managing ice cream inventory and
-     sending marketing emails. Requires authentication via password prompt.`;
+     Opens the administrative console for managing ice cream inventory,
+     sending marketing emails, and managing the mailing list. Requires
+     authentication via password prompt.`;
 
 export default { optDef, functionDef };
