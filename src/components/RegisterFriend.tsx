@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 
-import { Box, Button, TextField, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import { browserSupportsWebAuthn, startRegistration, WebAuthnError } from "@simplewebauthn/browser";
 import axios from "axios";
 import { DateTime } from "luxon";
@@ -25,8 +25,6 @@ const registrationErrorMessage = (err: unknown): string => {
 
 const RegisterForm = (props: { token: string; friendName: string }) => {
     const navigate = useNavigate();
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [email, setEmail] = useState("");
@@ -68,27 +66,23 @@ const RegisterForm = (props: { token: string; friendName: string }) => {
 
     return (
         <>
-            <Typography variant={"body1"}>Register a passkey to unlock friend mode.</Typography>
-            {isMobile ? (
-                <Typography variant={"body1"} mb={4}>
-                    Then press and hold on my photo from the home screen.
-                </Typography>
-            ) : (
-                <Typography variant={"body1"} mb={4}>
-                    Then run{" "}
-                    <code
-                        style={{
-                            backgroundColor: "rgba(255,255,255,0.1)",
-                            padding: "2px 6px",
-                            borderRadius: 4,
-                            fontFamily: "monospace"
-                        }}
-                    >
-                        sudo su {props.friendName}
-                    </code>{" "}
-                    in the terminal.
-                </Typography>
-            )}
+            <Typography variant={"body1"}>
+                Register a passkey to unlock the rest of the terminal.
+            </Typography>
+            <Typography variant={"body1"} mb={4}>
+                Then run{" "}
+                <code
+                    style={{
+                        backgroundColor: "rgba(255,255,255,0.1)",
+                        padding: "2px 6px",
+                        borderRadius: 4,
+                        fontFamily: "monospace"
+                    }}
+                >
+                    sudo su {props.friendName}
+                </code>{" "}
+                in the terminal.
+            </Typography>
             <TextField
                 type={"email"}
                 label={"Email"}

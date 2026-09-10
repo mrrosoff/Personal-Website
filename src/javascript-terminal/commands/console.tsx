@@ -13,9 +13,13 @@ import { decodeToken } from "../../auth";
 import EmulatorState, {
     AdminConsoleScreen,
     type EditField,
+    type FriendInvite,
     MainMenuOption,
     IceCreamInventoryMenuOption,
-    type ProvisionFlavorForm
+    type ProvisionFlavorForm,
+    SHARE_TOKEN_DEFAULT_HOURS,
+    SHARE_TOKEN_MAX_HOURS,
+    SHARE_TOKEN_MIN_HOURS
 } from "../emulator-state/EmulatorState";
 import { errorMessage } from "../emulator-state/CommandMapping";
 import { registerMailingListUser } from "../../components/ice-cream/MailingList";
@@ -44,6 +48,12 @@ const MAILING_LIST_FIELDS: Array<keyof MailingListRegistration> = [
 
 const FLAVOR_TYPE_OPTIONS: Array<FlavorType | null> = [...FLAVOR_TYPES, null];
 
+const FRIEND_INVITE_FIELDS: Array<FriendInvite["currentField"]> = [
+    "friendName",
+    "email",
+    "durationHours"
+];
+
 const isPrintableKey = (key: string) => [...key].length === 1;
 const dropLastCharacter = (value: string) => [...value].slice(0, -1).join("");
 
@@ -59,6 +69,9 @@ const getPreviousFlavorType = (currentType: FlavorType | null): FlavorType | nul
         (currentIndex - 1 + FLAVOR_TYPE_OPTIONS.length) % FLAVOR_TYPE_OPTIONS.length;
     return FLAVOR_TYPE_OPTIONS[previousIndex];
 };
+
+const clampDurationHours = (hours: number): number =>
+    Math.min(Math.max(hours, SHARE_TOKEN_MIN_HOURS), SHARE_TOKEN_MAX_HOURS);
 
 const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
     try {
@@ -194,7 +207,12 @@ const handleMainMenu = (key: string, state: EmulatorState): EmulatorState => {
                     state.setAdminConsoleMode({
                         ...mode,
                         screen: AdminConsoleScreen.CreateFriendInvite,
-                        friendInvite: { friendName: "" }
+                        friendInvite: {
+                            friendName: "",
+                            email: "",
+                            durationHours: SHARE_TOKEN_DEFAULT_HOURS,
+                            currentField: "friendName"
+                        }
                     });
                     break;
                 case MainMenuOption.AddMailingListEntry:
@@ -720,7 +738,8 @@ const handleCreateFriendInvite = async (
     state: EmulatorState
 ): Promise<EmulatorState> => {
     const mode = state.getAdminConsoleMode()!;
-    const invite = mode.friendInvite ?? { friendName: "" };
+    const invite = mode.friendInvite;
+    if (!invite) return state;
 
     if (key === "Escape") {
         state.setAdminConsoleMode({
@@ -736,45 +755,112 @@ const handleCreateFriendInvite = async (
         return state;
     }
 
-    if (key === "Enter") {
-        if (!invite.friendName) return state;
-        const authToken = state.getEnvVariables()["AUTH_TOKEN"]!;
-        state.setAdminConsoleMode({ ...mode, loading: true });
-        try {
-            const url = await createFriendInvite(invite.friendName, authToken);
+    const fieldIndex = FRIEND_INVITE_FIELDS.indexOf(invite.currentField);
+
+    switch (key) {
+        case "ArrowDown":
+        case "Tab": {
+            const nextIndex = (fieldIndex + 1) % FRIEND_INVITE_FIELDS.length;
             state.setAdminConsoleMode({
-                ...state.getAdminConsoleMode(),
-                friendInvite: { ...invite, url },
-                loading: false
+                ...mode,
+                friendInvite: { ...invite, currentField: FRIEND_INVITE_FIELDS[nextIndex] }
             });
-        } catch (err) {
-            setAdminConsoleError(state, err, "Failed To Create Friend Invite");
+            break;
         }
-        return state;
-    }
-
-    if (key === "Backspace") {
-        state.setAdminConsoleMode({
-            ...mode,
-            friendInvite: { ...invite, friendName: dropLastCharacter(invite.friendName) }
-        });
-        return state;
-    }
-
-    if (isPrintableKey(key)) {
-        state.setAdminConsoleMode({
-            ...mode,
-            friendInvite: { ...invite, friendName: invite.friendName + key }
-        });
+        case "ArrowUp": {
+            const prevIndex =
+                (fieldIndex - 1 + FRIEND_INVITE_FIELDS.length) % FRIEND_INVITE_FIELDS.length;
+            state.setAdminConsoleMode({
+                ...mode,
+                friendInvite: { ...invite, currentField: FRIEND_INVITE_FIELDS[prevIndex] }
+            });
+            break;
+        }
+        case "ArrowLeft":
+        case "ArrowRight":
+            if (invite.currentField === "durationHours") {
+                state.setAdminConsoleMode({
+                    ...mode,
+                    friendInvite: {
+                        ...invite,
+                        durationHours: clampDurationHours(
+                            invite.durationHours + (key === "ArrowLeft" ? -1 : 1)
+                        )
+                    }
+                });
+            }
+            break;
+        case "Enter": {
+            if (!invite.friendName.trim()) break;
+            const email = invite.email.trim();
+            if (email && !validate(email)) {
+                state.setAdminConsoleMode({ ...mode, error: "Enter A Valid Email Address" });
+                break;
+            }
+            const authToken = state.getEnvVariables()["AUTH_TOKEN"]!;
+            const durationHours = clampDurationHours(invite.durationHours);
+            state.setAdminConsoleMode({ ...mode, loading: true });
+            try {
+                const url = await createFriendInvite({ ...invite, durationHours }, authToken);
+                state.setAdminConsoleMode({
+                    ...state.getAdminConsoleMode()!,
+                    friendInvite: { ...invite, durationHours, email, url },
+                    loading: false
+                });
+            } catch (err) {
+                setAdminConsoleError(state, err, "Failed To Create Friend Invite");
+            }
+            break;
+        }
+        case "Backspace":
+            state.setAdminConsoleMode({
+                ...mode,
+                friendInvite:
+                    invite.currentField === "durationHours"
+                        ? { ...invite, durationHours: Math.floor(invite.durationHours / 10) }
+                        : {
+                              ...invite,
+                              [invite.currentField]: dropLastCharacter(invite[invite.currentField])
+                          }
+            });
+            break;
+        default:
+            if (invite.currentField === "durationHours") {
+                if (key >= "0" && key <= "9") {
+                    state.setAdminConsoleMode({
+                        ...mode,
+                        friendInvite: {
+                            ...invite,
+                            durationHours: Math.min(
+                                invite.durationHours * 10 + parseInt(key),
+                                SHARE_TOKEN_MAX_HOURS
+                            )
+                        }
+                    });
+                }
+            } else if (isPrintableKey(key)) {
+                state.setAdminConsoleMode({
+                    ...mode,
+                    friendInvite: {
+                        ...invite,
+                        [invite.currentField]: invite[invite.currentField] + key
+                    }
+                });
+            }
+            break;
     }
 
     return state;
 };
 
-const createFriendInvite = async (friendName: string, authToken: string): Promise<string> => {
+const createFriendInvite = async (invite: FriendInvite, authToken: string): Promise<string> => {
     const { data } = await axios.post<{ url: string }>(
         `${API_URL}/admin/create-friend-invite`,
-        { friendName },
+        {
+            friendName: invite.friendName.trim(),
+            expiresInHours: invite.durationHours,
+            ...(invite.email.trim() && { email: invite.email.trim() })
+        },
         { headers: { Authorization: `Bearer ${authToken}` } }
     );
     return data.url;

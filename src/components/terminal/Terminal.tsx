@@ -226,13 +226,16 @@ const Terminal = (
                 break;
             }
             case AdminConsoleScreen.CreateFriendInvite: {
-                const invite = adminConsoleMode.friendInvite ?? { friendName: "" };
-                if (invite.url) return;
+                const invite = adminConsoleMode.friendInvite;
+                if (!invite || invite.url || invite.currentField === "durationHours") return;
 
                 e.preventDefault();
                 emulatorState.setAdminConsoleMode({
                     ...adminConsoleMode,
-                    friendInvite: { ...invite, friendName: invite.friendName + pastedText }
+                    friendInvite: {
+                        ...invite,
+                        [invite.currentField]: invite[invite.currentField] + pastedText
+                    }
                 });
                 break;
             }

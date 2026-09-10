@@ -45,8 +45,23 @@ export type ProvisionFlavorForm = {
     currentField: "flavorName" | "initialQuantity" | "color" | "type";
 };
 
+export const SHARE_TOKEN_MIN_HOURS = 1;
+export const SHARE_TOKEN_MAX_HOURS = 24 * 7;
+export const SHARE_TOKEN_DEFAULT_HOURS = 6;
+
+export const shareTokenDurationLabel = (hours: number): string => {
+    if (hours >= 24 && hours % 24 === 0) {
+        const days = hours / 24;
+        return `${days.toString()} ${days === 1 ? "Day" : "Days"}`;
+    }
+    return `${hours.toString()} ${hours === 1 ? "Hour" : "Hours"}`;
+};
+
 export type FriendInvite = {
     friendName: string;
+    email: string;
+    durationHours: number;
+    currentField: "friendName" | "email" | "durationHours";
     url?: string;
 };
 

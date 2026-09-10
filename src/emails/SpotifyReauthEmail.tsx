@@ -18,6 +18,13 @@ const SpotifyReauthEmail = (props: { name?: string; daysLeft?: number; reconnect
     const daysLeft = props.daysLeft ?? 7;
     const reconnectUrl = props.reconnectUrl ?? "https://maxrosoff.com";
     const greeting = props.name ? `Hi ${props.name},` : "Hi,";
+    const userName = props.name ?? "your name";
+    const codeStyle = {
+        backgroundColor: "rgb(243,244,246)",
+        padding: "2px 6px",
+        borderRadius: 4,
+        fontFamily: "monospace"
+    };
     return (
         <Html>
             <Head />
@@ -67,12 +74,30 @@ const SpotifyReauthEmail = (props: { name?: string; daysLeft?: number; reconnect
                             reconnected. You can refresh it now in under a minute. No need to wait.
                         </Text>
                         <Text style={{ fontSize: 16, color: "rgb(17,24,39)" }}>
-                            Open the terminal at{" "}
+                            Four steps, all of them on the site itself:
+                        </Text>
+                        <Text style={{ fontSize: 16, color: "rgb(17,24,39)" }}>
+                            <strong>1. Open the terminal.</strong> Go to{" "}
                             <Link href={reconnectUrl} style={{ color: SPOTIFY_GREEN }}>
                                 maxrosoff.com
                             </Link>{" "}
-                            and run <code>sudo su {props.name}</code> then <code>sudo spotify</code>
-                            , then approve the Spotify prompt.
+                            on a computer. The terminal is the panel on the home page. Click it once
+                            so it takes what you type.
+                        </Text>
+                        <Text style={{ fontSize: 16, color: "rgb(17,24,39)" }}>
+                            <strong>2. Sign in as yourself.</strong> Type{" "}
+                            <span style={codeStyle}>sudo su {userName}</span> and press enter. Your
+                            device will ask for your face, fingerprint, or screen lock. Approve it.
+                        </Text>
+                        <Text style={{ fontSize: 16, color: "rgb(17,24,39)" }}>
+                            <strong>3. Start the reconnect.</strong> Type{" "}
+                            <span style={codeStyle}>sudo spotify reconnect</span> and press enter.
+                            The site will hand you over to Spotify.
+                        </Text>
+                        <Text style={{ fontSize: 16, color: "rgb(17,24,39)" }}>
+                            <strong>4. Approve the Spotify prompt.</strong> Spotify asks whether the
+                            display can see what you're playing. Say yes, and it drops you back on
+                            the site with the connection renewed for another two months.
                         </Text>
                     </Section>
                     <Section style={{ marginTop: 8, marginBottom: 24 }}>

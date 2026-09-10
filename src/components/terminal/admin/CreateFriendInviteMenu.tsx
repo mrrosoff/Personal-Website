@@ -3,10 +3,15 @@ import { Box, IconButton, Tooltip, Typography, useMediaQuery, useTheme } from "@
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CheckIcon from "@mui/icons-material/Check";
 
-import type { AdminConsoleState } from "../../../javascript-terminal/emulator-state/EmulatorState";
+import {
+    type AdminConsoleState,
+    type FriendInvite,
+    shareTokenDurationLabel
+} from "../../../javascript-terminal/emulator-state/EmulatorState";
 import { useAppContext } from "../../AppContext";
 import type { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
+import Stepper from "./common/Stepper";
 
 const CreateFriendInviteMenu = (props: {
     theme?: TerminalTheme;
@@ -37,6 +42,25 @@ const CreateFriendInviteMenu = (props: {
         setTimeout(() => setCopied(false), 1500);
     };
 
+    const selectField = (field: FriendInvite["currentField"]) => {
+        if (!invite) return;
+        emulatorState.setAdminConsoleMode({
+            ...mode,
+            friendInvite: { ...invite, currentField: field }
+        });
+        props.onAction("");
+    };
+
+    const fields: Array<{ field: FriendInvite["currentField"]; label: string; value: string }> = [
+        { field: "friendName", label: "Friend Name", value: invite?.friendName || "_" },
+        { field: "email", label: "Email", value: invite?.email || "Skip To Copy The Link" },
+        {
+            field: "durationHours",
+            label: "Link Lasts",
+            value: invite ? shareTokenDurationLabel(invite.durationHours) : ""
+        }
+    ];
+
     return (
         <Box sx={{ paddingTop: 1 }}>
             <Typography sx={{ color: outputColor, fontWeight: "bold", mb: 1.25 }}>
@@ -44,45 +68,78 @@ const CreateFriendInviteMenu = (props: {
             </Typography>
 
             {invite?.url ? (
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1, px: 1 }}>
-                    <Typography
-                        sx={{
-                            color: outputColor,
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                            maxWidth: 500
-                        }}
-                    >
-                        {invite.url}
-                    </Typography>
-                    <Tooltip title={copied ? "Copied" : "Copy"} placement="right">
-                        <IconButton
-                            size="small"
-                            onClick={onCopy}
-                            sx={{ color: outputColor, padding: 0.25 }}
+                <Box sx={{ mb: 1, px: 1 }}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <Typography
+                            sx={{
+                                color: outputColor,
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                                maxWidth: 500
+                            }}
                         >
-                            {copied ? (
-                                <CheckIcon fontSize="small" />
-                            ) : (
-                                <ContentCopyIcon fontSize="small" />
-                            )}
-                        </IconButton>
-                    </Tooltip>
+                            {invite.url}
+                        </Typography>
+                        <Tooltip title={copied ? "Copied" : "Copy"} placement="right">
+                            <IconButton
+                                size="small"
+                                onClick={onCopy}
+                                sx={{ color: outputColor, padding: 0.25 }}
+                            >
+                                {copied ? (
+                                    <CheckIcon fontSize="small" />
+                                ) : (
+                                    <ContentCopyIcon fontSize="small" />
+                                )}
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                    <Typography sx={{ color: outputColor, opacity: 0.7, mt: 0.5 }}>
+                        {invite.email
+                            ? `Emailed to ${invite.email}, good for ${shareTokenDurationLabel(invite.durationHours)}`
+                            : `Good for ${shareTokenDurationLabel(invite.durationHours)}`}
+                    </Typography>
                 </Box>
             ) : (
                 <Box sx={{ mb: 1 }}>
-                    <Typography
-                        sx={{
-                            color: commandColor,
-                            backgroundColor: "rgba(255,255,255,0.1)",
-                            padding: "4px 8px",
-                            mb: 1
-                        }}
-                    >
-                        {"> "}Friend Name: {invite?.friendName || ""}
-                        {!mode.loading && "_"}
-                    </Typography>
+                    {fields.map(({ field, label, value }) => {
+                        const active = invite?.currentField === field;
+                        return (
+                            <Typography
+                                key={field}
+                                onClick={smallScreen ? () => selectField(field) : undefined}
+                                sx={{
+                                    color: active ? commandColor : outputColor,
+                                    backgroundColor: active
+                                        ? "rgba(255,255,255,0.1)"
+                                        : "transparent",
+                                    padding: "4px 8px",
+                                    mb: 1,
+                                    cursor: smallScreen ? "pointer" : undefined
+                                }}
+                            >
+                                {active ? "> " : "  "}
+                                {label}:{" "}
+                                {active && field === "durationHours" && smallScreen ? (
+                                    <Stepper
+                                        value={value}
+                                        width={"13ch"}
+                                        theme={props.theme}
+                                        onStep={(key) => props.onAction(key)}
+                                    />
+                                ) : (
+                                    <>
+                                        {value}
+                                        {active && !mode.loading ? "_" : ""}
+                                        {active && field === "durationHours"
+                                            ? " (type hours or ←/→)"
+                                            : ""}
+                                    </>
+                                )}
+                            </Typography>
+                        );
+                    })}
                 </Box>
             )}
 
@@ -122,8 +179,8 @@ const CreateFriendInviteMenu = (props: {
                           ? "tap copy for full url"
                           : "click copy for full url | escape: back"
                       : smallScreen
-                        ? "type a name, then Create"
-                        : "type to edit | enter: create | escape: cancel"}
+                        ? "tap a field to edit, then Create"
+                        : "up/down: navigate fields | type to edit | enter: create | escape: cancel"}
             </Typography>
         </Box>
     );
