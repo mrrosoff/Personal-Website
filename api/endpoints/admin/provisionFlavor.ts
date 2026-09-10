@@ -45,17 +45,17 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     const stripeApiKey = await getParameter("/website/stripe/api-key");
     const stripe = new Stripe(stripeApiKey);
     const product = await stripe.products.create({
-        name: body.flavorName
-    });
-    const price = await stripe.prices.create({
-        product: product.id,
-        unit_amount: 500,
-        currency: "usd"
+        name: body.flavorName,
+        default_price_data: {
+            unit_amount: 600,
+            currency: "usd"
+        }
     });
 
+    const priceId = product.default_price as string;
     const flavor = {
         productId: product.id,
-        priceId: price.id,
+        priceId,
         name: body.flavorName,
         color: body.color,
         count: body.initialQuantity,
