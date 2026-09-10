@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 
+import { HAS_BOOTED_KEY } from "../AppContext";
+
 type Phase = "crashed" | "restarting" | "booting" | "clearing";
 
 const RESTART_DURATION_MS = 3000;
@@ -37,6 +39,10 @@ const CrashScreen = () => {
     const [phase, setPhase] = useState<Phase>("crashed");
     const [dots, setDots] = useState(0);
     const [lines, setLines] = useState<string[]>([]);
+
+    useEffect(() => {
+        sessionStorage.removeItem(HAS_BOOTED_KEY);
+    }, []);
 
     useEffect(() => {
         const interval = setInterval(() => setVisibleCursor((visible) => !visible), 600);
