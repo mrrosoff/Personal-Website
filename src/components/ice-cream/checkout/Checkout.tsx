@@ -380,7 +380,7 @@ const CompactCheckoutLayout = (props: {
                     {props.subscription && (
                         <Typography mt={1.5} sx={{ fontSize: "0.9em", opacity: 0.7 }}>
                             {manageResult === "sent" ? (
-                                "If that address has a subscription, a link to manage or cancel it is on its way."
+                                "Check your email for a link."
                             ) : manageResult === "failed" ? (
                                 "That did not go through. Try again in a minute."
                             ) : (
@@ -397,9 +397,7 @@ const CompactCheckoutLayout = (props: {
                                         opacity: validate(email) ? 1 : 0.5
                                     }}
                                 >
-                                    {validate(email)
-                                        ? "Already subscribed? Email me a link to manage or cancel."
-                                        : "Already subscribed? Enter your email above for a manage or cancel link."}
+                                    Already subscribed? Email me a link to manage or cancel.
                                 </Link>
                             )}
                         </Typography>

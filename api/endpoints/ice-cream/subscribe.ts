@@ -18,7 +18,6 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         ui_mode: "custom",
         line_items: [{ price: stripeKeys["/website/stripe/subscription-price"], quantity: 1 }],
         mode: "subscription",
-        payment_method_types: ["card"],
         return_url: `https://maxrosoff.com/ice-cream/checkout/return?sessionId={CHECKOUT_SESSION_ID}`
     });
     return buildResponse(event, HttpResponseStatus.OK, session);
