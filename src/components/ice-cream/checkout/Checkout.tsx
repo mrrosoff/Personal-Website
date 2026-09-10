@@ -397,7 +397,7 @@ const CompactCheckoutLayout = (props: {
                                         opacity: validate(email) ? 1 : 0.5
                                     }}
                                 >
-                                    Already subscribed? Email me a link to manage or cancel.
+                                    Already subscribed? Email me a cancel link.
                                 </Link>
                             )}
                         </Typography>

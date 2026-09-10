@@ -250,6 +250,7 @@ class WebsiteAPIStack extends Stack {
         const subscribeLambda = this.createSubscribeLambda(apiRole);
         const iceCreamUnsubscribeLambda = this.createIceCreamUnsubscribeLambda(apiRole);
         const subscriptionStatusLambda = this.createSubscriptionStatusLambda(apiRole);
+        const cancelSubscriptionLambda = this.createCancelSubscriptionLambda(apiRole);
 
         const iceCreamResource = api.root.addResource("ice-cream");
         iceCreamResource
@@ -273,6 +274,9 @@ class WebsiteAPIStack extends Stack {
         iceCreamResource
             .addResource("subscription-status")
             .addMethod("POST", new LambdaIntegration(subscriptionStatusLambda));
+        iceCreamResource
+            .addResource("cancel")
+            .addMethod("POST", new LambdaIntegration(cancelSubscriptionLambda));
     }
 
     private createSpotifyRoutes(api: RestApi, apiRole: Role) {
@@ -403,6 +407,17 @@ class WebsiteAPIStack extends Stack {
             functionName,
             handler: "subscribe.handler",
             code: Code.fromAsset("dist/lambda/ice-cream/subscribe"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(functionName, role)
+        });
+    }
+
+    private createCancelSubscriptionLambda(role: Role): LambdaFunction {
+        const functionName = "website-cancel-subscription";
+        return new LambdaFunction(this, "websiteCancelSubscriptionLambda", {
+            functionName,
+            handler: "cancel.handler",
+            code: Code.fromAsset("dist/lambda/ice-cream/cancel"),
             runtime: Runtime.NODEJS_22_X,
             ...this.createLambdaParams(functionName, role)
         });

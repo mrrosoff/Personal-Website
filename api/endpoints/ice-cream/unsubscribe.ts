@@ -2,19 +2,28 @@ import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import Stripe from "stripe";
 import { Resend } from "resend";
 
+import { generateToken, UserType } from "../../auth";
 import { getParameters } from "../../aws/services/parameterStore";
 import { HttpResponseStatus, buildErrorResponse, buildResponse } from "../../common";
 
-type ManageSubscriptionPayload = {
-    email: string;
+type UnsubscribePayload = {
+    email?: string;
 };
+
+const LIVE_STATUSES: Stripe.Subscription.Status[] = [
+    "active",
+    "trialing",
+    "past_due",
+    "unpaid",
+    "paused"
+];
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     if (!event.body) {
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Request Body");
     }
 
-    const payload: ManageSubscriptionPayload = JSON.parse(event.body);
+    const payload: UnsubscribePayload = JSON.parse(event.body);
     const email = payload.email?.trim();
     if (!email) {
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Email");
@@ -23,53 +32,53 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     const keys = await getParameters("/website/stripe/api-key", "/website/resend/api-key");
     const stripe = new Stripe(keys["/website/stripe/api-key"]);
 
-    const portalUrl = await createPortalSession(stripe, email);
-    if (portalUrl) {
-        await sendPortalLinkEmail(keys["/website/resend/api-key"], email, portalUrl);
+    const subscriptionId = await findLiveSubscription(stripe, email);
+    if (subscriptionId) {
+        const token = await generateToken(subscriptionId, {
+            userType: UserType.SUBSCRIBER,
+            email,
+            expiresIn: "30m"
+        });
+        await sendCancelLinkEmail(keys["/website/resend/api-key"], email, token);
     }
 
     return buildResponse(event, HttpResponseStatus.OK, { sent: true });
 };
 
-async function createPortalSession(stripe: Stripe, email: string): Promise<string | null> {
-    const customers = await stripe.customers.list({ email, limit: 1 });
-    const customer = customers.data[0];
-    if (!customer) {
-        return null;
+async function findLiveSubscription(stripe: Stripe, email: string): Promise<string | null> {
+    const customers = await stripe.customers.list({ email, limit: 10 });
+    for (const customer of customers.data) {
+        const subscriptions = await stripe.subscriptions.list({
+            customer: customer.id,
+            status: "all",
+            limit: 100
+        });
+        const live = subscriptions.data.find(({ status }) => LIVE_STATUSES.includes(status));
+        if (live) {
+            return live.id;
+        }
     }
-
-    const subscriptions = await stripe.subscriptions.list({
-        customer: customer.id,
-        status: "active",
-        limit: 1
-    });
-    if (subscriptions.data.length === 0) {
-        return null;
-    }
-
-    const session = await stripe.billingPortal.sessions.create({
-        customer: customer.id,
-        return_url: "https://maxrosoff.com/ice-cream"
-    });
-    return session.url;
+    return null;
 }
 
-async function sendPortalLinkEmail(resendApiKey: string, email: string, portalUrl: string) {
+async function sendCancelLinkEmail(resendApiKey: string, email: string, token: string) {
     const resend = new Resend(resendApiKey);
+    const url = `https://maxrosoff.com/ice-cream/cancel?token=${encodeURIComponent(token)}`;
+
     const { error } = await resend.emails.send({
         from: "Max's Freezer Stash <orders@ice-cream.maxrosoff.com>",
         to: email,
         replyTo: "me@maxrosoff.com",
-        subject: "Manage Your Ice Cream Subscription",
+        subject: "Cancel Your Ice Cream Subscription",
         text: [
-            "Here is your link to manage the ice cream subscription.",
-            portalUrl,
-            "You can update your card or cancel from there. The link expires shortly, so grab a new one from the site if it stops working."
+            "Here is your link to cancel the ice cream subscription.",
+            url,
+            "The link works for the next 30 minutes. Ask for another from the site if it expires."
         ].join("\n\n")
     });
 
     if (error) {
         console.error(error);
-        throw Error("Error Sending Subscription Portal Email");
+        throw Error("Error Sending Cancel Link Email");
     }
 }
