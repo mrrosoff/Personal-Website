@@ -2,19 +2,23 @@ import { useState } from "react";
 
 import { Box, Button, Typography, useMediaQuery, useTheme } from "@mui/material";
 import axios from "axios";
-import { Navigate, useSearchParams } from "react-router-dom";
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 
 import { API_URL } from "../App";
+import { decodeToken, unexpiredToken } from "../../auth";
+import { UserType } from "../../../api/types";
 import icecreamImage from "../../images/ice-cream.webp";
 
 const CancelSubscription = () => {
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
     const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
     const token = searchParams.get("token") || "";
 
     const [cancelling, setCancelling] = useState(false);
     const [result, setResult] = useState<"cancelled" | "failed" | null>(null);
+    const [invalidToken, setInvalidToken] = useState(false);
     const [message, setMessage] = useState("");
 
     const onCancel = async () => {
@@ -23,6 +27,11 @@ const CancelSubscription = () => {
             await axios.post(`${API_URL}/ice-cream/cancel`, { token });
             setResult("cancelled");
         } catch (error) {
+            if (axios.isAxiosError(error) && error.response?.status === 401) {
+                setInvalidToken(true);
+                setCancelling(false);
+                return;
+            }
             setMessage(
                 (axios.isAxiosError(error) &&
                     (error.response?.data as { message?: string } | undefined)?.message) ||
@@ -33,17 +42,18 @@ const CancelSubscription = () => {
         setCancelling(false);
     };
 
-    if (!token) {
-        return <Navigate to={"/ice-cream"} replace />;
+    const payload = unexpiredToken(token) ? decodeToken(token) : null;
+    if (!payload || payload.userType !== UserType.SUBSCRIBER || invalidToken) {
+        return <Navigate to={"/"} replace />;
     }
 
     return (
         <Box
             display={"flex"}
             flexDirection={"column"}
-            justifyContent={"space-between"}
             alignItems={smallScreen ? "center" : undefined}
             pb={4}
+            gap={smallScreen ? 4 : 6}
         >
             <Box
                 display={"flex"}
@@ -56,7 +66,7 @@ const CancelSubscription = () => {
                     align={smallScreen ? "center" : undefined}
                     sx={{ maxWidth: smallScreen ? 300 : undefined }}
                 >
-                    {result === "cancelled" ? "All Done" : "Cancel Your Subscription"}
+                    Manage Your Subscription
                 </Typography>
                 <Typography
                     mt={smallScreen ? 2 : undefined}
@@ -69,8 +79,22 @@ const CancelSubscription = () => {
                           ? message
                           : "This stops the monthly charge right away. Anything you have already paid for is still yours."}
                 </Typography>
-                {result !== "cancelled" && (
-                    <Box mt={4}>
+                <Box
+                    mt={4}
+                    display={"flex"}
+                    gap={2}
+                    flexWrap={"wrap"}
+                    justifyContent={smallScreen ? "center" : undefined}
+                >
+                    {result === "cancelled" ? (
+                        <Button
+                            variant={"outlined"}
+                            sx={{ fontSize: 18 }}
+                            onClick={() => navigate("/ice-cream")}
+                        >
+                            Back To The Flavors
+                        </Button>
+                    ) : (
                         <Button
                             variant={"outlined"}
                             sx={{ fontSize: 18 }}
@@ -80,8 +104,8 @@ const CancelSubscription = () => {
                         >
                             {result === "failed" ? "Try Again" : "Cancel Subscription"}
                         </Button>
-                    </Box>
-                )}
+                    )}
+                </Box>
             </Box>
             <Box height={smallScreen ? 150 : 250} overflow={"hidden"}>
                 <img
