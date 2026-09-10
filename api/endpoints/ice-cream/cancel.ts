@@ -24,7 +24,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         return buildErrorResponse(
             event,
             HttpResponseStatus.UNAUTHORIZED,
-            "That link is not valid anymore. Ask for a new one."
+            "Link Expired or Invalid, Please Request a New Link"
         );
     }
 

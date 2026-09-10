@@ -2,6 +2,7 @@ import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import Stripe from "stripe";
 import { Resend } from "resend";
 
+import CancelSubscriptionEmail from "../../../src/emails/CancelSubscriptionEmail";
 import { generateToken, UserType } from "../../auth";
 import { getParameters } from "../../aws/services/parameterStore";
 import { HttpResponseStatus, buildErrorResponse, buildResponse } from "../../common";
@@ -70,11 +71,7 @@ async function sendCancelLinkEmail(resendApiKey: string, email: string, token: s
         to: email,
         replyTo: "me@maxrosoff.com",
         subject: "Cancel Your Ice Cream Subscription",
-        text: [
-            "Here is your link to cancel the ice cream subscription.",
-            url,
-            "The link works for the next 30 minutes. Ask for another from the site if it expires."
-        ].join("\n\n")
+        react: CancelSubscriptionEmail({ cancelUrl: url, minutesValid: 30 })
     });
 
     if (error) {

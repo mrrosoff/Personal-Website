@@ -59,8 +59,8 @@ export enum UserType {
     FRIEND = "FRIEND",
     SPOTIFY_OWNER = "SPOTIFY_OWNER",
     POLAROID_OWNER = "POLAROID_OWNER",
-    SHARE = "SHARE",
-    SUBSCRIBER = "SUBSCRIBER"
+    SUBSCRIBER = "SUBSCRIBER",
+    SHARE = "SHARE"
 }
 
 export type AccessToken = {
