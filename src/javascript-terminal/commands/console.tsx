@@ -29,8 +29,8 @@ export const optDef = {};
 const MAIN_MENU_OPTIONS = [
     MainMenuOption.IceCreamInventory,
     MainMenuOption.SendMarketingEmails,
-    MainMenuOption.CreateFriendInvite,
     MainMenuOption.AddMailingListEntry,
+    MainMenuOption.CreateFriendInvite,
     MainMenuOption.Exit
 ];
 
