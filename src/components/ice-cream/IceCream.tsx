@@ -109,7 +109,7 @@ const IceCream = () => {
         >
             <Typography variant="h1">Max's Freezer Stash</Typography>
             <Typography mt={smallScreen ? 2 : undefined}>
-                High quality. Small batch. San Francisco based creative flavors{" "}
+                High quality. Small batch. Creative flavors{" "}
                 {friendToken ? (
                     <Typography component={"span"} sx={{ fontSize: "inherit", ...rainbowTextSx }}>
                         on the house for friends of Max.

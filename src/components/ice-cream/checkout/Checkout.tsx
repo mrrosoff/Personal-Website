@@ -2,11 +2,13 @@ import { useEffect, useMemo, useState } from "react";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 
 import axios from "axios";
+import { validate } from "email-validator";
 import {
     Box,
     Button,
     Divider,
     Grid,
+    Link,
     TextField,
     Typography,
     useMediaQuery,
@@ -36,17 +38,19 @@ const Checkout = () => {
     const { friendToken } = useAppContext();
     const priceIdsString = searchParams.get("priceIds") || "";
     const priceIdsArray = priceIdsString.split(",").filter(Boolean);
-
+    const isSubscription = searchParams.get("subscription") === "true";
     const fetchClientSecret = useMemo(async () => {
-        const result = await axios.post(`${API_URL}/ice-cream/checkout?priceIds=${priceIdsString}`);
+        const result = isSubscription
+            ? await axios.post(`${API_URL}/ice-cream/subscribe`, {})
+            : await axios.post(`${API_URL}/ice-cream/checkout?priceIds=${priceIdsString}`);
         return result.data.client_secret;
-    }, [priceIdsString]);
+    }, [priceIdsString, isSubscription]);
 
-    if (!priceIdsString || priceIdsArray.length === 0) {
+    if (!isSubscription && (!priceIdsString || priceIdsArray.length === 0)) {
         return <Navigate to={"/ice-cream"} replace />;
     }
 
-    if (friendToken) {
+    if (friendToken && !isSubscription) {
         return <FriendCheckoutForm priceIds={priceIdsArray} friendToken={friendToken} />;
     }
 
@@ -57,7 +61,26 @@ const Checkout = () => {
             fontSizeBase: "22px",
             fontWeightNormal: "200",
             fontWeightMedium: "400",
-            colorPrimary: "#F9F9F9"
+            colorPrimary: "#52535F",
+            colorPrimaryText: "#FFFFFF",
+            colorBackground: "#1C1C1E",
+            colorText: "#F9F9F9",
+            borderRadius: "4px",
+            spacingUnit: "4px"
+        },
+        rules: {
+            ".Input": {
+                fontFamily: "Clacon",
+                fontSize: "22px",
+                borderColor: "rgba(255,255,255,0.5)"
+            },
+            ".Input:focus": { borderColor: "#F9F9F9", boxShadow: "none" },
+            ".Label": { fontFamily: "Clacon", fontSize: "18px", opacity: "0.7" },
+            ".Tab": { fontFamily: "Clacon", borderColor: "rgba(255,255,255,0.5)" },
+            ".Tab--selected": { borderColor: "#F9F9F9", color: "#F9F9F9" },
+            ".AccordionItem": { fontFamily: "Clacon", borderColor: "rgba(255,255,255,0.5)" },
+            ".Error": { fontFamily: "Clacon", fontSize: "18px" },
+            ".Block": { borderColor: "rgba(255,255,255,0.5)" }
         }
     };
 
@@ -74,7 +97,7 @@ const Checkout = () => {
                 }
             }}
         >
-            <CheckoutForm priceIds={priceIdsArray} />
+            <CheckoutForm priceIds={priceIdsArray} subscription={isSubscription} />
         </CheckoutProvider>
     );
 };
@@ -204,7 +227,13 @@ const FriendCheckoutForm = ({
     );
 };
 
-const CheckoutForm = ({ priceIds }: { priceIds: string[] }) => {
+const CheckoutForm = ({
+    priceIds,
+    subscription
+}: {
+    priceIds: string[];
+    subscription: boolean;
+}) => {
     const [emailError, setEmailError] = useState<string | null>(null);
     const [message, setMessage] = useState<string | null>(null);
 
@@ -232,10 +261,17 @@ const CheckoutForm = ({ priceIds }: { priceIds: string[] }) => {
         }
 
         setIsLoading(true);
-        const { checkout } = state;
-        const { isValid, message } = await validateEmail(email, checkout);
+        const { isValid, message } = await validateEmail(email, state.checkout);
         if (!isValid) {
             setEmailError(message);
+            setIsLoading(false);
+            return;
+        }
+
+        if (subscription && (await alreadySubscribed(email))) {
+            setEmailError("This email already has a subscription.");
+            setIsLoading(false);
+            return;
         }
 
         const confirmResult = await state.checkout.confirm();
@@ -246,10 +282,29 @@ const CheckoutForm = ({ priceIds }: { priceIds: string[] }) => {
     };
 
     if (state.type === "error") {
-        return <Box>Error: {state.error.message}</Box>;
+        return (
+            <Box pb={4}>
+                <Typography variant={"h1"} mb={4}>
+                    Checkout
+                </Typography>
+                <Typography>
+                    Something went wrong starting checkout. Try again in a minute.
+                </Typography>
+                <Typography sx={{ mt: 1, fontSize: "0.9em", opacity: 0.6 }}>
+                    {state.error.message}
+                </Typography>
+            </Box>
+        );
     }
 
-    const layoutProps = { selectedFlavors, isLoading, emailError, message, onSubmit };
+    const layoutProps = {
+        selectedFlavors,
+        subscription,
+        isLoading,
+        emailError,
+        message,
+        onSubmit
+    };
     return selectedFlavors.length > 2 ? (
         <SidebarCheckoutLayout {...layoutProps} />
     ) : (
@@ -257,9 +312,26 @@ const CheckoutForm = ({ priceIds }: { priceIds: string[] }) => {
     );
 };
 
+const alreadySubscribed = async (email: string): Promise<boolean> => {
+    try {
+        const result = await axios.post(`${API_URL}/ice-cream/subscription-status`, { email });
+        return result.data.subscribed === true;
+    } catch {
+        return false;
+    }
+};
+
+const lineItemAmount = (state: ReturnType<typeof useCheckout>, name: string): string => {
+    if (state.type !== "success") {
+        return "";
+    }
+    return state.checkout.lineItems.find((item) => item.name === name)?.unitAmount.amount ?? "";
+};
+
 const CompactCheckoutLayout = (props: {
     emailError: string | null;
     selectedFlavors: DatabaseFlavor[];
+    subscription?: boolean;
     isLoading: boolean;
     message: string | null;
     onSubmit: (email: string) => void;
@@ -270,6 +342,16 @@ const CompactCheckoutLayout = (props: {
     const state = useCheckout();
 
     const [email, setEmail] = useState("");
+    const [manageResult, setManageResult] = useState<"sent" | "failed" | null>(null);
+
+    const onManage = async () => {
+        try {
+            await axios.post(`${API_URL}/ice-cream/unsubscribe`, { email });
+            setManageResult("sent");
+        } catch {
+            setManageResult("failed");
+        }
+    };
 
     return (
         <Box pb={4}>
@@ -295,6 +377,33 @@ const CompactCheckoutLayout = (props: {
                         fullWidth
                         slotProps={{ inputLabel: { shrink: !!email } }}
                     />
+                    {props.subscription && (
+                        <Typography mt={1.5} sx={{ fontSize: "0.9em", opacity: 0.7 }}>
+                            {manageResult === "sent" ? (
+                                "If that address has a subscription, a link to manage or cancel it is on its way."
+                            ) : manageResult === "failed" ? (
+                                "That did not go through. Try again in a minute."
+                            ) : (
+                                <Link
+                                    component={"button"}
+                                    onClick={onManage}
+                                    disabled={!validate(email)}
+                                    underline={"hover"}
+                                    sx={{
+                                        color: "inherit",
+                                        fontSize: "inherit",
+                                        textAlign: "left",
+                                        cursor: validate(email) ? "pointer" : "default",
+                                        opacity: validate(email) ? 1 : 0.5
+                                    }}
+                                >
+                                    {validate(email)
+                                        ? "Already subscribed? Email me a link to manage or cancel."
+                                        : "Already subscribed? Enter your email above for a manage or cancel link."}
+                                </Link>
+                            )}
+                        </Typography>
+                    )}
                 </Grid>
                 <Grid size={{ xs: 12, md: 6 }}>
                     <Typography variant={"h2"} mb={2}>
@@ -308,6 +417,24 @@ const CompactCheckoutLayout = (props: {
                             px: 3
                         }}
                     >
+                        {props.subscription &&
+                            state.type === "success" &&
+                            state.checkout.lineItems.map((item, index) => (
+                                <Box key={item.id}>
+                                    <Box
+                                        sx={{
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            alignItems: "center",
+                                            py: 2
+                                        }}
+                                    >
+                                        <Typography>{item.name}</Typography>
+                                        <Typography>{item.total.amount}</Typography>
+                                    </Box>
+                                    {index < state.checkout.lineItems.length - 1 && <Divider />}
+                                </Box>
+                            ))}
                         {props.selectedFlavors.map((flavor, index) => (
                             <Box key={flavor.priceId}>
                                 <Box
@@ -321,7 +448,7 @@ const CompactCheckoutLayout = (props: {
                                     <Typography color={flavor.color || "white"}>
                                         {flavor.name}
                                     </Typography>
-                                    <Typography>$5.00</Typography>
+                                    <Typography>{lineItemAmount(state, flavor.name)}</Typography>
                                 </Box>
                                 {index < props.selectedFlavors.length - 1 && <Divider />}
                             </Box>
@@ -462,7 +589,9 @@ const SidebarCheckoutLayout = (props: {
                                     >
                                         {flavor.name}
                                     </Typography>
-                                    <Typography sx={{ fontSize: "1.2rem" }}>$5.00</Typography>
+                                    <Typography sx={{ fontSize: "1.2rem" }}>
+                                        {lineItemAmount(state, flavor.name)}
+                                    </Typography>
                                 </Box>
                                 {index < props.selectedFlavors.length - 1 && <Divider />}
                             </Box>

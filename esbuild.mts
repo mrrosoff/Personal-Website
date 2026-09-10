@@ -45,6 +45,10 @@ await buildLambdaFunction(
     "api/endpoints/ice-cream/unsubscribe.ts",
     "dist/lambda/ice-cream/unsubscribe"
 );
+await buildLambdaFunction(
+    "api/endpoints/ice-cream/subscriptionStatus.ts",
+    "dist/lambda/ice-cream/subscriptionStatus"
+);
 
 await buildLambdaFunction("api/endpoints/email/receive.ts", "dist/lambda/email/receive");
 await buildLambdaFunction("api/endpoints/email/register.ts", "dist/lambda/email/register");

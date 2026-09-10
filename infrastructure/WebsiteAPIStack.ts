@@ -249,6 +249,7 @@ class WebsiteAPIStack extends Stack {
         const checkoutSuccessLambda = this.createCheckoutSuccessLambda(apiRole);
         const subscribeLambda = this.createSubscribeLambda(apiRole);
         const iceCreamUnsubscribeLambda = this.createIceCreamUnsubscribeLambda(apiRole);
+        const subscriptionStatusLambda = this.createSubscriptionStatusLambda(apiRole);
 
         const iceCreamResource = api.root.addResource("ice-cream");
         iceCreamResource
@@ -269,6 +270,9 @@ class WebsiteAPIStack extends Stack {
         iceCreamResource
             .addResource("unsubscribe")
             .addMethod("POST", new LambdaIntegration(iceCreamUnsubscribeLambda));
+        iceCreamResource
+            .addResource("subscription-status")
+            .addMethod("POST", new LambdaIntegration(subscriptionStatusLambda));
     }
 
     private createSpotifyRoutes(api: RestApi, apiRole: Role) {
@@ -399,6 +403,17 @@ class WebsiteAPIStack extends Stack {
             functionName,
             handler: "subscribe.handler",
             code: Code.fromAsset("dist/lambda/ice-cream/subscribe"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(functionName, role)
+        });
+    }
+
+    private createSubscriptionStatusLambda(role: Role): LambdaFunction {
+        const functionName = "website-subscription-status";
+        return new LambdaFunction(this, "websiteSubscriptionStatusLambda", {
+            functionName,
+            handler: "subscriptionStatus.handler",
+            code: Code.fromAsset("dist/lambda/ice-cream/subscriptionStatus"),
             runtime: Runtime.NODEJS_22_X,
             ...this.createLambdaParams(functionName, role)
         });
