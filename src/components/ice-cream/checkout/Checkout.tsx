@@ -388,7 +388,7 @@ const CompactCheckoutLayout = (props: {
                                     component={"button"}
                                     onClick={onManage}
                                     disabled={!validate(email)}
-                                    underline={"hover"}
+                                    underline={validate(email) ? "hover" : "none"}
                                     sx={{
                                         color: "inherit",
                                         fontSize: "inherit",
