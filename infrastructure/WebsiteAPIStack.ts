@@ -218,7 +218,7 @@ class WebsiteAPIStack extends Stack {
         const receiveLambda = this.createReceiveLambda(apiRole);
         const registerLambda = this.createRegisterLambda(apiRole);
         const sendEmailLambda = this.createSendEmailLambda(apiRole);
-        const unsubscribeLambda = this.createUnsubscribeLambda(apiRole);
+        const emailUnsubscribeLambda = this.createEmailUnsubscribeLambda(apiRole);
 
         const emailResource = api.root.addResource("email");
         emailResource
@@ -232,7 +232,7 @@ class WebsiteAPIStack extends Stack {
             .addMethod("POST", new LambdaIntegration(sendEmailLambda));
         emailResource
             .addResource("unsubscribe")
-            .addMethod("POST", new LambdaIntegration(unsubscribeLambda));
+            .addMethod("POST", new LambdaIntegration(emailUnsubscribeLambda));
     }
 
     private createJWKRoutes(api: RestApi, apiRole: Role) {
@@ -247,6 +247,8 @@ class WebsiteAPIStack extends Stack {
         const checkoutLambda = this.createCheckoutLambda(apiRole);
         const checkoutStatusLambda = this.createCheckoutStatusLambda(apiRole);
         const checkoutSuccessLambda = this.createCheckoutSuccessLambda(apiRole);
+        const subscribeLambda = this.createSubscribeLambda(apiRole);
+        const iceCreamUnsubscribeLambda = this.createIceCreamUnsubscribeLambda(apiRole);
 
         const iceCreamResource = api.root.addResource("ice-cream");
         iceCreamResource
@@ -261,6 +263,12 @@ class WebsiteAPIStack extends Stack {
         iceCreamResource
             .addResource("checkout-success")
             .addMethod("POST", new LambdaIntegration(checkoutSuccessLambda));
+        iceCreamResource
+            .addResource("subscribe")
+            .addMethod("POST", new LambdaIntegration(subscribeLambda));
+        iceCreamResource
+            .addResource("unsubscribe")
+            .addMethod("POST", new LambdaIntegration(iceCreamUnsubscribeLambda));
     }
 
     private createSpotifyRoutes(api: RestApi, apiRole: Role) {
@@ -385,6 +393,28 @@ class WebsiteAPIStack extends Stack {
         });
     }
 
+    private createSubscribeLambda(role: Role): LambdaFunction {
+        const functionName = "website-subscribe";
+        return new LambdaFunction(this, "websiteSubscribeLambda", {
+            functionName,
+            handler: "subscribe.handler",
+            code: Code.fromAsset("dist/lambda/ice-cream/subscribe"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(functionName, role)
+        });
+    }
+
+    private createIceCreamUnsubscribeLambda(role: Role): LambdaFunction {
+        const functionName = "website-ice-cream-unsubscribe";
+        return new LambdaFunction(this, "websiteIceCreamUnsubscribeLambda", {
+            functionName,
+            handler: "unsubscribe.handler",
+            code: Code.fromAsset("dist/lambda/ice-cream/unsubscribe"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(functionName, role)
+        });
+    }
+
     private createCheckoutStatusLambda(role: Role): LambdaFunction {
         const functionName = "website-checkout-status";
         return new LambdaFunction(this, "websiteCheckoutStatusLambda", {
@@ -440,9 +470,9 @@ class WebsiteAPIStack extends Stack {
         });
     }
 
-    private createUnsubscribeLambda(role: Role): LambdaFunction {
-        const functionName = "website-unsubscribe";
-        return new LambdaFunction(this, "websiteUnsubscribeLambda", {
+    private createEmailUnsubscribeLambda(role: Role): LambdaFunction {
+        const functionName = "website-email-unsubscribe";
+        return new LambdaFunction(this, "websiteEmailUnsubscribeLambda", {
             functionName,
             handler: "unsubscribe.handler",
             code: Code.fromAsset("dist/lambda/email/unsubscribe"),

@@ -5,7 +5,8 @@ import { decrementField, incrementField } from "../../aws/services/dynamodb";
 import { getParameters } from "../../aws/services/parameterStore";
 import { FLAVORS_TABLE, HttpResponseStatus, buildErrorResponse, buildResponse } from "../../common";
 import { registerNewMailingListUser } from "../email/register";
-import { sendOrderSuccessEmail } from "../email/sendEmail";
+import { sendOrderSuccessEmails } from "../email/sendEmail";
+import { fulfillSubscriptionMonth, registerSubscriberOnMailingList } from "./subscribe";
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     if (!event.body) {
@@ -21,11 +22,22 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         stripeKeys["/website/stripe/webhook"]
     );
 
+    const invoice = stripeEvent.data.object as Stripe.Invoice;
+    if (stripeEvent.type === "invoice.paid" && invoice.parent?.type === "subscription_details") {
+        await fulfillSubscriptionMonth(stripe, invoice);
+        return buildResponse(event, HttpResponseStatus.OK, { received: true });
+    }
+
     if (stripeEvent.type !== "checkout.session.completed") {
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Wrong Webhook Endpoint");
     }
 
     const session = stripeEvent.data.object;
+    if (session.mode === "subscription") {
+        await registerSubscriberOnMailingList(session);
+        return buildResponse(event, HttpResponseStatus.OK, { received: true });
+    }
+
     if (session.customer_email) {
         const stripeName = session.customer_details?.name;
         const nameParts = stripeName?.split(" ");
@@ -39,7 +51,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
     const productIds = lineItems.data.map((item) => item.price?.product as string);
 
-    await sendOrderSuccessEmail({
+    await sendOrderSuccessEmails({
         customerName: session.customer_details?.name ?? undefined,
         customerEmail: session.customer_email ?? undefined,
         items: lineItems.data.map((item) => ({

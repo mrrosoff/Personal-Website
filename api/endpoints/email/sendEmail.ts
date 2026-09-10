@@ -62,10 +62,14 @@ type OrderItem = {
     quantity: number;
 };
 
-export async function sendOrderSuccessEmail(params: {
+export async function sendOrderSuccessEmails({
+    notifyCustomer = true,
+    ...params
+}: {
     customerName?: string;
     customerEmail?: string;
     items: OrderItem[];
+    notifyCustomer?: boolean;
 }) {
     const apiKey = await getParameter("/website/resend/api-key");
     const resend = new Resend(apiKey);
@@ -80,5 +84,21 @@ export async function sendOrderSuccessEmail(params: {
     if (error) {
         console.error(error);
         throw Error("Error Sending Order Success Email");
+    }
+
+    if (!notifyCustomer || !params.customerEmail) {
+        return;
+    }
+
+    const { error: customerError } = await resend.emails.send({
+        from: "Max's Freezer Stash <orders@ice-cream.maxrosoff.com>",
+        to: params.customerEmail,
+        replyTo: "me@maxrosoff.com",
+        subject: "Your Ice Cream Order",
+        react: OrderSuccessEmail({ ...params, forCustomer: true })
+    });
+
+    if (customerError) {
+        console.error(customerError);
     }
 }

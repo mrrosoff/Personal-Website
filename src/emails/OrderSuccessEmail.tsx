@@ -19,6 +19,15 @@ type OrderItem = {
     quantity: number;
 };
 
+const customerSubtitles = [
+    "Your pints are being packed!",
+    "Churning as we speak!",
+    "The freezer has been raided on your behalf!",
+    "Cold things are headed your way!",
+    "Two scoops closer to happiness!",
+    "Max is on it!"
+];
+
 const subtitles = [
     "Time to fire up the ice cream machine!",
     "Another happy customer incoming!",
@@ -28,13 +37,28 @@ const subtitles = [
     "Ice cream waits for no one!"
 ];
 
+const orderHeading = (forCustomer: boolean, customerName?: string) => {
+    if (forCustomer) {
+        return customerName ? `Thanks, ${customerName}!` : "Thanks For Your Order!";
+    }
+    return customerName ? `Order From ${customerName}` : "New Order";
+};
+
 const OrderSuccessEmail = (props: {
     customerName?: string;
     customerEmail?: string;
     items?: OrderItem[];
+    forCustomer?: boolean;
 }) => {
     const items = props.items ?? [];
-    const subtitle = subtitles[Math.floor(Math.random() * subtitles.length)];
+    const forCustomer = props.forCustomer ?? false;
+    const pool = forCustomer ? customerSubtitles : subtitles;
+    const subtitle = pool[Math.floor(Math.random() * pool.length)];
+    const heading = orderHeading(forCustomer, props.customerName);
+    const pints = `${items.length} ${items.length === 1 ? "pint" : "pints"}`;
+    const preview = forCustomer
+        ? `Your ice cream order for ${pints}`
+        : `New order from ${props.customerName || props.customerEmail || "a customer"} for ${pints}`;
     return (
         <Html>
             <Head />
@@ -45,10 +69,7 @@ const OrderSuccessEmail = (props: {
                         '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif'
                 }}
             >
-                <Preview>
-                    New order from {props.customerName || props.customerEmail || "a customer"} for{" "}
-                    {items.length.toString()} {items.length === 1 ? "pint" : "pints"}
-                </Preview>
+                <Preview>{preview}</Preview>
                 <Container
                     style={{
                         backgroundColor: "#FFFFFF",
@@ -57,9 +78,7 @@ const OrderSuccessEmail = (props: {
                     }}
                 >
                     <Section>
-                        <Heading style={{ marginBottom: 0 }}>
-                            {props.customerName ? `Order From ${props.customerName}` : "New Order"}
-                        </Heading>
+                        <Heading style={{ marginBottom: 0 }}>{heading}</Heading>
                         <Text
                             style={{
                                 fontSize: 16,
@@ -69,7 +88,7 @@ const OrderSuccessEmail = (props: {
                             }}
                         >
                             {subtitle}
-                            {props.customerEmail && (
+                            {!forCustomer && props.customerEmail && (
                                 <>
                                     {" "}
                                     Reach them at{" "}

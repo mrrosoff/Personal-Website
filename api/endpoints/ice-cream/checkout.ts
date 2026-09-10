@@ -5,7 +5,7 @@ import { decrementField, getEntireTable } from "../../aws/services/dynamodb";
 import { getParameter } from "../../aws/services/parameterStore";
 import { authenticateHTTPAccessToken, UserType } from "../../auth";
 import { FLAVORS_TABLE, HttpResponseStatus, buildErrorResponse, buildResponse } from "../../common";
-import { sendOrderSuccessEmail } from "../email/sendEmail";
+import { sendOrderSuccessEmails } from "../email/sendEmail";
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     const priceIdsParam = event.queryStringParameters?.priceIds || "";
@@ -25,7 +25,6 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     }
 
     const stripe = new Stripe(await getParameter("/website/stripe/api-key"));
-
     const lineItems = priceIds.map((priceId) => ({
         price: priceId.trim(),
         quantity: 1
@@ -55,7 +54,7 @@ const handleFriendCheckout = async (
         selectedFlavors.map((flavor) => decrementField(FLAVORS_TABLE, flavor.productId, "count"))
     );
 
-    await sendOrderSuccessEmail({
+    await sendOrderSuccessEmails({
         customerName,
         items: selectedFlavors.map((flavor) => ({ name: flavor.name, quantity: 1 }))
     });

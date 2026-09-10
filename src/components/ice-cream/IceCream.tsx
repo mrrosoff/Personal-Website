@@ -115,7 +115,23 @@ const IceCream = () => {
                         on the house for friends of Max.
                     </Typography>
                 ) : (
-                    "priced at $5 per pint."
+                    <>
+                        priced at $6 per pint, or{" "}
+                        <Link
+                            component="button"
+                            onClick={() => navigate("/ice-cream/checkout?subscription=true")}
+                            underline="hover"
+                            sx={{
+                                cursor: "pointer",
+                                color: "inherit",
+                                fontSize: "inherit",
+                                verticalAlign: "baseline"
+                            }}
+                        >
+                            $10 for two every month
+                        </Link>
+                        .
+                    </>
                 )}
             </Typography>
             <Typography mt={smallScreen ? 2 : -1}>
