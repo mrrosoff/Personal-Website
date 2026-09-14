@@ -109,13 +109,19 @@ class WebsiteAPIStack extends Stack {
     }
 
     private createPasskeysTable(): Table {
-        return new Table(this, "websitePasskeysTable", {
+        const passkeysTable = new Table(this, "websitePasskeysTable", {
             tableName: PASSKEYS_TABLE,
             partitionKey: { name: "credentialId", type: AttributeType.STRING },
             billingMode: BillingMode.PAY_PER_REQUEST,
             removalPolicy: RemovalPolicy.DESTROY,
             deletionProtection: true
         });
+        passkeysTable.addGlobalSecondaryIndex({
+            indexName: "email",
+            partitionKey: { name: "email", type: AttributeType.STRING },
+            projectionType: ProjectionType.ALL
+        });
+        return passkeysTable;
     }
 
     private createDevicesTable(): Table {
