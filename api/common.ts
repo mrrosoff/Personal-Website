@@ -3,7 +3,6 @@ import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 export const FLAVORS_TABLE = "website-flavors";
 export const PASSKEY_CHALLENGES_TABLE = "website-passkey-challenges";
 export const PASSKEYS_TABLE = "website-passkeys";
-export const DEVICE_OWNERS_TABLE = "website-device-owners";
 export const DEVICES_TABLE = "website-devices";
 
 export const POLAROID_PHOTOS_BUCKET = "website-polaroid-photos";
