@@ -3,9 +3,9 @@ import { createHash } from "node:crypto";
 import { IncomingMessage } from "http";
 
 import { bearerToken } from "../auth";
-import { getItemsByIndex, getItems, updateItem } from "../aws/services/dynamodb";
-import { DEVICE_OWNERS_TABLE } from "../common";
-import type { DatabaseDeviceOwner, DeviceKind } from "../types";
+import { getItem, getItemsByIndex, updateItem } from "../aws/services/dynamodb";
+import { DEVICES_TABLE, DEVICE_OWNERS_TABLE } from "../common";
+import type { DatabaseDevice, DeviceKind } from "../types";
 
 function hashDeviceSecret(secret: string): string {
     return createHash("sha256").update(secret).digest("hex");
@@ -20,7 +20,7 @@ const LAST_SEEN_RESOLUTION_SECONDS = 300;
 export async function resolveDevice(
     req: IncomingMessage | APIGatewayProxyEvent,
     kind: DeviceKind
-): Promise<DatabaseDeviceOwner | undefined> {
+): Promise<DatabaseDevice | undefined> {
     const prefixed = DEVICE_TOKEN_PATTERN.exec(bearerToken(req) ?? "");
     if (!prefixed) {
         return undefined;
@@ -34,11 +34,8 @@ export async function resolveDevice(
     return device;
 }
 
-async function deviceForId(
-    deviceId: string,
-    secret: string
-): Promise<DatabaseDeviceOwner | undefined> {
-    const [device] = await getItems(DEVICE_OWNERS_TABLE, deviceId);
+async function deviceForId(deviceId: string, secret: string): Promise<DatabaseDevice | undefined> {
+    const device = await getItem(DEVICES_TABLE, deviceId);
     if (!device) {
         return undefined;
     }
@@ -48,31 +45,24 @@ async function deviceForId(
 export async function deviceForOwner(
     email: string | undefined,
     kind: DeviceKind
-): Promise<DatabaseDeviceOwner | undefined> {
+): Promise<DatabaseDevice | undefined> {
     if (!email) {
         return undefined;
     }
-    const devices = await getItemsByIndex(DEVICE_OWNERS_TABLE, "ownerEmail", email);
-    return devices.find((device) => device.kind === kind);
+    const grants = await getItemsByIndex(DEVICE_OWNERS_TABLE, "ownerEmail", email);
+    const devices = await Promise.all(
+        grants.map((grant) => getItem(DEVICES_TABLE, grant.deviceId))
+    );
+    return devices.find((device) => device?.kind === kind);
 }
 
-async function touchLastSeen(device: DatabaseDeviceOwner): Promise<void> {
+async function touchLastSeen(device: DatabaseDevice): Promise<void> {
     const now = Math.floor(Date.now() / 1000);
     if (now - (device.lastSeenAt ?? 0) < LAST_SEEN_RESOLUTION_SECONDS) {
         return;
     }
     try {
-        const grants = await getItems(DEVICE_OWNERS_TABLE, device.deviceId);
-        await Promise.all(
-            grants.map((grant) =>
-                updateItem(
-                    DEVICE_OWNERS_TABLE,
-                    { deviceId: grant.deviceId, ownerEmail: grant.ownerEmail },
-                    "lastSeenAt",
-                    now
-                )
-            )
-        );
+        await updateItem(DEVICES_TABLE, device.deviceId, "lastSeenAt", now);
     } catch (err) {
         // The heartbeat is only for us to see the device is alive, so a failed
         // write shouldn't stop it getting its photo. Log it and carry on.

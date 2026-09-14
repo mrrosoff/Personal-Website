@@ -35,7 +35,6 @@ export enum DeviceKind {
 
 export type DatabaseDevice = {
     deviceId: string;
-    name: string;
     kind: DeviceKind;
     secretHash: string;
     lastSeenAt: number;
@@ -60,6 +59,7 @@ export type DatabasePasskey = {
     userType: UserType;
     name: string;
     email: string;
+    deviceIds?: string[];
 };
 
 export enum UserType {

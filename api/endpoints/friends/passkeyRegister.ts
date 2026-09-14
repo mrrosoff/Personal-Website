@@ -3,7 +3,7 @@ import { type RegistrationResponseJSON, verifyRegistrationResponse } from "@simp
 import { DateTime } from "luxon";
 import { validate } from "email-validator";
 
-import { deleteItem, getItem, putItem } from "../../aws/services/dynamodb";
+import { deleteItem, getEntireTable, getItem, putItem } from "../../aws/services/dynamodb";
 import { authorizeUserType, UserType } from "../../auth";
 import {
     HttpResponseStatus,
@@ -39,6 +39,15 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     const email = body.email?.trim();
     if (!email || !validate(email)) {
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Valid Email Required");
+    }
+
+    const passkeys = await getEntireTable(PASSKEYS_TABLE);
+    if (passkeys.some((passkey) => passkey.email.toLowerCase() === email.toLowerCase())) {
+        return buildErrorResponse(
+            event,
+            HttpResponseStatus.BAD_REQUEST,
+            "That Email Is Already Registered"
+        );
     }
 
     const challengeRecord = await getItem(PASSKEY_CHALLENGES_TABLE, body.challenge);
