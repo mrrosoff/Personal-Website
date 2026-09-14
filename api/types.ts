@@ -40,14 +40,6 @@ export type DatabaseDevice = {
     lastSeenAt: number;
 };
 
-export type DatabaseDeviceOwner = {
-    deviceId: string;
-    ownerEmail: string;
-    kind: DeviceKind;
-    secretHash: string;
-    lastSeenAt: number;
-};
-
 export type DatabasePasskeyChallenge = {
     id: string;
     expiresAt: number;

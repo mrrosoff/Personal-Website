@@ -11,7 +11,6 @@ import {
 
 import {
     DEVICES_TABLE,
-    DEVICE_OWNERS_TABLE,
     FLAVORS_TABLE,
     PASSKEY_CHALLENGES_TABLE,
     PASSKEYS_TABLE
@@ -19,7 +18,6 @@ import {
 import { SDK_SETTINGS } from "../common";
 import {
     type DatabaseDevice,
-    type DatabaseDeviceOwner,
     type DatabaseFlavor,
     type DatabasePasskey,
     type DatabasePasskeyChallenge,
@@ -31,7 +29,6 @@ export type Table =
     typeof FLAVORS_TABLE |
     typeof PASSKEY_CHALLENGES_TABLE |
     typeof PASSKEYS_TABLE |
-    typeof DEVICE_OWNERS_TABLE |
     typeof DEVICES_TABLE;
 
 // prettier-ignore
@@ -39,13 +36,8 @@ type ItemKeyInput<T extends Table> =
     T extends typeof FLAVORS_TABLE ? string :
     T extends typeof PASSKEY_CHALLENGES_TABLE ? string :
     T extends typeof PASSKEYS_TABLE ? string :
-    T extends typeof DEVICE_OWNERS_TABLE ? { deviceId: string; ownerEmail: string } :
     T extends typeof DEVICES_TABLE ? string :
     never;
-
-type CompositeKeyTable = {
-    [T in Table]: ItemKeyInput<T> extends string ? never : T;
-}[Table];
 
 type UpdateItemInput<T extends Table> = Partial<
     Record<ValuesOfType<TableObject<T>, DynamoDBFieldValue>, DynamoDBFieldValue>
@@ -56,7 +48,6 @@ export type TableObject<T extends Table> =
     T extends typeof FLAVORS_TABLE ? DatabaseFlavor :
     T extends typeof PASSKEY_CHALLENGES_TABLE ? DatabasePasskeyChallenge :
     T extends typeof PASSKEYS_TABLE ? DatabasePasskey :
-    T extends typeof DEVICE_OWNERS_TABLE ? DatabaseDeviceOwner :
     T extends typeof DEVICES_TABLE ? DatabaseDevice :
     never;
 
@@ -72,7 +63,6 @@ const primaryKeys: Record<Table, string> = {
     [FLAVORS_TABLE]: "productId",
     [PASSKEY_CHALLENGES_TABLE]: "id",
     [PASSKEYS_TABLE]: "credentialId",
-    [DEVICE_OWNERS_TABLE]: "deviceId",
     [DEVICES_TABLE]: "deviceId"
 };
 
@@ -96,22 +86,6 @@ export async function getItem<T extends Table>(
     const getItemRequest = new GetCommand({ TableName: table, Key: compositeKey });
     const itemOutput = await documentClient.send(getItemRequest);
     return itemOutput.Item as TableObject<T> | undefined;
-}
-
-export async function getItems<T extends CompositeKeyTable>(
-    table: T,
-    value: string
-): Promise<TableObject<T>[]> {
-    console.debug(`Querying items from ${table} with ${primaryKeys[table]} ${value}`);
-
-    const queryRequest = new QueryCommand({
-        TableName: table,
-        KeyConditionExpression: "#key = :value",
-        ExpressionAttributeNames: { "#key": primaryKeys[table] },
-        ExpressionAttributeValues: { ":value": value }
-    });
-    const itemOutput = await documentClient.send(queryRequest);
-    return (itemOutput.Items ?? []) as TableObject<T>[];
 }
 
 export async function getItemByIndex<T extends Table>(
