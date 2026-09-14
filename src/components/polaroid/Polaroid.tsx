@@ -3,6 +3,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { Box, Button, Typography, useMediaQuery } from "@mui/material";
 import axios from "axios";
 
+import { MAX_PHOTOS } from "../../../api/common";
 import { UserType } from "../../../api/types";
 import { API_URL } from "../App";
 import { decodeToken } from "../../auth";
@@ -80,8 +81,12 @@ export default function Polaroid() {
                     headers: { ...authHeader, "Content-Type": "image/jpeg" }
                 });
                 await refresh();
-            } catch {
-                setError("That photo didn't go through. Try another?");
+            } catch (err) {
+                const message = axios.isAxiosError(err)
+                    ? (err.response?.data as { message?: string } | undefined)?.message
+                    : undefined;
+                setError(message ?? "That photo didn't go through. Try another?");
+                await refresh();
             } finally {
                 setBusy(false);
             }
@@ -89,11 +94,23 @@ export default function Polaroid() {
         [authHeader, refresh]
     );
 
-    const acceptFiles = useCallback((files: File[]) => {
-        const supported = files.filter(isSupportedImage);
-        setError(supported.length < files.length ? "Photos only — JPEG, PNG, WebP or HEIC." : null);
-        setQueue(supported);
-    }, []);
+    const free = Math.max(0, MAX_PHOTOS - photos.length - (busy ? 1 : 0));
+
+    const acceptFiles = useCallback(
+        (files: File[]) => {
+            const supported = files.filter(isSupportedImage);
+            const accepted = supported.slice(0, free);
+            setError(
+                supported.length < files.length
+                    ? "Photos only — JPEG, PNG, WebP or HEIC."
+                    : accepted.length < supported.length
+                      ? `Room for ${free.toString()} more. The rest didn't make it in.`
+                      : null
+            );
+            setQueue(accepted);
+        },
+        [free]
+    );
 
     const remove = useCallback(
         async (id: string) => {
@@ -130,8 +147,13 @@ export default function Polaroid() {
                     {secondaryText}
                 </Typography>
             )}
-            <DropArea dragging={dragging} setDragging={setDragging} onFiles={acceptFiles}>
-                <UploadControls onFiles={acceptFiles} />
+            <DropArea
+                dragging={dragging}
+                setDragging={setDragging}
+                onFiles={acceptFiles}
+                full={free === 0}
+            >
+                <UploadControls onFiles={acceptFiles} full={free === 0} />
                 <Gallery
                     photos={photos}
                     uploading={busy}
@@ -291,6 +313,7 @@ function DropArea(props: {
     dragging: boolean;
     setDragging: (dragging: boolean) => void;
     onFiles: (files: File[]) => void;
+    full: boolean;
     children: ReactNode;
 }) {
     const compact = useMediaQuery((theme) => theme.breakpoints.down("lg"));
@@ -298,7 +321,9 @@ function DropArea(props: {
         <Box
             onDragOver={(event) => {
                 event.preventDefault();
-                props.setDragging(true);
+                if (!props.full) {
+                    props.setDragging(true);
+                }
             }}
             onDragLeave={(event) => {
                 // Fires when crossing into a child too, so ignore those.
@@ -309,7 +334,9 @@ function DropArea(props: {
             onDrop={(event) => {
                 event.preventDefault();
                 props.setDragging(false);
-                props.onFiles(Array.from(event.dataTransfer.files));
+                if (!props.full) {
+                    props.onFiles(Array.from(event.dataTransfer.files));
+                }
             }}
             sx={{
                 mt: compact ? 4 : 2,
@@ -332,12 +359,13 @@ function DropArea(props: {
     );
 }
 
-function UploadControls(props: { onFiles: (files: File[]) => void }) {
+function UploadControls(props: { onFiles: (files: File[]) => void; full: boolean }) {
     return (
         <Button
             variant="contained"
             component="label"
             size="large"
+            disabled={props.full}
             sx={{
                 // Straddles the border so the photos below start at the box's top.
                 position: "absolute",
@@ -350,8 +378,9 @@ function UploadControls(props: { onFiles: (files: File[]) => void }) {
                 py: "7px"
             }}
         >
-            Choose Photos
+            {props.full ? "Frame Full" : "Choose Photos"}
             <input
+                disabled={props.full}
                 hidden
                 multiple
                 type="file"

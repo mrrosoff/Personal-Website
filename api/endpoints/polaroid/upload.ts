@@ -9,11 +9,12 @@ import { putObject } from "../../aws/services/s3";
 import { DeviceKind } from "../../types";
 import {
     HttpResponseStatus,
+    MAX_PHOTOS,
     POLAROID_PHOTOS_BUCKET,
     buildErrorResponse,
     buildResponse
 } from "../../common";
-import { framebufferKey, previewKey, previewUrl } from "./photos";
+import { framebufferKey, listPhotos, previewKey, previewUrl } from "./photos";
 
 type InkCode = (typeof INK)[keyof typeof INK];
 
@@ -134,6 +135,14 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 
     if (!event.body) {
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Request Body");
+    }
+
+    if ((await listPhotos(device.deviceId)).length >= MAX_PHOTOS) {
+        return buildErrorResponse(
+            event,
+            HttpResponseStatus.BAD_REQUEST,
+            `The Frame Holds ${MAX_PHOTOS.toString()} Photos. Remove One First`
+        );
     }
 
     const source = Buffer.from(event.body, event.isBase64Encoded ? "base64" : "utf8");
