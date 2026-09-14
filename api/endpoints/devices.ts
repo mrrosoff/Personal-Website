@@ -3,8 +3,8 @@ import { createHash } from "node:crypto";
 import { IncomingMessage } from "http";
 
 import { bearerToken } from "../auth";
-import { getItem, getItemsByIndex, updateItem } from "../aws/services/dynamodb";
-import { DEVICES_TABLE, DEVICE_OWNERS_TABLE } from "../common";
+import { getItem, getItemByIndex, updateItem } from "../aws/services/dynamodb";
+import { DEVICES_TABLE, PASSKEYS_TABLE } from "../common";
 import type { DatabaseDevice, DeviceKind } from "../types";
 
 function hashDeviceSecret(secret: string): string {
@@ -49,9 +49,9 @@ export async function deviceForOwner(
     if (!email) {
         return undefined;
     }
-    const grants = await getItemsByIndex(DEVICE_OWNERS_TABLE, "ownerEmail", email);
+    const passkey = await getItemByIndex(PASSKEYS_TABLE, "email", email);
     const devices = await Promise.all(
-        grants.map((grant) => getItem(DEVICES_TABLE, grant.deviceId))
+        (passkey?.deviceIds ?? []).map((deviceId) => getItem(DEVICES_TABLE, deviceId))
     );
     return devices.find((device) => device?.kind === kind);
 }

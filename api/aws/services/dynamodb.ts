@@ -114,6 +114,18 @@ export async function getItems<T extends CompositeKeyTable>(
     return (itemOutput.Items ?? []) as TableObject<T>[];
 }
 
+export async function getItemByIndex<T extends Table>(
+    table: T,
+    key: ValuesOfType<TableObject<T>, string>,
+    value: string
+): Promise<TableObject<T> | undefined> {
+    const items = await getItemsByIndex(table, key, value);
+    if (items.length > 1) {
+        throw new Error(`${key} ${value} Is Not Unique`);
+    }
+    return items[0];
+}
+
 export async function getItemsByIndex<T extends Table>(
     table: T,
     key: ValuesOfType<TableObject<T>, string>,

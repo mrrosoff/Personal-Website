@@ -1,6 +1,6 @@
 import { DateTime, Duration } from "luxon";
 import { Resend } from "resend";
-import { DEVICES_TABLE, DEVICE_OWNERS_TABLE, PASSKEYS_TABLE } from "../../common";
+import { DEVICES_TABLE, PASSKEYS_TABLE } from "../../common";
 
 import SpotifyReauthEmail from "../../../src/emails/SpotifyReauthEmail";
 import { getEntireTable } from "../../aws/services/dynamodb";
@@ -14,18 +14,18 @@ const REMINDER_LEAD = Duration.fromObject({ days: 14 });
 const FALLBACK_RECIPIENT = "me@maxrosoff.com";
 
 export const handler = async (): Promise<void> => {
-    const [devices, grants] = await Promise.all([
+    const [devices, passkeys] = await Promise.all([
         getEntireTable(DEVICES_TABLE),
-        getEntireTable(DEVICE_OWNERS_TABLE)
+        getEntireTable(PASSKEYS_TABLE)
     ]);
 
     const displays = devices
         .filter(({ kind }) => kind === DeviceKind.SPOTIFY)
         .map(({ deviceId }) => ({
             deviceId,
-            ownerEmails: grants
-                .filter((grant) => grant.deviceId === deviceId)
-                .map((grant) => grant.ownerEmail)
+            ownerEmails: passkeys
+                .filter((passkey) => passkey.deviceIds?.includes(deviceId))
+                .map((passkey) => passkey.email)
         }));
 
     for (const { deviceId, ownerEmails } of displays) {
