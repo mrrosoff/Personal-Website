@@ -34,6 +34,7 @@ import { CfnGroup } from "aws-cdk-lib/aws-resourcegroups";
 
 import {
     DEVICES_TABLE,
+    DEVICE_OWNERS_TABLE,
     FLAVORS_TABLE,
     PASSKEY_CHALLENGES_TABLE,
     PASSKEYS_TABLE,
@@ -47,6 +48,7 @@ class WebsiteAPIStack extends Stack {
         const flavorsTable = this.createFlavorsTable();
         const passkeyChallengesTable = this.createPasskeyChallengesTable();
         const passkeysTable = this.createPasskeysTable();
+        const deviceOwnersTable = this.createDeviceOwnersTable();
         const devicesTable = this.createDevicesTable();
 
         const certificate = new Certificate(this, "websiteCertificate", {
@@ -58,6 +60,7 @@ class WebsiteAPIStack extends Stack {
             flavorsTable,
             passkeyChallengesTable,
             passkeysTable,
+            deviceOwnersTable,
             devicesTable
         );
         this.createPolaroidPhotosBucket(apiRole);
@@ -116,8 +119,18 @@ class WebsiteAPIStack extends Stack {
     }
 
     private createDevicesTable(): Table {
-        const devicesTable = new Table(this, "websiteDevicesTable", {
+        return new Table(this, "websiteDevicesTableV2", {
             tableName: DEVICES_TABLE,
+            partitionKey: { name: "deviceId", type: AttributeType.STRING },
+            billingMode: BillingMode.PAY_PER_REQUEST,
+            removalPolicy: RemovalPolicy.DESTROY,
+            deletionProtection: true
+        });
+    }
+
+    private createDeviceOwnersTable(): Table {
+        const devicesTable = new Table(this, "websiteDevicesTable", {
+            tableName: DEVICE_OWNERS_TABLE,
             partitionKey: { name: "deviceId", type: AttributeType.STRING },
             sortKey: { name: "ownerEmail", type: AttributeType.STRING },
             billingMode: BillingMode.PAY_PER_REQUEST,

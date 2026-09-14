@@ -35,6 +35,14 @@ export enum DeviceKind {
 
 export type DatabaseDevice = {
     deviceId: string;
+    name: string;
+    kind: DeviceKind;
+    secretHash: string;
+    lastSeenAt: number;
+};
+
+export type DatabaseDeviceOwner = {
+    deviceId: string;
     ownerEmail: string;
     kind: DeviceKind;
     secretHash: string;
