@@ -43,6 +43,18 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     return { output: "", type: "text" };
 };
 
+export const signInWithPasskey = async (): Promise<string> => {
+    const { data: authOptions } = await axios.post(`${API_URL}/admin/passkey-auth-options`);
+    const authResponse = await startAuthentication({ optionsJSON: authOptions });
+    const { data: authResult } = await axios.post<{ token: string }>(
+        `${API_URL}/admin/passkey-auth`,
+        { response: authResponse, challenge: authOptions.challenge }
+    );
+
+    sessionStorage.setItem(AUTH_TOKEN_KEY, authResult.token);
+    return authResult.token;
+};
+
 export const authenticateWithPasskey = async (
     emulator: Emulator,
     emulatorState: EmulatorState
@@ -64,19 +76,12 @@ export const authenticateWithPasskey = async (
     }
 
     try {
-        const { data: authOptions } = await axios.post(`${API_URL}/admin/passkey-auth-options`);
-
         emulatorState.setPasswordPromptState({ ...promptState, loading: true });
 
-        const authResponse = await startAuthentication({ optionsJSON: authOptions });
-        const { data: authResult } = await axios.post(`${API_URL}/admin/passkey-auth`, {
-            response: authResponse,
-            challenge: authOptions.challenge
-        });
+        const token = await signInWithPasskey();
 
         const existingVars = emulatorState.getEnvVariables();
-        emulatorState.setEnvVariables({ ...existingVars, AUTH_TOKEN: authResult.token });
-        sessionStorage.setItem(AUTH_TOKEN_KEY, authResult.token);
+        emulatorState.setEnvVariables({ ...existingVars, AUTH_TOKEN: token });
 
         const commandMapping = emulatorState.getCommandMapping();
         emulatorState.setPasswordPromptState(undefined);

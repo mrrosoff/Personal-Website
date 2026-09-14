@@ -30,6 +30,14 @@ import OutputError from "./output/OutputError";
 
 const AdminConsole = lazy(() => import("./admin/AdminConsole"));
 
+export const TERMINAL_COLORS = {
+    background: "#121212",
+    promptSymbolColor: "#2BC903",
+    commandColor: "#FCFCFC",
+    outputColor: "#FCFCFC",
+    errorColor: "#ff0606"
+};
+
 export type TerminalTheme = {
     background: string;
     promptSymbolColor: string;
