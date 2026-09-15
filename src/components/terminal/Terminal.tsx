@@ -157,8 +157,7 @@ const Terminal = (
             setFriendToken("");
             return;
         }
-        const allowedUserTypes = [UserType.FRIEND, UserType.SPOTIFY_OWNER, UserType.POLAROID_OWNER];
-        setFriendToken(allowedUserTypes.includes(authPayload.userType) ? authToken : "");
+        setFriendToken(authPayload.userType === UserType.FRIEND ? authToken : "");
     }, [authToken]);
 
     const scrollToBottom = () => {

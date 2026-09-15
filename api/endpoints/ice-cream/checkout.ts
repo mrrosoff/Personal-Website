@@ -19,8 +19,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     if (error) {
         return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, error);
     }
-    const allowedUserTypes = [UserType.FRIEND, UserType.SPOTIFY_OWNER, UserType.POLAROID_OWNER];
-    if (token && allowedUserTypes.includes(token.userType)) {
+    if (token?.userType === UserType.FRIEND) {
         return handleFriendCheckout(event, priceIds, token.id);
     }
 

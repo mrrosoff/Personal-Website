@@ -10,11 +10,6 @@ export async function isAdmin(req: IncomingMessage | APIGatewayProxyEvent): Prom
     return token?.userType === UserType.ADMIN;
 }
 
-const LEGACY_FRIEND_TYPES = [UserType.SPOTIFY_OWNER, UserType.POLAROID_OWNER];
-
-const heldType = (userType: UserType): UserType =>
-    LEGACY_FRIEND_TYPES.includes(userType) ? UserType.FRIEND : userType;
-
 export async function authorize(
     req: IncomingMessage | APIGatewayProxyEvent,
     allowed: UserType,
@@ -24,7 +19,7 @@ export async function authorize(
     if (error) {
         return { error };
     }
-    if (!token || ![allowed, UserType.ADMIN].includes(heldType(token.userType))) {
+    if (!token || ![allowed, UserType.ADMIN].includes(token.userType)) {
         return {};
     }
 
