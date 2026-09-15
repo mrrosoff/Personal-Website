@@ -42,6 +42,10 @@ async function deviceForId(deviceId: string, secret: string): Promise<DatabaseDe
     return device.secretHash === hashDeviceSecret(secret) ? device : undefined;
 }
 
+export async function devicesForIds(ids: string[] = []): Promise<DatabaseDevice[]> {
+    return Promise.all(ids.map(async (id) => (await getItem(DEVICES_TABLE, id))!));
+}
+
 export async function deviceForOwner(
     email: string | undefined,
     kind: DeviceKind
@@ -50,10 +54,8 @@ export async function deviceForOwner(
         return undefined;
     }
     const passkey = await getItemByIndex(PASSKEYS_TABLE, "email", email);
-    const devices = await Promise.all(
-        (passkey?.deviceIds ?? []).map((deviceId) => getItem(DEVICES_TABLE, deviceId))
-    );
-    return devices.find((device) => device?.kind === kind);
+    const devices = await devicesForIds(passkey?.deviceIds);
+    return devices.find((device) => device.kind === kind);
 }
 
 async function touchLastSeen(device: DatabaseDevice): Promise<void> {

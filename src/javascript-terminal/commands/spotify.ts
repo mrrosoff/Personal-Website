@@ -1,8 +1,8 @@
 import axios from "axios";
 
-import { UserType } from "../../../api/types";
+import { DeviceKind } from "../../../api/types";
 import { API_URL } from "../../components/App";
-import { decodeToken } from "../../auth";
+import { decodeToken, ownsDeviceKind } from "../../auth";
 import EmulatorState from "../emulator-state/EmulatorState";
 import { parseOptions } from "../parser";
 
@@ -33,11 +33,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         return { output: "Permission Denied", type: "error" };
     }
 
-    const payload = decodeToken(token);
-    if (
-        !payload ||
-        (payload.userType !== UserType.ADMIN && payload.userType !== UserType.SPOTIFY_OWNER)
-    ) {
+    if (!ownsDeviceKind(decodeToken(token), DeviceKind.SPOTIFY)) {
         return { output: "Permission Denied", type: "error" };
     }
 

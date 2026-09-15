@@ -14,7 +14,7 @@ import { JWK } from "node-jose";
 import keys from "./jwks/keys.json";
 import keyMapping from "./jwks/keyMapping.json";
 
-import { type AccessToken, API_ENDPOINT_URL, UserType } from "./types";
+import { type AccessToken, API_ENDPOINT_URL, type DeviceKind, UserType } from "./types";
 
 export { UserType };
 export type { AccessToken };
@@ -44,6 +44,7 @@ export async function generateToken(
     options: {
         userType: UserType;
         email?: string;
+        deviceKinds?: DeviceKind[];
         expiresIn?: SignOptions["expiresIn"];
     }
 ): Promise<string> {
@@ -54,7 +55,8 @@ export async function generateToken(
         {
             id,
             userType: options.userType,
-            ...(options.email && { email: options.email })
+            ...(options.email && { email: options.email }),
+            ...(options.deviceKinds?.length && { deviceKinds: options.deviceKinds })
         },
         key,
         {

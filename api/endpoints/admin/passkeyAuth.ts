@@ -14,6 +14,7 @@ import {
     buildErrorResponse,
     buildResponse
 } from "../../common";
+import { devicesForIds } from "../devices";
 import { RP_ID, RP_ORIGIN } from "./passkeyAuthOptions";
 
 type PasskeyAuthPayload = {
@@ -90,7 +91,8 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         message: "Authentication Successful",
         token: await generateToken(userName, {
             userType: storedPasskey.userType,
-            email: storedPasskey.email
+            email: storedPasskey.email,
+            deviceKinds: (await devicesForIds(storedPasskey.deviceIds)).map(({ kind }) => kind)
         })
     });
 };

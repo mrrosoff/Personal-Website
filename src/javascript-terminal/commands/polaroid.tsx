@@ -1,5 +1,5 @@
-import { decodeToken } from "../../auth";
-import { UserType } from "../../../api/types";
+import { decodeToken, ownsDeviceKind } from "../../auth";
+import { DeviceKind } from "../../../api/types";
 import EmulatorState from "../emulator-state/EmulatorState";
 import { errorMessage } from "../emulator-state/CommandMapping";
 
@@ -13,8 +13,7 @@ const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
             return { output: "Permission Denied", type: "error" };
         }
 
-        const payload = decodeToken(token);
-        if (payload?.userType !== UserType.ADMIN && payload?.userType !== UserType.POLAROID_OWNER) {
+        if (!ownsDeviceKind(decodeToken(token), DeviceKind.POLAROID)) {
             return { output: "Permission Denied", type: "error" };
         }
 

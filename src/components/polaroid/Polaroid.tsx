@@ -4,9 +4,9 @@ import { Box, Button, Typography, useMediaQuery } from "@mui/material";
 import axios from "axios";
 
 import { MAX_PHOTOS } from "../../../api/common";
-import { UserType } from "../../../api/types";
+import { DeviceKind } from "../../../api/types";
 import { API_URL } from "../App";
-import { decodeToken } from "../../auth";
+import { decodeToken, ownsDeviceKind } from "../../auth";
 import { signInWithPasskey } from "../../javascript-terminal/commands/sudo";
 import { TERMINAL_COLORS } from "../terminal/Terminal";
 import { useAppContext } from "../AppContext";
@@ -38,13 +38,10 @@ export default function Polaroid() {
         setToken(fresh);
     }, [emulatorState]);
 
-    const authorized = useMemo(() => {
-        const payload = token ? decodeToken(token) : null;
-        if (!payload) {
-            return false;
-        }
-        return payload.userType === UserType.ADMIN || payload.userType === UserType.POLAROID_OWNER;
-    }, [token]);
+    const authorized = useMemo(
+        () => ownsDeviceKind(token ? decodeToken(token) : null, DeviceKind.POLAROID),
+        [token]
+    );
 
     const authHeader = useMemo(() => ({ Authorization: `Bearer ${token}` }), [token]);
 

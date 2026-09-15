@@ -67,6 +67,7 @@ export type AccessToken = {
     id: string;
     userType: UserType;
     email?: string;
+    deviceKinds?: DeviceKind[];
     iss: string;
     sub?: string;
     iat: number;
