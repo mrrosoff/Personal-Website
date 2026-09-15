@@ -13,8 +13,12 @@ export const decodeToken = (token: string): AccessToken | null => {
     }
 };
 
-export const ownsDeviceKind = (payload: AccessToken | null, kind: DeviceKind): boolean =>
-    payload?.userType === UserType.ADMIN || !!payload?.deviceKinds?.includes(kind);
+export const ownsDeviceKind = (payload: AccessToken | null, kind: DeviceKind): boolean => {
+    if (payload?.userType === UserType.ADMIN) {
+        return true;
+    }
+    return payload?.userType === UserType.FRIEND && !!payload.deviceKinds?.includes(kind);
+};
 
 export const unexpiredToken = (token: string | null) => {
     if (!token) return null;

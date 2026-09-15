@@ -61,13 +61,28 @@ export enum UserType {
     SHARE = "SHARE"
 }
 
-export type AccessToken = {
+type TokenClaims = {
     id: string;
-    userType: UserType;
-    email?: string;
-    deviceKinds?: DeviceKind[];
     iss: string;
     sub?: string;
     iat: number;
     exp: number;
 };
+
+export type UserToken = TokenClaims & {
+    userType: UserType.ADMIN | UserType.FRIEND;
+    email: string;
+    deviceKinds?: DeviceKind[];
+};
+
+export type ShareToken = TokenClaims & {
+    userType: UserType.SHARE;
+    deviceIds?: string[];
+};
+
+export type SubscriberToken = TokenClaims & {
+    userType: UserType.SUBSCRIBER;
+    email: string;
+};
+
+export type AccessToken = UserToken | ShareToken | SubscriberToken;

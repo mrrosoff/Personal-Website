@@ -44,6 +44,7 @@ export async function generateToken(
     options: {
         userType: UserType;
         email?: string;
+        deviceIds?: string[];
         deviceKinds?: DeviceKind[];
         expiresIn?: SignOptions["expiresIn"];
     }
@@ -56,6 +57,7 @@ export async function generateToken(
             id,
             userType: options.userType,
             ...(options.email && { email: options.email }),
+            ...(options.deviceIds?.length && { deviceIds: options.deviceIds }),
             ...(options.deviceKinds?.length && { deviceKinds: options.deviceKinds })
         },
         key,

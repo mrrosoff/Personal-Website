@@ -83,13 +83,15 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Registration Failed");
     }
 
+    const granted = token.userType === UserType.SHARE ? token.deviceIds : undefined;
     const credential = verification.registrationInfo.credential;
     const passkey: DatabasePasskey = {
         credentialId: credential.id,
         publicKey: Buffer.from(credential.publicKey).toString("base64"),
         userType: UserType.FRIEND,
         name: token.id,
-        email
+        email,
+        ...(granted?.length && { deviceIds: granted })
     };
     await putItem(PASSKEYS_TABLE, passkey);
     await deleteItem(PASSKEY_CHALLENGES_TABLE, challengeRecord.id);

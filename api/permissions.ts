@@ -23,5 +23,9 @@ export async function authorize(
         return {};
     }
 
-    return kind ? { token, device: await deviceForOwner(token.email, kind) } : { token };
+    if (!kind || token.userType === UserType.SHARE) {
+        return { token };
+    }
+
+    return { token, device: await deviceForOwner(token.email, kind) };
 }

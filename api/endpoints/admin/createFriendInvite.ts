@@ -28,6 +28,7 @@ type CreateFriendInvitePayload = {
     friendName: string;
     expiresInHours?: number;
     email?: string;
+    deviceIds?: string[];
 };
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
@@ -63,6 +64,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 
     const inviteToken = await generateToken(friendName, {
         userType: UserType.SHARE,
+        deviceIds: body.deviceIds,
         expiresIn: `${expiresInHours}h`
     });
     const url = `${RP_ORIGIN}/register-friend?token=${encodeURIComponent(inviteToken)}`;
