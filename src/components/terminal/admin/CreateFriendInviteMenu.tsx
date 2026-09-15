@@ -87,8 +87,8 @@ const CreateFriendInviteMenu = (props: {
     };
 
     const fields: Array<{ field: FriendInvite["currentField"]; label: string; value: string }> = [
-        { field: "friendName", label: "Friend Name", value: invite?.friendName || "_" },
-        { field: "email", label: "Email", value: invite?.email || "Skip To Copy The Link" },
+        { field: "friendName", label: "Friend Name", value: invite?.friendName ?? "" },
+        { field: "email", label: "Email", value: invite?.email ?? "" },
         {
             field: "durationHours",
             label: "Link Lasts",
