@@ -8,7 +8,12 @@ import {
 import * as FileUtil from "../fs/util/file-util";
 import * as PathUtil from "../fs/util/path-util";
 import type { FileSystem } from "../../FileSystem";
-import type { DatabaseFlavor, FlavorType, MailingListRegistration } from "../../../api/types";
+import type {
+    DatabaseDevice,
+    DatabaseFlavor,
+    FlavorType,
+    MailingListRegistration
+} from "../../../api/types";
 
 export enum MainMenuOption {
     IceCreamInventory = "IceCreamInventory",
@@ -57,11 +62,15 @@ export const shareTokenDurationLabel = (hours: number): string => {
     return `${hours.toString()} ${hours === 1 ? "Hour" : "Hours"}`;
 };
 
+export type InviteDevice = Pick<DatabaseDevice, "deviceId" | "kind"> & { name: string };
+
 export type FriendInvite = {
     friendName: string;
     email: string;
     durationHours: number;
-    currentField: "friendName" | "email" | "durationHours";
+    deviceIds: string[];
+    deviceIndex: number;
+    currentField: "friendName" | "email" | "durationHours" | "devices";
     url?: string;
 };
 
@@ -86,6 +95,7 @@ export type AdminConsoleState = {
     error?: string;
     marketing?: Marketing;
     friendInvite?: FriendInvite;
+    inviteDevices?: InviteDevice[];
     mailingListEntry?: MailingListEntry;
 };
 

@@ -51,7 +51,8 @@ const FLAVOR_TYPE_OPTIONS: Array<FlavorType | null> = [...FLAVOR_TYPES, null];
 const FRIEND_INVITE_FIELDS: Array<FriendInvite["currentField"]> = [
     "friendName",
     "email",
-    "durationHours"
+    "durationHours",
+    "devices"
 ];
 
 const isPrintableKey = (key: string) => [...key].length === 1;
@@ -211,6 +212,8 @@ const handleMainMenu = (key: string, state: EmulatorState): EmulatorState => {
                             friendName: "",
                             email: "",
                             durationHours: SHARE_TOKEN_DEFAULT_HOURS,
+                            deviceIds: [],
+                            deviceIndex: 0,
                             currentField: "friendName"
                         }
                     });
@@ -777,19 +780,46 @@ const handleCreateFriendInvite = async (
             break;
         }
         case "ArrowLeft":
-        case "ArrowRight":
+        case "ArrowRight": {
+            const step = key === "ArrowLeft" ? -1 : 1;
             if (invite.currentField === "durationHours") {
                 state.setAdminConsoleMode({
                     ...mode,
                     friendInvite: {
                         ...invite,
-                        durationHours: clampDurationHours(
-                            invite.durationHours + (key === "ArrowLeft" ? -1 : 1)
-                        )
+                        durationHours: clampDurationHours(invite.durationHours + step)
                     }
                 });
+            } else if (invite.currentField === "devices") {
+                const devices = mode.inviteDevices ?? [];
+                if (devices.length) {
+                    state.setAdminConsoleMode({
+                        ...mode,
+                        friendInvite: {
+                            ...invite,
+                            deviceIndex:
+                                (invite.deviceIndex + step + devices.length) % devices.length
+                        }
+                    });
+                }
             }
             break;
+        }
+        case " ": {
+            if (invite.currentField !== "devices") break;
+            const device = (mode.inviteDevices ?? [])[invite.deviceIndex];
+            if (!device) break;
+            state.setAdminConsoleMode({
+                ...mode,
+                friendInvite: {
+                    ...invite,
+                    deviceIds: invite.deviceIds.includes(device.deviceId)
+                        ? invite.deviceIds.filter((id) => id !== device.deviceId)
+                        : [...invite.deviceIds, device.deviceId]
+                }
+            });
+            break;
+        }
         case "Enter": {
             if (!invite.friendName.trim()) break;
             const email = invite.email.trim();
@@ -813,6 +843,7 @@ const handleCreateFriendInvite = async (
             break;
         }
         case "Backspace":
+            if (invite.currentField === "devices") break;
             state.setAdminConsoleMode({
                 ...mode,
                 friendInvite:
@@ -838,7 +869,7 @@ const handleCreateFriendInvite = async (
                         }
                     });
                 }
-            } else if (isPrintableKey(key)) {
+            } else if (invite.currentField !== "devices" && isPrintableKey(key)) {
                 state.setAdminConsoleMode({
                     ...mode,
                     friendInvite: {
@@ -859,7 +890,8 @@ const createFriendInvite = async (invite: FriendInvite, authToken: string): Prom
         {
             friendName: invite.friendName.trim(),
             expiresInHours: invite.durationHours,
-            ...(invite.email.trim() && { email: invite.email.trim() })
+            ...(invite.email.trim() && { email: invite.email.trim() }),
+            ...(invite.deviceIds.length && { deviceIds: invite.deviceIds })
         },
         { headers: { Authorization: `Bearer ${authToken}` } }
     );

@@ -177,6 +177,7 @@ class WebsiteAPIStack extends Stack {
         const passkeyAuthOptionsLambda = this.createPasskeyAuthOptionsLambda(apiRole);
         const passkeyAuthLambda = this.createPasskeyAuthLambda(apiRole);
         const createFriendInviteLambda = this.createCreateFriendInviteLambda(apiRole);
+        const devicesLambda = this.createDevicesLambda(apiRole);
 
         const adminResource = api.root.addResource("admin");
         adminResource
@@ -194,6 +195,7 @@ class WebsiteAPIStack extends Stack {
         adminResource
             .addResource("create-friend-invite")
             .addMethod("POST", new LambdaIntegration(createFriendInviteLambda));
+        adminResource.addResource("devices").addMethod("GET", new LambdaIntegration(devicesLambda));
     }
 
     private createFriendsRoutes(api: RestApi, apiRole: Role) {
@@ -593,6 +595,17 @@ class WebsiteAPIStack extends Stack {
             functionName,
             handler: "createFriendInvite.handler",
             code: Code.fromAsset("dist/lambda/admin/createFriendInvite"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(functionName, role)
+        });
+    }
+
+    private createDevicesLambda(role: Role): LambdaFunction {
+        const functionName = "website-admin-devices";
+        return new LambdaFunction(this, "websiteAdminDevicesLambda", {
+            functionName,
+            handler: "devices.handler",
+            code: Code.fromAsset("dist/lambda/admin/devices"),
             runtime: Runtime.NODEJS_22_X,
             ...this.createLambdaParams(functionName, role)
         });

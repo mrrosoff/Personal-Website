@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import axios from "axios";
 import { Box, IconButton, Tooltip, Typography, useMediaQuery, useTheme } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CheckIcon from "@mui/icons-material/Check";
@@ -6,8 +7,10 @@ import CheckIcon from "@mui/icons-material/Check";
 import {
     type AdminConsoleState,
     type FriendInvite,
+    type InviteDevice,
     shareTokenDurationLabel
 } from "../../../javascript-terminal/emulator-state/EmulatorState";
+import { API_URL } from "../../App";
 import { useAppContext } from "../../AppContext";
 import type { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
@@ -32,6 +35,29 @@ const CreateFriendInviteMenu = (props: {
         return () => clearInterval(interval);
     }, []);
 
+    const devices = mode.inviteDevices;
+    const authToken = emulatorState.getEnvVariables()["AUTH_TOKEN"];
+
+    const requestedDevices = useRef(false);
+
+    useEffect(() => {
+        if (devices || !authToken || requestedDevices.current) return;
+        requestedDevices.current = true;
+        void (async () => {
+            const loaded = await axios
+                .get<{ devices: InviteDevice[] }>(`${API_URL}/admin/devices`, {
+                    headers: { Authorization: `Bearer ${authToken}` }
+                })
+                .then(({ data }) => data.devices)
+                .catch(() => []);
+            emulatorState.setAdminConsoleMode({
+                ...emulatorState.getAdminConsoleMode(),
+                inviteDevices: loaded
+            });
+            props.onAction("");
+        })();
+    }, [devices, authToken, emulatorState, props]);
+
     const outputColor = props.theme?.outputColor || "#FCFCFC";
     const commandColor = props.theme?.commandColor || "#FFFFFF";
 
@@ -40,6 +66,15 @@ const CreateFriendInviteMenu = (props: {
         await navigator.clipboard.writeText(invite.url);
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
+    };
+
+    const toggleDevice = (index: number) => {
+        if (!invite) return;
+        emulatorState.setAdminConsoleMode({
+            ...mode,
+            friendInvite: { ...invite, deviceIndex: index }
+        });
+        props.onAction(" ");
     };
 
     const selectField = (field: FriendInvite["currentField"]) => {
@@ -58,7 +93,8 @@ const CreateFriendInviteMenu = (props: {
             field: "durationHours",
             label: "Link Lasts",
             value: invite ? shareTokenDurationLabel(invite.durationHours) : ""
-        }
+        },
+        { field: "devices", label: "Devices", value: chosenDevices(invite, devices) }
     ];
 
     return (
@@ -106,38 +142,71 @@ const CreateFriendInviteMenu = (props: {
                     {fields.map(({ field, label, value }) => {
                         const active = invite?.currentField === field;
                         return (
-                            <Typography
-                                key={field}
-                                onClick={smallScreen ? () => selectField(field) : undefined}
-                                sx={{
-                                    color: active ? commandColor : outputColor,
-                                    backgroundColor: active
-                                        ? "rgba(255,255,255,0.1)"
-                                        : "transparent",
-                                    padding: "4px 8px",
-                                    mb: 1,
-                                    cursor: smallScreen ? "pointer" : undefined
-                                }}
-                            >
-                                {active ? "> " : "  "}
-                                {label}:{" "}
-                                {active && field === "durationHours" && smallScreen ? (
-                                    <Stepper
-                                        value={value}
-                                        width={"13ch"}
-                                        theme={props.theme}
-                                        onStep={(key) => props.onAction(key)}
-                                    />
-                                ) : (
-                                    <>
-                                        {value}
-                                        {active && !mode.loading ? "_" : ""}
-                                        {active && field === "durationHours"
-                                            ? " (type hours or ←/→)"
-                                            : ""}
-                                    </>
-                                )}
-                            </Typography>
+                            <Box key={field}>
+                                <Typography
+                                    onClick={smallScreen ? () => selectField(field) : undefined}
+                                    sx={{
+                                        color: active ? commandColor : outputColor,
+                                        backgroundColor: active
+                                            ? "rgba(255,255,255,0.1)"
+                                            : "transparent",
+                                        padding: "4px 8px",
+                                        mb: 1,
+                                        cursor: smallScreen ? "pointer" : undefined
+                                    }}
+                                >
+                                    {active ? "> " : "  "}
+                                    {label}:{" "}
+                                    {active && field === "durationHours" && smallScreen ? (
+                                        <Stepper
+                                            value={value}
+                                            width={"13ch"}
+                                            theme={props.theme}
+                                            onStep={(key) => props.onAction(key)}
+                                        />
+                                    ) : (
+                                        <>
+                                            {value}
+                                            {active && !mode.loading && field !== "devices"
+                                                ? "_"
+                                                : ""}
+                                            {active && field === "durationHours"
+                                                ? " (type hours or ←/→)"
+                                                : ""}
+                                        </>
+                                    )}
+                                </Typography>
+                                {active && field === "devices"
+                                    ? devices?.map((device, index) => (
+                                          <Typography
+                                              key={device.deviceId}
+                                              onClick={
+                                                  smallScreen
+                                                      ? () => toggleDevice(index)
+                                                      : undefined
+                                              }
+                                              sx={{
+                                                  color:
+                                                      invite?.deviceIndex === index
+                                                          ? commandColor
+                                                          : outputColor,
+                                                  opacity: invite?.deviceIndex === index ? 1 : 0.7,
+                                                  pl: 4,
+                                                  cursor: smallScreen ? "pointer" : undefined
+                                              }}
+                                          >
+                                              {invite?.deviceIndex === index && !smallScreen
+                                                  ? "› "
+                                                  : "  "}
+                                              [
+                                              {invite?.deviceIds.includes(device.deviceId)
+                                                  ? "x"
+                                                  : " "}
+                                              ] {device.name}
+                                          </Typography>
+                                      ))
+                                    : null}
+                            </Box>
                         );
                     })}
                 </Box>
@@ -180,10 +249,20 @@ const CreateFriendInviteMenu = (props: {
                           : "click copy for full url | escape: back"
                       : smallScreen
                         ? "tap a field to edit, then Create"
-                        : "up/down: navigate fields | type to edit | enter: create | escape: cancel"}
+                        : "up/down: fields | ←/→ and space: devices | enter: create | escape: cancel"}
             </Typography>
         </Box>
     );
 };
+
+function chosenDevices(
+    invite: FriendInvite | undefined,
+    devices: InviteDevice[] | undefined
+): string {
+    if (!devices) return "Loading";
+    if (!devices.length) return "None Registered";
+    const chosen = devices.filter((device) => invite?.deviceIds.includes(device.deviceId));
+    return chosen.length ? chosen.map((device) => device.name).join(", ") : "None";
+}
 
 export default CreateFriendInviteMenu;

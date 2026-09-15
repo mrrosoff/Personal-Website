@@ -234,7 +234,13 @@ const Terminal = (
             }
             case AdminConsoleScreen.CreateFriendInvite: {
                 const invite = adminConsoleMode.friendInvite;
-                if (!invite || invite.url || invite.currentField === "durationHours") return;
+                if (
+                    !invite ||
+                    invite.url ||
+                    invite.currentField === "durationHours" ||
+                    invite.currentField === "devices"
+                )
+                    return;
 
                 e.preventDefault();
                 emulatorState.setAdminConsoleMode({
