@@ -1,7 +1,7 @@
 import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 
-import { authorizeUserType, UserType } from "../../auth";
-import { deviceForOwner } from "../devices";
+import { UserType } from "../../auth";
+import { authorize } from "../../permissions";
 
 import { DeviceKind } from "../../types";
 import {
@@ -18,21 +18,12 @@ type RemovePhotoPayload = {
 };
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
-    const { token, error } = await authorizeUserType(event, [UserType.POLAROID_OWNER]);
-    if (!token) {
-        return buildErrorResponse(
-            event,
-            HttpResponseStatus.UNAUTHORIZED,
-            error ?? "Authentication Required"
-        );
-    }
-
-    const device = await deviceForOwner(token.email, DeviceKind.POLAROID);
+    const { device, error } = await authorize(event, UserType.FRIEND, DeviceKind.POLAROID);
     if (!device) {
         return buildErrorResponse(
             event,
             HttpResponseStatus.UNAUTHORIZED,
-            "Authentication Required"
+            error ?? "Authentication Required"
         );
     }
 

@@ -2,16 +2,13 @@ import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import { Resend } from "resend";
 
 import { getParameter } from "../../aws/services/parameterStore";
-import { authorizeUserType, UserType } from "../../auth";
+import { UserType } from "../../auth";
+import { authorize } from "../../permissions";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
 import FlavorSuggestionEmail from "../../../src/emails/FlavorSuggestionEmail";
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
-    const { token, error: authError } = await authorizeUserType(event, [
-        UserType.FRIEND,
-        UserType.SPOTIFY_OWNER,
-        UserType.POLAROID_OWNER
-    ]);
+    const { token, error: authError } = await authorize(event, UserType.FRIEND);
     if (!token) {
         return buildErrorResponse(
             event,

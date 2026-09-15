@@ -102,19 +102,3 @@ export async function authenticateHTTPAccessToken(
         return { error: "Invalid Authentication Token" };
     }
 }
-
-export async function authorizeUserType(
-    req: IncomingMessage | APIGatewayProxyEvent,
-    allowed: UserType[]
-): Promise<{ token?: AccessToken; error?: string }> {
-    const { token, error } = await authenticateHTTPAccessToken(req);
-    if (error) {
-        return { error };
-    }
-    return token && [...allowed, UserType.ADMIN].includes(token.userType) ? { token } : {};
-}
-
-export async function isAdmin(event: IncomingMessage | APIGatewayProxyEvent): Promise<boolean> {
-    const { token } = await authenticateHTTPAccessToken(event);
-    return token?.userType === UserType.ADMIN;
-}

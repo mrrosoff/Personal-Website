@@ -3,7 +3,8 @@ import { generateRegistrationOptions } from "@simplewebauthn/server";
 import { DateTime } from "luxon";
 
 import { putItem } from "../../aws/services/dynamodb";
-import { authorizeUserType, UserType } from "../../auth";
+import { UserType } from "../../auth";
+import { authorize } from "../../permissions";
 import {
     HttpResponseStatus,
     PASSKEY_CHALLENGES_TABLE,
@@ -13,7 +14,7 @@ import {
 import { RP_ID, RP_NAME } from "../admin/passkeyAuthOptions";
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
-    const { token, error } = await authorizeUserType(event, [UserType.SHARE]);
+    const { token, error } = await authorize(event, UserType.SHARE);
     if (!token) {
         return buildErrorResponse(
             event,

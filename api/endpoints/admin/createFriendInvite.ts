@@ -2,7 +2,8 @@ import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import { Resend } from "resend";
 
 import FriendInviteEmail from "../../../src/emails/FriendInviteEmail";
-import { generateToken, isAdmin, UserType } from "../../auth";
+import { generateToken, UserType } from "../../auth";
+import { isAdmin } from "../../permissions";
 import { getEntireTable } from "../../aws/services/dynamodb";
 import { getParameter } from "../../aws/services/parameterStore";
 import {

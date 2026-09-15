@@ -1,7 +1,7 @@
 import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 
-import { authorizeUserType, UserType } from "../../auth";
-import { deviceForOwner } from "../devices";
+import { UserType } from "../../auth";
+import { authorize } from "../../permissions";
 import { createHash, randomUUID } from "node:crypto";
 import { decode as decodeJpeg } from "jpeg-js";
 import { encode as encodePng } from "fast-png";
@@ -115,21 +115,12 @@ const PANEL_ROW_BYTES = PANEL_WIDTH / 2;
 const PANEL_BYTES = PANEL_ROW_BYTES * PANEL_HEIGHT;
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
-    const { token, error } = await authorizeUserType(event, [UserType.POLAROID_OWNER]);
-    if (!token) {
-        return buildErrorResponse(
-            event,
-            HttpResponseStatus.UNAUTHORIZED,
-            error ?? "Authentication Required"
-        );
-    }
-
-    const device = await deviceForOwner(token.email, DeviceKind.POLAROID);
+    const { device, error } = await authorize(event, UserType.FRIEND, DeviceKind.POLAROID);
     if (!device) {
         return buildErrorResponse(
             event,
             HttpResponseStatus.UNAUTHORIZED,
-            "Authentication Required"
+            error ?? "Authentication Required"
         );
     }
 

@@ -4,8 +4,8 @@ import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import { DateTime, Duration } from "luxon";
 
 import { getParameters } from "../../aws/services/parameterStore";
-import { authorizeUserType, UserType } from "../../auth";
-import { deviceForOwner } from "../devices";
+import { UserType } from "../../auth";
+import { authorize } from "../../permissions";
 import { DeviceKind } from "../../types";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
 
@@ -42,7 +42,7 @@ function signState(secret: string, deviceId: string): string {
 }
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
-    const { token, error } = await authorizeUserType(event, [UserType.SPOTIFY_OWNER]);
+    const { token, device, error } = await authorize(event, UserType.FRIEND, DeviceKind.SPOTIFY);
     if (!token) {
         return buildErrorResponse(
             event,
@@ -51,7 +51,6 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         );
     }
 
-    const device = await deviceForOwner(token.email, DeviceKind.SPOTIFY);
     if (!device) {
         return buildErrorResponse(
             event,

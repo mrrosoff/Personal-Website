@@ -1,7 +1,8 @@
 import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 
-import { authorizeUserType, UserType } from "../../auth";
-import { deviceForOwner, resolveDevice } from "../devices";
+import { UserType } from "../../auth";
+import { authorize } from "../../permissions";
+import { resolveDevice } from "../devices";
 
 import {
     buildErrorResponse,
@@ -27,18 +28,9 @@ export type Photo = {
 };
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
-    let device = await resolveDevice(event, DeviceKind.POLAROID);
-    if (!device) {
-        const { token, error } = await authorizeUserType(event, [UserType.POLAROID_OWNER]);
-        if (!token) {
-            return buildErrorResponse(
-                event,
-                HttpResponseStatus.UNAUTHORIZED,
-                error ?? "Authentication Required"
-            );
-        }
-        device = await deviceForOwner(token.email, DeviceKind.POLAROID);
-    }
+    const device =
+        (await resolveDevice(event, DeviceKind.POLAROID)) ??
+        (await authorize(event, UserType.FRIEND, DeviceKind.POLAROID)).device;
 
     if (!device) {
         return buildErrorResponse(

@@ -4,7 +4,8 @@ import { DateTime } from "luxon";
 import { validate } from "email-validator";
 
 import { deleteItem, getEntireTable, getItem, putItem } from "../../aws/services/dynamodb";
-import { authorizeUserType, UserType } from "../../auth";
+import { UserType } from "../../auth";
+import { authorize } from "../../permissions";
 import {
     HttpResponseStatus,
     PASSKEYS_TABLE,
@@ -26,7 +27,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Request Body");
     }
 
-    const { token, error } = await authorizeUserType(event, [UserType.SHARE]);
+    const { token, error } = await authorize(event, UserType.SHARE);
     if (!token) {
         return buildErrorResponse(
             event,

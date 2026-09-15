@@ -5,7 +5,7 @@ import { getParameter } from "../../aws/services/parameterStore";
 import { getEntireTable, putItem } from "../../aws/services/dynamodb";
 import { FLAVORS_TABLE, HttpResponseStatus, buildErrorResponse, buildResponse } from "../../common";
 import type { FlavorType } from "../../types";
-import { isAdmin } from "../../auth";
+import { isAdmin } from "../../permissions";
 
 type ProvisionFlavorPayload = {
     flavorName: string;
