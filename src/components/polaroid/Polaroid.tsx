@@ -56,16 +56,23 @@ export default function Polaroid() {
             const response = await axios.get<{ photos: Photo[] }>(`${API}/photos`, {
                 headers: authHeader
             });
-            setPhotos(response.data.photos);
+            setPhotos((current) =>
+                response.data.photos.map(
+                    (photo) => current.find((existing) => existing.id === photo.id) ?? photo
+                )
+            );
         } catch {
             setError("Couldn't load your photos.");
         }
     }, [authHeader]);
 
     useEffect(() => {
-        if (authorized) {
-            void refresh();
+        if (!authorized) {
+            return;
         }
+        void refresh();
+        const interval = setInterval(() => void refresh(), 30_000);
+        return () => clearInterval(interval);
     }, [authorized, refresh]);
 
     const upload = useCallback(
