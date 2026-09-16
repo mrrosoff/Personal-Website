@@ -202,6 +202,7 @@ class WebsiteAPIStack extends Stack {
         const passkeyRegisterOptionsLambda = this.createPasskeyRegisterOptionsLambda(apiRole);
         const passkeyRegisterLambda = this.createPasskeyRegisterLambda(apiRole);
         const suggestFlavorLambda = this.createSuggestFlavorLambda(apiRole);
+        const friendDevicesLambda = this.createFriendDevicesLambda(apiRole);
 
         const friendsResource = api.root.addResource("friends");
         friendsResource
@@ -213,6 +214,9 @@ class WebsiteAPIStack extends Stack {
         friendsResource
             .addResource("suggest-flavor")
             .addMethod("POST", new LambdaIntegration(suggestFlavorLambda));
+        friendsResource
+            .addResource("devices")
+            .addMethod("GET", new LambdaIntegration(friendDevicesLambda));
     }
 
     private createEmailRoutes(api: RestApi, apiRole: Role) {
@@ -562,6 +566,17 @@ class WebsiteAPIStack extends Stack {
             functionName,
             handler: "suggestFlavor.handler",
             code: Code.fromAsset("dist/lambda/friends/suggestFlavor"),
+            runtime: Runtime.NODEJS_22_X,
+            ...this.createLambdaParams(functionName, role)
+        });
+    }
+
+    private createFriendDevicesLambda(role: Role): LambdaFunction {
+        const functionName = "website-friend-devices";
+        return new LambdaFunction(this, "websiteFriendDevicesLambda", {
+            functionName,
+            handler: "devices.handler",
+            code: Code.fromAsset("dist/lambda/friends/devices"),
             runtime: Runtime.NODEJS_22_X,
             ...this.createLambdaParams(functionName, role)
         });

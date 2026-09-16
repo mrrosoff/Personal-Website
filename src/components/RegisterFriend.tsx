@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 
 import { Box, Button, TextField, Typography } from "@mui/material";
@@ -8,6 +8,20 @@ import { DateTime } from "luxon";
 
 import { API_URL } from "./App";
 import { decodeToken } from "../auth";
+import { DeviceKind } from "../../api/types";
+
+const Code = ({ children }: { children: string }) => (
+    <code
+        style={{
+            backgroundColor: "rgba(255,255,255,0.1)",
+            padding: "2px 6px",
+            borderRadius: 4,
+            fontFamily: "monospace"
+        }}
+    >
+        {children}
+    </code>
+);
 
 const registrationErrorMessage = (err: unknown): string => {
     if (err instanceof WebAuthnError) {
@@ -28,6 +42,22 @@ const RegisterForm = (props: { token: string; friendName: string }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [email, setEmail] = useState("");
+    const [devices, setDevices] = useState<DeviceKind[]>([]);
+
+    const authHeaders = { headers: { Authorization: `Bearer ${props.token}` } };
+
+    useEffect(() => {
+        const loadDevices = async () => {
+            try {
+                const url = `${API_URL}/friends/devices`;
+                const { data } = await axios.get<{ deviceKinds: DeviceKind[] }>(url, authHeaders);
+                setDevices(data.deviceKinds);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+        void loadDevices();
+    }, [props.token]);
 
     const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 
@@ -42,7 +72,6 @@ const RegisterForm = (props: { token: string; friendName: string }) => {
         }
         setIsLoading(true);
         try {
-            const authHeaders = { headers: { Authorization: `Bearer ${props.token}` } };
             const optionsUrl = `${API_URL}/friends/passkey-register-options`;
             const { data: options } = await axios.post(optionsUrl, {}, authHeaders);
 
@@ -56,7 +85,8 @@ const RegisterForm = (props: { token: string; friendName: string }) => {
                 },
                 authHeaders
             );
-            return navigate("/");
+            const onlyPolaroid = devices.length === 1 && devices[0] === DeviceKind.POLAROID;
+            return navigate(onlyPolaroid ? "/polaroid" : "/");
         } catch (err: unknown) {
             console.error(err);
             setIsLoading(false);
@@ -69,26 +99,30 @@ const RegisterForm = (props: { token: string; friendName: string }) => {
             <Typography variant={"body1"}>
                 Register a passkey to unlock the rest of the terminal.
             </Typography>
-            <Typography variant={"body1"} mb={4}>
-                Then run{" "}
-                <code
-                    style={{
-                        backgroundColor: "rgba(255,255,255,0.1)",
-                        padding: "2px 6px",
-                        borderRadius: 4,
-                        fontFamily: "monospace"
-                    }}
-                >
-                    sudo su {props.friendName}
-                </code>{" "}
-                in the terminal.
+            <Typography variant={"body1"}>
+                Then run <Code>{`sudo su ${props.friendName}`}</Code> in the terminal.
             </Typography>
+            {devices.length > 0 && (
+                <Typography variant={"body1"} mt={3}>
+                    You've been added to{" "}
+                    {devices
+                        .map((kind) => `a ${kind[0] + kind.slice(1).toLowerCase()} device`)
+                        .join(" & ")}
+                    .
+                    {devices.includes(DeviceKind.POLAROID) && (
+                        <>
+                            {" "}
+                            Your photos go up at <Code>/polaroid</Code>.
+                        </>
+                    )}
+                </Typography>
+            )}
             <TextField
                 type={"email"}
                 label={"Email"}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                sx={{ mb: 3, width: 320, maxWidth: "100%" }}
+                sx={{ mt: 4, mb: 3, width: 320, maxWidth: "100%" }}
             />
             <Button
                 variant={"contained"}
