@@ -6,6 +6,7 @@ import { getEntireTable } from "../../aws/services/dynamodb";
 import MailingListEmail from "../../../src/emails/MailingListEmail";
 import OrderSuccessEmail from "../../../src/emails/OrderSuccessEmail";
 import { FLAVORS_TABLE, HttpResponseStatus, buildErrorResponse, buildResponse } from "../../common";
+import { isAdmin } from "../../permissions";
 
 type SendEmailPayload = {
     message: string;
@@ -14,6 +15,14 @@ type SendEmailPayload = {
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     if (!event.body) {
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Request Body");
+    }
+
+    if (!(await isAdmin(event))) {
+        return buildErrorResponse(
+            event,
+            HttpResponseStatus.UNAUTHORIZED,
+            "Authentication Required"
+        );
     }
 
     const body: SendEmailPayload = JSON.parse(event.body);
