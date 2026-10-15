@@ -700,7 +700,18 @@ class WebsiteAPIStack extends Stack {
             ],
             inlinePolicies: {
                 SSMAccessPolicy: new PolicyDocument({
-                    statements: [new PolicyStatement({ actions: ["ssm:*"], resources: ["*"] })]
+                    statements: [
+                        new PolicyStatement({
+                            actions: ["ssm:GetParameters", "ssm:PutParameter"],
+                            resources: [
+                                this.formatArn({
+                                    service: "ssm",
+                                    resource: "parameter",
+                                    resourceName: "website/*"
+                                })
+                            ]
+                        })
+                    ]
                 }),
                 TableAccessPolicy: new PolicyDocument({
                     statements: [
