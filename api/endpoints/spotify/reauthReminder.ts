@@ -5,7 +5,7 @@ import { DEVICES_TABLE, PASSKEYS_TABLE } from "../../common";
 import SpotifyReauthEmail from "../../../src/emails/SpotifyReauthEmail";
 import { getEntireTable } from "../../aws/services/dynamodb";
 import { getParameter } from "../../aws/services/parameterStore";
-import { DeviceKind } from "../../types";
+import { type DatabasePasskey, DeviceKind } from "../../types";
 import { refreshTokenSetAtParam } from "./exchange";
 
 const TOKEN_LIFETIME = Duration.fromObject({ months: 6 });
@@ -23,17 +23,15 @@ export const handler = async (): Promise<void> => {
         .filter(({ kind }) => kind === DeviceKind.SPOTIFY)
         .map(({ deviceId }) => ({
             deviceId,
-            ownerEmails: passkeys
-                .filter((passkey) => passkey.deviceIds?.includes(deviceId))
-                .map((passkey) => passkey.email)
+            owners: passkeys.filter((passkey) => passkey.deviceIds?.includes(deviceId))
         }));
 
-    for (const { deviceId, ownerEmails } of displays) {
-        await remindIfDue(deviceId, ownerEmails);
+    for (const { deviceId, owners } of displays) {
+        await remindIfDue(deviceId, owners);
     }
 };
 
-async function remindIfDue(deviceId: string, ownerEmails: string[]): Promise<void> {
+async function remindIfDue(deviceId: string, owners: DatabasePasskey[]): Promise<void> {
     const setAt = Number(await getParameter(refreshTokenSetAtParam(deviceId)));
     if (!setAt) {
         return;
@@ -46,22 +44,19 @@ async function remindIfDue(deviceId: string, ownerEmails: string[]): Promise<voi
     }
 
     const daysLeft = Math.max(0, Math.ceil(expiry.diff(now, "days").days));
-    const recipients = ownerEmails.length ? ownerEmails : [FALLBACK_RECIPIENT];
+    const recipients = owners.length ? owners : [{ email: FALLBACK_RECIPIENT, name: undefined }];
 
-    // The passkey is only for the greeting; the device row already says who to
-    // reach, so an owner without one still gets the mail.
-    const passkeys = await getEntireTable(PASSKEYS_TABLE);
     const resend = new Resend(await getParameter("/website/resend/api-key"));
 
     const sent = await Promise.all(
-        recipients.map((email) =>
+        recipients.map(({ email, name }) =>
             resend.emails.send({
                 from: "Spotify Display <display@ice-cream.maxrosoff.com>",
                 to: email,
                 replyTo: "me@maxrosoff.com",
                 subject: "Reconnect Spotify to keep the display running",
                 react: SpotifyReauthEmail({
-                    name: passkeys.find((passkey) => passkey.email === email)?.name,
+                    name,
                     daysLeft,
                     reconnectUrl: "https://maxrosoff.com"
                 })

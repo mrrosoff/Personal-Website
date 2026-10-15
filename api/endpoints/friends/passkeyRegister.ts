@@ -3,7 +3,7 @@ import { type RegistrationResponseJSON, verifyRegistrationResponse } from "@simp
 import { DateTime } from "luxon";
 import { validate } from "email-validator";
 
-import { deleteItem, getEntireTable, getItem, putItem } from "../../aws/services/dynamodb";
+import { deleteItem, getItem, getItemByIndex, putItem } from "../../aws/services/dynamodb";
 import { UserType } from "../../auth";
 import { authorize } from "../../permissions";
 import {
@@ -37,13 +37,12 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     }
 
     const body: Payload = JSON.parse(event.body);
-    const email = body.email?.trim();
+    const email = body.email?.trim().toLowerCase();
     if (!email || !validate(email)) {
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Valid Email Required");
     }
 
-    const passkeys = await getEntireTable(PASSKEYS_TABLE);
-    if (passkeys.some((passkey) => passkey.email.toLowerCase() === email.toLowerCase())) {
+    if (await getItemByIndex(PASSKEYS_TABLE, "email", email)) {
         return buildErrorResponse(
             event,
             HttpResponseStatus.BAD_REQUEST,

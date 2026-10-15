@@ -190,7 +190,7 @@ export async function updateItemFields<T extends Table>(
     fields: UpdateItemInput<T>
 ): Promise<TableObject<T>> {
     console.debug(
-        `Updating item in ${table} with id ${JSON.stringify(key)}. New data: ${JSON.stringify(fields)}`
+        `Updating ${Object.keys(fields).join(", ")} for item in ${table} with id ${JSON.stringify(key)}`
     );
     const compositeKey = generateCompositeKey(table, key);
 
