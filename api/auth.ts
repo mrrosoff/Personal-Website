@@ -13,11 +13,24 @@ import { JWK } from "node-jose";
 
 import keys from "./jwks/keys.json";
 import keyMapping from "./jwks/keyMapping.json";
+import { getParameter } from "./aws/services/parameterStore";
 
 import { type AccessToken, API_ENDPOINT_URL, type DeviceKind, UserType } from "./types";
 
 export { UserType };
 export type { AccessToken };
+
+export const SIGNING_KEY_PARAMETER = "/website/jwt/signing-key";
+
+async function publicKey(): Promise<JWK.Key> {
+    const keyStore = await JWK.asKeyStore(keys);
+    return keyStore.get(keyMapping.authentication);
+}
+
+async function privateKey(): Promise<JWK.Key> {
+    const d = await getParameter(SIGNING_KEY_PARAMETER);
+    return JWK.asKey({ ...(await publicKey()).toJSON(), d });
+}
 
 export async function verifyJWTFromURI(
     token: string,
@@ -50,8 +63,7 @@ export async function generateToken(
     }
 ): Promise<string> {
     console.debug(`Generating auth token for user ${id}`);
-    const keyStore = await JWK.asKeyStore(keys);
-    const key = keyStore.get(keyMapping.authentication).toPEM(true);
+    const key = await privateKey();
     return sign(
         {
             id,
@@ -60,9 +72,10 @@ export async function generateToken(
             ...(options.deviceIds?.length && { deviceIds: options.deviceIds }),
             ...(options.deviceKinds?.length && { deviceKinds: options.deviceKinds })
         },
-        key,
+        key.toPEM(true),
         {
             algorithm: "ES256",
+            keyid: key.kid,
             issuer: API_ENDPOINT_URL,
             expiresIn: options.expiresIn ?? "6h"
         }
@@ -70,10 +83,11 @@ export async function generateToken(
 }
 
 export async function decryptToken(token: string): Promise<AccessToken> {
-    console.debug(`Decrypting access token for user with token ${token}`);
-    const keyStore = await JWK.asKeyStore(keys);
-    const key = keyStore.get(keyMapping.authentication).toPEM(true);
-    return verify(token, key) as AccessToken;
+    const key = await publicKey();
+    return verify(token, key.toPEM(), {
+        algorithms: ["ES256"],
+        issuer: API_ENDPOINT_URL
+    }) as AccessToken;
 }
 
 function authorizationHeader(req: IncomingMessage | APIGatewayProxyEvent): string | undefined {

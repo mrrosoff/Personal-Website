@@ -1,17 +1,14 @@
 #!/usr/bin/env ts-node
 
 /*
- * This script generates the keys used to sign and verify JWTs for
- * Project-Cantaloupe. The keys are stored in the jwks/keys.json file.
- * Once used in production, the keys cannot be regenerated, as this
- * would invalidate all existing JWTs.
+ * This script generates the key used to sign and verify JWTs for the
+ * website API. The public half is written to api/jwks/keys.json and its id
+ * to api/jwks/keyMapping.json, both safe to commit. Only the private scalar
+ * (the JWK "d") is stored, in the SSM SecureString /website/jwt/signing-key.
  *
- * To add a new key, modify the script to import the existing keys,
- * generate a new key, and add it to the key store. Then, write the
- * updated key store to the keys.json file.
- *
- * Once all JWTs that use an old key are expired, the old key can be
- * removed from the key store and the keys.json file.
+ * Running this rotates the key: every token signed with the old key
+ * (admin sessions, friend invites, cancel links) stops verifying once the
+ * new keys.json and keyMapping.json are deployed.
  *
  * To run the script, use the following command:
  * npm run create-jwt-keys
@@ -21,18 +18,22 @@
 import { writeFile } from "fs/promises";
 import jose from "node-jose";
 
+import { SIGNING_KEY_PARAMETER } from "../api/auth";
+import { putSecureParameter } from "../api/aws/services/parameterStore";
+
 async function createKeys() {
     const keyStore = jose.JWK.createKeyStore();
 
     const authenticationKey = await keyStore.generate("EC", "P-256");
 
+    const { d } = authenticationKey.toJSON(true) as { d: string };
+    await putSecureParameter(SIGNING_KEY_PARAMETER, d);
+    await writeFile("./api/jwks/keys.json", JSON.stringify(keyStore.toJSON(), null, 4) + "\n");
+
     const keyMapping = {
         authentication: authenticationKey.kid
     };
-    await writeFile("./api/jwks/keyMapping.json", JSON.stringify(keyMapping, null, 2));
-
-    const keys = keyStore.toJSON(true);
-    await writeFile("./api/jwks/keys.json", JSON.stringify(keys, null, 2));
+    await writeFile("./api/jwks/keyMapping.json", JSON.stringify(keyMapping, null, 4) + "\n");
 }
 
 void createKeys();
