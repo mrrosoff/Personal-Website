@@ -70,9 +70,22 @@ export default function Polaroid() {
         if (!authorized) {
             return;
         }
-        void refresh();
-        const interval = setInterval(() => void refresh(), 30_000);
-        return () => clearInterval(interval);
+        let interval: ReturnType<typeof setInterval> | undefined;
+        const poll = () => {
+            clearInterval(interval);
+            if (document.hidden) {
+                return;
+            }
+            void refresh();
+            interval = setInterval(() => void refresh(), 30_000);
+        };
+
+        poll();
+        document.addEventListener("visibilitychange", poll);
+        return () => {
+            clearInterval(interval);
+            document.removeEventListener("visibilitychange", poll);
+        };
     }, [authorized, refresh]);
 
     const upload = useCallback(
