@@ -217,14 +217,17 @@ const FriendCheckoutForm = ({
                                     sx={{
                                         display: "flex",
                                         justifyContent: "space-between",
+                                        gap: 2,
                                         alignItems: "center",
                                         py: 2
                                     }}
                                 >
-                                    <Typography color={flavor.color || "white"}>
+                                    <Typography color={flavor.color || "white"} noWrap>
                                         {flavor.name}
                                     </Typography>
-                                    <Typography sx={rainbowTextSx}>$0.00</Typography>
+                                    <Typography sx={{ ...rainbowTextSx, flexShrink: 0 }}>
+                                        $0.00
+                                    </Typography>
                                 </Box>
                                 {index < selectedFlavors.length - 1 && <Divider />}
                             </Box>
@@ -342,7 +345,7 @@ const CheckoutForm = ({
         setAddress,
         onSubmit
     };
-    return selectedFlavors.length > 2 ? (
+    return priceIds.length > 2 ? (
         <SidebarCheckoutLayout {...layoutProps} />
     ) : (
         <CompactCheckoutLayout {...layoutProps} />
@@ -635,12 +638,15 @@ const CompactCheckoutLayout = (props: {
                                         sx={{
                                             display: "flex",
                                             justifyContent: "space-between",
+                                            gap: 2,
                                             alignItems: "center",
                                             py: 2
                                         }}
                                     >
-                                        <Typography>{item.name}</Typography>
-                                        <Typography>{item.total.amount}</Typography>
+                                        <Typography noWrap>{item.name}</Typography>
+                                        <Typography sx={{ flexShrink: 0 }}>
+                                            {item.total.amount}
+                                        </Typography>
                                     </Box>
                                     {index < state.checkout.lineItems.length - 1 && <Divider />}
                                 </Box>
@@ -651,14 +657,15 @@ const CompactCheckoutLayout = (props: {
                                     sx={{
                                         display: "flex",
                                         justifyContent: "space-between",
+                                        gap: 2,
                                         alignItems: "center",
                                         py: 2
                                     }}
                                 >
-                                    <Typography color={flavor.color || "white"}>
+                                    <Typography color={flavor.color || "white"} noWrap>
                                         {flavor.name}
                                     </Typography>
-                                    <Typography>
+                                    <Typography sx={{ flexShrink: 0 }}>
                                         {lineItemAmount(state, flavor.name) || (
                                             <Skeleton width={56} sx={skeletonSx} />
                                         )}
@@ -787,17 +794,19 @@ const SidebarCheckoutLayout = (props: {
                                     sx={{
                                         display: "flex",
                                         justifyContent: "space-between",
+                                        gap: 2,
                                         alignItems: "center",
                                         py: 2
                                     }}
                                 >
                                     <Typography
                                         color={flavor.color || "white"}
+                                        noWrap
                                         sx={{ fontSize: "1.5rem" }}
                                     >
                                         {flavor.name}
                                     </Typography>
-                                    <Typography sx={{ fontSize: "1.2rem" }}>
+                                    <Typography sx={{ fontSize: "1.2rem", flexShrink: 0 }}>
                                         {lineItemAmount(state, flavor.name) || (
                                             <Skeleton width={56} sx={skeletonSx} />
                                         )}
