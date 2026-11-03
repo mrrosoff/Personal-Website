@@ -100,6 +100,30 @@ const IceCream = () => {
         navigate(`/ice-cream/checkout?priceIds=${priceIdsParam}`);
     };
 
+    const mailingList = (
+        <Typography mt={smallScreen ? 4 : -1}>
+            Want to stay updated?{" "}
+            <Link
+                component="button"
+                onClick={() => navigate("/ice-cream/mailing-list")}
+                underline="hover"
+                sx={{
+                    cursor: "pointer",
+                    color: "inherit",
+                    verticalAlign: "baseline",
+                    position: "relative",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 0.3
+                }}
+            >
+                Join our mailing list
+                <LaunchIcon sx={{ fontSize: 10, position: "relative", top: -4 }} />
+            </Link>{" "}
+            for new flavor announcements.
+        </Typography>
+    );
+
     return (
         <Box
             display={"flex"}
@@ -137,27 +161,7 @@ const IceCream = () => {
             <Typography mt={smallScreen ? 2 : -1}>
                 In SF? Come stop by! Outside SF? Don't buy anything you can't carry home.
             </Typography>
-            <Typography mt={smallScreen ? 2 : -1}>
-                Want to stay updated?{" "}
-                <Link
-                    component="button"
-                    onClick={() => navigate("/ice-cream/mailing-list")}
-                    underline="hover"
-                    sx={{
-                        cursor: "pointer",
-                        color: "inherit",
-                        verticalAlign: "baseline",
-                        position: "relative",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: 0.3
-                    }}
-                >
-                    Join our mailing list
-                    <LaunchIcon sx={{ fontSize: 10, position: "relative", top: -4 }} />
-                </Link>{" "}
-                for new flavor announcements.
-            </Typography>
+            {!smallScreen && mailingList}
             {flavorsError && (
                 <Alert severity="error" sx={{ mt: 3 }}>
                     {flavorsError}
@@ -179,6 +183,7 @@ const IceCream = () => {
                 flavors={flavors.filter((f) => f.type === "upcoming")}
                 isLoading={showSkeletons}
             />
+            {smallScreen && mailingList}
             {smallScreen && selectedPriceIds.length > 0 && (
                 <Zoom
                     in={true}
