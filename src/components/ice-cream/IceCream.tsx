@@ -14,7 +14,7 @@ import {
     Zoom
 } from "@mui/material";
 import LaunchIcon from "@mui/icons-material/Launch";
-import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import IcecreamOutlinedIcon from "@mui/icons-material/IcecreamOutlined";
 
 import { useIceCreamCart } from "./IceCreamCartContext";
 import { useAppContext } from "../AppContext";
@@ -188,22 +188,42 @@ const IceCream = () => {
                     }}
                     unmountOnExit
                 >
-                    <Fab
-                        color="primary"
-                        onClick={handleCartClick}
+                    <Badge
+                        badgeContent={selectedPriceIds.length}
+                        overlap={"circular"}
                         sx={{
                             position: "fixed",
-                            bottom: 24,
+                            bottom: "calc(24px + env(safe-area-inset-bottom))",
                             right: 24,
-                            backgroundColor: "#52535F",
-                            color: "white",
-                            ":hover": { backgroundColor: "#5F6272" }
+                            "& .MuiBadge-badge": {
+                                top: 6,
+                                right: 6,
+                                minWidth: 24,
+                                height: 24,
+                                borderRadius: 12,
+                                fontSize: 15,
+                                fontWeight: 600,
+                                backgroundColor: "#F9F9F9",
+                                color: "#121212",
+                                border: "2px solid #121212",
+                                zIndex: theme.zIndex.fab + 1
+                            }
                         }}
                     >
-                        <Badge badgeContent={selectedPriceIds.length} sx={{ p: 0.25 }}>
-                            <ShoppingCartOutlinedIcon sx={{ ml: -0.4, mb: -0.4 }} />
-                        </Badge>
-                    </Fab>
+                        <Fab
+                            aria-label={`Checkout, ${selectedPriceIds.length} in cart`}
+                            onClick={handleCartClick}
+                            sx={{
+                                backgroundColor: "#52535F",
+                                color: "white",
+                                border: "1px solid rgba(255,255,255,0.5)",
+                                boxShadow: "0 6px 20px rgba(0, 0, 0, 0.5)",
+                                ":hover": { backgroundColor: "#5F6272" }
+                            }}
+                        >
+                            <IcecreamOutlinedIcon />
+                        </Fab>
+                    </Badge>
                 </Zoom>
             )}
         </Box>
