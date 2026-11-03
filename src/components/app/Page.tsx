@@ -74,6 +74,8 @@ const Links = (props: { open: boolean; setOpen: Dispatch<SetStateAction<boolean>
     const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
     const isHome = useMatch("/");
     const isIceCream = useMatch("/ice-cream");
+    const isCheckout = useMatch("/ice-cream/checkout/*");
+    const linkToIceCream = isHome || isCheckout;
     const { selectedPriceIds } = useIceCreamCart();
 
     const handleCartClick = () => {
@@ -83,8 +85,11 @@ const Links = (props: { open: boolean; setOpen: Dispatch<SetStateAction<boolean>
 
     return (
         <Box sx={{ position: "absolute", top: 0, right: 80, display: "flex", gap: 2.5 }}>
-            <Link to={isHome ? "ice-cream" : "/"} style={{ color: "#FCFCFC", fontSize: 22 }}>
-                {isHome ? "Ice Cream" : "Home"}
+            <Link
+                to={linkToIceCream ? "/ice-cream" : "/"}
+                style={{ color: "#FCFCFC", fontSize: 22 }}
+            >
+                {linkToIceCream ? "Ice Cream" : "Home"}
             </Link>
             {isIceCream && (
                 <Box
