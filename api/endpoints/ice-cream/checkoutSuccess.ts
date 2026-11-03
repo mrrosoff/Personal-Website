@@ -54,6 +54,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     await sendOrderSuccessEmails({
         customerName: session.customer_details?.name ?? undefined,
         customerEmail: session.customer_email ?? undefined,
+        shippingAddress: session.customer_details?.address ?? undefined,
         items: lineItems.data.map((item) => ({
             name: item.description ?? "Unknown Item",
             quantity: item.quantity ?? 1

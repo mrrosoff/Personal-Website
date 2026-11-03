@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { type Dispatch, type SetStateAction, useEffect, useId, useMemo, useState } from "react";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 
 import axios from "axios";
@@ -10,6 +10,7 @@ import {
     Grid,
     Link,
     TextField,
+    type TextFieldProps,
     Typography,
     useMediaQuery,
     useTheme
@@ -21,6 +22,7 @@ import {
     PaymentElement,
     type StripeCheckoutValue
 } from "@stripe/react-stripe-js/checkout";
+import type { StripeCheckoutContact } from "@stripe/stripe-js";
 
 import { API_URL } from "../../App";
 import { decodeToken } from "../../../auth";
@@ -162,13 +164,10 @@ const FriendCheckoutForm = ({
                     <Typography variant={"h2"} mb={2}>
                         Contact Info
                     </Typography>
-                    <TextField
-                        variant={"filled"}
+                    <CheckoutField
                         label={"Email"}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        fullWidth
-                        slotProps={{ inputLabel: { shrink: !!email } }}
                     />
                 </Grid>
                 <Grid size={{ xs: 12, md: 6 }}>
@@ -209,7 +208,7 @@ const FriendCheckoutForm = ({
                 variant={"contained"}
                 size={"large"}
                 fullWidth
-                disabled={isLoading || !email}
+                disabled={isLoading || !validate(email)}
                 loading={isLoading}
                 onClick={onSubmit}
                 sx={{
@@ -235,6 +234,7 @@ const CheckoutForm = ({
     subscription: boolean;
 }) => {
     const [emailError, setEmailError] = useState<string | null>(null);
+    const [address, setAddress] = useState<DeliveryAddress>(emptyAddress);
     const [message, setMessage] = useState<string | null>(null);
 
     const [isLoading, setIsLoading] = useState(false);
@@ -274,7 +274,9 @@ const CheckoutForm = ({
             return;
         }
 
-        const confirmResult = await state.checkout.confirm();
+        const confirmResult = await state.checkout.confirm({
+            billingAddress: subscription ? undefined : toStripeContact(address)
+        });
         if (confirmResult.type === "error") {
             setMessage(confirmResult.error.message);
         }
@@ -303,12 +305,111 @@ const CheckoutForm = ({
         isLoading,
         emailError,
         message,
+        address,
+        setAddress,
         onSubmit
     };
     return selectedFlavors.length > 2 ? (
         <SidebarCheckoutLayout {...layoutProps} />
     ) : (
         <CompactCheckoutLayout {...layoutProps} />
+    );
+};
+
+type DeliveryAddress = { line1: string; line2: string; postalCode: string };
+
+const emptyAddress: DeliveryAddress = { line1: "", line2: "", postalCode: "" };
+
+const isSanFranciscoZip = (postalCode: string) => /^941\d{2}$/.test(postalCode);
+
+const isDeliverable = (address: DeliveryAddress) =>
+    !!address.line1.trim() && isSanFranciscoZip(address.postalCode);
+
+const toStripeContact = (address: DeliveryAddress): StripeCheckoutContact => ({
+    address: {
+        line1: address.line1.trim(),
+        line2: address.line2.trim() || null,
+        city: "San Francisco",
+        state: "CA",
+        postal_code: address.postalCode,
+        country: "US"
+    }
+});
+
+const DeliveryAddressFields = (props: {
+    address: DeliveryAddress;
+    setAddress: Dispatch<SetStateAction<DeliveryAddress>>;
+}) => {
+    const { address, setAddress } = props;
+    const zipOutsideSF = address.postalCode.length === 5 && !isSanFranciscoZip(address.postalCode);
+    return (
+        <Grid container rowSpacing={2} columnSpacing={1.5} sx={{ mt: 2 }}>
+            <Grid size={12}>
+                <CheckoutField
+                    label={"Street Address"}
+                    autoComplete={"address-line1"}
+                    value={address.line1}
+                    onChange={(e) => setAddress({ ...address, line1: e.target.value })}
+                />
+            </Grid>
+            <Grid size={6}>
+                <CheckoutField
+                    label={"Apt / Unit"}
+                    autoComplete={"address-line2"}
+                    value={address.line2}
+                    onChange={(e) => setAddress({ ...address, line2: e.target.value })}
+                />
+            </Grid>
+            <Grid size={6}>
+                <CheckoutField
+                    label={"ZIP"}
+                    autoComplete={"postal-code"}
+                    value={address.postalCode}
+                    onChange={(e) =>
+                        setAddress({
+                            ...address,
+                            postalCode: e.target.value.replace(/\D/g, "").slice(0, 5)
+                        })
+                    }
+                    error={zipOutsideSF}
+                    helperText={zipOutsideSF ? "I only deliver within San Francisco." : undefined}
+                    slotProps={{ htmlInput: { inputMode: "numeric" } }}
+                />
+            </Grid>
+        </Grid>
+    );
+};
+
+const CheckoutField = ({ label, ...props }: TextFieldProps & { label: string }) => {
+    const id = useId();
+    return (
+        <Box>
+            <Typography
+                component={"label"}
+                htmlFor={id}
+                sx={{ display: "block", fontSize: 18, lineHeight: 1.2, opacity: 0.7, mb: 0.75 }}
+            >
+                {label}
+            </Typography>
+            <TextField
+                {...props}
+                id={id}
+                fullWidth
+                sx={{
+                    "& .MuiOutlinedInput-root": {
+                        backgroundColor: "#1C1C1E",
+                        borderRadius: "4px",
+                        fontSize: 22,
+                        color: "#F9F9F9",
+                        "& fieldset": { borderColor: "rgba(255,255,255,0.5)" },
+                        "&:hover fieldset": { borderColor: "rgba(255,255,255,0.5)" },
+                        "&.Mui-focused fieldset": { borderColor: "#F9F9F9", borderWidth: 1 }
+                    },
+                    "& .MuiOutlinedInput-input": { padding: "9px 12px" },
+                    "& .MuiFormHelperText-root": { fontSize: 18, mx: 0 }
+                }}
+            />
+        </Box>
     );
 };
 
@@ -334,6 +435,8 @@ const CompactCheckoutLayout = (props: {
     subscription?: boolean;
     isLoading: boolean;
     message: string | null;
+    address: DeliveryAddress;
+    setAddress: Dispatch<SetStateAction<DeliveryAddress>>;
     onSubmit: (email: string) => void;
 }) => {
     const theme = useTheme();
@@ -367,15 +470,12 @@ const CompactCheckoutLayout = (props: {
                     <Typography variant={"h2"} mb={2}>
                         Contact Info
                     </Typography>
-                    <TextField
-                        variant={"filled"}
+                    <CheckoutField
                         label={"Email"}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         error={!!props.emailError}
                         helperText={props.emailError}
-                        fullWidth
-                        slotProps={{ inputLabel: { shrink: !!email } }}
                     />
                     {props.subscription && (
                         <Typography mt={1.5} sx={{ fontSize: "0.9em", opacity: 0.7 }}>
@@ -401,6 +501,12 @@ const CompactCheckoutLayout = (props: {
                                 </Link>
                             )}
                         </Typography>
+                    )}
+                    {!props.subscription && (
+                        <DeliveryAddressFields
+                            address={props.address}
+                            setAddress={props.setAddress}
+                        />
                     )}
                 </Grid>
                 <Grid size={{ xs: 12, md: 6 }}>
@@ -454,11 +560,7 @@ const CompactCheckoutLayout = (props: {
                     </Box>
                 </Grid>
             </Grid>
-            <Typography
-                variant={"h2"}
-                mt={props.selectedFlavors.length != 2 ? 4 : smallScreen ? 2 : undefined}
-                mb={2}
-            >
+            <Typography variant={"h2"} mt={4} mb={2}>
                 Payment
             </Typography>
             <PaymentElement
@@ -466,7 +568,10 @@ const CompactCheckoutLayout = (props: {
                     layout: {
                         type: smallScreen ? "accordion" : "tabs",
                         defaultCollapsed: false
-                    }
+                    },
+                    fields: props.subscription
+                        ? undefined
+                        : { billingDetails: { address: "never" } }
                 }}
             />
             <Button
@@ -475,7 +580,12 @@ const CompactCheckoutLayout = (props: {
                 size={"large"}
                 fullWidth
                 type="submit"
-                disabled={props.isLoading || state.type === "loading" || !email}
+                disabled={
+                    props.isLoading ||
+                    state.type === "loading" ||
+                    !email ||
+                    (!props.subscription && !isDeliverable(props.address))
+                }
                 loading={props.isLoading || state.type === "loading"}
                 onClick={() => props.onSubmit(email)}
                 sx={{
@@ -498,6 +608,8 @@ const SidebarCheckoutLayout = (props: {
     selectedFlavors: DatabaseFlavor[];
     isLoading: boolean;
     message: string | null;
+    address: DeliveryAddress;
+    setAddress: Dispatch<SetStateAction<DeliveryAddress>>;
     onSubmit: (email: string) => void;
 }) => {
     const theme = useTheme();
@@ -517,16 +629,14 @@ const SidebarCheckoutLayout = (props: {
                     <Typography variant={"h2"} mb={2}>
                         Contact Info
                     </Typography>
-                    <TextField
-                        variant={"filled"}
+                    <CheckoutField
                         label={"Email"}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         error={!!props.emailError}
                         helperText={props.emailError}
-                        fullWidth
-                        slotProps={{ inputLabel: { shrink: !!email } }}
                     />
+                    <DeliveryAddressFields address={props.address} setAddress={props.setAddress} />
                     <Typography variant={"h2"} mt={4} mb={2}>
                         Payment
                     </Typography>
@@ -535,7 +645,8 @@ const SidebarCheckoutLayout = (props: {
                             layout: {
                                 type: smallScreen ? "accordion" : "tabs",
                                 defaultCollapsed: false
-                            }
+                            },
+                            fields: { billingDetails: { address: "never" } }
                         }}
                     />
                     <Button
@@ -544,7 +655,12 @@ const SidebarCheckoutLayout = (props: {
                         size={"large"}
                         fullWidth
                         type="submit"
-                        disabled={props.isLoading || state.type === "loading" || !email}
+                        disabled={
+                            props.isLoading ||
+                            state.type === "loading" ||
+                            !email ||
+                            !isDeliverable(props.address)
+                        }
                         loading={props.isLoading || state.type === "loading"}
                         onClick={() => props.onSubmit(email)}
                         sx={{

@@ -1,5 +1,6 @@
 import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import { Resend } from "resend";
+import type Stripe from "stripe";
 
 import { getParameter } from "../../aws/services/parameterStore";
 import { getEntireTable } from "../../aws/services/dynamodb";
@@ -77,6 +78,7 @@ export async function sendOrderSuccessEmails({
 }: {
     customerName?: string;
     customerEmail?: string;
+    shippingAddress?: Stripe.Address;
     items: OrderItem[];
     notifyCustomer?: boolean;
 }) {

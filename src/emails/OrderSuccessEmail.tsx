@@ -13,6 +13,7 @@ import {
     Section,
     Text
 } from "@react-email/components";
+import type Stripe from "stripe";
 
 type OrderItem = {
     name: string;
@@ -47,6 +48,7 @@ const orderHeading = (forCustomer: boolean, customerName?: string) => {
 const OrderSuccessEmail = (props: {
     customerName?: string;
     customerEmail?: string;
+    shippingAddress?: Stripe.Address;
     items?: OrderItem[];
     forCustomer?: boolean;
 }) => {
@@ -148,6 +150,40 @@ const OrderSuccessEmail = (props: {
                             </Section>
                         ))}
                     </Section>
+                    {props.shippingAddress && (
+                        <Section style={{ marginBottom: 16 }}>
+                            <Text
+                                style={{
+                                    fontSize: 14,
+                                    fontWeight: 600,
+                                    color: "rgb(107,114,128)",
+                                    margin: "0px"
+                                }}
+                            >
+                                {forCustomer ? "Delivering To" : "Deliver To"}
+                            </Text>
+                            <Text
+                                style={{
+                                    fontSize: 16,
+                                    lineHeight: "24px",
+                                    color: "rgb(17,24,39)",
+                                    margin: "4px 0px 0px"
+                                }}
+                            >
+                                <Link
+                                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(formatAddress(props.shippingAddress).join(", "))}`}
+                                    style={{ color: "rgb(79,70,229)" }}
+                                >
+                                    {formatAddress(props.shippingAddress).map((line) => (
+                                        <span key={line}>
+                                            {line}
+                                            <br />
+                                        </span>
+                                    ))}
+                                </Link>
+                            </Text>
+                        </Section>
+                    )}
                     <Hr
                         style={{
                             width: "100%",
@@ -162,6 +198,15 @@ const OrderSuccessEmail = (props: {
         </Html>
     );
 };
+
+const formatAddress = (address: Stripe.Address) =>
+    [
+        address.line1,
+        address.line2,
+        [[address.city, address.state].filter(Boolean).join(", "), address.postal_code]
+            .filter(Boolean)
+            .join(" ")
+    ].filter((line): line is string => !!line);
 
 const Footer = () => {
     return (
@@ -274,6 +319,14 @@ const Footer = () => {
 OrderSuccessEmail.PreviewProps = {
     customerName: "Max",
     customerEmail: "me@maxrosoff.com",
+    shippingAddress: {
+        line1: "123 Main St",
+        line2: "Apt 4",
+        city: "Denver",
+        state: "CO",
+        postal_code: "80202",
+        country: "US"
+    },
     items: [
         { name: "Strawberry Basil 🍓", quantity: 1 },
         { name: "Mango Sticky Rice 🥭", quantity: 1 },
