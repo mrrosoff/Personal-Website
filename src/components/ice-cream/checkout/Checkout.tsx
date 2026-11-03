@@ -208,7 +208,7 @@ const FriendCheckoutForm = ({
                             border: 1,
                             borderColor: "rgba(255, 255, 255, 0.5)",
                             borderRadius: 1,
-                            px: 3
+                            px: smallScreen ? 2 : 3
                         }}
                     >
                         {selectedFlavors.map((flavor, index) => (
@@ -219,7 +219,7 @@ const FriendCheckoutForm = ({
                                         justifyContent: "space-between",
                                         gap: 2,
                                         alignItems: "center",
-                                        py: 2
+                                        py: smallScreen ? 1.5 : 2
                                     }}
                                 >
                                     <Typography color={flavor.color || "white"} noWrap>
@@ -627,7 +627,7 @@ const CompactCheckoutLayout = (props: {
                             border: 1,
                             borderColor: "rgba(255, 255, 255, 0.5)",
                             borderRadius: 1,
-                            px: 3
+                            px: smallScreen ? 2 : 3
                         }}
                     >
                         {props.subscription &&
@@ -640,7 +640,7 @@ const CompactCheckoutLayout = (props: {
                                             justifyContent: "space-between",
                                             gap: 2,
                                             alignItems: "center",
-                                            py: 2
+                                            py: smallScreen ? 1.5 : 2
                                         }}
                                     >
                                         <Typography noWrap>{item.name}</Typography>
@@ -659,7 +659,7 @@ const CompactCheckoutLayout = (props: {
                                         justifyContent: "space-between",
                                         gap: 2,
                                         alignItems: "center",
-                                        py: 2
+                                        py: smallScreen ? 1.5 : 2
                                     }}
                                 >
                                     <Typography color={flavor.color || "white"} noWrap>
@@ -731,7 +731,11 @@ const SidebarCheckoutLayout = (props: {
             <Typography variant={"h1"} mb={3}>
                 Checkout
             </Typography>
-            <Grid container spacing={6} direction={smallScreen ? "column-reverse" : "row"}>
+            <Grid
+                container
+                spacing={smallScreen ? 4 : 6}
+                direction={smallScreen ? "column-reverse" : "row"}
+            >
                 <Grid size={{ xs: 12, md: 7 }}>
                     <Typography variant={"h2"} mb={2}>
                         Contact Info
@@ -776,7 +780,7 @@ const SidebarCheckoutLayout = (props: {
                     </Button>
                     {props.message && <Typography>{props.message}</Typography>}
                 </Grid>
-                <Grid size={{ xs: 12, md: 5 }} sx={{ minWidth: 400 }}>
+                <Grid size={{ xs: 12, md: 5 }} sx={{ minWidth: smallScreen ? undefined : 400 }}>
                     <Typography variant={"h2"} mb={2}>
                         Your Order
                     </Typography>
@@ -785,7 +789,7 @@ const SidebarCheckoutLayout = (props: {
                             border: 1,
                             borderColor: "rgba(255, 255, 255, 0.5)",
                             borderRadius: 1,
-                            px: 3
+                            px: smallScreen ? 2 : 3
                         }}
                     >
                         {props.selectedFlavors.map((flavor, index) => (
@@ -796,13 +800,13 @@ const SidebarCheckoutLayout = (props: {
                                         justifyContent: "space-between",
                                         gap: 2,
                                         alignItems: "center",
-                                        py: 2
+                                        py: smallScreen ? 1.5 : 2
                                     }}
                                 >
                                     <Typography
                                         color={flavor.color || "white"}
                                         noWrap
-                                        sx={{ fontSize: "1.5rem" }}
+                                        sx={{ fontSize: smallScreen ? "1.2rem" : "1.5rem" }}
                                     >
                                         {flavor.name}
                                     </Typography>
