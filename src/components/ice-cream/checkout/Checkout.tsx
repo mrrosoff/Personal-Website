@@ -9,6 +9,7 @@ import {
     Divider,
     Grid,
     Link,
+    Skeleton,
     TextField,
     type TextFieldProps,
     Typography,
@@ -174,7 +175,7 @@ const FriendCheckoutForm = ({
             <Typography variant={"h1"} mb={2}>
                 Checkout
             </Typography>
-            <Typography variant={"body1"} mb={4}>
+            <Typography variant={"body1"} mb={3}>
                 Thanks for being a friend,{" "}
                 <Typography component={"span"} sx={{ fontSize: "inherit", ...rainbowTextSx }}>
                     {friendName}
@@ -318,7 +319,7 @@ const CheckoutForm = ({
     if (state.type === "error") {
         return (
             <Box pb={4}>
-                <Typography variant={"h1"} mb={4}>
+                <Typography variant={"h1"} mb={3}>
                     Checkout
                 </Typography>
                 <Typography>
@@ -457,6 +458,74 @@ const alreadySubscribed = async (email: string): Promise<boolean> => {
     }
 };
 
+const LoadingPaymentElement = (props: { accordion: boolean; billingAddress: boolean }) => {
+    const [ready, setReady] = useState(false);
+    return (
+        <Box>
+            {!ready && (
+                <PaymentSkeleton
+                    accordion={props.accordion}
+                    billingAddress={props.billingAddress}
+                />
+            )}
+            <Box sx={ready ? undefined : { height: 0, overflow: "hidden", visibility: "hidden" }}>
+                <PaymentElement
+                    onReady={() => setReady(true)}
+                    options={{
+                        layout: {
+                            type: props.accordion ? "accordion" : "tabs",
+                            defaultCollapsed: false
+                        },
+                        fields: props.billingAddress
+                            ? undefined
+                            : { billingDetails: { address: "never" } }
+                    }}
+                />
+            </Box>
+        </Box>
+    );
+};
+
+const skeletonSx = { bgcolor: "rgba(255,255,255,0.1)" };
+
+const outlinedBoxSx = {
+    border: 1,
+    borderColor: "rgba(255,255,255,0.5)",
+    borderRadius: "4px",
+    backgroundColor: "#1C1C1E"
+};
+
+const SkeletonField = (props: { flex: number }) => (
+    <Box sx={{ flex: props.flex, minWidth: 0 }}>
+        <Skeleton width={110} sx={{ ...skeletonSx, fontSize: 18, mb: 0.75 }} />
+        <Box sx={{ ...outlinedBoxSx, height: 50 }} />
+    </Box>
+);
+
+const PaymentSkeleton = (props: { accordion: boolean; billingAddress: boolean }) => (
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        {props.accordion ? (
+            <SkeletonField flex={1} />
+        ) : (
+            <Box sx={{ display: "flex", gap: 1.5 }}>
+                <Box sx={{ ...outlinedBoxSx, flex: 1, height: 74 }} />
+                <Box sx={{ ...outlinedBoxSx, flex: 1, height: 74 }} />
+            </Box>
+        )}
+        <Box sx={{ display: "flex", gap: 1.5 }}>
+            {!props.accordion && <SkeletonField flex={2} />}
+            <SkeletonField flex={1} />
+            <SkeletonField flex={1} />
+        </Box>
+        {props.billingAddress && (
+            <Box sx={{ display: "flex", gap: 1.5 }}>
+                <SkeletonField flex={1} />
+                <SkeletonField flex={1} />
+            </Box>
+        )}
+    </Box>
+);
+
 const lineItemAmount = (state: ReturnType<typeof useCheckout>, name: string): string => {
     if (state.type !== "success") {
         return "";
@@ -493,7 +562,7 @@ const CompactCheckoutLayout = (props: {
 
     return (
         <Box pb={4}>
-            <Typography variant={"h1"} mb={4}>
+            <Typography variant={"h1"} mb={3}>
                 Checkout
             </Typography>
             <Grid
@@ -589,7 +658,11 @@ const CompactCheckoutLayout = (props: {
                                     <Typography color={flavor.color || "white"}>
                                         {flavor.name}
                                     </Typography>
-                                    <Typography>{lineItemAmount(state, flavor.name)}</Typography>
+                                    <Typography>
+                                        {lineItemAmount(state, flavor.name) || (
+                                            <Skeleton width={56} sx={skeletonSx} />
+                                        )}
+                                    </Typography>
                                 </Box>
                                 {index < props.selectedFlavors.length - 1 && <Divider />}
                             </Box>
@@ -600,17 +673,7 @@ const CompactCheckoutLayout = (props: {
             <Typography variant={"h2"} mt={4} mb={2}>
                 Payment
             </Typography>
-            <PaymentElement
-                options={{
-                    layout: {
-                        type: smallScreen ? "accordion" : "tabs",
-                        defaultCollapsed: false
-                    },
-                    fields: props.subscription
-                        ? undefined
-                        : { billingDetails: { address: "never" } }
-                }}
-            />
+            <LoadingPaymentElement accordion={smallScreen} billingAddress={!!props.subscription} />
             <Button
                 color={"primary"}
                 variant={"contained"}
@@ -658,7 +721,7 @@ const SidebarCheckoutLayout = (props: {
 
     return (
         <Box pb={4}>
-            <Typography variant={"h1"} mb={4}>
+            <Typography variant={"h1"} mb={3}>
                 Checkout
             </Typography>
             <Grid container spacing={6} direction={smallScreen ? "column-reverse" : "row"}>
@@ -679,15 +742,7 @@ const SidebarCheckoutLayout = (props: {
                     <Typography variant={"h2"} mt={4} mb={2}>
                         Payment
                     </Typography>
-                    <PaymentElement
-                        options={{
-                            layout: {
-                                type: smallScreen ? "accordion" : "tabs",
-                                defaultCollapsed: false
-                            },
-                            fields: { billingDetails: { address: "never" } }
-                        }}
-                    />
+                    <LoadingPaymentElement accordion={smallScreen} billingAddress={false} />
                     <Button
                         color={"primary"}
                         variant={"contained"}
@@ -743,7 +798,9 @@ const SidebarCheckoutLayout = (props: {
                                         {flavor.name}
                                     </Typography>
                                     <Typography sx={{ fontSize: "1.2rem" }}>
-                                        {lineItemAmount(state, flavor.name)}
+                                        {lineItemAmount(state, flavor.name) || (
+                                            <Skeleton width={56} sx={skeletonSx} />
+                                        )}
                                     </Typography>
                                 </Box>
                                 {index < props.selectedFlavors.length - 1 && <Divider />}
