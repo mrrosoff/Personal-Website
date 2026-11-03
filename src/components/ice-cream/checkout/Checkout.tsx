@@ -35,6 +35,32 @@ const stripePublishableApiKey =
     "pk_live_51SSn4jGZZEzkLsbifOmvMvPB5xo33fgFS19ejvNuOibMMPHFu3ixt00c2nbCn4EPiIXWXvJvH1t3AZLXJE3dIrKz00aPsF6Dt2";
 const stripeLoader = loadStripe(stripePublishableApiKey);
 
+type DeliveryAddress = { line1: string; line2: string; postalCode: string };
+
+const emailProblem = (email: string) => (validate(email) ? null : "Enter a valid email.");
+const streetProblem = (street: string) =>
+    /^\d+\s+\S/.test(street.trim()) ? null : "Enter a street address, like 123 Main St.";
+const zipProblem = (zip: string) => {
+    if (zip.length < 5) {
+        return "Enter a 5-digit ZIP.";
+    }
+    return zip.startsWith("941") ? null : "I only deliver within San Francisco.";
+};
+
+const isDeliverable = (address: DeliveryAddress) =>
+    !streetProblem(address.line1) && !zipProblem(address.postalCode);
+
+const toStripeContact = (address: DeliveryAddress): StripeCheckoutContact => ({
+    address: {
+        line1: address.line1.trim(),
+        line2: address.line2.trim() || null,
+        city: "San Francisco",
+        state: "CA",
+        postal_code: address.postalCode,
+        country: "US"
+    }
+});
+
 const Checkout = () => {
     const [searchParams] = useSearchParams();
     const { friendToken } = useAppContext();
@@ -168,6 +194,7 @@ const FriendCheckoutForm = ({
                         label={"Email"}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        problem={emailProblem}
                     />
                 </Grid>
                 <Grid size={{ xs: 12, md: 6 }}>
@@ -234,7 +261,11 @@ const CheckoutForm = ({
     subscription: boolean;
 }) => {
     const [emailError, setEmailError] = useState<string | null>(null);
-    const [address, setAddress] = useState<DeliveryAddress>(emptyAddress);
+    const [address, setAddress] = useState<DeliveryAddress>({
+        line1: "",
+        line2: "",
+        postalCode: ""
+    });
     const [message, setMessage] = useState<string | null>(null);
 
     const [isLoading, setIsLoading] = useState(false);
@@ -316,32 +347,11 @@ const CheckoutForm = ({
     );
 };
 
-type DeliveryAddress = { line1: string; line2: string; postalCode: string };
-
-const emptyAddress: DeliveryAddress = { line1: "", line2: "", postalCode: "" };
-
-const isSanFranciscoZip = (postalCode: string) => /^941\d{2}$/.test(postalCode);
-
-const isDeliverable = (address: DeliveryAddress) =>
-    !!address.line1.trim() && isSanFranciscoZip(address.postalCode);
-
-const toStripeContact = (address: DeliveryAddress): StripeCheckoutContact => ({
-    address: {
-        line1: address.line1.trim(),
-        line2: address.line2.trim() || null,
-        city: "San Francisco",
-        state: "CA",
-        postal_code: address.postalCode,
-        country: "US"
-    }
-});
-
 const DeliveryAddressFields = (props: {
     address: DeliveryAddress;
     setAddress: Dispatch<SetStateAction<DeliveryAddress>>;
 }) => {
     const { address, setAddress } = props;
-    const zipOutsideSF = address.postalCode.length === 5 && !isSanFranciscoZip(address.postalCode);
     return (
         <Grid container rowSpacing={2} columnSpacing={1.5} sx={{ mt: 2 }}>
             <Grid size={12}>
@@ -350,6 +360,7 @@ const DeliveryAddressFields = (props: {
                     autoComplete={"address-line1"}
                     value={address.line1}
                     onChange={(e) => setAddress({ ...address, line1: e.target.value })}
+                    problem={streetProblem}
                 />
             </Grid>
             <Grid size={6}>
@@ -371,8 +382,7 @@ const DeliveryAddressFields = (props: {
                             postalCode: e.target.value.replace(/\D/g, "").slice(0, 5)
                         })
                     }
-                    error={zipOutsideSF}
-                    helperText={zipOutsideSF ? "I only deliver within San Francisco." : undefined}
+                    problem={zipProblem}
                     slotProps={{ htmlInput: { inputMode: "numeric" } }}
                 />
             </Grid>
@@ -380,8 +390,23 @@ const DeliveryAddressFields = (props: {
     );
 };
 
-const CheckoutField = ({ label, ...props }: TextFieldProps & { label: string }) => {
+const CheckoutField = ({
+    label,
+    problem,
+    error,
+    helperText,
+    ...props
+}: TextFieldProps & { label: string; problem?: (value: string) => string | null }) => {
     const id = useId();
+    const value = String(props.value ?? "");
+    const [settledValue, setSettledValue] = useState(value);
+
+    useEffect(() => {
+        const timeout = setTimeout(() => setSettledValue(value), 600);
+        return () => clearTimeout(timeout);
+    }, [value]);
+
+    const settledProblem = value && value === settledValue ? problem?.(value) : null;
     return (
         <Box>
             <Typography
@@ -394,6 +419,8 @@ const CheckoutField = ({ label, ...props }: TextFieldProps & { label: string }) 
             <TextField
                 {...props}
                 id={id}
+                error={error || !!settledProblem}
+                helperText={helperText || settledProblem}
                 fullWidth
                 sx={{
                     "& .MuiOutlinedInput-root": {
@@ -474,6 +501,7 @@ const CompactCheckoutLayout = (props: {
                         label={"Email"}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        problem={emailProblem}
                         error={!!props.emailError}
                         helperText={props.emailError}
                     />
@@ -583,7 +611,7 @@ const CompactCheckoutLayout = (props: {
                 disabled={
                     props.isLoading ||
                     state.type === "loading" ||
-                    !email ||
+                    !validate(email) ||
                     (!props.subscription && !isDeliverable(props.address))
                 }
                 loading={props.isLoading || state.type === "loading"}
@@ -633,6 +661,7 @@ const SidebarCheckoutLayout = (props: {
                         label={"Email"}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        problem={emailProblem}
                         error={!!props.emailError}
                         helperText={props.emailError}
                     />
@@ -658,7 +687,7 @@ const SidebarCheckoutLayout = (props: {
                         disabled={
                             props.isLoading ||
                             state.type === "loading" ||
-                            !email ||
+                            !validate(email) ||
                             !isDeliverable(props.address)
                         }
                         loading={props.isLoading || state.type === "loading"}
