@@ -39,7 +39,7 @@ type DeliveryAddress = { line1: string; line2: string; postalCode: string };
 
 const emailProblem = (email: string) => (validate(email) ? null : "Enter a valid email.");
 const streetProblem = (street: string) =>
-    /^\d+\s+\S/.test(street.trim()) ? null : "Enter a street address, like 123 Main St.";
+    /^\d+\s+\S/.test(street.trim()) ? null : "Enter a street address, like 1 Ferry Building.";
 const zipProblem = (zip: string) => {
     if (zip.length < 5) {
         return "Enter a 5-digit ZIP.";
@@ -195,6 +195,7 @@ const FriendCheckoutForm = ({
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         problem={emailProblem}
+                        placeholder={"karl@fog.sf"}
                     />
                 </Grid>
                 <Grid size={{ xs: 12, md: 6 }}>
@@ -353,7 +354,7 @@ const DeliveryAddressFields = (props: {
 }) => {
     const { address, setAddress } = props;
     return (
-        <Grid container rowSpacing={2} columnSpacing={1.5} sx={{ mt: 2 }}>
+        <Grid container spacing={1.5} sx={{ mt: 1.5 }}>
             <Grid size={12}>
                 <CheckoutField
                     label={"Street Address"}
@@ -361,6 +362,7 @@ const DeliveryAddressFields = (props: {
                     value={address.line1}
                     onChange={(e) => setAddress({ ...address, line1: e.target.value })}
                     problem={streetProblem}
+                    placeholder={"1 Ferry Building"}
                 />
             </Grid>
             <Grid size={6}>
@@ -369,6 +371,7 @@ const DeliveryAddressFields = (props: {
                     autoComplete={"address-line2"}
                     value={address.line2}
                     onChange={(e) => setAddress({ ...address, line2: e.target.value })}
+                    placeholder={"Optional"}
                 />
             </Grid>
             <Grid size={6}>
@@ -383,6 +386,7 @@ const DeliveryAddressFields = (props: {
                         })
                     }
                     problem={zipProblem}
+                    placeholder={"94111"}
                     slotProps={{ htmlInput: { inputMode: "numeric" } }}
                 />
             </Grid>
@@ -433,6 +437,10 @@ const CheckoutField = ({
                         "&.Mui-focused fieldset": { borderColor: "#F9F9F9", borderWidth: 1 }
                     },
                     "& .MuiOutlinedInput-input": { padding: "9px 12px" },
+                    "& .MuiOutlinedInput-input::placeholder": {
+                        color: "rgba(255,255,255,0.4)",
+                        opacity: 1
+                    },
                     "& .MuiFormHelperText-root": { fontSize: 18, mx: 0 }
                 }}
             />
@@ -502,6 +510,7 @@ const CompactCheckoutLayout = (props: {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         problem={emailProblem}
+                        placeholder={"karl@fog.sf"}
                         error={!!props.emailError}
                         helperText={props.emailError}
                     />
@@ -662,6 +671,7 @@ const SidebarCheckoutLayout = (props: {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         problem={emailProblem}
+                        placeholder={"karl@fog.sf"}
                         error={!!props.emailError}
                         helperText={props.emailError}
                     />
