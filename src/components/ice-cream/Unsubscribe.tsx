@@ -81,8 +81,16 @@ const UnsubscribeForm = () => {
                 autoComplete="email"
             />
             <Button
-                variant={"outlined"}
-                sx={{ mt: smallScreen ? 5 : 6, width: smallScreen ? 300 : 532, fontSize: 18 }}
+                variant={"contained"}
+                size={"large"}
+                sx={{
+                    mt: smallScreen ? 5 : 6,
+                    width: smallScreen ? 300 : 532,
+                    fontSize: 20,
+                    backgroundColor: "#52535F",
+                    color: "white",
+                    ":hover": { backgroundColor: "#5F6272" }
+                }}
                 disabled={!validate(email) || success}
                 endIcon={success ? <ThumbUpIcon /> : undefined}
                 loading={loading}

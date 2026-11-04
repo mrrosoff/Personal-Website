@@ -3,19 +3,19 @@ import { Box, Typography } from "@mui/material";
 const sections = [
     {
         heading: "What I collect",
-        body: "When you order ice cream or subscribe, I collect your name, email, and delivery address. Payment details are entered directly into Stripe and never touch my servers. If you join the mailing list, I keep your name and email."
+        body: "When you order or subscribe, I collect your name, email, and delivery address. If you join the mailing list, I keep your name and email. Card details go straight to my payment processor and are never stored by me."
     },
     {
         heading: "How I use it",
-        body: "To fill and deliver your order, calculate sales tax, send order confirmations, manage your subscription, and, if you signed up, email you about new flavors. Nothing else."
+        body: "To fill and deliver your order, send confirmations, manage your subscription, and, if you signed up, email you about new flavors. Nothing else."
     },
     {
         heading: "Who I share it with",
-        body: "Only the services that make this work: Stripe for payments and tax, Resend for email, and Amazon Web Services for hosting and storage. Information is passed to them over encrypted connections through their APIs. I don't sell or rent your information to anyone."
+        body: "Only the service providers needed to process payments, send email, and run the site. Information is shared with them securely and only as needed to provide those services. I don't sell or rent your information to anyone."
     },
     {
         heading: "How it's protected",
-        body: "All traffic is encrypted with HTTPS. Data is stored with access restricted to me, API keys are kept in a secrets store rather than in code, and card numbers are handled entirely by Stripe, which is PCI compliant."
+        body: "Information is encrypted in transit, access is restricted, and payments are handled by a PCI-compliant processor."
     },
     {
         heading: "Your choices",
