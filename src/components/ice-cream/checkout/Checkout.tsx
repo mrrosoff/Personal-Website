@@ -351,7 +351,7 @@ const CheckoutForm = ({
         setPaymentComplete,
         onSubmit
     };
-    return priceIds.length > 2 ? (
+    return priceIds.length > 3 ? (
         <SidebarCheckoutLayout {...layoutProps} />
     ) : (
         <CompactCheckoutLayout {...layoutProps} />
@@ -430,7 +430,13 @@ const LoadingPaymentElement = (props: {
                             type: props.accordion ? "accordion" : "tabs",
                             defaultCollapsed: false
                         },
-                        fields: { billingDetails: { address: "never" } }
+                        fields: { billingDetails: { address: "never" } },
+                        terms: {
+                            card: "never",
+                            applePay: "never",
+                            googlePay: "never",
+                            cashapp: "never"
+                        }
                     }}
                 />
             </Box>
@@ -531,31 +537,6 @@ const CompactCheckoutLayout = (props: {
                         error={!!props.emailError}
                         helperText={props.emailError}
                     />
-                    {props.subscription && (
-                        <Typography mt={1.5} sx={{ fontSize: "0.9em", opacity: 0.7 }}>
-                            {manageResult === "sent" ? (
-                                "Check your email for a link."
-                            ) : manageResult === "failed" ? (
-                                "That did not go through. Try again in a minute."
-                            ) : (
-                                <Link
-                                    component={"button"}
-                                    onClick={onManage}
-                                    disabled={!validate(email)}
-                                    underline={validate(email) ? "hover" : "none"}
-                                    sx={{
-                                        color: "inherit",
-                                        fontSize: "inherit",
-                                        textAlign: "left",
-                                        cursor: validate(email) ? "pointer" : "default",
-                                        opacity: validate(email) ? 1 : 0.5
-                                    }}
-                                >
-                                    Already subscribed? Email me a cancel link.
-                                </Link>
-                            )}
-                        </Typography>
-                    )}
                     <DeliveryAddressFields address={props.address} setAddress={props.setAddress} />
                 </Grid>
                 <Grid size={{ xs: 12, md: 6 }}>
@@ -615,6 +596,37 @@ const CompactCheckoutLayout = (props: {
                             </Box>
                         ))}
                     </Box>
+                    {props.subscription && (
+                        <Typography mt={1.5} sx={{ fontSize: "0.9em", opacity: 0.7 }}>
+                            {state.type === "success" &&
+                                `Renews monthly at ${state.checkout.total.total.amount} until you cancel. `}
+                            {manageResult === "sent" ? (
+                                "Check your email for a link."
+                            ) : manageResult === "failed" ? (
+                                "That did not go through. Try again in a minute."
+                            ) : (
+                                <Link
+                                    component={"span"}
+                                    role={"button"}
+                                    tabIndex={validate(email) ? 0 : -1}
+                                    aria-disabled={!validate(email)}
+                                    onClick={() => validate(email) && onManage()}
+                                    onKeyDown={(e) =>
+                                        e.key === "Enter" && validate(email) && onManage()
+                                    }
+                                    underline={validate(email) ? "hover" : "none"}
+                                    sx={{
+                                        color: "inherit",
+                                        fontSize: "inherit",
+                                        cursor: validate(email) ? "pointer" : "default",
+                                        opacity: validate(email) ? 1 : 0.5
+                                    }}
+                                >
+                                    Already subscribed? Email me a cancel link.
+                                </Link>
+                            )}
+                        </Typography>
+                    )}
                 </Grid>
             </Grid>
             <Typography variant={"h2"} mt={4} mb={2}>
