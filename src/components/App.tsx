@@ -11,6 +11,7 @@ import IceCream from "./ice-cream/IceCream";
 import MailingList from "./ice-cream/MailingList";
 import Unsubscribe from "./ice-cream/Unsubscribe";
 import Return from "./ice-cream/checkout/Return";
+import PrivacyPolicy from "./PrivacyPolicy";
 import RegisterFriend from "./RegisterFriend";
 import SpotifyCallback from "./SpotifyCallback";
 import Page, { LinksAndMenu } from "./app/Page";
@@ -132,6 +133,7 @@ const AppRoutes = () => {
                 <Route path="ice-cream/mailing-list/unsubscribe" element={<Unsubscribe />} />
                 <Route path="ice-cream/mailing-list" element={<MailingList />} />
                 <Route path="polaroid" element={<Polaroid />} />
+                <Route path="privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="register-friend" element={<RegisterFriend />} />
                 <Route path="spotify/callback" element={<SpotifyCallback />} />
             </Route>
