@@ -272,17 +272,10 @@ const CheckoutForm = ({
     const [message, setMessage] = useState<string | null>(null);
 
     const [isLoading, setIsLoading] = useState(false);
+    const [paymentComplete, setPaymentComplete] = useState(false);
 
     const state = useCheckout();
     const { flavors, loadFlavors } = useIceCreamCart();
-
-    const checkout = state.type === "success" ? state.checkout : null;
-    useEffect(() => {
-        if (subscription || !checkout || !isDeliverable(address)) {
-            return;
-        }
-        void checkout.updateBillingAddress(toStripeContact(address));
-    }, [subscription, !!checkout, address.line1, address.line2, address.postalCode]);
 
     useEffect(() => {
         void loadFlavors();
@@ -316,9 +309,14 @@ const CheckoutForm = ({
             return;
         }
 
-        const confirmResult = await state.checkout.confirm({
-            billingAddress: subscription ? undefined : toStripeContact(address)
-        });
+        const addressResult = await state.checkout.updateBillingAddress(toStripeContact(address));
+        if (addressResult.type === "error") {
+            setMessage(addressResult.error.message);
+            setIsLoading(false);
+            return;
+        }
+
+        const confirmResult = await state.checkout.confirm();
         if (confirmResult.type === "error") {
             setMessage(confirmResult.error.message);
         }
@@ -349,6 +347,8 @@ const CheckoutForm = ({
         message,
         address,
         setAddress,
+        paymentComplete,
+        setPaymentComplete,
         onSubmit
     };
     return priceIds.length > 2 ? (
@@ -413,27 +413,24 @@ const alreadySubscribed = async (email: string): Promise<boolean> => {
     }
 };
 
-const LoadingPaymentElement = (props: { accordion: boolean; billingAddress: boolean }) => {
+const LoadingPaymentElement = (props: {
+    accordion: boolean;
+    onComplete: (complete: boolean) => void;
+}) => {
     const [ready, setReady] = useState(false);
     return (
         <Box>
-            {!ready && (
-                <PaymentSkeleton
-                    accordion={props.accordion}
-                    billingAddress={props.billingAddress}
-                />
-            )}
+            {!ready && <PaymentSkeleton accordion={props.accordion} />}
             <Box sx={ready ? undefined : { height: 0, overflow: "hidden", visibility: "hidden" }}>
                 <PaymentElement
                     onReady={() => setReady(true)}
+                    onChange={(event) => props.onComplete(event.complete)}
                     options={{
                         layout: {
                             type: props.accordion ? "accordion" : "tabs",
                             defaultCollapsed: false
                         },
-                        fields: props.billingAddress
-                            ? undefined
-                            : { billingDetails: { address: "never" } }
+                        fields: { billingDetails: { address: "never" } }
                     }}
                 />
             </Box>
@@ -457,7 +454,7 @@ const SkeletonField = (props: { flex: number }) => (
     </Box>
 );
 
-const PaymentSkeleton = (props: { accordion: boolean; billingAddress: boolean }) => (
+const PaymentSkeleton = (props: { accordion: boolean }) => (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         {props.accordion ? (
             <SkeletonField flex={1} />
@@ -472,44 +469,8 @@ const PaymentSkeleton = (props: { accordion: boolean; billingAddress: boolean })
             <SkeletonField flex={1} />
             <SkeletonField flex={1} />
         </Box>
-        {props.billingAddress && (
-            <Box sx={{ display: "flex", gap: 1.5 }}>
-                <SkeletonField flex={1} />
-                <SkeletonField flex={1} />
-            </Box>
-        )}
     </Box>
 );
-
-const TaxRow = (props: { fontSize?: string }) => {
-    const theme = useTheme();
-    const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-    const state = useCheckout();
-    if (state.type !== "success") {
-        return null;
-    }
-    const ready = state.checkout.tax.status === "ready";
-    return (
-        <>
-            <Divider />
-            <Box
-                sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    gap: 2,
-                    alignItems: "center",
-                    py: smallScreen ? 1.5 : 2,
-                    opacity: 0.7
-                }}
-            >
-                <Typography sx={{ fontSize: props.fontSize }}>Tax</Typography>
-                <Typography sx={{ fontSize: props.fontSize, flexShrink: 0 }}>
-                    {ready ? state.checkout.total.taxExclusive.amount : "Calculated at payment"}
-                </Typography>
-            </Box>
-        </>
-    );
-};
 
 const lineItemAmount = (state: ReturnType<typeof useCheckout>, name: string): string => {
     if (state.type !== "success") {
@@ -526,6 +487,8 @@ const CompactCheckoutLayout = (props: {
     message: string | null;
     address: DeliveryAddress;
     setAddress: Dispatch<SetStateAction<DeliveryAddress>>;
+    paymentComplete: boolean;
+    setPaymentComplete: (complete: boolean) => void;
     onSubmit: (email: string) => void;
 }) => {
     const theme = useTheme();
@@ -593,12 +556,7 @@ const CompactCheckoutLayout = (props: {
                             )}
                         </Typography>
                     )}
-                    {!props.subscription && (
-                        <DeliveryAddressFields
-                            address={props.address}
-                            setAddress={props.setAddress}
-                        />
-                    )}
+                    <DeliveryAddressFields address={props.address} setAddress={props.setAddress} />
                 </Grid>
                 <Grid size={{ xs: 12, md: 6 }}>
                     <Typography variant={"h2"} mb={2}>
@@ -656,14 +614,13 @@ const CompactCheckoutLayout = (props: {
                                 {index < props.selectedFlavors.length - 1 && <Divider />}
                             </Box>
                         ))}
-                        <TaxRow />
                     </Box>
                 </Grid>
             </Grid>
             <Typography variant={"h2"} mt={4} mb={2}>
                 Payment
             </Typography>
-            <LoadingPaymentElement accordion={smallScreen} billingAddress={!!props.subscription} />
+            <LoadingPaymentElement accordion={smallScreen} onComplete={props.setPaymentComplete} />
             <Button
                 color={"primary"}
                 variant={"contained"}
@@ -673,8 +630,9 @@ const CompactCheckoutLayout = (props: {
                 disabled={
                     props.isLoading ||
                     state.type === "loading" ||
+                    !props.paymentComplete ||
                     !validate(email) ||
-                    (!props.subscription && !isDeliverable(props.address))
+                    !isDeliverable(props.address)
                 }
                 loading={props.isLoading || state.type === "loading"}
                 onClick={() => props.onSubmit(email)}
@@ -700,6 +658,8 @@ const SidebarCheckoutLayout = (props: {
     message: string | null;
     address: DeliveryAddress;
     setAddress: Dispatch<SetStateAction<DeliveryAddress>>;
+    paymentComplete: boolean;
+    setPaymentComplete: (complete: boolean) => void;
     onSubmit: (email: string) => void;
 }) => {
     const theme = useTheme();
@@ -736,7 +696,10 @@ const SidebarCheckoutLayout = (props: {
                     <Typography variant={"h2"} mt={4} mb={2}>
                         Payment
                     </Typography>
-                    <LoadingPaymentElement accordion={smallScreen} billingAddress={false} />
+                    <LoadingPaymentElement
+                        accordion={smallScreen}
+                        onComplete={props.setPaymentComplete}
+                    />
                     <Button
                         color={"primary"}
                         variant={"contained"}
@@ -746,6 +709,7 @@ const SidebarCheckoutLayout = (props: {
                         disabled={
                             props.isLoading ||
                             state.type === "loading" ||
+                            !props.paymentComplete ||
                             !validate(email) ||
                             !isDeliverable(props.address)
                         }
@@ -802,7 +766,6 @@ const SidebarCheckoutLayout = (props: {
                                 {index < props.selectedFlavors.length - 1 && <Divider />}
                             </Box>
                         ))}
-                        <TaxRow fontSize={"1.2rem"} />
                     </Box>
                 </Grid>
             </Grid>
