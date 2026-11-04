@@ -23,7 +23,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 };
 
 export const registerSubscriberOnMailingList = async (session: Stripe.Checkout.Session) => {
-    const email = session.customer_email ?? session.customer_details?.email;
+    const email = session.customer_details?.email ?? session.customer_email;
     if (!email) {
         return;
     }

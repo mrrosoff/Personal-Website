@@ -1,6 +1,11 @@
 import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import { decrementField, getEntireTable } from "../../aws/services/dynamodb";
-import { checkoutLineItem, siteUrlForEvent, stripeForEvent } from "../../stripe/environment";
+import {
+    checkoutLineItem,
+    isLocalTest,
+    siteUrlForEvent,
+    stripeForEvent
+} from "../../stripe/environment";
 import { authenticateHTTPAccessToken, UserType } from "../../auth";
 import { FLAVORS_TABLE, HttpResponseStatus, buildErrorResponse, buildResponse } from "../../common";
 import { sendOrderSuccessEmails } from "../email/sendEmail";
@@ -44,6 +49,10 @@ const handleFriendCheckout = async (
     priceIds: string[],
     customerName: string
 ): Promise<APIGatewayProxyResult> => {
+    if (isLocalTest(event)) {
+        return buildResponse(event, HttpResponseStatus.OK, { friendCheckout: true });
+    }
+
     const allFlavors = await getEntireTable(FLAVORS_TABLE);
     const selectedFlavors = allFlavors.filter((flavor) => priceIds.includes(flavor.priceId));
 

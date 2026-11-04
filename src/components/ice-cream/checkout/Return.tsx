@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, Link as RouterLink, useNavigate } from "react-router-dom";
 
 import { Box, Link, Typography, useMediaQuery, useTheme } from "@mui/material";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
@@ -36,7 +36,7 @@ const Return = () => {
                     body
                 );
                 setStatus(result.data.status);
-                setCustomerEmail(result.data.customer_email);
+                setCustomerEmail(result.data.customer_details?.email ?? result.data.customer_email);
             } catch (error) {
                 return navigate("/ice-cream");
             }
@@ -55,7 +55,6 @@ const Return = () => {
 };
 
 const OrderConfirmation = (props: { customerEmail: string | null }) => {
-    const navigate = useNavigate();
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -112,8 +111,7 @@ const OrderConfirmation = (props: { customerEmail: string | null }) => {
                 <Typography mt={4} align={smallScreen ? "center" : undefined}>
                     If you have any questions, please email{" "}
                     <Link
-                        component="button"
-                        onClick={() => navigate("mailto:help@maxrosoff.com")}
+                        href="mailto:help@maxrosoff.com"
                         underline="hover"
                         sx={{
                             cursor: "pointer",
@@ -129,11 +127,11 @@ const OrderConfirmation = (props: { customerEmail: string | null }) => {
                     </Link>
                     .
                 </Typography>
-                <Typography mt={2} align={smallScreen ? "center" : undefined}>
+                <Typography mt={0.5} align={smallScreen ? "center" : undefined}>
                     Or even better, head{" "}
                     <Link
-                        component="button"
-                        onClick={() => navigate("mailto:help@maxrosoff.com")}
+                        component={RouterLink}
+                        to="/ice-cream"
                         underline="hover"
                         sx={{
                             cursor: "pointer",

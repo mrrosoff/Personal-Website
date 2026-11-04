@@ -38,11 +38,12 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         return buildResponse(event, HttpResponseStatus.OK, { received: true });
     }
 
-    if (session.customer_email) {
+    const customerEmail = session.customer_details?.email ?? session.customer_email ?? undefined;
+    if (customerEmail) {
         const stripeName = session.customer_details?.name;
         const nameParts = stripeName?.split(" ");
         await registerNewMailingListUser({
-            email: session.customer_email,
+            email: customerEmail,
             firstName: nameParts?.[0],
             lastName: nameParts?.[1]
         });
@@ -53,7 +54,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 
     await sendOrderSuccessEmails({
         customerName: session.customer_details?.name ?? undefined,
-        customerEmail: session.customer_email ?? undefined,
+        customerEmail,
         shippingAddress: session.customer_details?.address ?? undefined,
         items: lineItems.data.map((item) => ({
             name: item.description ?? "Unknown Item",
