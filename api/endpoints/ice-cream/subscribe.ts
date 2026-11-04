@@ -16,6 +16,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     const stripe = new Stripe(stripeKeys["/website/stripe/api-key"]);
     const session = await stripe.checkout.sessions.create({
         ui_mode: "custom",
+        automatic_tax: { enabled: true },
         line_items: [{ price: stripeKeys["/website/stripe/subscription-price"], quantity: 1 }],
         mode: "subscription",
         return_url: `https://maxrosoff.com/ice-cream/checkout/return?sessionId={CHECKOUT_SESSION_ID}`

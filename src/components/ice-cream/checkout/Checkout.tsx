@@ -278,6 +278,14 @@ const CheckoutForm = ({
     const state = useCheckout();
     const { flavors, loadFlavors } = useIceCreamCart();
 
+    const checkout = state.type === "success" ? state.checkout : null;
+    useEffect(() => {
+        if (subscription || !checkout || !isDeliverable(address)) {
+            return;
+        }
+        void checkout.updateBillingAddress(toStripeContact(address));
+    }, [subscription, !!checkout, address.line1, address.line2, address.postalCode]);
+
     useEffect(() => {
         void loadFlavors();
     }, []);
@@ -529,6 +537,36 @@ const PaymentSkeleton = (props: { accordion: boolean; billingAddress: boolean })
     </Box>
 );
 
+const TaxRow = (props: { fontSize?: string }) => {
+    const theme = useTheme();
+    const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+    const state = useCheckout();
+    if (state.type !== "success") {
+        return null;
+    }
+    const ready = state.checkout.tax.status === "ready";
+    return (
+        <>
+            <Divider />
+            <Box
+                sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    gap: 2,
+                    alignItems: "center",
+                    py: smallScreen ? 1.5 : 2,
+                    opacity: 0.7
+                }}
+            >
+                <Typography sx={{ fontSize: props.fontSize }}>Tax</Typography>
+                <Typography sx={{ fontSize: props.fontSize, flexShrink: 0 }}>
+                    {ready ? state.checkout.total.taxExclusive.amount : "Calculated at payment"}
+                </Typography>
+            </Box>
+        </>
+    );
+};
+
 const lineItemAmount = (state: ReturnType<typeof useCheckout>, name: string): string => {
     if (state.type !== "success") {
         return "";
@@ -674,6 +712,7 @@ const CompactCheckoutLayout = (props: {
                                 {index < props.selectedFlavors.length - 1 && <Divider />}
                             </Box>
                         ))}
+                        <TaxRow />
                     </Box>
                 </Grid>
             </Grid>
@@ -819,6 +858,7 @@ const SidebarCheckoutLayout = (props: {
                                 {index < props.selectedFlavors.length - 1 && <Divider />}
                             </Box>
                         ))}
+                        <TaxRow fontSize={"1.2rem"} />
                     </Box>
                 </Grid>
             </Grid>
