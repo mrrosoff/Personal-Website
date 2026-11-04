@@ -1,7 +1,5 @@
 import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
-import Stripe from "stripe";
-
-import { getParameter } from "../../aws/services/parameterStore";
+import { stripeForEvent } from "../../stripe/environment";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
 
 type GetCheckoutSessionStatusPayload = {
@@ -13,7 +11,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Request Body");
     }
 
-    const stripe = new Stripe(await getParameter("/website/stripe/api-key"));
+    const stripe = await stripeForEvent(event);
     const payload: GetCheckoutSessionStatusPayload = JSON.parse(event.body);
 
     const session = await stripe.checkout.sessions.retrieve(payload.sessionId);

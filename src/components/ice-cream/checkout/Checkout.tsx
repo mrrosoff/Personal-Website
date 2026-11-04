@@ -32,7 +32,9 @@ import type { DatabaseFlavor } from "../../../../api/types";
 import { rainbowTextSx } from "../IceCream";
 
 const stripePublishableApiKey =
-    "pk_live_51SSn4jGZZEzkLsbifOmvMvPB5xo33fgFS19ejvNuOibMMPHFu3ixt00c2nbCn4EPiIXWXvJvH1t3AZLXJE3dIrKz00aPsF6Dt2";
+    import.meta.env.MODE === "development"
+        ? "pk_test_51UYDYnGe1b8yeIzK2MB5YOyWJXNE6OGW4qazbsCSHMVLPD2wR11ObTwtYOI8UaKEDClMmo8OwHm23EtyjrnyLDeV0087bqHmhc"
+        : "pk_live_51SSn4jGZZEzkLsbifOmvMvPB5xo33fgFS19ejvNuOibMMPHFu3ixt00c2nbCn4EPiIXWXvJvH1t3AZLXJE3dIrKz00aPsF6Dt2";
 const stripeLoader = loadStripe(stripePublishableApiKey);
 
 type DeliveryAddress = { line1: string; line2: string; postalCode: string };

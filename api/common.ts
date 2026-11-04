@@ -5,6 +5,8 @@ export const PASSKEY_CHALLENGES_TABLE = "website-passkey-challenges";
 export const PASSKEYS_TABLE = "website-passkeys";
 export const DEVICES_TABLE = "website-devices";
 
+export const LOCAL_ORIGIN = "http://localhost:3000";
+
 export const POLAROID_PHOTOS_BUCKET = "website-polaroid-photos";
 export const MAX_PHOTOS = 50;
 
@@ -32,7 +34,7 @@ export function buildResponse(
     statusCode: HttpResponseStatus,
     body: Record<string, any>
 ): APIGatewayProxyResult {
-    const alternativeAllowedOrigins = ["http://localhost:3000"];
+    const alternativeAllowedOrigins = [LOCAL_ORIGIN];
     const originHeader = event.headers?.Origin || event.headers?.origin;
     const otherOrigin = alternativeAllowedOrigins.find((origin) => origin === originHeader);
     return {

@@ -1,7 +1,7 @@
 import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import Stripe from "stripe";
 
-import { getParameter } from "../../aws/services/parameterStore";
+import { stripeForEvent } from "../../stripe/environment";
 import { HttpResponseStatus, buildErrorResponse, buildResponse } from "../../common";
 
 type SubscriptionStatusPayload = {
@@ -27,7 +27,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Email");
     }
 
-    const stripe = new Stripe(await getParameter("/website/stripe/api-key"));
+    const stripe = await stripeForEvent(event);
     return buildResponse(event, HttpResponseStatus.OK, {
         subscribed: await hasSubscription(stripe, email)
     });

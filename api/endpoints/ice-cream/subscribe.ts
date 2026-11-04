@@ -2,24 +2,22 @@ import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import Stripe from "stripe";
 
 import { decrementField, getEntireTable } from "../../aws/services/dynamodb";
-import { getParameters } from "../../aws/services/parameterStore";
+import { getParameter } from "../../aws/services/parameterStore";
+import { checkoutLineItem, siteUrlForEvent, stripeForEvent } from "../../stripe/environment";
 import { FLAVORS_TABLE, HttpResponseStatus, buildResponse } from "../../common";
 import type { DatabaseFlavor } from "../../types";
 import { registerNewMailingListUser } from "../email/register";
 import { sendOrderSuccessEmails } from "../email/sendEmail";
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
-    const stripeKeys = await getParameters(
-        "/website/stripe/api-key",
-        "/website/stripe/subscription-price"
-    );
-    const stripe = new Stripe(stripeKeys["/website/stripe/api-key"]);
+    const stripe = await stripeForEvent(event);
+    const subscriptionPrice = await getParameter("/website/stripe/subscription-price");
     const session = await stripe.checkout.sessions.create({
         ui_mode: "custom",
         automatic_tax: { enabled: true },
-        line_items: [{ price: stripeKeys["/website/stripe/subscription-price"], quantity: 1 }],
+        line_items: [await checkoutLineItem(event, subscriptionPrice)],
         mode: "subscription",
-        return_url: `https://maxrosoff.com/ice-cream/checkout/return?sessionId={CHECKOUT_SESSION_ID}`
+        return_url: `${siteUrlForEvent(event)}/ice-cream/checkout/return?sessionId={CHECKOUT_SESSION_ID}`
     });
     return buildResponse(event, HttpResponseStatus.OK, session);
 };
