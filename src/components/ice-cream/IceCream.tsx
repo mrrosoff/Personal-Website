@@ -1,4 +1,4 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link as RouterLink, useNavigate, useSearchParams } from "react-router-dom";
 
 import {
     Alert,
@@ -104,8 +104,8 @@ const IceCream = () => {
         <Typography mt={smallScreen ? 4 : -1}>
             Want to stay updated?{" "}
             <Link
-                component="button"
-                onClick={() => navigate("/ice-cream/mailing-list")}
+                component={RouterLink}
+                to="/ice-cream/mailing-list"
                 underline="hover"
                 sx={{
                     cursor: "pointer",
@@ -142,8 +142,8 @@ const IceCream = () => {
                     <>
                         priced at $6 per pint, or{" "}
                         <Link
-                            component="button"
-                            onClick={() => navigate("/ice-cream/checkout?subscription=true")}
+                            component={RouterLink}
+                            to="/ice-cream/checkout?subscription=true"
                             underline="hover"
                             sx={{
                                 cursor: "pointer",
