@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-import { Box, Button, TextField, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Button, Typography, useMediaQuery, useTheme } from "@mui/material";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import axios, { isAxiosError } from "axios";
 import { validate } from "email-validator";
 
 import { API_URL } from "../App";
-``;
+import FormField, { emailProblem } from "../FormField";
 import icecreamImage from "../../images/ice-cream.webp";
 
 const Unsubscribe = () => {
@@ -59,21 +59,9 @@ const UnsubscribeForm = () => {
 
     const [email, setEmail] = useState("");
 
-    const [emailIsValid, setEmailIsValid] = useState(true);
     const [loading, setLoading] = useState(false);
     const [registerError, setRegisterError] = useState("");
     const [success, setSuccess] = useState(false);
-
-    useEffect(() => {
-        const isValid = !email || validate(email);
-        if (isValid) {
-            setEmailIsValid(true);
-            return;
-        }
-
-        const timeout = setTimeout(() => setEmailIsValid(false), 2500);
-        return () => clearTimeout(timeout);
-    }, [email]);
 
     return (
         <Box
@@ -82,15 +70,14 @@ const UnsubscribeForm = () => {
             justifyContent={"center"}
             sx={{ paddingTop: smallScreen ? 6 : 4 }}
         >
-            <TextField
+            <FormField
                 label="Email"
-                variant="filled"
                 type={"email"}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                error={!emailIsValid}
-                sx={{ mt: smallScreen ? 1 : 2, width: smallScreen ? 300 : 532 }}
-                slotProps={{ inputLabel: { shrink: !!email } }}
+                problem={emailProblem}
+                placeholder={"karl@fog.sf"}
+                sx={{ mt: smallScreen ? 1.5 : 2, width: smallScreen ? 300 : 532 }}
                 autoComplete="email"
             />
             <Button

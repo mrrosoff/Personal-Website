@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { browserSupportsWebAuthn, startRegistration, WebAuthnError } from "@simplewebauthn/browser";
 import axios from "axios";
 import { DateTime } from "luxon";
 
 import { API_URL } from "./App";
+import FormField, { emailProblem } from "./FormField";
 import { decodeToken } from "../auth";
 import { DeviceKind } from "../../api/types";
 
@@ -117,11 +118,14 @@ const RegisterForm = (props: { token: string; friendName: string }) => {
                     )}
                 </Typography>
             )}
-            <TextField
+            <FormField
                 type={"email"}
                 label={"Email"}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                problem={emailProblem}
+                placeholder={"karl@fog.sf"}
+                autoComplete="email"
                 sx={{ mt: 4, mb: 3, width: 320, maxWidth: "100%" }}
             />
             <Button

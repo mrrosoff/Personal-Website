@@ -1,4 +1,4 @@
-import { type Dispatch, type SetStateAction, useEffect, useId, useMemo, useState } from "react";
+import { type Dispatch, type SetStateAction, useEffect, useMemo, useState } from "react";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 
 import axios from "axios";
@@ -10,8 +10,6 @@ import {
     Grid,
     Link,
     Skeleton,
-    TextField,
-    type TextFieldProps,
     Typography,
     useMediaQuery,
     useTheme
@@ -26,6 +24,7 @@ import {
 import type { StripeCheckoutContact } from "@stripe/stripe-js";
 
 import { API_URL } from "../../App";
+import FormField, { emailProblem } from "../../FormField";
 import { decodeToken } from "../../../auth";
 import { useAppContext } from "../../AppContext";
 import { useIceCreamCart } from "../IceCreamCartContext";
@@ -38,7 +37,6 @@ const stripeLoader = loadStripe(stripePublishableApiKey);
 
 type DeliveryAddress = { line1: string; line2: string; postalCode: string };
 
-const emailProblem = (email: string) => (validate(email) ? null : "Enter a valid email.");
 const streetProblem = (street: string) =>
     /^\d+\s+\S/.test(street.trim()) ? null : "Enter a street address, like 1 Ferry Building.";
 const zipProblem = (zip: string) => {
@@ -191,7 +189,7 @@ const FriendCheckoutForm = ({
                     <Typography variant={"h2"} mb={2}>
                         Contact Info
                     </Typography>
-                    <CheckoutField
+                    <FormField
                         label={"Email"}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -368,7 +366,7 @@ const DeliveryAddressFields = (props: {
     return (
         <Grid container spacing={1.5} sx={{ mt: 1.5 }}>
             <Grid size={12}>
-                <CheckoutField
+                <FormField
                     label={"Street Address"}
                     autoComplete={"address-line1"}
                     value={address.line1}
@@ -378,7 +376,7 @@ const DeliveryAddressFields = (props: {
                 />
             </Grid>
             <Grid size={6}>
-                <CheckoutField
+                <FormField
                     label={"Apt / Unit"}
                     autoComplete={"address-line2"}
                     value={address.line2}
@@ -387,7 +385,7 @@ const DeliveryAddressFields = (props: {
                 />
             </Grid>
             <Grid size={6}>
-                <CheckoutField
+                <FormField
                     label={"ZIP"}
                     autoComplete={"postal-code"}
                     value={address.postalCode}
@@ -403,60 +401,6 @@ const DeliveryAddressFields = (props: {
                 />
             </Grid>
         </Grid>
-    );
-};
-
-const CheckoutField = ({
-    label,
-    problem,
-    error,
-    helperText,
-    ...props
-}: TextFieldProps & { label: string; problem?: (value: string) => string | null }) => {
-    const id = useId();
-    const value = String(props.value ?? "");
-    const [settledValue, setSettledValue] = useState(value);
-
-    useEffect(() => {
-        const timeout = setTimeout(() => setSettledValue(value), 600);
-        return () => clearTimeout(timeout);
-    }, [value]);
-
-    const settledProblem = value && value === settledValue ? problem?.(value) : null;
-    return (
-        <Box>
-            <Typography
-                component={"label"}
-                htmlFor={id}
-                sx={{ display: "block", fontSize: 18, lineHeight: 1.2, opacity: 0.7, mb: 0.75 }}
-            >
-                {label}
-            </Typography>
-            <TextField
-                {...props}
-                id={id}
-                error={error || !!settledProblem}
-                helperText={helperText || settledProblem}
-                fullWidth
-                sx={{
-                    "& .MuiOutlinedInput-root": {
-                        backgroundColor: "#1C1C1E",
-                        borderRadius: "4px",
-                        fontSize: 22,
-                        color: "#F9F9F9",
-                        "& fieldset": { borderColor: "rgba(255,255,255,0.5)" },
-                        "&:hover fieldset": { borderColor: "rgba(255,255,255,0.5)" },
-                        "&.Mui-focused fieldset": { borderColor: "#F9F9F9", borderWidth: 1 }
-                    },
-                    "& .MuiOutlinedInput-input": { padding: "9px 12px" },
-                    "& .MuiOutlinedInput-input::placeholder": {
-                        color: "rgba(255,255,255,0.4)",
-                        opacity: 1
-                    },
-                    "& .MuiFormHelperText-root": { fontSize: 18, mx: 0 }
-                }}
-            />
-        </Box>
     );
 };
 
@@ -615,7 +559,7 @@ const CompactCheckoutLayout = (props: {
                     <Typography variant={"h2"} mb={2}>
                         Contact Info
                     </Typography>
-                    <CheckoutField
+                    <FormField
                         label={"Email"}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -779,7 +723,7 @@ const SidebarCheckoutLayout = (props: {
                     <Typography variant={"h2"} mb={2}>
                         Contact Info
                     </Typography>
-                    <CheckoutField
+                    <FormField
                         label={"Email"}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}

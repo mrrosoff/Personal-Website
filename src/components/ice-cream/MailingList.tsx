@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-import { Box, Button, TextField, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Button, Typography, useMediaQuery, useTheme } from "@mui/material";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import axios, { isAxiosError } from "axios";
 import { validate } from "email-validator";
@@ -8,6 +8,7 @@ import { validate } from "email-validator";
 import type { MailingListRegistration } from "../../../api/types";
 import icecreamImage from "../../images/ice-cream.webp";
 import { API_URL } from "../App";
+import FormField, { emailProblem } from "../FormField";
 
 export const registerMailingListUser = async (registration: MailingListRegistration) => {
     const { data } = await axios.post(`${API_URL}/email/register`, {
@@ -71,21 +72,9 @@ const MailingListForm = () => {
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
 
-    const [emailIsValid, setEmailIsValid] = useState(true);
     const [loading, setLoading] = useState(false);
     const [registerError, setRegisterError] = useState("");
     const [success, setSuccess] = useState(false);
-
-    useEffect(() => {
-        const isValid = !email || validate(email);
-        if (isValid) {
-            setEmailIsValid(true);
-            return;
-        }
-
-        const timeout = setTimeout(() => setEmailIsValid(false), 2500);
-        return () => clearTimeout(timeout);
-    }, [email]);
 
     return (
         <Box
@@ -99,38 +88,35 @@ const MailingListForm = () => {
                 flexDirection={smallScreen ? "column" : "row"}
                 alignItems={smallScreen ? "center" : undefined}
             >
-                <TextField
+                <FormField
                     label="First Name"
-                    variant="filled"
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
+                    placeholder={"Karl"}
                     sx={{ width: smallScreen ? 300 : 250 }}
-                    slotProps={{ inputLabel: { shrink: !!firstName } }}
                     autoComplete="given-name"
                 />
-                <TextField
+                <FormField
                     label="Last Name"
-                    variant="filled"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
+                    placeholder={"The Fog"}
                     sx={{
                         ml: smallScreen ? 0 : 4,
-                        mt: smallScreen ? 1 : 0,
+                        mt: smallScreen ? 1.5 : 0,
                         width: smallScreen ? 300 : 250
                     }}
-                    slotProps={{ inputLabel: { shrink: !!lastName } }}
                     autoComplete="family-name"
                 />
             </Box>
-            <TextField
+            <FormField
                 label="Email"
-                variant="filled"
                 type={"email"}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                error={!emailIsValid}
-                sx={{ mt: smallScreen ? 1 : 2, width: smallScreen ? 300 : 532 }}
-                slotProps={{ inputLabel: { shrink: !!email } }}
+                problem={emailProblem}
+                placeholder={"karl@fog.sf"}
+                sx={{ mt: smallScreen ? 1.5 : 2, width: smallScreen ? 300 : 532 }}
                 autoComplete="email"
             />
             <Button
