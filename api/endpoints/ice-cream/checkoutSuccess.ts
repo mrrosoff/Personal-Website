@@ -38,6 +38,12 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         return buildResponse(event, HttpResponseStatus.OK, { received: true });
     }
 
+    const paymentIntentId = session.payment_intent as string;
+    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+    if (paymentIntent.metadata.fulfilled) {
+        return buildResponse(event, HttpResponseStatus.OK, { received: true });
+    }
+
     const customerEmail = session.customer_details?.email ?? session.customer_email ?? undefined;
     if (customerEmail) {
         const stripeName = session.customer_details?.name;
@@ -52,16 +58,6 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
     const productIds = lineItems.data.map((item) => item.price?.product as string);
 
-    await sendOrderSuccessEmails({
-        customerName: session.customer_details?.name ?? undefined,
-        customerEmail,
-        shippingAddress: session.customer_details?.address ?? undefined,
-        items: lineItems.data.map((item) => ({
-            name: item.description ?? "Unknown Item",
-            quantity: item.quantity ?? 1
-        }))
-    });
-
     const decrementResults = await Promise.all(
         productIds.map(async (productId) => {
             const updated = await decrementField(FLAVORS_TABLE, productId, "count");
@@ -75,6 +71,25 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     if (oversoldProductIds.length > 0) {
         await processCheckoutOversold(stripe, session, lineItems.data, oversoldProductIds);
     }
+
+    const keptItems = lineItems.data.filter(
+        (item) => !oversoldProductIds.includes(item.price?.product as string)
+    );
+    if (keptItems.length > 0) {
+        await sendOrderSuccessEmails({
+            customerName: session.customer_details?.name ?? undefined,
+            customerEmail,
+            shippingAddress: session.customer_details?.address ?? undefined,
+            items: keptItems.map((item) => ({
+                name: item.description ?? "Unknown Item",
+                quantity: item.quantity ?? 1
+            }))
+        });
+    }
+
+    await stripe.paymentIntents.update(paymentIntentId, {
+        metadata: { fulfilled: "true" }
+    });
 
     return buildResponse(event, HttpResponseStatus.OK, { received: true });
 };

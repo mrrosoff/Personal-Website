@@ -69,10 +69,15 @@ const Checkout = () => {
     const priceIdsArray = priceIdsString.split(",").filter(Boolean);
     const isSubscription = searchParams.get("subscription") === "true";
     const fetchClientSecret = useMemo(async () => {
-        const result = isSubscription
-            ? await axios.post(`${API_URL}/ice-cream/subscribe`, {})
-            : await axios.post(`${API_URL}/ice-cream/checkout?priceIds=${priceIdsString}`);
-        return result.data.client_secret;
+        try {
+            const result = isSubscription
+                ? await axios.post(`${API_URL}/ice-cream/subscribe`, {})
+                : await axios.post(`${API_URL}/ice-cream/checkout?priceIds=${priceIdsString}`);
+            return result.data.client_secret;
+        } catch (error) {
+            const message = axios.isAxiosError(error) && error.response?.data?.message;
+            throw message ? new Error(message) : error;
+        }
     }, [priceIdsString, isSubscription]);
 
     if (!isSubscription && (!priceIdsString || priceIdsArray.length === 0)) {

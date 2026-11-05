@@ -73,7 +73,7 @@ type OrderItem = {
 };
 
 export async function sendOrderSuccessEmails({
-    notifyCustomer = true,
+    notifyCustomer = false,
     ...params
 }: {
     customerName?: string;

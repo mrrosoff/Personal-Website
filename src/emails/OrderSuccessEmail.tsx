@@ -295,7 +295,7 @@ const Footer = () => {
                                 color: "rgb(107,114,128)"
                             }}
                         >
-                            San Fransisco, CA 94114
+                            San Francisco, CA 94114
                         </Text>
                         <Text
                             style={{

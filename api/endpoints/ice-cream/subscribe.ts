@@ -37,7 +37,8 @@ export const registerSubscriberOnMailingList = async (session: Stripe.Checkout.S
 
 export const fulfillSubscriptionMonth = async (stripe: Stripe, invoice: Stripe.Invoice) => {
     const fulfilledMetadataKey = "fulfilledFlavors";
-    if (invoice.metadata?.[fulfilledMetadataKey]) {
+    const currentInvoice = await stripe.invoices.retrieve(invoice.id!);
+    if (currentInvoice.metadata?.[fulfilledMetadataKey]) {
         return;
     }
 
@@ -60,8 +61,8 @@ export const fulfillSubscriptionMonth = async (stripe: Stripe, invoice: Stripe.I
     await sendOrderSuccessEmails({
         customerName,
         customerEmail,
-        items: picked.map((flavor) => ({ name: flavor.name, quantity: 1 })),
-        notifyCustomer: false
+        shippingAddress: invoice.customer_address ?? undefined,
+        items: picked.map((flavor) => ({ name: flavor.name, quantity: 1 }))
     });
 };
 
