@@ -139,10 +139,10 @@ const MailingListForm = () => {
                         await registerMailingListUser({ firstName, lastName, email });
                         setSuccess(true);
                     } catch (error: unknown) {
-                        if (isAxiosError(error)) {
-                            setRegisterError(error.response?.data);
-                        }
-                        setRegisterError("Something Unexpected Happened...");
+                        setRegisterError(
+                            (isAxiosError(error) && error.response?.data?.message) ||
+                                "Something Unexpected Happened..."
+                        );
                     }
                     setLoading(false);
                 }}

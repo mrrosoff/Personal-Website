@@ -68,7 +68,7 @@ const getUpcomingFlavorStyles = () => {
 
 const IceCream = () => {
     const navigate = useNavigate();
-    const [params, _] = useSearchParams();
+    const [params] = useSearchParams();
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
     const {
@@ -125,12 +125,7 @@ const IceCream = () => {
     );
 
     return (
-        <Box
-            display={"flex"}
-            flexDirection={"column"}
-            alignItems={smallScreen ? undefined : undefined}
-            pb={4}
-        >
+        <Box display={"flex"} flexDirection={"column"} pb={4}>
             <Typography variant="h1">Max's Freezer Stash</Typography>
             <Typography mt={smallScreen ? 2 : undefined}>
                 High quality. Small batch. Creative flavors{" "}
@@ -245,12 +240,7 @@ export const CurrentFlavors = (props: {
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
     return (
-        <Box
-            display={"flex"}
-            flexDirection={"column"}
-            alignItems={smallScreen ? undefined : undefined}
-            sx={{ paddingTop: smallScreen ? 4 : 2.5 }}
-        >
+        <Box display={"flex"} flexDirection={"column"} sx={{ paddingTop: smallScreen ? 4 : 2.5 }}>
             <Typography variant="h2">Current Flavors</Typography>
             <Typography>Our current rotation of flavors.</Typography>
             <Grid
@@ -326,12 +316,7 @@ export const LastBatch = (props: {
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
     return (
-        <Box
-            display={"flex"}
-            flexDirection={"column"}
-            alignItems={smallScreen ? undefined : undefined}
-            sx={{ paddingTop: smallScreen ? 4 : 2.5 }}
-        >
+        <Box display={"flex"} flexDirection={"column"} sx={{ paddingTop: smallScreen ? 4 : 2.5 }}>
             <Typography variant="h2">Last Batch</Typography>
             <Typography>Get them before they are gone! Limited quantities available.</Typography>
             <Grid
@@ -401,12 +386,7 @@ export const Schedule = (props: { flavors: DatabaseFlavor[]; isLoading: boolean 
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
     return (
-        <Box
-            display={"flex"}
-            flexDirection={"column"}
-            alignItems={smallScreen ? undefined : undefined}
-            sx={{ paddingTop: smallScreen ? 4 : 2.5 }}
-        >
+        <Box display={"flex"} flexDirection={"column"} sx={{ paddingTop: smallScreen ? 4 : 2.5 }}>
             <Typography variant="h2">Whats Coming Up...</Typography>
             <Typography>
                 The following is a list of possible upcoming flavors. Actual availability may vary

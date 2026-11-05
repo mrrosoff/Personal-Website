@@ -60,7 +60,7 @@ const RegisterForm = (props: { token: string; friendName: string }) => {
         void loadDevices();
     }, [props.token]);
 
-    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+    const isValidEmail = !emailProblem(email.trim());
 
     const handleRegister = async () => {
         if (!isValidEmail) {

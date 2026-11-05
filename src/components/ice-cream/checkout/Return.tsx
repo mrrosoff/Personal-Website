@@ -149,11 +149,11 @@ const OrderConfirmation = (props: { customerEmail: string | null }) => {
                     to buy more ice cream.
                 </Typography>
             </Box>
-            <Box height={smallScreen ? 320 : 320} overflow="hidden">
+            <Box height={320} overflow="hidden">
                 <img
                     src={icecreamImage}
                     alt="Ice Cream"
-                    width={smallScreen ? 320 : 320}
+                    width={320}
                     style={{ transform: "rotate(15deg)" }}
                 />
             </Box>

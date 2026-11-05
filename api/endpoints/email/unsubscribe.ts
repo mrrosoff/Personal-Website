@@ -16,22 +16,11 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     const resendKeys = await getParameters("/website/resend/api-key", "/website/resend/audience");
     const resend = new Resend(resendKeys["/website/resend/api-key"]);
     const payload: UnsubscribePayload = JSON.parse(event.body);
-    const removed = await unsubscribeUser(
-        resend,
-        resendKeys["/website/resend/audience"],
-        payload.email
-    );
-    if (!removed) {
-        return buildResponse(event, HttpResponseStatus.OK, {});
-    }
+    await unsubscribeUser(resend, resendKeys["/website/resend/audience"], payload.email);
     return buildResponse(event, HttpResponseStatus.OK, {});
 };
 
-async function unsubscribeUser(
-    resend: Resend,
-    audienceId: string,
-    email: string
-): Promise<boolean> {
+async function unsubscribeUser(resend: Resend, audienceId: string, email: string): Promise<void> {
     const { data, error } = await resend.contacts.remove({
         audienceId: audienceId,
         email
@@ -39,5 +28,4 @@ async function unsubscribeUser(
     if (error || !data) {
         throw Error(`Error Unsubscribing Contact: ${error?.message}`);
     }
-    return data.deleted;
 }
