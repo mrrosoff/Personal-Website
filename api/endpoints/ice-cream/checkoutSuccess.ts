@@ -1,7 +1,7 @@
 import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import Stripe from "stripe";
 
-import { decrementField, incrementField } from "../../aws/services/dynamodb";
+import { decrementField, incrementField, updateItem } from "../../aws/services/dynamodb";
 import { getParameters } from "../../aws/services/parameterStore";
 import { FLAVORS_TABLE, HttpResponseStatus, buildErrorResponse, buildResponse } from "../../common";
 import { registerNewMailingListUser } from "../email/register";
@@ -61,7 +61,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     const decrementResults = await Promise.all(
         productIds.map(async (productId) => {
             const updated = await decrementField(FLAVORS_TABLE, productId, "count");
-            return { productId, newCount: updated.count };
+            return { productId, newCount: updated.count, type: updated.type };
         })
     );
     const oversoldProductIds = decrementResults
@@ -71,6 +71,12 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     if (oversoldProductIds.length > 0) {
         await processCheckoutOversold(stripe, session, lineItems.data, oversoldProductIds);
     }
+
+    await Promise.all(
+        decrementResults
+            .filter((result) => result.newCount === 0 && result.type === "lastBatch")
+            .map((result) => updateItem(FLAVORS_TABLE, result.productId, "type", null))
+    );
 
     const keptItems = lineItems.data.filter(
         (item) => !oversoldProductIds.includes(item.price?.product as string)
