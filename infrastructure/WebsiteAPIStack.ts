@@ -1,5 +1,13 @@
+import { globSync } from "node:fs";
+
 import { Duration, RemovalPolicy, Stack, type StackProps } from "aws-cdk-lib";
-import { Cors, EndpointType, LambdaIntegration, RestApi } from "aws-cdk-lib/aws-apigateway";
+import {
+    ContentHandling,
+    Cors,
+    EndpointType,
+    LambdaIntegration,
+    RestApi
+} from "aws-cdk-lib/aws-apigateway";
 import { Rule, Schedule } from "aws-cdk-lib/aws-events";
 import { LambdaFunction as LambdaTarget } from "aws-cdk-lib/aws-events-targets";
 import { Certificate, CertificateValidation } from "aws-cdk-lib/aws-certificatemanager";
@@ -15,7 +23,6 @@ import {
 import {
     ApplicationLogLevel,
     Code,
-    type FunctionProps,
     Function as LambdaFunction,
     LoggingFormat,
     Runtime,
@@ -39,6 +46,16 @@ import {
     PASSKEYS_TABLE,
     POLAROID_PHOTOS_BUCKET
 } from "../api/common";
+
+const ENDPOINTS = globSync("api/endpoints/*/*.{ts,tsx}")
+    .map((file) => file.replace(/^api\/|\.tsx?$/g, ""))
+    .filter((endpoint) => endpoint !== "endpoints/preview/preview");
+
+function routeForLambda(lambda: string): string {
+    return [...new Set(lambda.split("/").slice(1))]
+        .join("/")
+        .replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
+}
 
 class WebsiteAPIStack extends Stack {
     constructor(scope: Construct, id: string, props: StackProps) {
@@ -161,200 +178,21 @@ class WebsiteAPIStack extends Stack {
             endpointExportName: "WebsiteApiEndpoint"
         });
 
-        this.createAdminRoutes(api, apiRole);
-        this.createFriendsRoutes(api, apiRole);
-        this.createEmailRoutes(api, apiRole);
-        this.createJWKRoutes(api, apiRole);
-        this.createIceCreamRoutes(api, apiRole);
-        this.createSpotifyRoutes(api, apiRole);
-        this.createPolaroidRoutes(api, apiRole);
+        this.createLambdaRoutes(api, apiRole);
+        this.createPreviewRoute(api, apiRole);
         return api;
     }
 
-    private createAdminRoutes(api: RestApi, apiRole: Role) {
-        const provisionFlavorLambda = this.createProvisionFlavorLambda(apiRole);
-        const updateInventoryLambda = this.createUpdateInventoryLambda(apiRole);
-        const passkeyAuthOptionsLambda = this.createPasskeyAuthOptionsLambda(apiRole);
-        const passkeyAuthLambda = this.createPasskeyAuthLambda(apiRole);
-        const createFriendInviteLambda = this.createCreateFriendInviteLambda(apiRole);
-        const devicesLambda = this.createDevicesLambda(apiRole);
-
-        const adminResource = api.root.addResource("admin");
-        adminResource
-            .addResource("provision-flavor")
-            .addMethod("POST", new LambdaIntegration(provisionFlavorLambda));
-        adminResource
-            .addResource("update-inventory")
-            .addMethod("POST", new LambdaIntegration(updateInventoryLambda));
-        adminResource
-            .addResource("passkey-auth-options")
-            .addMethod("POST", new LambdaIntegration(passkeyAuthOptionsLambda));
-        adminResource
-            .addResource("passkey-auth")
-            .addMethod("POST", new LambdaIntegration(passkeyAuthLambda));
-        adminResource
-            .addResource("create-friend-invite")
-            .addMethod("POST", new LambdaIntegration(createFriendInviteLambda));
-        adminResource.addResource("devices").addMethod("GET", new LambdaIntegration(devicesLambda));
-    }
-
-    private createFriendsRoutes(api: RestApi, apiRole: Role) {
-        const passkeyRegisterOptionsLambda = this.createPasskeyRegisterOptionsLambda(apiRole);
-        const passkeyRegisterLambda = this.createPasskeyRegisterLambda(apiRole);
-        const suggestFlavorLambda = this.createSuggestFlavorLambda(apiRole);
-        const friendDevicesLambda = this.createFriendDevicesLambda(apiRole);
-
-        const friendsResource = api.root.addResource("friends");
-        friendsResource
-            .addResource("passkey-register-options")
-            .addMethod("POST", new LambdaIntegration(passkeyRegisterOptionsLambda));
-        friendsResource
-            .addResource("passkey-register")
-            .addMethod("POST", new LambdaIntegration(passkeyRegisterLambda));
-        friendsResource
-            .addResource("suggest-flavor")
-            .addMethod("POST", new LambdaIntegration(suggestFlavorLambda));
-        friendsResource
-            .addResource("devices")
-            .addMethod("GET", new LambdaIntegration(friendDevicesLambda));
-    }
-
-    private createEmailRoutes(api: RestApi, apiRole: Role) {
-        const receiveLambda = this.createReceiveLambda(apiRole);
-        const registerLambda = this.createRegisterLambda(apiRole);
-        const sendEmailLambda = this.createSendEmailLambda(apiRole);
-        const emailUnsubscribeLambda = this.createEmailUnsubscribeLambda(apiRole);
-
-        const emailResource = api.root.addResource("email");
-        emailResource
-            .addResource("receive")
-            .addMethod("POST", new LambdaIntegration(receiveLambda));
-        emailResource
-            .addResource("register")
-            .addMethod("POST", new LambdaIntegration(registerLambda));
-        emailResource
-            .addResource("send-email")
-            .addMethod("POST", new LambdaIntegration(sendEmailLambda));
-        emailResource
-            .addResource("unsubscribe")
-            .addMethod("POST", new LambdaIntegration(emailUnsubscribeLambda));
-    }
-
-    private createJWKRoutes(api: RestApi, apiRole: Role) {
-        const jwksLambda = this.createJWKLambda(apiRole);
-
-        const jwks = api.root.addResource("jwks");
-        jwks.addMethod("GET", new LambdaIntegration(jwksLambda));
-    }
-
-    private createIceCreamRoutes(api: RestApi, apiRole: Role) {
-        const inventoryLambda = this.createInventoryLambda(apiRole);
-        const checkoutLambda = this.createCheckoutLambda(apiRole);
-        const checkoutStatusLambda = this.createCheckoutStatusLambda(apiRole);
-        const checkoutSuccessLambda = this.createCheckoutSuccessLambda(apiRole);
-        const subscribeLambda = this.createSubscribeLambda(apiRole);
-        const iceCreamUnsubscribeLambda = this.createIceCreamUnsubscribeLambda(apiRole);
-        const subscriptionStatusLambda = this.createSubscriptionStatusLambda(apiRole);
-        const cancelSubscriptionLambda = this.createCancelSubscriptionLambda(apiRole);
-
-        const iceCreamResource = api.root.addResource("ice-cream");
-        iceCreamResource
-            .addResource("inventory")
-            .addMethod("POST", new LambdaIntegration(inventoryLambda));
-        iceCreamResource
-            .addResource("checkout")
-            .addMethod("POST", new LambdaIntegration(checkoutLambda));
-        iceCreamResource
-            .addResource("checkout-status")
-            .addMethod("POST", new LambdaIntegration(checkoutStatusLambda));
-        iceCreamResource
-            .addResource("checkout-success")
-            .addMethod("POST", new LambdaIntegration(checkoutSuccessLambda));
-        iceCreamResource
-            .addResource("subscribe")
-            .addMethod("POST", new LambdaIntegration(subscribeLambda));
-        iceCreamResource
-            .addResource("unsubscribe")
-            .addMethod("POST", new LambdaIntegration(iceCreamUnsubscribeLambda));
-        iceCreamResource
-            .addResource("subscription-status")
-            .addMethod("POST", new LambdaIntegration(subscriptionStatusLambda));
-        iceCreamResource
-            .addResource("cancel")
-            .addMethod("POST", new LambdaIntegration(cancelSubscriptionLambda));
-    }
-
-    private createSpotifyRoutes(api: RestApi, apiRole: Role) {
-        const spotifyConnectLambda = this.createSpotifyConnectLambda(apiRole);
-        const spotifyExchangeLambda = this.createSpotifyExchangeLambda(apiRole);
-        const spotifyTokenLambda = this.createSpotifyTokenLambda(apiRole);
-
-        const spotifyResource = api.root.addResource("spotify");
-        spotifyResource
-            .addResource("connect")
-            .addMethod("POST", new LambdaIntegration(spotifyConnectLambda));
-        spotifyResource
-            .addResource("exchange")
-            .addMethod("POST", new LambdaIntegration(spotifyExchangeLambda));
-        spotifyResource
-            .addResource("token")
-            .addMethod("GET", new LambdaIntegration(spotifyTokenLambda));
-    }
-
-    private createPolaroidRoutes(api: RestApi, apiRole: Role) {
-        const photoLambda = this.createPolaroidPhotoLambda(apiRole);
-        const photosLambda = this.createPolaroidPhotosLambda(apiRole);
-        const uploadLambda = this.createPolaroidUploadLambda(apiRole);
-        const removeLambda = this.createPolaroidRemoveLambda(apiRole);
-
-        const polaroidResource = api.root.addResource("polaroid");
-        polaroidResource
-            .addResource("photos")
-            .addMethod("GET", new LambdaIntegration(photosLambda));
-        polaroidResource
-            .addResource("upload")
-            .addMethod("POST", new LambdaIntegration(uploadLambda));
-        polaroidResource.addResource("photo").addMethod("POST", new LambdaIntegration(photoLambda));
-        polaroidResource
-            .addResource("remove")
-            .addMethod("POST", new LambdaIntegration(removeLambda));
-    }
-
-    private createSpotifyConnectLambda(role: Role): LambdaFunction {
-        const functionName = "website-spotify-connect";
-        return new LambdaFunction(this, "websiteSpotifyConnectLambda", {
-            functionName,
-            handler: "connect.handler",
-            code: Code.fromAsset("dist/lambda/spotify/connect"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
-    private createSpotifyExchangeLambda(role: Role): LambdaFunction {
-        const functionName = "website-spotify-exchange";
-        return new LambdaFunction(this, "websiteSpotifyExchangeLambda", {
-            functionName,
-            handler: "exchange.handler",
-            code: Code.fromAsset("dist/lambda/spotify/exchange"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
-    private createSpotifyTokenLambda(role: Role): LambdaFunction {
-        const functionName = "website-spotify-token";
-        return new LambdaFunction(this, "websiteSpotifyTokenLambda", {
-            functionName,
-            handler: "token.handler",
-            code: Code.fromAsset("dist/lambda/spotify/token"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
+    private createLambdaRoutes(api: RestApi, role: Role) {
+        for (const endpoint of ENDPOINTS) {
+            api.root
+                .resourceForPath(routeForLambda(endpoint))
+                .addMethod("ANY", new LambdaIntegration(this.createLambda(endpoint, role)));
+        }
     }
 
     private createSpotifyReauthSchedule(role: Role) {
-        const reminderLambda = this.createSpotifyReauthReminderLambda(role);
+        const reminderLambda = this.createLambda("jobs/spotify/reauthReminder", role);
         new Rule(this, "websiteSpotifyReauthReminderRule", {
             ruleName: "website-spotify-reauth-reminder",
             schedule: Schedule.rate(Duration.days(7)),
@@ -362,272 +200,14 @@ class WebsiteAPIStack extends Stack {
         });
     }
 
-    private createSpotifyReauthReminderLambda(role: Role): LambdaFunction {
-        const functionName = "website-spotify-reauth-reminder";
-        return new LambdaFunction(this, "websiteSpotifyReauthReminderLambda", {
+    private createLambda(lambda: string, role: Role): LambdaFunction {
+        const functionName = `website-${routeForLambda(lambda).replaceAll("/", "-")}`;
+        const id = `${functionName.replace(/-(\w)/g, (_, letter: string) => letter.toUpperCase())}Lambda`;
+        return new LambdaFunction(this, id, {
             functionName,
-            handler: "reauthReminder.handler",
-            code: Code.fromAsset("dist/lambda/spotify/reauthReminder"),
+            handler: `${lambda.split("/").at(-1)}.handler`,
+            code: Code.fromAsset(`dist/lambda/${lambda}`),
             runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
-    private createJWKLambda(role: Role): LambdaFunction {
-        const functionName = "website-jwks";
-        return new LambdaFunction(this, "websiteJWKsLambda", {
-            functionName,
-            handler: "jwks.handler",
-            code: Code.fromAsset("dist/lambda/jwks"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
-    private createInventoryLambda(role: Role): LambdaFunction {
-        const functionName = "website-inventory";
-        return new LambdaFunction(this, "websiteInventoryLambda", {
-            functionName,
-            handler: "inventory.handler",
-            code: Code.fromAsset("dist/lambda/ice-cream/inventory"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
-    private createCheckoutLambda(role: Role): LambdaFunction {
-        const functionName = "website-checkout";
-        return new LambdaFunction(this, "websiteCheckoutLambda", {
-            functionName,
-            handler: "checkout.handler",
-            code: Code.fromAsset("dist/lambda/ice-cream/checkout"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
-    private createSubscribeLambda(role: Role): LambdaFunction {
-        const functionName = "website-subscribe";
-        return new LambdaFunction(this, "websiteSubscribeLambda", {
-            functionName,
-            handler: "subscribe.handler",
-            code: Code.fromAsset("dist/lambda/ice-cream/subscribe"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
-    private createCancelSubscriptionLambda(role: Role): LambdaFunction {
-        const functionName = "website-cancel-subscription";
-        return new LambdaFunction(this, "websiteCancelSubscriptionLambda", {
-            functionName,
-            handler: "cancel.handler",
-            code: Code.fromAsset("dist/lambda/ice-cream/cancel"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
-    private createSubscriptionStatusLambda(role: Role): LambdaFunction {
-        const functionName = "website-subscription-status";
-        return new LambdaFunction(this, "websiteSubscriptionStatusLambda", {
-            functionName,
-            handler: "subscriptionStatus.handler",
-            code: Code.fromAsset("dist/lambda/ice-cream/subscriptionStatus"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
-    private createIceCreamUnsubscribeLambda(role: Role): LambdaFunction {
-        const functionName = "website-ice-cream-unsubscribe";
-        return new LambdaFunction(this, "websiteIceCreamUnsubscribeLambda", {
-            functionName,
-            handler: "unsubscribe.handler",
-            code: Code.fromAsset("dist/lambda/ice-cream/unsubscribe"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
-    private createCheckoutStatusLambda(role: Role): LambdaFunction {
-        const functionName = "website-checkout-status";
-        return new LambdaFunction(this, "websiteCheckoutStatusLambda", {
-            functionName,
-            handler: "checkoutStatus.handler",
-            code: Code.fromAsset("dist/lambda/ice-cream/checkoutStatus"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
-    private createCheckoutSuccessLambda(role: Role): LambdaFunction {
-        const functionName = "website-checkout-success";
-        return new LambdaFunction(this, "websiteCheckoutSuccessLambda", {
-            functionName,
-            handler: "checkoutSuccess.handler",
-            code: Code.fromAsset("dist/lambda/ice-cream/checkoutSuccess"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
-    private createReceiveLambda(role: Role): LambdaFunction {
-        const functionName = "website-receive";
-        return new LambdaFunction(this, "websiteReceiveLambda", {
-            functionName,
-            handler: "receive.handler",
-            code: Code.fromAsset("dist/lambda/email/receive"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
-    private createRegisterLambda(role: Role): LambdaFunction {
-        const functionName = "website-register";
-        return new LambdaFunction(this, "websiteRegisterLambda", {
-            functionName,
-            handler: "register.handler",
-            code: Code.fromAsset("dist/lambda/email/register"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
-    private createSendEmailLambda(role: Role): LambdaFunction {
-        const functionName = "website-send-email";
-        return new LambdaFunction(this, "websiteSendEmailLambda", {
-            functionName,
-            handler: "sendEmail.handler",
-            code: Code.fromAsset("dist/lambda/email/sendEmail"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
-    private createEmailUnsubscribeLambda(role: Role): LambdaFunction {
-        const functionName = "website-email-unsubscribe";
-        return new LambdaFunction(this, "websiteEmailUnsubscribeLambda", {
-            functionName,
-            handler: "unsubscribe.handler",
-            code: Code.fromAsset("dist/lambda/email/unsubscribe"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
-    private createProvisionFlavorLambda(role: Role): LambdaFunction {
-        const functionName = "website-provision-flavor";
-        return new LambdaFunction(this, "websiteProvisionFlavorLambda", {
-            functionName,
-            handler: "provisionFlavor.handler",
-            code: Code.fromAsset("dist/lambda/admin/provisionFlavor"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
-    private createUpdateInventoryLambda(role: Role): LambdaFunction {
-        const functionName = "website-update-inventory";
-        return new LambdaFunction(this, "websiteUpdateInventoryLambda", {
-            functionName,
-            handler: "updateInventory.handler",
-            code: Code.fromAsset("dist/lambda/admin/updateInventory"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
-    private createPasskeyRegisterOptionsLambda(role: Role): LambdaFunction {
-        const functionName = "website-passkey-register-options";
-        return new LambdaFunction(this, "websitePasskeyRegisterOptionsLambda", {
-            functionName,
-            handler: "passkeyRegisterOptions.handler",
-            code: Code.fromAsset("dist/lambda/friends/passkeyRegisterOptions"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
-    private createPasskeyRegisterLambda(role: Role): LambdaFunction {
-        const functionName = "website-passkey-register";
-        return new LambdaFunction(this, "websitePasskeyRegisterLambda", {
-            functionName,
-            handler: "passkeyRegister.handler",
-            code: Code.fromAsset("dist/lambda/friends/passkeyRegister"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
-    private createSuggestFlavorLambda(role: Role): LambdaFunction {
-        const functionName = "website-suggest-flavor";
-        return new LambdaFunction(this, "websiteSuggestFlavorLambda", {
-            functionName,
-            handler: "suggestFlavor.handler",
-            code: Code.fromAsset("dist/lambda/friends/suggestFlavor"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
-    private createFriendDevicesLambda(role: Role): LambdaFunction {
-        const functionName = "website-friend-devices";
-        return new LambdaFunction(this, "websiteFriendDevicesLambda", {
-            functionName,
-            handler: "devices.handler",
-            code: Code.fromAsset("dist/lambda/friends/devices"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
-    private createPasskeyAuthOptionsLambda(role: Role): LambdaFunction {
-        const functionName = "website-passkey-auth-options";
-        return new LambdaFunction(this, "websitePasskeyAuthOptionsLambda", {
-            functionName,
-            handler: "passkeyAuthOptions.handler",
-            code: Code.fromAsset("dist/lambda/admin/passkeyAuthOptions"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
-    private createPasskeyAuthLambda(role: Role): LambdaFunction {
-        const functionName = "website-passkey-auth";
-        return new LambdaFunction(this, "websitePasskeyAuthLambda", {
-            functionName,
-            handler: "passkeyAuth.handler",
-            code: Code.fromAsset("dist/lambda/admin/passkeyAuth"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
-    private createCreateFriendInviteLambda(role: Role): LambdaFunction {
-        const functionName = "website-create-friend-invite";
-        return new LambdaFunction(this, "websiteCreateFriendInviteLambda", {
-            functionName,
-            handler: "createFriendInvite.handler",
-            code: Code.fromAsset("dist/lambda/admin/createFriendInvite"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
-    private createDevicesLambda(role: Role): LambdaFunction {
-        const functionName = "website-admin-devices";
-        return new LambdaFunction(this, "websiteAdminDevicesLambda", {
-            functionName,
-            handler: "devices.handler",
-            code: Code.fromAsset("dist/lambda/admin/devices"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
-    private createLambdaParams(functionName: string, role: Role): Partial<FunctionProps> {
-        return {
             role,
             memorySize: 2048,
             timeout: Duration.seconds(29),
@@ -641,53 +221,35 @@ class WebsiteAPIStack extends Stack {
             applicationLogLevelV2: ApplicationLogLevel.WARN,
             systemLogLevelV2: SystemLogLevel.WARN,
             environment: { NODE_ENV: "production", NODE_OPTIONS: "--enable-source-maps" }
-        };
-    }
-
-    private createPolaroidPhotoLambda(role: Role): LambdaFunction {
-        const functionName = "website-polaroid-photo";
-        return new LambdaFunction(this, "websitePolaroidPhotoLambda", {
-            functionName,
-            handler: "photo.handler",
-            code: Code.fromAsset("dist/lambda/polaroid/photo"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role),
-            timeout: Duration.seconds(10)
         });
     }
 
-    private createPolaroidPhotosLambda(role: Role): LambdaFunction {
-        const functionName = "website-polaroid-photos";
-        return new LambdaFunction(this, "websitePolaroidPhotosLambda", {
-            functionName,
-            handler: "photos.handler",
-            code: Code.fromAsset("dist/lambda/polaroid/photos"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role),
-            timeout: Duration.seconds(10)
-        });
-    }
+    private createPreviewRoute(api: RestApi, role: Role) {
+        const previewLambda = this.createLambda("endpoints/preview/preview", role);
 
-    private createPolaroidUploadLambda(role: Role): LambdaFunction {
-        const functionName = "website-polaroid-upload";
-        return new LambdaFunction(this, "websitePolaroidUploadLambda", {
-            functionName,
-            handler: "upload.handler",
-            code: Code.fromAsset("dist/lambda/polaroid/upload"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
-    }
-
-    private createPolaroidRemoveLambda(role: Role): LambdaFunction {
-        const functionName = "website-polaroid-remove";
-        return new LambdaFunction(this, "websitePolaroidRemoveLambda", {
-            functionName,
-            handler: "remove.handler",
-            code: Code.fromAsset("dist/lambda/polaroid/remove"),
-            runtime: Runtime.NODEJS_22_X,
-            ...this.createLambdaParams(functionName, role)
-        });
+        api.root.addResource("preview.png").addMethod(
+            "GET",
+            new LambdaIntegration(previewLambda, {
+                proxy: false,
+                integrationResponses: [
+                    {
+                        statusCode: "200",
+                        contentHandling: ContentHandling.CONVERT_TO_BINARY,
+                        responseParameters: {
+                            "method.response.header.Content-Type": "'image/png'"
+                        }
+                    }
+                ]
+            }),
+            {
+                methodResponses: [
+                    {
+                        statusCode: "200",
+                        responseParameters: { "method.response.header.Content-Type": true }
+                    }
+                ]
+            }
+        );
     }
 
     private createAPILambdaRole(...tables: Table[]): Role {

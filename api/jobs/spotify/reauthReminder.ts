@@ -6,7 +6,7 @@ import SpotifyReauthEmail from "../../../src/emails/SpotifyReauthEmail";
 import { getEntireTable } from "../../aws/services/dynamodb";
 import { getParameter } from "../../aws/services/parameterStore";
 import { type DatabasePasskey, DeviceKind } from "../../types";
-import { refreshTokenSetAtParam } from "./exchange";
+import { refreshTokenSetAtParam } from "../../endpoints/spotify/exchange";
 
 const TOKEN_LIFETIME = Duration.fromObject({ months: 6 });
 const REMINDER_LEAD = Duration.fromObject({ days: 14 });

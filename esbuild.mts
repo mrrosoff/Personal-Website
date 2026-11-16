@@ -1,105 +1,31 @@
+import { globSync } from "node:fs";
+
 import esbuild, { type BuildOptions } from "esbuild";
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
-async function buildLambdaFunction(entrypoint: string, directory: string, watch = false) {
-    const targetOptions: BuildOptions = { platform: "node", target: "node22" };
-    // sourcesContent: false drops the original source text from the .map, which
-    // is most of its bytes. Stack traces still resolve to file, line and column
-    // under --enable-source-maps; you just lose the snippet inline.
-    const bundleOptions: BuildOptions = { bundle: true, sourcemap: true, sourcesContent: false };
-    const productionOptions: BuildOptions = {
-        minify: true,
-        treeShaking: true,
-        legalComments: "none"
-    };
-    const options: BuildOptions = {
-        entryPoints: [entrypoint],
-        outdir: directory,
-        ...targetOptions,
-        ...bundleOptions,
-        ...(!isDevelopment && productionOptions)
-    };
-    const build = watch ? esbuild.context : esbuild.build;
-    return await build(options);
-}
+const entryOptions: BuildOptions = {
+    entryPoints: globSync("api/{endpoints,jobs}/*/*.{ts,tsx}"),
+    outbase: "api",
+    outdir: "dist/lambda",
+    entryNames: "[dir]/[name]/[name]"
+};
+const targetOptions: BuildOptions = { platform: "node", target: "node22" };
+const bundleOptions: BuildOptions = {
+    bundle: true,
+    sourcemap: true,
+    sourcesContent: false,
+    loader: { ".ttf": "base64", ".png": "base64", ".jpg": "base64" }
+};
+const productionOptions: BuildOptions = {
+    minify: true,
+    treeShaking: true,
+    legalComments: "none"
+};
 
-await buildLambdaFunction(
-    "api/endpoints/ice-cream/inventory.ts",
-    "dist/lambda/ice-cream/inventory"
-);
-await buildLambdaFunction("api/endpoints/ice-cream/checkout.ts", "dist/lambda/ice-cream/checkout");
-await buildLambdaFunction(
-    "api/endpoints/ice-cream/checkoutStatus.ts",
-    "dist/lambda/ice-cream/checkoutStatus"
-);
-await buildLambdaFunction(
-    "api/endpoints/ice-cream/checkoutSuccess.ts",
-    "dist/lambda/ice-cream/checkoutSuccess"
-);
-await buildLambdaFunction(
-    "api/endpoints/ice-cream/subscribe.ts",
-    "dist/lambda/ice-cream/subscribe"
-);
-await buildLambdaFunction(
-    "api/endpoints/ice-cream/unsubscribe.ts",
-    "dist/lambda/ice-cream/unsubscribe"
-);
-await buildLambdaFunction(
-    "api/endpoints/ice-cream/subscriptionStatus.ts",
-    "dist/lambda/ice-cream/subscriptionStatus"
-);
-await buildLambdaFunction("api/endpoints/ice-cream/cancel.ts", "dist/lambda/ice-cream/cancel");
-
-await buildLambdaFunction("api/endpoints/email/receive.ts", "dist/lambda/email/receive");
-await buildLambdaFunction("api/endpoints/email/register.ts", "dist/lambda/email/register");
-await buildLambdaFunction("api/endpoints/email/sendEmail.ts", "dist/lambda/email/sendEmail");
-await buildLambdaFunction("api/endpoints/email/unsubscribe.ts", "dist/lambda/email/unsubscribe");
-
-await buildLambdaFunction("api/jwks/jwks.ts", "dist/lambda/jwks");
-
-await buildLambdaFunction(
-    "api/endpoints/admin/passkeyAuthOptions.ts",
-    "dist/lambda/admin/passkeyAuthOptions"
-);
-await buildLambdaFunction("api/endpoints/admin/passkeyAuth.ts", "dist/lambda/admin/passkeyAuth");
-await buildLambdaFunction(
-    "api/endpoints/admin/provisionFlavor.ts",
-    "dist/lambda/admin/provisionFlavor"
-);
-await buildLambdaFunction(
-    "api/endpoints/admin/updateInventory.ts",
-    "dist/lambda/admin/updateInventory"
-);
-await buildLambdaFunction(
-    "api/endpoints/admin/createFriendInvite.ts",
-    "dist/lambda/admin/createFriendInvite"
-);
-await buildLambdaFunction("api/endpoints/admin/devices.ts", "dist/lambda/admin/devices");
-
-await buildLambdaFunction(
-    "api/endpoints/friends/passkeyRegisterOptions.ts",
-    "dist/lambda/friends/passkeyRegisterOptions"
-);
-await buildLambdaFunction(
-    "api/endpoints/friends/passkeyRegister.ts",
-    "dist/lambda/friends/passkeyRegister"
-);
-await buildLambdaFunction(
-    "api/endpoints/friends/suggestFlavor.ts",
-    "dist/lambda/friends/suggestFlavor"
-);
-await buildLambdaFunction("api/endpoints/friends/devices.ts", "dist/lambda/friends/devices");
-
-await buildLambdaFunction("api/endpoints/spotify/connect.ts", "dist/lambda/spotify/connect");
-await buildLambdaFunction("api/endpoints/spotify/exchange.ts", "dist/lambda/spotify/exchange");
-await buildLambdaFunction("api/endpoints/spotify/token.ts", "dist/lambda/spotify/token");
-await buildLambdaFunction(
-    "api/endpoints/spotify/reauthReminder.ts",
-    "dist/lambda/spotify/reauthReminder"
-);
-
-await buildLambdaFunction("api/endpoints/polaroid/photo.ts", "dist/lambda/polaroid/photo");
-await buildLambdaFunction("api/endpoints/polaroid/photos.ts", "dist/lambda/polaroid/photos");
-await buildLambdaFunction("api/endpoints/polaroid/remove.ts", "dist/lambda/polaroid/remove");
-await buildLambdaFunction("api/endpoints/polaroid/upload.ts", "dist/lambda/polaroid/upload");
+await esbuild.build({
+    ...entryOptions,
+    ...targetOptions,
+    ...bundleOptions,
+    ...(!isDevelopment && productionOptions)
+});

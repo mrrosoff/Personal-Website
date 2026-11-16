@@ -2,7 +2,6 @@ import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
 
 import { Box, Grid, Typography, useMediaQuery, useTheme } from "@mui/material";
 
-import Logo from "../../../images/logo.webp";
 import { HAS_BOOTED_KEY, useAppContext } from "../../AppContext";
 
 type NetworkInformation = { type?: string; effectiveType?: string };
@@ -106,7 +105,7 @@ const Header = () => {
     return (
         <Grid container spacing={4}>
             <Grid>
-                <img src={Logo} alt={"Logo"} style={{ width: 100, height: 100 }} />
+                <img src="/images/logo.webp" alt={"Logo"} style={{ width: 100, height: 100 }} />
             </Grid>
             <Grid>
                 <Grid

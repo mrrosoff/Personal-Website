@@ -1,7 +1,7 @@
 import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import jose from "node-jose";
 
-import { HTTP_SUCCESS } from "../aws/common";
+import { HTTP_SUCCESS } from "../../aws/common";
 import keys from "./keys.json";
 
 async function jwksHandler(_req: APIGatewayEvent): Promise<APIGatewayProxyResult> {

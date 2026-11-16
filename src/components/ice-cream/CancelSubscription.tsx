@@ -7,7 +7,6 @@ import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { API_URL } from "../App";
 import { decodeToken, unexpiredToken } from "../../auth";
 import { UserType } from "../../../api/types";
-import icecreamImage from "../../images/ice-cream.webp";
 
 const CancelSubscription = () => {
     const theme = useTheme();
@@ -109,7 +108,7 @@ const CancelSubscription = () => {
             </Box>
             <Box height={smallScreen ? 150 : 250} overflow={"hidden"}>
                 <img
-                    src={icecreamImage}
+                    src="/images/ice-cream.webp"
                     alt="Ice Cream"
                     width={smallScreen ? 150 : 250}
                     style={{ transform: "rotate(15deg)" }}

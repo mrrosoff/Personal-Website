@@ -10,7 +10,6 @@ import { API_URL } from "../../App";
 import { decodeToken } from "../../../auth";
 import { useAppContext } from "../../AppContext";
 import type Stripe from "stripe";
-import icecreamImage from "../../../images/ice-cream.webp";
 
 const Return = () => {
     const navigate = useNavigate();
@@ -151,7 +150,7 @@ const OrderConfirmation = (props: { customerEmail: string | null }) => {
             </Box>
             <Box height={320} overflow="hidden">
                 <img
-                    src={icecreamImage}
+                    src="/images/ice-cream.webp"
                     alt="Ice Cream"
                     width={320}
                     style={{ transform: "rotate(15deg)" }}

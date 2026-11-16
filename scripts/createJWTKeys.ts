@@ -2,8 +2,8 @@
 
 /*
  * This script generates the key used to sign and verify JWTs for the
- * website API. The public half is written to api/jwks/keys.json and its id
- * to api/jwks/keyMapping.json, both safe to commit. Only the private scalar
+ * website API. The public half is written to api/endpoints/jwks/keys.json and its id
+ * to api/endpoints/jwks/keyMapping.json, both safe to commit. Only the private scalar
  * (the JWK "d") is stored, in the SSM SecureString /website/jwt/signing-key.
  *
  * Running this rotates the key: every token signed with the old key
@@ -28,12 +28,18 @@ async function createKeys() {
 
     const { d } = authenticationKey.toJSON(true) as { d: string };
     await putSecureParameter(SIGNING_KEY_PARAMETER, d);
-    await writeFile("./api/jwks/keys.json", JSON.stringify(keyStore.toJSON(), null, 4) + "\n");
+    await writeFile(
+        "./api/endpoints/jwks/keys.json",
+        JSON.stringify(keyStore.toJSON(), null, 4) + "\n"
+    );
 
     const keyMapping = {
         authentication: authenticationKey.kid
     };
-    await writeFile("./api/jwks/keyMapping.json", JSON.stringify(keyMapping, null, 4) + "\n");
+    await writeFile(
+        "./api/endpoints/jwks/keyMapping.json",
+        JSON.stringify(keyMapping, null, 4) + "\n"
+    );
 }
 
 void createKeys();

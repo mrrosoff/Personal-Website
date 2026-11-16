@@ -11,8 +11,6 @@ import TerminalEmbed from "./desktop/TerminalEmbed";
 import { useIceCreamCart } from "../ice-cream/IceCreamCartContext";
 import { useAppContext } from "../AppContext";
 
-import SmallProfile from "../../images/small-profile.webp";
-
 const Page = (props: {
     inputRef: RefObject<HTMLInputElement | null>;
     scrollContainerRef: RefObject<HTMLDivElement | null>;
@@ -51,7 +49,7 @@ export const LinksAndMenu = (props: {}) => {
             </Box>
             <Avatar
                 alt="Max Rosoff"
-                src={SmallProfile}
+                src="/images/small-profile.webp"
                 onClick={() => setOpen(!open)}
                 sx={{
                     width: 55,

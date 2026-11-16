@@ -7,7 +7,6 @@ import { validate } from "email-validator";
 
 import { API_URL } from "../App";
 import FormField, { emailProblem } from "../FormField";
-import icecreamImage from "../../images/ice-cream.webp";
 
 const Unsubscribe = () => {
     const theme = useTheme();
@@ -43,7 +42,7 @@ const Unsubscribe = () => {
             </Box>
             <Box height={smallScreen ? 150 : 250} overflow={"hidden"}>
                 <img
-                    src={icecreamImage}
+                    src="/images/ice-cream.webp"
                     alt="Ice Cream"
                     width={smallScreen ? 150 : 250}
                     style={{ transform: "rotate(15deg)" }}

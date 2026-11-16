@@ -11,8 +11,8 @@ import {
 } from "jsonwebtoken";
 import { JWK } from "node-jose";
 
-import keys from "./jwks/keys.json";
-import keyMapping from "./jwks/keyMapping.json";
+import keys from "./endpoints/jwks/keys.json";
+import keyMapping from "./endpoints/jwks/keyMapping.json";
 import { getParameter } from "./aws/services/parameterStore";
 
 import { type AccessToken, API_ENDPOINT_URL, type DeviceKind, UserType } from "./types";

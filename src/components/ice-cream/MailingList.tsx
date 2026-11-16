@@ -6,7 +6,6 @@ import axios, { isAxiosError } from "axios";
 import { validate } from "email-validator";
 
 import type { MailingListRegistration } from "../../../api/types";
-import icecreamImage from "../../images/ice-cream.webp";
 import { API_URL } from "../App";
 import FormField, { emailProblem } from "../FormField";
 
@@ -54,7 +53,7 @@ const MailingList = () => {
             </Box>
             <Box height={smallScreen ? 150 : 250} overflow={"hidden"}>
                 <img
-                    src={icecreamImage}
+                    src="/images/ice-cream.webp"
                     alt="Ice Cream"
                     width={smallScreen ? 150 : 250}
                     style={{ transform: "rotate(15deg)" }}

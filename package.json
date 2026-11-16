@@ -27,6 +27,7 @@
         "@aws-sdk/lib-dynamodb": "^3.914.0",
         "@aws-sdk/lib-storage": "^3.914.0",
         "@aws-sdk/s3-request-presigner": "^3.931.0",
+        "@cf-wasm/og": "^0.5.0",
         "@emotion/react": "^11.14.0",
         "@emotion/styled": "^11.14.1",
         "@mui/icons-material": "^7.3.4",
