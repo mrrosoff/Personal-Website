@@ -3,7 +3,6 @@ import { globSync } from "node:fs";
 import { Duration, RemovalPolicy, Stack, type StackProps } from "aws-cdk-lib";
 import {
     ContentHandling,
-    Cors,
     EndpointType,
     LambdaIntegration,
     RestApi
@@ -42,6 +41,7 @@ import { CfnGroup } from "aws-cdk-lib/aws-resourcegroups";
 import {
     DEVICES_TABLE,
     FLAVORS_TABLE,
+    LOCAL_ORIGIN,
     PASSKEY_CHALLENGES_TABLE,
     PASSKEYS_TABLE,
     POLAROID_PHOTOS_BUCKET
@@ -174,7 +174,10 @@ class WebsiteAPIStack extends Stack {
                 stageName: "production",
                 tracingEnabled: true
             },
-            defaultCorsPreflightOptions: { allowOrigins: Cors.ALL_ORIGINS },
+            defaultCorsPreflightOptions: {
+                allowOrigins: ["https://maxrosoff.com", LOCAL_ORIGIN],
+                allowHeaders: ["Content-Type", "Authorization"]
+            },
             endpointExportName: "WebsiteApiEndpoint"
         });
 
