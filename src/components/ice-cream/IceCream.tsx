@@ -1,7 +1,6 @@
 import { Link as RouterLink, useNavigate, useSearchParams } from "react-router-dom";
 
 import {
-    Alert,
     Badge,
     Box,
     Fab,
@@ -20,6 +19,7 @@ import { useIceCreamCart } from "./IceCreamCartContext";
 import { useAppContext } from "../AppContext";
 import { useEffect } from "react";
 import type { DatabaseFlavor } from "../../../api/types";
+import { TERMINAL_COLORS } from "../terminal/Terminal";
 
 export const rainbowTextSx = {
     background:
@@ -158,9 +158,10 @@ const IceCream = () => {
             </Typography>
             {!smallScreen && mailingList}
             {flavorsError && (
-                <Alert severity="error" sx={{ mt: 3 }}>
-                    {flavorsError}
-                </Alert>
+                <Typography mt={3}>
+                    Checking Freezer Stash . . . . . .
+                    <span style={{ color: TERMINAL_COLORS.errorColor }}> FAILED</span>
+                </Typography>
             )}
             <CurrentFlavors
                 selectedPriceIds={selectedPriceIds}

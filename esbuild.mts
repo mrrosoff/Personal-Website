@@ -15,7 +15,7 @@ const bundleOptions: BuildOptions = {
     bundle: true,
     sourcemap: true,
     sourcesContent: false,
-    loader: { ".ttf": "base64", ".png": "base64", ".jpg": "base64" }
+    loader: { ".ttf": "base64", ".jpg": "base64" }
 };
 const productionOptions: BuildOptions = {
     minify: true,

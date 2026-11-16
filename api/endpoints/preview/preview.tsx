@@ -1,7 +1,6 @@
 import { CustomFont, render } from "@cf-wasm/og/node";
 
 import clacon from "../../../public/fonts/clacon.ttf";
-import logo from "../../../public/images/logo.png";
 import profile from "../../../public/images/profile.jpg";
 import { getEntireTable } from "../../aws/services/dynamodb";
 import { FLAVORS_TABLE } from "../../common";
@@ -21,43 +20,40 @@ export const handler = async (): Promise<string> => {
                 flexDirection: "column",
                 width: "100%",
                 height: "100%",
-                padding: 56,
+                padding: 48,
                 backgroundColor: "#121212",
                 color: "white",
                 fontFamily: "Clacon",
-                fontSize: 32
+                fontSize: 44
             }}
         >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
-                    <img src={`data:image/png;base64,${logo}`} width={112} height={112} />
-                    <span style={{ fontSize: 52 }}>Max Rosoff</span>
+                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                    <span style={{ fontSize: 80, marginBottom: 22 }}>Max Rosoff</span>
+                    <span>
+                        Booting Rosoff OS . . . . . .
+                        <span style={{ color: GREEN }}>&nbsp;SUCCESS</span>
+                    </span>
+                    <span>
+                        Checking Freezer Stash . . . . . .
+                        <span style={{ color: freezer.length > 0 ? GREEN : RED }}>
+                            &nbsp;{freezer.length > 0 ? `${freezer.length} FLAVORS` : "EMPTY"}
+                        </span>
+                    </span>
                 </div>
                 <img
                     src={`data:image/jpeg;base64,${profile}`}
-                    width={160}
-                    height={160}
-                    style={{ borderRadius: 80 }}
+                    width={250}
+                    height={250}
+                    style={{ borderRadius: 125 }}
                 />
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 40 }}>
-                <span>
-                    Initializing OS . . . . . .<span style={{ color: GREEN }}>&nbsp;SUCCESS</span>
-                </span>
-                <span>
-                    Checking Freezer Stash . . . . . .
-                    <span style={{ color: freezer.length > 0 ? GREEN : RED }}>
-                        &nbsp;{freezer.length > 0 ? `${freezer.length} FLAVORS` : "EMPTY"}
-                    </span>
-                </span>
             </div>
             <div
                 style={{
                     display: "flex",
                     flexWrap: "wrap",
                     gap: 14,
-                    marginTop: 24,
-                    maxWidth: 860
+                    marginTop: 22
                 }}
             >
                 {freezer.map((flavor) => (
@@ -65,10 +61,10 @@ export const handler = async (): Promise<string> => {
                         key={flavor.productId}
                         style={{
                             display: "flex",
-                            padding: "12px 20px",
+                            padding: "10px 22px",
                             border: `2px solid ${MUTED}`,
                             borderRadius: 6,
-                            fontSize: 28,
+                            fontSize: 38,
                             color: flavor.color.toLowerCase() || "white"
                         }}
                     >
