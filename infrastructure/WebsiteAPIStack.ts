@@ -239,7 +239,8 @@ class WebsiteAPIStack extends Stack {
                         statusCode: "200",
                         contentHandling: ContentHandling.CONVERT_TO_BINARY,
                         responseParameters: {
-                            "method.response.header.Content-Type": "'image/png'"
+                            "method.response.header.Content-Type": "'image/png'",
+                            "method.response.header.Cache-Control": "'public, max-age=86400'"
                         }
                     }
                 ]
@@ -248,7 +249,10 @@ class WebsiteAPIStack extends Stack {
                 methodResponses: [
                     {
                         statusCode: "200",
-                        responseParameters: { "method.response.header.Content-Type": true }
+                        responseParameters: {
+                            "method.response.header.Content-Type": true,
+                            "method.response.header.Cache-Control": true
+                        }
                     }
                 ]
             }
