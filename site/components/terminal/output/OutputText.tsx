@@ -7,7 +7,7 @@ const OutputText = (props: { theme: TerminalTheme; children: string }) => {
     return props.children.split("\n").map((line: string, key: number) => (
         <Typography
             key={key}
-            style={{
+            sx={{
                 color: props.theme.outputColor,
                 whiteSpace: smallScreen ? "pre-wrap" : "pre",
                 overflowWrap: smallScreen ? "break-word" : undefined,

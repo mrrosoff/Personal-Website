@@ -146,11 +146,12 @@ const OrderConfirmation = (props: { customerEmail: string | null }) => {
                 </Typography>
             </Box>
             <Box sx={{ height: 320, overflow: "hidden" }}>
-                <img
+                <Box
+                    component="img"
                     src="/images/ice-cream.webp"
                     alt="Ice Cream"
                     width={320}
-                    style={{ transform: "rotate(15deg)" }}
+                    sx={{ transform: "rotate(15deg)" }}
                 />
             </Box>
         </Box>

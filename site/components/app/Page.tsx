@@ -85,12 +85,13 @@ const Links = (props: { open: boolean; setOpen: Dispatch<SetStateAction<boolean>
 
     return (
         <Box sx={{ position: "absolute", top: 0, right: 80, display: "flex", gap: 2.5 }}>
-            <Link
+            <Box
+                component={Link}
                 to={linkToIceCream ? "/ice-cream" : "/"}
-                style={{ color: "#FCFCFC", fontSize: 22 }}
+                sx={{ color: "#FCFCFC", fontSize: 22 }}
             >
                 {linkToIceCream ? "Ice Cream" : "Home"}
-            </Link>
+            </Box>
             {isIceCream && (
                 <Box
                     sx={{
@@ -100,9 +101,10 @@ const Links = (props: { open: boolean; setOpen: Dispatch<SetStateAction<boolean>
                         }
                     }}
                 >
-                    <a
-                        style={{
-                            margin: 0,
+                    <Box
+                        component="a"
+                        sx={{
+                            margin: "0px",
                             color:
                                 selectedPriceIds.length === 0
                                     ? "rgba(252, 252, 252, 0.5)"
@@ -113,7 +115,7 @@ const Links = (props: { open: boolean; setOpen: Dispatch<SetStateAction<boolean>
                         onClick={selectedPriceIds.length > 0 ? handleCartClick : undefined}
                     >
                         Cart ({selectedPriceIds.length})
-                    </a>
+                    </Box>
                     {selectedPriceIds.length > 0 && (
                         <Box
                             sx={{

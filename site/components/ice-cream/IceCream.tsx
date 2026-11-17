@@ -89,7 +89,9 @@ const IceCream = () => {
             {flavorsError && (
                 <Typography sx={{ mt: 3 }}>
                     Checking Freezer Stash . . . . . .
-                    <span style={{ color: TERMINAL_COLORS.errorColor }}> FAILED</span>
+                    <Box component="span" sx={{ color: TERMINAL_COLORS.errorColor }}>
+                        {" FAILED"}
+                    </Box>
                 </Typography>
             )}
             <FlavorSection

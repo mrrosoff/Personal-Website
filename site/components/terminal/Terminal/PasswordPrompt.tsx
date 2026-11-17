@@ -16,11 +16,11 @@ export default function PasswordPrompt(props: PasswordPromptProps) {
 
     return (
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Box component="span" style={{ color: props.theme.outputColor }}>
+            <Box component="span" sx={{ color: props.theme.outputColor }}>
                 Password:
             </Box>
             {props.loading ? (
-                <Box component="span" style={{ color: props.theme.outputColor }}>
+                <Box component="span" sx={{ color: props.theme.outputColor }}>
                     {".".repeat(ticks + 1)}
                 </Box>
             ) : (

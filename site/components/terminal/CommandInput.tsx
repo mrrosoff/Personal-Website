@@ -26,7 +26,7 @@ const CommandInput = (
     return (
         <Typography
             component={"div"}
-            style={{
+            sx={{
                 whiteSpace: "pre-wrap",
                 wordBreak: "break-all"
             }}
@@ -59,7 +59,7 @@ const CommandInput = (
                     autoCapitalize: "none",
                     spellCheck: false
                 }}
-                style={{ width: 0, height: 0, opacity: 0, position: "absolute" }}
+                sx={{ width: 0, height: 0, opacity: 0, position: "absolute" }}
             />
         </Typography>
     );

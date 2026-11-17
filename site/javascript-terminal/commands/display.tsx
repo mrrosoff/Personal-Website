@@ -1,3 +1,5 @@
+import { Box } from "@mui/material";
+
 import { parseOptions } from "../parser";
 import type EmulatorState from "../emulatorState/EmulatorState";
 import { relativeToAbsolutePath } from "../emulatorState/EmulatorState";
@@ -8,17 +10,23 @@ const fileToImageOutput = (fs: FileSystem, filePath: string) => {
     const file = FileOp.read(fs, filePath);
 
     let jsxElement = (
-        <img alt={"Image"} src={file} style={{ width: "auto", height: 360, padding: 10 }} />
+        <Box
+            component="img"
+            alt={"Image"}
+            src={file}
+            sx={{ width: "auto", height: 360, padding: "10px" }}
+        />
     );
 
     if (filePath.match(new RegExp(".(mov|mp4)$", "g"))) {
         jsxElement = (
-            <iframe
+            <Box
+                component="iframe"
                 width="640"
                 height="360"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; web-share"
                 src={file}
-                style={{ border: 0, padding: 10 }}
+                sx={{ border: 0, padding: "10px" }}
             />
         );
     }

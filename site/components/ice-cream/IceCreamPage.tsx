@@ -47,11 +47,12 @@ const IceCreamPage = (props: IceCreamPageProps) => {
                 {props.children}
             </Box>
             <Box sx={{ height: smallScreen ? 150 : 250, overflow: "hidden" }}>
-                <img
+                <Box
+                    component="img"
                     src="/images/ice-cream.webp"
                     alt="Ice Cream"
                     width={smallScreen ? 150 : 250}
-                    style={{ transform: "rotate(15deg)" }}
+                    sx={{ transform: "rotate(15deg)" }}
                 />
             </Box>
         </Box>

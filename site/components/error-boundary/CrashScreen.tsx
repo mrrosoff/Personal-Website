@@ -113,7 +113,7 @@ const CrashScreen = () => {
                 }}
             >
                 {lines.map((line, index) => (
-                    <Typography key={index} style={{ color: "#FCFCFC", fontSize: 14 }}>
+                    <Typography key={index} sx={{ color: "#FCFCFC", fontSize: 14 }}>
                         {line}
                     </Typography>
                 ))}
@@ -138,18 +138,18 @@ const CrashScreen = () => {
                 overflow: "hidden"
             }}
         >
-            <Typography style={{ color: "#FCFCFC", fontSize: 22 }}>
-                <Box component={"span"} style={{ color: "#2BC903" }}>
+            <Typography sx={{ color: "#FCFCFC", fontSize: 22 }}>
+                <Box component={"span"} sx={{ color: "#2BC903" }}>
                     dev@rosoff
                 </Box>
                 :~$ run --production
             </Typography>
-            <Typography style={{ color: "#ff0606", fontSize: 22 }}>
+            <Typography sx={{ color: "#ff0606", fontSize: 22 }}>
                 Segmentation fault (core dumped)
             </Typography>
             <Box sx={{ height: 16 }} />
-            <Typography component={"div"} style={{ color: "#FCFCFC", fontSize: 22 }}>
-                <Box component={"span"} style={{ color: "#2BC903" }}>
+            <Typography component={"div"} sx={{ color: "#FCFCFC", fontSize: 22 }}>
+                <Box component={"span"} sx={{ color: "#2BC903" }}>
                     dev@rosoff
                 </Box>
                 :~${" "}

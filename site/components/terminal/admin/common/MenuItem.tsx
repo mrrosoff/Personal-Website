@@ -20,11 +20,11 @@ const MenuItem = (props: {
                       }
                     : undefined
             }
-            style={{
+            sx={{
                 color: props.selected ? props.theme.commandColor : props.theme.outputColor,
                 backgroundColor: props.selected ? "rgba(255,255,255,0.1)" : "transparent",
                 padding: "4px 8px",
-                marginBottom: 4,
+                marginBottom: "4px",
                 userSelect: "none",
                 cursor: clickable ? "pointer" : undefined,
                 opacity: props.disabled ? 0.4 : 1

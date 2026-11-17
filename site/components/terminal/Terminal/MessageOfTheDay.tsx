@@ -33,7 +33,7 @@ export default function MessageOfTheDay(props: MessageOfTheDayProps) {
             {MOTDText.split("\n").map((line, key) => {
                 const trimmedLine = line.trim();
                 const outputs = [
-                    <Box key={"original-line"} style={{ color: props.theme.outputColor }}>
+                    <Box key={"original-line"} sx={{ color: props.theme.outputColor }}>
                         {trimmedLine}
                     </Box>
                 ];
@@ -52,9 +52,10 @@ export default function MessageOfTheDay(props: MessageOfTheDayProps) {
                     const displayText = smallScreen ? (link?.mobile ?? middle) : middle;
                     const internalPath = link?.path;
                     outputs[outputs.length - 1] = (
-                        <Box key={"link-line"} style={{ color: props.theme.outputColor }}>
+                        <Box key={"link-line"} sx={{ color: props.theme.outputColor }}>
                             {front}
-                            <a
+                            <Box
+                                component="a"
                                 href={href}
                                 target={internalPath ? undefined : "_blank"}
                                 onClick={
@@ -65,13 +66,13 @@ export default function MessageOfTheDay(props: MessageOfTheDayProps) {
                                           }
                                         : undefined
                                 }
-                                style={{
+                                sx={{
                                     color: "#FCFCFC",
                                     fontSize: 20
                                 }}
                             >
                                 {displayText}
-                            </a>
+                            </Box>
                             {back}
                         </Box>
                     );

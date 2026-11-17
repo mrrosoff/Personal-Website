@@ -12,16 +12,17 @@ import { decodeToken } from "../auth";
 import { API_ENDPOINT_URL, DeviceKind } from "../../api/types";
 
 const Code = ({ children }: { children: string }) => (
-    <code
-        style={{
+    <Box
+        component="code"
+        sx={{
             backgroundColor: "rgba(255,255,255,0.1)",
             padding: "2px 6px",
-            borderRadius: 4,
+            borderRadius: "4px",
             fontFamily: "monospace"
         }}
     >
         {children}
-    </code>
+    </Box>
 );
 
 const registrationErrorMessage = (err: unknown): string => {

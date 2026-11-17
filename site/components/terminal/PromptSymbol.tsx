@@ -10,7 +10,7 @@ const PromptSymbol = (props: { theme: TerminalTheme; cwd?: string; children: str
     return (
         <Grid container sx={{ alignContent: "center", alignItems: "center" }} spacing={1}>
             <Grid>
-                <Typography style={{ color: props.theme.promptSymbolColor }}>
+                <Typography sx={{ color: props.theme.promptSymbolColor }}>
                     {props.children}
                 </Typography>
             </Grid>
@@ -18,11 +18,11 @@ const PromptSymbol = (props: { theme: TerminalTheme; cwd?: string; children: str
                 <FolderIcon
                     color={"inherit"}
                     fontSize={"small"}
-                    style={{ paddingBottom: 2, paddingRight: 2, display: "block" }}
+                    sx={{ paddingBottom: "2px", paddingRight: "2px", display: "block" }}
                 />
             </Grid>
             <Grid>
-                <Typography style={{ color: props.theme.promptSymbolColor }}>
+                <Typography sx={{ color: props.theme.promptSymbolColor }}>
                     {props.cwd ?? emulatorState.getEnvVariables().cwd}
                 </Typography>
             </Grid>

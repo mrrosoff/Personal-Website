@@ -11,7 +11,7 @@ const OutputHeader = (props: {
 }) => (
     <Typography
         component={"div"}
-        style={{
+        sx={{
             color: props.theme.outputColor,
             whiteSpace: "pre-wrap",
             wordBreak: "break-all"
