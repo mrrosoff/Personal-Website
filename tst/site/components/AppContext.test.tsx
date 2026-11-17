@@ -78,8 +78,7 @@ describe("exit", () => {
         const { result } = renderHook(() => useAppContext(), { wrapper: AppProvider });
         const state = result.current.emulatorState;
         state.setEnvVariables({ ...state.getEnvVariables(), ...environmentVariables });
-        const exit = state.getCommandMapping().exit.functionDef;
-        return { output: exit(state, []), state };
+        return { output: state.getCommandMapping().exit?.functionDef(state, []), state };
     }
 
     it("should sign out when signed in", async () => {

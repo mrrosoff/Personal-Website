@@ -36,6 +36,8 @@ export enum AdminConsoleScreen {
     AddMailingListEntry = "add-mailing-list-entry"
 }
 
+export type EnvironmentVariables = Partial<Record<string, string>> & { cwd: string };
+
 export type EditField = Exclude<keyof DatabaseFlavor, "productId" | "priceId">;
 
 export type ProvisionFlavorForm = {
@@ -123,7 +125,7 @@ const BLOCKING_MODE_KEY = "blockingMode";
 type EmulatorStateType = {
     [TAB_COUNT_KEY]: number;
     [FS_KEY]: FileSystem;
-    [ENVIRONMENT_VARIABLES_KEY]: Record<string, string>;
+    [ENVIRONMENT_VARIABLES_KEY]: EnvironmentVariables;
     [HISTORY_KEY]: string[];
     [OUTPUTS_KEY]: {
         command?: string;
@@ -184,7 +186,7 @@ export default class EmulatorState {
         return this.state[ENVIRONMENT_VARIABLES_KEY];
     }
 
-    setEnvVariables(newEnvVariables: Record<string, string>) {
+    setEnvVariables(newEnvVariables: EnvironmentVariables) {
         this.state[ENVIRONMENT_VARIABLES_KEY] = newEnvVariables;
     }
 

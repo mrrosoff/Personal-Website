@@ -20,7 +20,7 @@ export type SymLink = {
 
 export type File = RegularFile | Directory | SymLink;
 
-export type FileSystem = Record<string, File>;
+export type FileSystem = Partial<Record<string, File>>;
 
 const date = DateTime.now();
 const files: FileSystem = {

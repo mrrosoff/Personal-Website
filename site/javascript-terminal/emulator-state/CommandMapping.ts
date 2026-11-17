@@ -8,13 +8,15 @@ export type CommandResult = {
     oldCwdPath?: string;
 };
 
-export type CommandMapping = Record<
-    string,
-    {
-        functionDef: (state: EmulatorState, _commandOptions: string[]) => CommandResult;
-        optDef: Record<string, string>;
-        manPage?: string;
-    }
+export type CommandMapping = Partial<
+    Record<
+        string,
+        {
+            functionDef: (state: EmulatorState, _commandOptions: string[]) => CommandResult;
+            optDef: Record<string, string>;
+            manPage?: string;
+        }
+    >
 >;
 
 export const errorMessage = (err: unknown) => (err instanceof Error ? err.message : String(err));
@@ -24,20 +26,14 @@ export const isCommandSet = (commandMapping: CommandMapping = commands, commandN
 };
 
 export const getCommandFn = (commandMapping: CommandMapping = commands, commandName: string) => {
-    if (commandName in commandMapping) {
-        return commandMapping[commandName].functionDef;
-    }
-    return undefined;
+    return commandMapping[commandName]?.functionDef;
 };
 
 export const getCommandOptDef = (
     commandMapping: CommandMapping = commands,
     commandName: string
 ): Record<string, string> | undefined => {
-    if (commandName in commandMapping) {
-        return commandMapping[commandName].optDef;
-    }
-    return undefined;
+    return commandMapping[commandName]?.optDef;
 };
 
 export const getCommandNames = (commandMapping: CommandMapping = commands) => {

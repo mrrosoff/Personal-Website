@@ -2,12 +2,12 @@ import { parseOptions } from "../parser";
 import * as PathUtil from "../fs/util/path-util";
 import * as DirOp from "../fs/operations/directory-operations";
 import { fsSearch } from "../fs/operations/base-operations";
-import EmulatorState from "../emulator-state/EmulatorState";
+import EmulatorState, { type EnvironmentVariables } from "../emulator-state/EmulatorState";
 import type { FileSystem } from "../../FileSystem";
 
 const IMPLIED_DIRECTORY_ENTRIES = [".", ".."];
 
-const resolveDirectoryToList = (envVariables: Record<string, string>, argv: string | string[]) => {
+const resolveDirectoryToList = (envVariables: EnvironmentVariables, argv: string | string[]) => {
     const cwd = envVariables.cwd;
 
     if (argv.length > 0) {
@@ -25,11 +25,8 @@ const makeLongFormatReturn = (fs: FileSystem, dirPath: string, listing: string[]
     const dirContents = fsSearch(fs, dirPath);
 
     const formattedLines = listing.sort().map((name) => {
-        if (name === "." || name === "..") {
-            return `drwx------ ${name}`;
-        }
         const file = dirContents[name];
-        return `${file.type}${file.permissions} ${name}`;
+        return file ? `${file.type}${file.permissions} ${name}` : `drwx------ ${name}`;
     });
 
     return { output: formattedLines.join("\n") };

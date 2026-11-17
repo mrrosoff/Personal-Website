@@ -26,8 +26,8 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     let hasDifferences = false;
 
     for (let i = 0; i < maxLines; i++) {
-        const line1 = file1Lines[i];
-        const line2 = file2Lines[i];
+        const line1 = file1Lines.at(i);
+        const line2 = file2Lines.at(i);
 
         if (line1 !== line2) {
             hasDifferences = true;

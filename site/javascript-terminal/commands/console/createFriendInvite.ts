@@ -41,7 +41,7 @@ function adjustInvite(invite: FriendInvite, devices: InviteDevice[], step: numbe
 }
 
 function toggleDevice(invite: FriendInvite, devices: InviteDevice[]): FriendInvite {
-    const device = devices[invite.deviceIndex];
+    const device = devices.at(invite.deviceIndex);
     if (invite.currentField !== "devices" || !device) {
         return invite;
     }

@@ -21,11 +21,12 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
 
     const parent = fsSearchParent(state.getFileSystem(), newCwdPath);
 
-    if (!parent[getLastPathPart(newCwdPath)]) {
+    const target = parent[getLastPathPart(newCwdPath)];
+    if (!target) {
         throw Error("No Directory At Specified Location");
     }
 
-    if (parent[getLastPathPart(newCwdPath)].type !== "d") {
+    if (target.type !== "d") {
         throw Error("File At Specified Location");
     }
 

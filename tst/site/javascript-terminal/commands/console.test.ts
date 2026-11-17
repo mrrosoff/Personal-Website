@@ -141,7 +141,9 @@ describe("arrowStep", () => {
 describe("postAsAdmin", () => {
     it("should post with the admin's token", async () => {
         axiosPost.mockResolvedValue({ data: { ok: true } });
-        const state = EmulatorState.create({ environmentVariables: { AUTH_TOKEN: "token" } });
+        const state = EmulatorState.create({
+            environmentVariables: { cwd: "/", AUTH_TOKEN: "token" }
+        });
 
         const result = await postAsAdmin(state, "/admin/thing", { a: 1 });
 

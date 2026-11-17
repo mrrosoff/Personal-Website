@@ -15,7 +15,7 @@ const findInDirectory = (
 ): string[] => {
     const dirContents = fsSearch(fs, path);
 
-    Object.keys(dirContents).forEach((name) => {
+    Object.entries(dirContents).forEach(([name, file]) => {
         const fullPath = path === "/" ? `/${name}` : `${path}/${name}`;
 
         let matches = true;
@@ -35,7 +35,7 @@ const findInDirectory = (
             results.push(fullPath);
         }
 
-        if (dirContents[name].type === "d") {
+        if (file?.type === "d") {
             findInDirectory(fs, fullPath, namePattern, results);
         }
     });

@@ -46,7 +46,7 @@ export type TerminalTheme = {
     height: string | number;
 };
 
-const MOTD_LINKS: Record<string, { mobile?: string; path?: string }> = {
+const MOTD_LINKS: Partial<Record<string, { mobile?: string; path?: string }>> = {
     "https://maxrosoff.com/ice-cream": { mobile: "maxrosoff.com", path: "/ice-cream" },
     "https://github.com/mrrosoff/Personal-Website": { mobile: "github.com/mrrosoff" },
     "https://linkedin.com/in/max-rosoff": { mobile: "linkedin.com/in/max-rosoff" }
