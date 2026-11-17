@@ -5,7 +5,7 @@ import { axiosPost } from "../../../../../__mocks__/axios";
 import { mockFlavor } from "../../../../../__mocks__/__data__/aws/dynamodb";
 
 import type { DatabaseFlavor } from "../../../../../../api/types";
-import { handleAdminConsoleKeyPress } from "../../../../../../site/javascript-terminal/commands/console";
+import { handleSelectFlavor } from "../../../../../../site/javascript-terminal/commands/console/inventory/selectFlavor";
 import {
     fetchInventoryData,
     sortInventory
@@ -88,55 +88,55 @@ describe("fetchInventoryData", () => {
 });
 
 describe("handleSelectFlavor", () => {
-    it("should ignore keys while the inventory loads", async () => {
+    it("should ignore keys while the inventory loads", () => {
         const state = mockAdminState({
             screen: AdminConsoleScreen.SelectFlavor,
             selectedOption: 0
         });
 
-        await handleAdminConsoleKeyPress("ArrowDown", state);
+        handleSelectFlavor("ArrowDown", state);
 
         expect(state.getAdminConsoleMode()?.selectedOption).toBe(0);
     });
 
-    it("should move down within the page", async () => {
-        const result = await handleAdminConsoleKeyPress("ArrowDown", selectAt(3));
+    it("should move down within the page", () => {
+        const result = handleSelectFlavor("ArrowDown", selectAt(3));
 
         expect(result.getAdminConsoleMode()?.selectedOption).toBe(3);
     });
 
-    it("should move up within the page", async () => {
-        const result = await handleAdminConsoleKeyPress("ArrowUp", selectAt(4, 1));
+    it("should move up within the page", () => {
+        const result = handleSelectFlavor("ArrowUp", selectAt(4, 1));
 
         expect(result.getAdminConsoleMode()?.selectedOption).toBe(4);
     });
 
-    it("should turn to the next page", async () => {
-        const result = await handleAdminConsoleKeyPress("ArrowRight", selectAt(1));
+    it("should turn to the next page", () => {
+        const result = handleSelectFlavor("ArrowRight", selectAt(1));
 
         expect(result.getAdminConsoleMode()).toMatchObject({ currentPage: 1, selectedOption: 4 });
     });
 
-    it("should not turn past the last page", async () => {
-        const result = await handleAdminConsoleKeyPress("ArrowRight", selectAt(4, 1));
+    it("should not turn past the last page", () => {
+        const result = handleSelectFlavor("ArrowRight", selectAt(4, 1));
 
         expect(result.getAdminConsoleMode()?.currentPage).toBe(1);
     });
 
-    it("should turn to the previous page", async () => {
-        const result = await handleAdminConsoleKeyPress("ArrowLeft", selectAt(5, 1));
+    it("should turn to the previous page", () => {
+        const result = handleSelectFlavor("ArrowLeft", selectAt(5, 1));
 
         expect(result.getAdminConsoleMode()).toMatchObject({ currentPage: 0, selectedOption: 0 });
     });
 
-    it("should not turn before the first page", async () => {
-        const result = await handleAdminConsoleKeyPress("ArrowLeft", selectAt(1));
+    it("should not turn before the first page", () => {
+        const result = handleSelectFlavor("ArrowLeft", selectAt(1));
 
         expect(result.getAdminConsoleMode()?.selectedOption).toBe(1);
     });
 
-    it("should open the selected flavor for editing", async () => {
-        const result = await handleAdminConsoleKeyPress("Enter", selectAt(2));
+    it("should open the selected flavor for editing", () => {
+        const result = handleSelectFlavor("Enter", selectAt(2));
 
         expect(result.getAdminConsoleMode()).toMatchObject({
             screen: AdminConsoleScreen.IceCreamInventory,
@@ -145,8 +145,8 @@ describe("handleSelectFlavor", () => {
         });
     });
 
-    it("should go back to the inventory menu", async () => {
-        const result = await handleAdminConsoleKeyPress("Escape", selectAt(2));
+    it("should go back to the inventory menu", () => {
+        const result = handleSelectFlavor("Escape", selectAt(2));
 
         expect(result.getAdminConsoleMode()).toMatchObject({
             screen: AdminConsoleScreen.IceCreamInventory,
@@ -154,8 +154,8 @@ describe("handleSelectFlavor", () => {
         });
     });
 
-    it("should ignore other keys", async () => {
-        const result = await handleAdminConsoleKeyPress("a", selectAt(2));
+    it("should ignore other keys", () => {
+        const result = handleSelectFlavor("a", selectAt(2));
 
         expect(result.getAdminConsoleMode()?.selectedOption).toBe(2);
     });

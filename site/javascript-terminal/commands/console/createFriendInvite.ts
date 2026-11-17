@@ -1,7 +1,6 @@
 import { validate } from "email-validator";
 
 import EmulatorState, {
-    type AdminConsoleMode,
     AdminConsoleScreen,
     type FriendInvite,
     type InviteDevice,
@@ -95,9 +94,9 @@ async function sendInvite(state: EmulatorState, invite: FriendInvite): Promise<v
 
 export async function handleCreateFriendInvite(
     key: string,
-    state: EmulatorState,
-    mode: AdminConsoleMode<AdminConsoleScreen.CreateFriendInvite>
+    state: EmulatorState
 ): Promise<EmulatorState> {
+    const mode = state.getAdminConsoleModeOn(AdminConsoleScreen.CreateFriendInvite);
     const invite = mode.friendInvite;
     const devices = mode.inviteDevices ?? [];
 

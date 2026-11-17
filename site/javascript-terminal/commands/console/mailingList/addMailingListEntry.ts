@@ -3,7 +3,6 @@ import { validate } from "email-validator";
 import type { MailingListRegistration } from "../../../../../api/types";
 import { registerMailingListUser } from "../../../../components/ice-cream/MailingList";
 import EmulatorState, {
-    type AdminConsoleMode,
     AdminConsoleScreen,
     MainMenuOption
 } from "../../../emulator-state/EmulatorState";
@@ -13,9 +12,9 @@ const MAILING_LIST_FIELDS: (keyof MailingListRegistration)[] = ["firstName", "la
 
 export async function handleAddMailingListEntry(
     key: string,
-    state: EmulatorState,
-    mode: AdminConsoleMode<AdminConsoleScreen.AddMailingListEntry>
+    state: EmulatorState
 ): Promise<EmulatorState> {
+    const mode = state.getAdminConsoleModeOn(AdminConsoleScreen.AddMailingListEntry);
     const entry = mode.mailingListEntry;
 
     if (key === "Escape" || (entry.added && key === "Enter")) {

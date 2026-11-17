@@ -1,5 +1,4 @@
 import EmulatorState, {
-    type AdminConsoleMode,
     AdminConsoleScreen,
     IceCreamInventoryMenuOption,
     type ProvisionFlavorForm
@@ -24,11 +23,8 @@ function typeIntoForm(form: ProvisionFlavorForm, key: string): ProvisionFlavorFo
     }
 }
 
-export function handleProvisionFlavorForm(
-    key: string,
-    state: EmulatorState,
-    mode: AdminConsoleMode<AdminConsoleScreen.ProvisionFlavorForm>
-): EmulatorState {
+export function handleProvisionFlavorForm(key: string, state: EmulatorState): EmulatorState {
+    const mode = state.getAdminConsoleModeOn(AdminConsoleScreen.ProvisionFlavorForm);
     const form = mode.provisionForm;
 
     switch (key) {

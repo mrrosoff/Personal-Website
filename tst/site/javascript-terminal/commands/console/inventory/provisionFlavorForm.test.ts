@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { mockAdminState } from "../../../../../helpers/terminal";
 
-import { handleAdminConsoleKeyPress } from "../../../../../../site/javascript-terminal/commands/console";
+import { handleProvisionFlavorForm } from "../../../../../../site/javascript-terminal/commands/console/inventory/provisionFlavorForm";
 import {
     AdminConsoleScreen,
     type ProvisionFlavorForm
@@ -24,26 +24,26 @@ function form(currentField: ProvisionFlavorForm["currentField"]) {
 }
 
 describe("handleProvisionFlavorForm", () => {
-    it("should move to the next field on tab", async () => {
-        const result = await handleAdminConsoleKeyPress("Tab", form("flavorName"));
+    it("should move to the next field on tab", () => {
+        const result = handleProvisionFlavorForm("Tab", form("flavorName"));
 
         expect(result.getAdminConsoleMode()?.provisionForm?.currentField).toBe("initialQuantity");
     });
 
-    it("should wrap from the first field to the last", async () => {
-        const result = await handleAdminConsoleKeyPress("ArrowUp", form("flavorName"));
+    it("should wrap from the first field to the last", () => {
+        const result = handleProvisionFlavorForm("ArrowUp", form("flavorName"));
 
         expect(result.getAdminConsoleMode()?.provisionForm?.currentField).toBe("type");
     });
 
-    it("should cycle the type", async () => {
-        const result = await handleAdminConsoleKeyPress("ArrowLeft", form("type"));
+    it("should cycle the type", () => {
+        const result = handleProvisionFlavorForm("ArrowLeft", form("type"));
 
         expect(result.getAdminConsoleMode()?.provisionForm?.type).toBe("upcoming");
     });
 
-    it("should not cycle anything on another field", async () => {
-        const result = await handleAdminConsoleKeyPress("ArrowRight", form("color"));
+    it("should not cycle anything on another field", () => {
+        const result = handleProvisionFlavorForm("ArrowRight", form("color"));
 
         expect(result.getAdminConsoleMode()?.provisionForm).toEqual({
             ...blankForm,
@@ -51,32 +51,32 @@ describe("handleProvisionFlavorForm", () => {
         });
     });
 
-    it("should type into the name", async () => {
-        const result = await handleAdminConsoleKeyPress("s", form("flavorName"));
+    it("should type into the name", () => {
+        const result = handleProvisionFlavorForm("s", form("flavorName"));
 
         expect(result.getAdminConsoleMode()?.provisionForm?.flavorName).toBe("Figs");
     });
 
-    it("should type into the color", async () => {
-        const result = await handleAdminConsoleKeyPress("Backspace", form("color"));
+    it("should type into the color", () => {
+        const result = handleProvisionFlavorForm("Backspace", form("color"));
 
         expect(result.getAdminConsoleMode()?.provisionForm?.color).toBe("whit");
     });
 
-    it("should type a quantity", async () => {
-        const result = await handleAdminConsoleKeyPress("4", form("initialQuantity"));
+    it("should type a quantity", () => {
+        const result = handleProvisionFlavorForm("4", form("initialQuantity"));
 
         expect(result.getAdminConsoleMode()?.provisionForm?.initialQuantity).toBe(24);
     });
 
-    it("should not type into the type", async () => {
-        const result = await handleAdminConsoleKeyPress("a", form("type"));
+    it("should not type into the type", () => {
+        const result = handleProvisionFlavorForm("a", form("type"));
 
         expect(result.getAdminConsoleMode()?.provisionForm?.type).toBeNull();
     });
 
-    it("should ask for confirmation", async () => {
-        const result = await handleAdminConsoleKeyPress("Enter", form("flavorName"));
+    it("should ask for confirmation", () => {
+        const result = handleProvisionFlavorForm("Enter", form("flavorName"));
 
         expect(result.getAdminConsoleMode()).toMatchObject({
             screen: AdminConsoleScreen.ConfirmProvisionFlavor,
@@ -84,8 +84,8 @@ describe("handleProvisionFlavorForm", () => {
         });
     });
 
-    it("should discard the form on escape", async () => {
-        const result = await handleAdminConsoleKeyPress("Escape", form("flavorName"));
+    it("should discard the form on escape", () => {
+        const result = handleProvisionFlavorForm("Escape", form("flavorName"));
 
         expect(result.getAdminConsoleMode()).toMatchObject({
             screen: AdminConsoleScreen.IceCreamInventory,
@@ -93,8 +93,8 @@ describe("handleProvisionFlavorForm", () => {
         });
     });
 
-    it("should move down through the fields", async () => {
-        const result = await handleAdminConsoleKeyPress("ArrowDown", form("color"));
+    it("should move down through the fields", () => {
+        const result = handleProvisionFlavorForm("ArrowDown", form("color"));
 
         expect(result.getAdminConsoleMode()?.provisionForm?.currentField).toBe("type");
     });

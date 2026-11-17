@@ -101,21 +101,21 @@ export async function handleAdminConsoleKeyPress(
 
     switch (mode.screen) {
         case AdminConsoleScreen.Main:
-            return handleMainMenu(key, state, mode);
+            return handleMainMenu(key, state);
         case AdminConsoleScreen.IceCreamInventory:
-            return handleIceCreamInventory(key, state, mode);
+            return handleIceCreamInventory(key, state);
         case AdminConsoleScreen.SelectFlavor:
-            return handleSelectFlavor(key, state, mode);
+            return handleSelectFlavor(key, state);
         case AdminConsoleScreen.ConfirmSendEmails:
-            return handleConfirmSendEmails(key, state, mode);
+            return handleConfirmSendEmails(key, state);
         case AdminConsoleScreen.ProvisionFlavorForm:
-            return handleProvisionFlavorForm(key, state, mode);
+            return handleProvisionFlavorForm(key, state);
         case AdminConsoleScreen.ConfirmProvisionFlavor:
-            return handleConfirmProvisionFlavor(key, state, mode);
+            return handleConfirmProvisionFlavor(key, state);
         case AdminConsoleScreen.CreateFriendInvite:
-            return handleCreateFriendInvite(key, state, mode);
+            return handleCreateFriendInvite(key, state);
         case AdminConsoleScreen.AddMailingListEntry:
-            return handleAddMailingListEntry(key, state, mode);
+            return handleAddMailingListEntry(key, state);
     }
 }
 

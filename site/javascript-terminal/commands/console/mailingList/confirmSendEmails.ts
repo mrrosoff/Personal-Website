@@ -1,5 +1,4 @@
 import EmulatorState, {
-    type AdminConsoleMode,
     AdminConsoleScreen,
     MainMenuOption
 } from "../../../emulator-state/EmulatorState";
@@ -7,9 +6,9 @@ import { editText, postAsAdmin, setAdminConsoleError } from "../../console";
 
 export async function handleConfirmSendEmails(
     key: string,
-    state: EmulatorState,
-    mode: AdminConsoleMode<AdminConsoleScreen.ConfirmSendEmails>
+    state: EmulatorState
 ): Promise<EmulatorState> {
+    const mode = state.getAdminConsoleModeOn(AdminConsoleScreen.ConfirmSendEmails);
     const message = mode.marketing?.message ?? "";
     const returnToMainMenu = () => {
         state.setAdminConsoleMode({

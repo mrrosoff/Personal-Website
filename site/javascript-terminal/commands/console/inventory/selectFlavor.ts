@@ -1,6 +1,5 @@
 import type { DatabaseFlavor } from "../../../../../api/types";
 import EmulatorState, {
-    type AdminConsoleMode,
     AdminConsoleScreen,
     IceCreamInventoryMenuOption
 } from "../../../emulator-state/EmulatorState";
@@ -41,11 +40,8 @@ export async function fetchInventoryData(state: EmulatorState): Promise<void> {
     }
 }
 
-export function handleSelectFlavor(
-    key: string,
-    state: EmulatorState,
-    mode: AdminConsoleMode<AdminConsoleScreen.SelectFlavor>
-): EmulatorState {
+export function handleSelectFlavor(key: string, state: EmulatorState): EmulatorState {
+    const mode = state.getAdminConsoleModeOn(AdminConsoleScreen.SelectFlavor);
     if (!mode.inventoryData) return state;
 
     const sortedInventory = sortInventory(mode.inventoryData);

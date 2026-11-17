@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import EmulatorState, {
+    AdminConsoleScreen,
     relativeToAbsolutePath
 } from "../../../../site/javascript-terminal/emulator-state/EmulatorState";
 
@@ -32,5 +33,14 @@ describe("EmulatorState", () => {
         state.setFileSystem(fs);
 
         expect(state.getFileSystem()).toBe(fs);
+    });
+
+    it("should refuse the admin console mode for a screen it is not on", () => {
+        const state = EmulatorState.create({});
+        state.setAdminConsoleMode({ screen: AdminConsoleScreen.Main });
+
+        const result = () => state.getAdminConsoleModeOn(AdminConsoleScreen.SelectFlavor);
+
+        expect(result).toThrow("Admin Console Is Not On The select-flavor Screen");
     });
 });

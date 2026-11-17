@@ -221,6 +221,14 @@ export default class EmulatorState {
         this.state[ADMIN_CONSOLE_KEY] = newMode;
     }
 
+    getAdminConsoleModeOn<S extends AdminConsoleScreen>(screen: S): AdminConsoleMode<S> {
+        const mode = this.state[ADMIN_CONSOLE_KEY];
+        if (mode?.screen !== screen) {
+            throw Error(`Admin Console Is Not On The ${screen} Screen`);
+        }
+        return mode as AdminConsoleMode<S>;
+    }
+
     updateAdminConsoleMode(changes: Partial<AdminConsoleCommon>) {
         const mode = this.state[ADMIN_CONSOLE_KEY];
         if (mode) {

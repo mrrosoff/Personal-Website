@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { mockAdminState } from "../../../../../helpers/terminal";
 import { axiosPost } from "../../../../../__mocks__/axios";
 
-import { handleAdminConsoleKeyPress } from "../../../../../../site/javascript-terminal/commands/console";
+import { handleAddMailingListEntry } from "../../../../../../site/javascript-terminal/commands/console/mailingList/addMailingListEntry";
 import {
     AdminConsoleScreen,
     type MailingListEntry
@@ -24,7 +24,7 @@ function entry(changes: Partial<MailingListEntry> = {}) {
 }
 
 async function press(key: string, state = entry()) {
-    return (await handleAdminConsoleKeyPress(key, state)).getAdminConsoleMode()!;
+    return (await handleAddMailingListEntry(key, state)).getAdminConsoleMode()!;
 }
 
 describe("handleAddMailingListEntry", () => {
