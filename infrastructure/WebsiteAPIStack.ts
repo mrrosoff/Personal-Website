@@ -1,4 +1,5 @@
 import { globSync } from "node:fs";
+import { basename } from "node:path";
 
 import { Duration, RemovalPolicy, Stack, type StackProps } from "aws-cdk-lib";
 import {
@@ -208,7 +209,7 @@ class WebsiteAPIStack extends Stack {
         const id = `${functionName.replace(/-(\w)/g, (_, letter: string) => letter.toUpperCase())}Lambda`;
         return new LambdaFunction(this, id, {
             functionName,
-            handler: `${lambda.split("/").at(-1)}.handler`,
+            handler: `${basename(lambda)}.handler`,
             code: Code.fromAsset(`dist/lambda/${lambda}`),
             runtime: Runtime.NODEJS_22_X,
             role,

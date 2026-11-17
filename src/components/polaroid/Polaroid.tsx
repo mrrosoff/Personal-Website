@@ -42,7 +42,7 @@ export default function Polaroid() {
         [token]
     );
 
-    const authHeader = useMemo(() => ({ Authorization: `Bearer ${token}` }), [token]);
+    const authHeader = useMemo(() => ({ Authorization: `Bearer ${token ?? ""}` }), [token]);
 
     const [photos, setPhotos] = useState<Photo[]>([]);
     const [busy, setBusy] = useState(false);

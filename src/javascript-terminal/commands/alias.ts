@@ -7,7 +7,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { argv } = parseOptions(commandOptions, optDef);
 
     const envVariables = state.getEnvVariables();
-    const aliases: Record<string, string | undefined> = {};
+    const aliases: Record<string, string> = {};
 
     Object.entries(envVariables).forEach(([key, value]) => {
         if (key.startsWith("alias_")) {

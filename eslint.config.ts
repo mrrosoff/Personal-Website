@@ -20,21 +20,22 @@ export default defineConfig(
         },
         rules: {
             "@typescript-eslint/consistent-type-definitions": ["error", "type"],
+            "@typescript-eslint/restrict-template-expressions": [
+                "error",
+                {
+                    allowAny: false,
+                    allowBoolean: false,
+                    allowNever: false,
+                    allowNullish: false,
+                    allowRegExp: false
+                }
+            ],
             "@typescript-eslint/no-unused-vars": [
                 "error",
                 {
                     argsIgnorePattern: "^_",
                     varsIgnorePattern: "^_",
                     caughtErrorsIgnorePattern: "^_"
-                }
-            ],
-            "@typescript-eslint/restrict-template-expressions": [
-                "error",
-                {
-                    allow: [{ name: ["Error", "URL", "URLSearchParams"], from: "lib" }],
-                    allowBoolean: true,
-                    allowNullish: true,
-                    allowNumber: true
                 }
             ]
         }

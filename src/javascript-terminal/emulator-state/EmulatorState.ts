@@ -106,7 +106,7 @@ const BLOCKING_MODE_KEY = "blockingMode";
 type EmulatorStateType = {
     [TAB_COUNT_KEY]: number;
     [FS_KEY]: FileSystem;
-    [ENVIRONMENT_VARIABLES_KEY]: Record<string, string | undefined>;
+    [ENVIRONMENT_VARIABLES_KEY]: Record<string, string>;
     [HISTORY_KEY]: string[];
     [OUTPUTS_KEY]: {
         command?: string;
@@ -168,7 +168,7 @@ export default class EmulatorState {
         return this.state[ENVIRONMENT_VARIABLES_KEY];
     }
 
-    setEnvVariables(newEnvVariables: Record<string, string | undefined>) {
+    setEnvVariables(newEnvVariables: Record<string, string>) {
         this.state[ENVIRONMENT_VARIABLES_KEY] = newEnvVariables;
     }
 
