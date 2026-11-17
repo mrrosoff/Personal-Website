@@ -4,9 +4,11 @@ import type { ReactElement, ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { mockDocumentClient, mockDynamoDB, mockFlavor } from "../../../mocks/aws/dynamodb";
+import { mockToken } from "../../../setup";
 
 import { FLAVORS_TABLE } from "../../../../api/common";
 import { handler } from "../../../../api/endpoints/preview/preview";
+import { UserType } from "../../../../api/types";
 
 vi.mock("@cf-wasm/og/node", () => ({
     render: vi.fn(),
@@ -23,7 +25,10 @@ function textOf(node: ReactNode): string {
     if (typeof node === "string" || typeof node === "number") return String(node);
     if (Array.isArray(node)) return node.map(textOf).join("");
     if (node && typeof node === "object" && "props" in node) {
-        return textOf((node.props as { children?: ReactNode }).children);
+        const element = node as ReactElement<{ children?: ReactNode }>;
+        return typeof element.type === "function"
+            ? textOf((element.type as (props: object) => ReactNode)(element.props))
+            : textOf(element.props.children);
     }
     return "";
 }
@@ -74,5 +79,83 @@ describe("preview", () => {
         await handler();
 
         expect(textOf(renderedCard())).toContain("EMPTY");
+    });
+
+    it("should name the friend an invite is for", async () => {
+        const invite = await mockToken(UserType.SHARE, { id: "Ada" });
+
+        await handler({ queryStringParameters: { token: invite } });
+
+        expect(textOf(renderedCard())).toContain("Checking Invite . . . . . .\u00a0FOR ADA");
+    });
+
+    it("should say when the invite expires, in San Francisco time", async () => {
+        vi.useFakeTimers({ now: new Date("2026-11-17T20:00:00Z"), toFake: ["Date"] });
+        const invite = await mockToken(UserType.SHARE, { id: "Ada", expiresIn: "3d" });
+
+        await handler({ queryStringParameters: { token: invite } });
+        vi.useRealTimers();
+
+        expect(textOf(renderedCard())).toContain(
+            "Invite Expires . . . . . .\u00a0NOV 20, 12:00 PM"
+        );
+    });
+
+    it("should shorten a long name", async () => {
+        const invite = await mockToken(UserType.SHARE, { id: "Bartholomew Montgomery" });
+
+        await handler({ queryStringParameters: { token: invite } });
+
+        expect(textOf(renderedCard())).toContain("FOR BARTHOLOMEW MONTGOM…");
+    });
+
+    it("should not describe a friend or admin token", async () => {
+        const token = await mockToken(UserType.FRIEND, { id: "Ada" });
+
+        await handler({ queryStringParameters: { token } });
+
+        expect(textOf(renderedCard())).toBe(
+            "Max RosoffBooting Rosoff OS . . . . . .\u00a0SUCCESS" +
+                `Checking Freezer Stash . . . . . .\u00a01 FLAVORS${mockFlavor.name}maxrosoff.com`
+        );
+    });
+
+    it("should flag a link that cannot be verified", async () => {
+        await handler({ queryStringParameters: { token: "not-a-token" } });
+
+        expect(textOf(renderedCard())).toContain("Checking Link . . . . . .\u00a0INVALID");
+    });
+
+    it("should say when an invite has expired", async () => {
+        const invite = await mockToken(UserType.SHARE, { id: "Ada", expiresIn: -60 });
+
+        await handler({ queryStringParameters: { token: invite } });
+
+        expect(textOf(renderedCard())).toContain("FOR ADA");
+        expect(textOf(renderedCard())).toContain("Invite Expires . . . . . .\u00a0EXPIRED");
+    });
+
+    it("should recognize a subscription link without showing the email", async () => {
+        const link = await mockToken(UserType.SUBSCRIBER, { id: "sub_1", expiresIn: "7d" });
+
+        await handler({ queryStringParameters: { token: link } });
+
+        expect(textOf(renderedCard())).toContain("Checking Subscription . . . . . .\u00a0FOUND");
+        expect(textOf(renderedCard())).toContain("Link Expires");
+        expect(textOf(renderedCard())).not.toContain("@");
+    });
+
+    it("should say when a subscription link has expired", async () => {
+        const link = await mockToken(UserType.SUBSCRIBER, { id: "sub_1", expiresIn: -60 });
+
+        await handler({ queryStringParameters: { token: link } });
+
+        expect(textOf(renderedCard())).toContain("Link Expires . . . . . .\u00a0EXPIRED");
+    });
+
+    it("should add nothing without a token", async () => {
+        await handler({ queryStringParameters: { token: "" } });
+
+        expect(textOf(renderedCard())).not.toContain("Checking Invite");
     });
 });

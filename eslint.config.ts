@@ -6,7 +6,9 @@ import { defineConfig } from "eslint/config";
 import tseslint from "typescript-eslint";
 
 export default defineConfig(
-    { ignores: ["dist", "cdk.out", "coverage", "node_modules", "scripts/passkeyRegistrationUI"] },
+    {
+        ignores: ["dist", "cdk.out", "coverage", "node_modules", ".wrangler"]
+    },
     eslint.configs.recommended,
     ...tseslint.configs.strictTypeChecked,
     ...tseslint.configs.stylisticTypeChecked,

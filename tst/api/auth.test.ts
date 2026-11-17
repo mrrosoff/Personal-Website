@@ -7,6 +7,7 @@ import {
     authenticateHTTPAccessToken,
     bearerToken,
     decryptToken,
+    readToken,
     generateToken,
     UserType
 } from "../../api/auth";
@@ -35,6 +36,34 @@ describe("generateToken/decryptToken", () => {
         const token = await generateToken(id, { userType: UserType.FRIEND });
 
         const result = decryptToken(`${token.slice(0, -4)}AAAA`);
+
+        await expect(result).rejects.toThrow();
+    });
+
+    it("should reject an expired token", async () => {
+        const token = await generateToken(id, { userType: UserType.SHARE, expiresIn: -60 });
+
+        const result = decryptToken(token);
+
+        await expect(result).rejects.toThrow("jwt expired");
+    });
+});
+
+describe("readToken", () => {
+    const id = faker.string.uuid();
+
+    it("should read an expired token", async () => {
+        const token = await generateToken(id, { userType: UserType.SHARE, expiresIn: -60 });
+
+        const result = await readToken(token);
+
+        expect(result).toMatchObject({ id, userType: UserType.SHARE });
+    });
+
+    it("should reject a tampered token", async () => {
+        const token = await generateToken(id, { userType: UserType.SHARE });
+
+        const result = readToken(`${token.slice(0, -4)}AAAA`);
 
         await expect(result).rejects.toThrow();
     });

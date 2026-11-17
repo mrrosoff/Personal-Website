@@ -74,10 +74,10 @@ export function responseBody(result: APIGatewayProxyResult) {
 
 export function mockToken(
     userType: UserType,
-    options: Omit<Parameters<typeof generateToken>[1], "userType"> = {}
+    { id, ...options }: { id?: string } & Omit<Parameters<typeof generateToken>[1], "userType"> = {}
 ): Promise<string> {
-    const id = userType === UserType.ADMIN ? "admin" : mockPasskey.name;
-    return generateToken(id, { userType, email: mockPasskey.email, ...options });
+    const owner = id ?? (userType === UserType.ADMIN ? "admin" : mockPasskey.name);
+    return generateToken(owner, { userType, email: mockPasskey.email, ...options });
 }
 
 afterEach(() => {

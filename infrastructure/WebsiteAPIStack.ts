@@ -49,6 +49,19 @@ import {
     POLAROID_PHOTOS_BUCKET
 } from "../api/common";
 
+function jsonString(vtlExpression: string): string {
+    return `"$util.escapeJavaScript(${vtlExpression}).replaceAll("\\\\'", "'")"`;
+}
+
+const QUERY_STRING_ENTRIES = [
+    "#foreach($name in $input.params().querystring.keySet())",
+    `${jsonString("$name")}: ${jsonString("$input.params().querystring.get($name)")}`,
+    "#if($foreach.hasNext),#end",
+    "#end"
+].join("\n");
+
+const QUERY_STRING_TEMPLATE = `{ "queryStringParameters": { ${QUERY_STRING_ENTRIES} } }`;
+
 const ENDPOINTS = globSync("api/endpoints/*/*.{ts,tsx}")
     .map((file) => file.replace(/^api\/|\.tsx?$/g, ""))
     .filter((endpoint) => endpoint !== "endpoints/preview/preview");
@@ -236,6 +249,7 @@ class WebsiteAPIStack extends Stack {
             "GET",
             new LambdaIntegration(previewLambda, {
                 proxy: false,
+                requestTemplates: { "application/json": QUERY_STRING_TEMPLATE },
                 integrationResponses: [
                     {
                         statusCode: "200",

@@ -4,8 +4,8 @@
     "description": "My Personal Website",
     "scripts": {
         "clean": "rm -rf coverage dist",
-        "check-format": "prettier --check \"api/**/*.ts*\" \"site/**/*.ts*\" \"tst/**/*.ts*\"",
-        "format": "prettier --write \"api/**/*.ts*\" \"site/**/*.ts*\" \"tst/**/*.ts*\"",
+        "check-format": "prettier --check \"api/**/*.ts*\" \"functions/**/*.ts\" \"site/**/*.ts*\" \"tst/**/*.ts*\"",
+        "format": "prettier --write \"api/**/*.ts*\" \"functions/**/*.ts\" \"site/**/*.ts*\" \"tst/**/*.ts*\"",
         "types": "tsc --noEmit",
         "lint": "eslint",
         "start": "NODE_ENV=development vite",
@@ -15,7 +15,6 @@
         "build-cdk": "npm run types && ts-node esbuild.mts",
         "bootstrap": "cdk bootstrap",
         "deploy": "cdk deploy --require-approval=never --all",
-        "register-passkey": "ts-node scripts/registerPasskey.ts",
         "test": "vitest run --silent && playwright test"
     },
     "author": "Max Rosoff",
@@ -97,6 +96,7 @@
         "typescript": "~6.0.3",
         "typescript-eslint": "8.73.0",
         "vite": "^8.3.8",
-        "vitest": "5.1.0"
+        "vitest": "5.1.0",
+        "wrangler": "^4.164.0"
     }
 }

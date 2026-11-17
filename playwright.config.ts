@@ -13,7 +13,8 @@ export default defineConfig({
         { name: "iphone-se", use: { ...devices["iPhone SE (3rd gen)"] } }
     ],
     webServer: {
-        command: "npx vite build && npx vite preview --port 4173 --strictPort",
+        command: "npx vite build && npx wrangler pages dev dist --port 4173",
+        env: { WRANGLER_SEND_METRICS: "false" },
         url: "http://localhost:4173",
         reuseExistingServer: !process.env.CI
     }

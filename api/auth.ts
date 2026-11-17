@@ -63,6 +63,15 @@ export async function decryptToken(token: string): Promise<AccessToken> {
     }) as AccessToken;
 }
 
+export async function readToken(token: string): Promise<AccessToken> {
+    const key = await publicKey();
+    return verify(token, key.toPEM(), {
+        algorithms: ["ES256"],
+        issuer: API_ENDPOINT_URL,
+        ignoreExpiration: true
+    }) as AccessToken;
+}
+
 function authorizationHeader(req: IncomingMessage | APIGatewayProxyEvent): string | undefined {
     const header = req.headers.authorization ?? req.headers.Authorization;
     return Array.isArray(header) ? undefined : (header ?? undefined);
