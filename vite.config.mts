@@ -18,7 +18,11 @@ function pagesRoutes(): Plugin {
             this.emitFile({
                 type: "asset",
                 fileName: "_routes.json",
-                source: JSON.stringify({ version: 1, include: PREVIEW_CARD_PAGES, exclude: [] })
+                source: JSON.stringify({
+                    version: 1,
+                    include: ["/", ...PREVIEW_CARD_PAGES],
+                    exclude: []
+                })
             });
         }
     };

@@ -51,3 +51,18 @@ test("serves an empty agent manifest", async ({ request }) => {
     expect(response.headers()["content-type"]).toContain("application/json");
     expect(await response.json()).toEqual({ entries: [] });
 });
+
+test("greets curl with a terminal card", async ({ request }) => {
+    const response = await request.get("/", { headers: { "user-agent": "curl/8.7.1" } });
+
+    expect(response.headers()["content-type"]).toContain("text/plain");
+    const text = await response.text();
+    expect(text).toMatch(/Booting OS[ .]+\S+SUCCESS/);
+    expect(text).toContain("https://github.com/mrrosoff");
+});
+
+test("serves the site to browsers on the home page", async ({ request }) => {
+    const response = await request.get("/", { headers: { "user-agent": "Mozilla/5.0" } });
+
+    expect(response.headers()["content-type"]).toContain("text/html");
+});
