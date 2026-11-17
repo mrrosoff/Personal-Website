@@ -1,14 +1,6 @@
 import type { APIGatewayProxyEvent } from "aws-lambda";
-import axios from "axios";
 import { IncomingMessage } from "http";
-import {
-    decode,
-    sign,
-    verify,
-    type JwtPayload,
-    type SignOptions,
-    type VerifyOptions
-} from "jsonwebtoken";
+import { sign, verify, type SignOptions } from "jsonwebtoken";
 import { JWK } from "node-jose";
 
 import keys from "./endpoints/jwks/keys.json";
@@ -30,26 +22,6 @@ async function publicKey(): Promise<JWK.Key> {
 async function privateKey(): Promise<JWK.Key> {
     const d = await getParameter(SIGNING_KEY_PARAMETER);
     return JWK.asKey({ ...(await publicKey()).toJSON(), d });
-}
-
-export async function verifyJWTFromURI(
-    token: string,
-    uri: string,
-    options?: VerifyOptions
-): Promise<JwtPayload | null> {
-    try {
-        const decoded = decode(token, { complete: true });
-        if (!decoded?.header.kid) {
-            return null;
-        }
-        const response = await axios.get(uri);
-        const keystore = await JWK.asKeyStore(response.data as object);
-        const key = keystore.get(decoded.header.kid);
-        return verify(token, key.toPEM(), options) as JwtPayload;
-    } catch (err) {
-        console.info(err);
-        return null;
-    }
 }
 
 export async function generateToken(
