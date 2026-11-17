@@ -46,6 +46,12 @@ jobs:
       - name: Test
         run: npm test
 
+      - name: Install Browser
+        run: npx playwright install --with-deps chromium webkit
+
+      - name: Smoke Test
+        run: npm run test-smoke
+
       - name: Build
         run: npm run build-cdk
 

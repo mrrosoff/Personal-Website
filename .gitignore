@@ -6,3 +6,5 @@ lib
 cdk.out
 target
 .DS_Store
+test-results
+playwright-report
