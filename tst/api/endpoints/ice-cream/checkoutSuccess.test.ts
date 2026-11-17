@@ -18,6 +18,16 @@ describe("checkoutSuccess", () => {
         expect(result.statusCode).toBe(400);
     });
 
+    it("should check an unsigned event against an empty signature", async () => {
+        await handler(mockEvent({ body: "{}" }));
+
+        expect(mockStripe.webhooks.constructEventAsync).toHaveBeenCalledWith(
+            "{}",
+            "",
+            expect.any(String)
+        );
+    });
+
     it("should reject events meant for another webhook", async () => {
         mockStripe.webhooks.constructEventAsync.mockResolvedValue({
             type: "customer.created",

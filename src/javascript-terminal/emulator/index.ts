@@ -51,7 +51,7 @@ export default class Emulator {
         }
 
         const strToComplete = isTypingNewPart ? "" : lastTextEntered;
-        const cwd = state.getEnvVariables().cwd!;
+        const cwd = state.getEnvVariables().cwd;
 
         if (
             strToComplete !== "" &&

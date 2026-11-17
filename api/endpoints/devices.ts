@@ -43,7 +43,8 @@ async function deviceForId(deviceId: string, secret: string): Promise<DatabaseDe
 }
 
 export async function devicesForIds(ids: string[] = []): Promise<DatabaseDevice[]> {
-    return Promise.all(ids.map(async (id) => (await getItem(DEVICES_TABLE, id))!));
+    const devices = await Promise.all(ids.map((id) => getItem(DEVICES_TABLE, id)));
+    return devices.filter((device) => device !== undefined);
 }
 
 export async function deviceForOwner(

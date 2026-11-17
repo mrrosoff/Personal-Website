@@ -136,6 +136,16 @@ describe("Polaroid", () => {
         expect(screen.queryByText(/cropping/)).not.toBeInTheDocument();
     });
 
+    it("should do nothing when the picker returns no files", async () => {
+        await renderSignedIn();
+
+        fireEvent.change(document.querySelector('input[type="file"]')!, {
+            target: { files: null }
+        });
+
+        expect(screen.queryByText(/cropping/)).not.toBeInTheDocument();
+    });
+
     it("should show why an upload failed", async () => {
         axiosPost.mockRejectedValue(
             new AxiosError("bad", "400", undefined, undefined, {

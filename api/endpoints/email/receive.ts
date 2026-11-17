@@ -62,9 +62,9 @@ async function verifyWebhookSignature(
         resend.webhooks.verify({
             payload: requestBody,
             headers: {
-                id: headers["svix-id"]!,
-                timestamp: headers["svix-timestamp"]!,
-                signature: headers["svix-signature"]!
+                id: headers["svix-id"] ?? "",
+                timestamp: headers["svix-timestamp"] ?? "",
+                signature: headers["svix-signature"] ?? ""
             },
             webhookSecret: secret
         });

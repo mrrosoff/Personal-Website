@@ -78,13 +78,16 @@ export default function CropDialog({ file, remaining, onCancel, onConfirm }: Cro
         };
     }, [file]);
 
-    const confirm = useCallback(async () => {
-        try {
-            onConfirm(await renderCrop(source!, area!));
-        } catch {
-            setFailed(true);
-        }
-    }, [area, onConfirm, source]);
+    const confirm = useCallback(
+        async (source: Blob, area: Area) => {
+            try {
+                onConfirm(await renderCrop(source, area));
+            } catch {
+                setFailed(true);
+            }
+        },
+        [onConfirm]
+    );
 
     return (
         <Dialog
@@ -164,7 +167,7 @@ export default function CropDialog({ file, remaining, onCancel, onConfirm }: Cro
                 </Button>
                 <Button
                     variant="contained"
-                    onClick={() => void confirm()}
+                    onClick={source && area ? () => void confirm(source, area) : undefined}
                     disabled={!area}
                     sx={{ py: 0.25 }}
                 >

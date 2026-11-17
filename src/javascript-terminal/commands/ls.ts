@@ -8,7 +8,7 @@ import type { FileSystem } from "../../FileSystem";
 const IMPLIED_DIRECTORY_ENTRIES = [".", ".."];
 
 const resolveDirectoryToList = (envVariables: Record<string, string>, argv: string | string[]) => {
-    const cwd = envVariables.cwd!;
+    const cwd = envVariables.cwd;
 
     if (argv.length > 0) {
         return PathUtil.toAbsolutePath(argv[0], cwd);

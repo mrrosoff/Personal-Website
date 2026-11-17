@@ -412,7 +412,7 @@ function UploadControls(props: UploadControlsProps) {
                 type="file"
                 accept={ACCEPT_ATTRIBUTE}
                 onChange={(event) => {
-                    props.onFiles(Array.from(event.target.files!));
+                    props.onFiles(Array.from(event.target.files ?? []));
                     // Without this, picking the same files again fires no change
                     // event and the picker looks broken.
                     event.target.value = "";

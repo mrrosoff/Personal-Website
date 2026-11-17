@@ -282,9 +282,9 @@ function decodeImage(buffer: Buffer): RgbImage {
     const pixels = raw.width * raw.height;
     const data = new Uint8Array(pixels * 3);
     for (let i = 0; i < pixels; i++) {
-        data[i * 3] = raw.data[i * 4]!;
-        data[i * 3 + 1] = raw.data[i * 4 + 1]!;
-        data[i * 3 + 2] = raw.data[i * 4 + 2]!;
+        data[i * 3] = raw.data[i * 4];
+        data[i * 3 + 1] = raw.data[i * 4 + 1];
+        data[i * 3 + 2] = raw.data[i * 4 + 2];
     }
     return { data, width: raw.width, height: raw.height };
 }

@@ -18,7 +18,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     const stripe = new Stripe(stripeKeys["/website/stripe/api-key"]);
     const stripeEvent = await stripe.webhooks.constructEventAsync(
         event.body,
-        event.headers["stripe-signature"]!,
+        event.headers["stripe-signature"] ?? "",
         stripeKeys["/website/stripe/webhook"]
     );
 
@@ -112,7 +112,7 @@ async function processCheckoutOversold(
 
     const paymentIntentId = session.payment_intent as string;
     const oversoldLineItems = lineItems.filter(({ price }) =>
-        oversoldProductIds.includes(price!.product as string)
+        oversoldProductIds.includes(price?.product as string)
     );
     const refundAmount = oversoldLineItems.reduce((sum, item) => sum + item.amount_total, 0);
 
