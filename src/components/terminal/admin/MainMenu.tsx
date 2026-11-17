@@ -1,4 +1,4 @@
-import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, useMediaQuery, useTheme } from "@mui/material";
 
 import {
     MainMenuOption,
@@ -7,6 +7,7 @@ import {
 import { useAppContext } from "../../AppContext";
 import type { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
+import { ConsoleHeading, ConsoleHint } from "./common/ConsoleText";
 
 const MainMenu = (props: { theme: TerminalTheme; onAction: (key: string) => void }) => {
     const { emulatorState } = useAppContext();
@@ -21,15 +22,7 @@ const MainMenu = (props: { theme: TerminalTheme; onAction: (key: string) => void
 
     return (
         <Box sx={{ paddingTop: 1 }}>
-            <Typography
-                sx={{
-                    color: props.theme.outputColor,
-                    fontWeight: "bold",
-                    mb: 1.25
-                }}
-            >
-                === Admin Console ===
-            </Typography>
+            <ConsoleHeading theme={props.theme} />
             <MenuItem
                 selected={mode.selectedOption === MainMenuOption.IceCreamInventory}
                 theme={props.theme}
@@ -65,18 +58,11 @@ const MainMenu = (props: { theme: TerminalTheme; onAction: (key: string) => void
             >
                 5. Exit
             </MenuItem>
-            <Typography
-                sx={{
-                    color: props.theme.outputColor,
-                    mt: 1,
-                    fontSize: "0.9em",
-                    opacity: 0.7
-                }}
-            >
+            <ConsoleHint theme={props.theme} spaced>
                 {smallScreen
                     ? "tap an option to select"
                     : "use arrow keys to navigate, enter to select, escape to exit"}
-            </Typography>
+            </ConsoleHint>
         </Box>
     );
 };

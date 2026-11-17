@@ -4,6 +4,7 @@ import type { AdminConsoleState } from "../../../../javascript-terminal/emulator
 import { useAppContext } from "../../../AppContext";
 import type { TerminalTheme } from "../../Terminal";
 import MenuItem from "../common/MenuItem";
+import { ConsoleHeading, ConsoleHint } from "../common/ConsoleText";
 import Stepper from "../common/Stepper";
 
 type FormField = "flavorName" | "initialQuantity" | "color" | "type";
@@ -35,15 +36,7 @@ const ProvisionFlavorFormMenu = (props: {
 
     return (
         <Box sx={{ paddingTop: 1 }}>
-            <Typography
-                sx={{
-                    color: props.theme.outputColor,
-                    fontWeight: "bold",
-                    mb: 1.25
-                }}
-            >
-                === Admin Console (Provision New Flavor) ===
-            </Typography>
+            <ConsoleHeading theme={props.theme} title={"Provision New Flavor"} />
 
             <Box sx={{ mb: 1 }}>
                 {fields.map(({ field, label, value }) => {
@@ -99,17 +92,11 @@ const ProvisionFlavorFormMenu = (props: {
                 </Box>
             )}
 
-            <Typography
-                sx={{
-                    color: props.theme.outputColor,
-                    fontSize: "0.9em",
-                    opacity: 0.7
-                }}
-            >
+            <ConsoleHint theme={props.theme}>
                 {smallScreen
                     ? "tap a field to edit"
                     : "up/down: navigate fields | type to edit | enter: continue | escape: cancel"}
-            </Typography>
+            </ConsoleHint>
         </Box>
     );
 };

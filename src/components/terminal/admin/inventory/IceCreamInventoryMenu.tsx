@@ -7,6 +7,7 @@ import {
 import { useAppContext } from "../../../AppContext";
 import type { TerminalTheme } from "../../Terminal";
 import MenuItem from "../common/MenuItem";
+import { ConsoleHeading, ConsoleHint } from "../common/ConsoleText";
 import useLoadingDots from "../common/useLoadingDots";
 import Stepper from "../common/Stepper";
 
@@ -35,15 +36,7 @@ const IceCreamInventoryMenu = (props: {
     if (mode.editingFlavor) {
         return (
             <Box sx={{ paddingTop: 1 }}>
-                <Typography
-                    sx={{
-                        color: props.theme.outputColor,
-                        fontWeight: "bold",
-                        mb: 1.25
-                    }}
-                >
-                    === Admin Console (Modify Flavor Inventory) ===
-                </Typography>
+                <ConsoleHeading theme={props.theme} title={"Modify Flavor Inventory"} />
                 <Box sx={{ opacity: mode.loading ? 0.4 : 1 }}>
                     {(["name", "color", "type", "count"] as const).map((field) => {
                         const active = (mode.editingField || "name") === field;
@@ -109,34 +102,20 @@ const IceCreamInventoryMenu = (props: {
                         </MenuItem>
                     </Box>
                 )}
-                <Typography
-                    sx={{
-                        color: props.theme.outputColor,
-                        fontSize: "0.9em",
-                        opacity: 0.7
-                    }}
-                >
+                <ConsoleHint theme={props.theme}>
                     {mode.loading
                         ? `Loading${dots}`
                         : smallScreen
                           ? "tap a field to edit, then Save"
                           : "up/down: select field | type: edit | left/right: change value | enter: save | escape: cancel"}
-                </Typography>
+                </ConsoleHint>
             </Box>
         );
     }
 
     return (
         <Box sx={{ paddingTop: 1 }}>
-            <Typography
-                sx={{
-                    color: props.theme.outputColor,
-                    fontWeight: "bold",
-                    mb: 1.25
-                }}
-            >
-                === Admin Console (Ice Cream Inventory) ===
-            </Typography>
+            <ConsoleHeading theme={props.theme} title={"Ice Cream Inventory"} />
             <MenuItem
                 selected={mode.selectedOption === IceCreamInventoryMenuOption.ProvisionNewFlavor}
                 theme={props.theme}
@@ -168,18 +147,11 @@ const IceCreamInventoryMenu = (props: {
             >
                 3. Go Back
             </MenuItem>
-            <Typography
-                sx={{
-                    color: props.theme.outputColor,
-                    mt: 1,
-                    fontSize: "0.9em",
-                    opacity: 0.7
-                }}
-            >
+            <ConsoleHint theme={props.theme} spaced>
                 {smallScreen
                     ? "tap an option to select"
                     : "use arrow keys to navigate, enter to select, escape to go back"}
-            </Typography>
+            </ConsoleHint>
         </Box>
     );
 };

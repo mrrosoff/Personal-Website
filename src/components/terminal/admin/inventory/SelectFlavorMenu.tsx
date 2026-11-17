@@ -6,6 +6,7 @@ import type { AdminConsoleState } from "../../../../javascript-terminal/emulator
 import { useAppContext } from "../../../AppContext";
 import type { TerminalTheme } from "../../Terminal";
 import MenuItem from "../common/MenuItem";
+import { ConsoleHeading, ConsoleHint } from "../common/ConsoleText";
 import useLoadingDots from "../common/useLoadingDots";
 
 const SelectFlavorMenu = (props: { theme: TerminalTheme; onAction: (key: string) => void }) => {
@@ -47,24 +48,8 @@ const SelectFlavorMenu = (props: { theme: TerminalTheme; onAction: (key: string)
     if (!mode.inventoryData) {
         return (
             <Box sx={{ paddingTop: 1 }}>
-                <Typography
-                    sx={{
-                        color: props.theme.outputColor,
-                        fontWeight: "bold",
-                        mb: 1.25
-                    }}
-                >
-                    === Admin Console (Select Flavor) ===
-                </Typography>
-                <Typography
-                    sx={{
-                        color: props.theme.outputColor,
-                        fontSize: "0.9em",
-                        opacity: 0.7
-                    }}
-                >
-                    Loading{dots}
-                </Typography>
+                <ConsoleHeading theme={props.theme} title={"Select Flavor"} />
+                <ConsoleHint theme={props.theme}>Loading{dots}</ConsoleHint>
             </Box>
         );
     }
@@ -72,15 +57,7 @@ const SelectFlavorMenu = (props: { theme: TerminalTheme; onAction: (key: string)
     if (mode.inventoryData.length === 0) {
         return (
             <Box sx={{ paddingTop: 1 }}>
-                <Typography
-                    sx={{
-                        color: props.theme.outputColor,
-                        fontWeight: "bold",
-                        mb: 1.25
-                    }}
-                >
-                    === Admin Console (Select Flavor) ===
-                </Typography>
+                <ConsoleHeading theme={props.theme} title={"Select Flavor"} />
                 <Typography sx={{ color: props.theme.outputColor, mb: 2 }}>
                     No flavors available
                 </Typography>
@@ -90,15 +67,7 @@ const SelectFlavorMenu = (props: { theme: TerminalTheme; onAction: (key: string)
 
     return (
         <Box sx={{ paddingTop: 1 }}>
-            <Typography
-                sx={{
-                    color: props.theme.outputColor,
-                    fontWeight: "bold",
-                    mb: 1.25
-                }}
-            >
-                === Admin Console (Select Flavor) ===
-            </Typography>
+            <ConsoleHeading theme={props.theme} title={"Select Flavor"} />
             {itemsOnPage.map((item, pageIndex) => {
                 const globalIndex = startIndex + pageIndex;
 
@@ -144,19 +113,12 @@ const SelectFlavorMenu = (props: { theme: TerminalTheme; onAction: (key: string)
                     </MenuItem>
                 </Box>
             )}
-            <Typography
-                sx={{
-                    color: props.theme.outputColor,
-                    mt: 1,
-                    fontSize: "0.9em",
-                    opacity: 0.7
-                }}
-            >
+            <ConsoleHint theme={props.theme} spaced>
                 Page {currentPage + 1} of {totalPages}.{" "}
                 {smallScreen
                     ? "tap a flavor to edit"
                     : "use arrow keys to navigate, enter to select, escape to go back"}
-            </Typography>
+            </ConsoleHint>
         </Box>
     );
 };

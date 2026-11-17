@@ -4,6 +4,7 @@ import type { AdminConsoleState } from "../../../../javascript-terminal/emulator
 import { useAppContext } from "../../../AppContext";
 import type { TerminalTheme } from "../../Terminal";
 import MenuItem from "../common/MenuItem";
+import { ConsoleHeading, ConsoleHint } from "../common/ConsoleText";
 
 const blink = keyframes`
     0%, 50% { visibility: visible; }
@@ -27,15 +28,7 @@ const ConfirmSendEmailsMenu = (props: {
 
     return (
         <Box sx={{ paddingTop: 1 }}>
-            <Typography
-                sx={{
-                    color: props.theme.outputColor,
-                    fontWeight: "bold",
-                    mb: 1.25
-                }}
-            >
-                === Admin Console (Send Marketing Emails) ===
-            </Typography>
+            <ConsoleHeading theme={props.theme} title={"Send Marketing Emails"} />
             <Typography
                 sx={{
                     color: props.theme.outputColor,
@@ -85,19 +78,13 @@ const ConfirmSendEmailsMenu = (props: {
                     No
                 </MenuItem>
             </Box>
-            <Typography
-                sx={{
-                    color: props.theme.outputColor,
-                    fontSize: "0.9em",
-                    opacity: 0.7
-                }}
-            >
+            <ConsoleHint theme={props.theme}>
                 {mode.loading
                     ? "Sending..."
                     : smallScreen
                       ? "tap Yes or No"
                       : "type: message | left/right: select option | enter: confirm | escape: cancel"}
-            </Typography>
+            </ConsoleHint>
         </Box>
     );
 };

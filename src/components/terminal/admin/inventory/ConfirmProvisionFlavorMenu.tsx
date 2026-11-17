@@ -4,6 +4,7 @@ import type { AdminConsoleState } from "../../../../javascript-terminal/emulator
 import { useAppContext } from "../../../AppContext";
 import type { TerminalTheme } from "../../Terminal";
 import MenuItem from "../common/MenuItem";
+import { ConsoleHeading, ConsoleHint } from "../common/ConsoleText";
 import useLoadingDots from "../common/useLoadingDots";
 
 const ConfirmProvisionFlavorMenu = (props: {
@@ -26,15 +27,7 @@ const ConfirmProvisionFlavorMenu = (props: {
 
     return (
         <Box sx={{ paddingTop: 1 }}>
-            <Typography
-                sx={{
-                    color: props.theme.outputColor,
-                    fontWeight: "bold",
-                    mb: 1.25
-                }}
-            >
-                === Admin Console (Confirm Provision Flavor) ===
-            </Typography>
+            <ConsoleHeading theme={props.theme} title={"Confirm Provision Flavor"} />
             <Typography
                 sx={{
                     color: props.theme.outputColor,
@@ -83,19 +76,13 @@ const ConfirmProvisionFlavorMenu = (props: {
                     No
                 </MenuItem>
             </Box>
-            <Typography
-                style={{
-                    color: props.theme.outputColor,
-                    fontSize: "0.9em",
-                    opacity: 0.7
-                }}
-            >
+            <ConsoleHint theme={props.theme}>
                 {mode.loading
                     ? `Loading${dots}`
                     : smallScreen
                       ? "tap Yes or No"
                       : "left/right: select option | enter: confirm | escape: cancel"}
-            </Typography>
+            </ConsoleHint>
         </Box>
     );
 };

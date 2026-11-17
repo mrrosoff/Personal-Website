@@ -7,6 +7,7 @@ import type {
 import { useAppContext } from "../../../AppContext";
 import type { TerminalTheme } from "../../Terminal";
 import MenuItem from "../common/MenuItem";
+import { ConsoleHeading, ConsoleHint } from "../common/ConsoleText";
 import useLoadingDots from "../common/useLoadingDots";
 
 type FormField = MailingListEntry["currentField"];
@@ -41,9 +42,7 @@ const AddMailingListEntryMenu = (props: {
 
     return (
         <Box sx={{ paddingTop: 1 }}>
-            <Typography sx={{ color: outputColor, fontWeight: "bold", mb: 1.25 }}>
-                === Admin Console (Add To Mailing List) ===
-            </Typography>
+            <ConsoleHeading theme={props.theme} title={"Add To Mailing List"} />
             {entry.added ? (
                 <Typography sx={{ color: outputColor, mb: 1, px: 1 }}>
                     {entry.email.trim()} is on the mailing list.
@@ -98,7 +97,7 @@ const AddMailingListEntryMenu = (props: {
                 </Box>
             )}
 
-            <Typography sx={{ color: outputColor, fontSize: "0.9em", opacity: 0.7 }}>
+            <ConsoleHint theme={props.theme}>
                 {mode.loading
                     ? `Adding${dots}`
                     : entry.added
@@ -108,7 +107,7 @@ const AddMailingListEntryMenu = (props: {
                       : smallScreen
                         ? "tap a field to edit, then Add"
                         : "up/down: navigate fields | type to edit | enter: add | escape: cancel"}
-            </Typography>
+            </ConsoleHint>
         </Box>
     );
 };

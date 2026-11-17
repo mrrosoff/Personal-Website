@@ -14,6 +14,7 @@ import { API_ENDPOINT_URL } from "../../../../api/types";
 import { useAppContext } from "../../AppContext";
 import type { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
+import { ConsoleHeading, ConsoleHint } from "./common/ConsoleText";
 import useLoadingDots from "./common/useLoadingDots";
 import Stepper from "./common/Stepper";
 
@@ -90,9 +91,7 @@ const CreateFriendInviteMenu = (props: {
 
     return (
         <Box sx={{ paddingTop: 1 }}>
-            <Typography sx={{ color: outputColor, fontWeight: "bold", mb: 1.25 }}>
-                === Admin Console (Create Friend Invite) ===
-            </Typography>
+            <ConsoleHeading theme={props.theme} title={"Create Friend Invite"} />
 
             {invite.url ? (
                 <Box sx={{ mb: 1, px: 1 }}>
@@ -225,13 +224,7 @@ const CreateFriendInviteMenu = (props: {
                 </Box>
             )}
 
-            <Typography
-                sx={{
-                    color: outputColor,
-                    fontSize: "0.9em",
-                    opacity: 0.7
-                }}
-            >
+            <ConsoleHint theme={props.theme}>
                 {mode.loading
                     ? `Loading${dots}`
                     : invite.url
@@ -241,7 +234,7 @@ const CreateFriendInviteMenu = (props: {
                       : smallScreen
                         ? "tap a field to edit, then Create"
                         : "up/down: fields | ←/→ and space: devices | enter: create | escape: cancel"}
-            </Typography>
+            </ConsoleHint>
         </Box>
     );
 };
