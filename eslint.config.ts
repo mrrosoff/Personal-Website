@@ -18,12 +18,16 @@ export default tseslint.config(
             }
         },
         rules: {
-            "@typescript-eslint/consistent-type-definitions": ["error", "type"],
+            "@typescript-eslint/consistent-type-definitions": "off",
             "@typescript-eslint/no-confusing-void-expression": "off",
             "@typescript-eslint/no-non-null-assertion": "off",
             "@typescript-eslint/no-unused-vars": [
                 "error",
-                { argsIgnorePattern: "^_", varsIgnorePattern: "^_", caughtErrorsIgnorePattern: "^_" }
+                {
+                    argsIgnorePattern: "^_",
+                    varsIgnorePattern: "^_",
+                    caughtErrorsIgnorePattern: "^_"
+                }
             ],
             "@typescript-eslint/restrict-template-expressions": [
                 "error",
@@ -51,9 +55,6 @@ export default tseslint.config(
     },
     {
         files: ["tst/setup.ts"],
-        rules: {
-            "@typescript-eslint/consistent-type-definitions": "off",
-            "@typescript-eslint/no-explicit-any": "off"
-        }
+        rules: { "@typescript-eslint/no-explicit-any": "off" }
     }
 );
