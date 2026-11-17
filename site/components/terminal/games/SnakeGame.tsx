@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 
 import { useAppContext } from "../../AppContext";
@@ -12,6 +12,29 @@ const INITIAL_SNAKE: Position[] = [{ x: 12, y: 6 }];
 const INITIAL_DIRECTION: Position = { x: 1, y: 0 };
 const GAME_SPEED = 150;
 
+type Game = {
+    snake: Position[];
+    direction: Position;
+    food: Position;
+    score: number;
+    over: boolean;
+};
+
+const INITIAL_GAME: Game = {
+    snake: INITIAL_SNAKE,
+    direction: INITIAL_DIRECTION,
+    food: { x: 18, y: 6 },
+    score: 0,
+    over: false
+};
+
+const DIRECTIONS: Partial<Record<string, Position>> = {
+    ArrowUp: { x: 0, y: -1 },
+    ArrowDown: { x: 0, y: 1 },
+    ArrowLeft: { x: -1, y: 0 },
+    ArrowRight: { x: 1, y: 0 }
+};
+
 function randomFood(snake: Position[]): Position {
     let food: Position;
     do {
@@ -23,27 +46,39 @@ function randomFood(snake: Position[]): Position {
     return food;
 }
 
+function turn(game: Game, direction: Position): Game {
+    const reversing = direction.x === -game.direction.x || direction.y === -game.direction.y;
+    return reversing ? game : { ...game, direction };
+}
+
+function tick(game: Game): Game {
+    const head = game.snake[0];
+    const next = { x: head.x + game.direction.x, y: head.y + game.direction.y };
+    const offBoard = next.x < 0 || next.x >= GRID_WIDTH || next.y < 0 || next.y >= GRID_HEIGHT;
+    const intoItself = game.snake.some((segment) => segment.x === next.x && segment.y === next.y);
+    if (offBoard || intoItself) {
+        return { ...game, over: true };
+    }
+
+    const snake = [next, ...game.snake];
+    if (next.x === game.food.x && next.y === game.food.y) {
+        return { ...game, snake, food: randomFood(snake), score: game.score + 10 };
+    }
+    return { ...game, snake: snake.slice(0, -1) };
+}
+
 const SnakeGame = () => {
     const { emulatorState } = useAppContext();
-    const [snake, setSnake] = useState<Position[]>(INITIAL_SNAKE);
-    const [direction, setDirection] = useState<Position>(INITIAL_DIRECTION);
-    const [food, setFood] = useState<Position>({ x: 18, y: 6 });
-    const [gameOver, setGameOver] = useState(false);
-    const [score, setScore] = useState(0);
+    const [game, setGame] = useState(INITIAL_GAME);
     const [countdown, setCountdown] = useState(3);
     const loading = countdown > 0;
-    const directionRef = useRef(direction);
 
     useEffect(() => {
-        directionRef.current = direction;
-    }, [direction]);
-
-    useEffect(() => {
-        if (gameOver) {
+        if (game.over) {
             const timer = setTimeout(() => emulatorState.setBlockingMode(undefined), 1500);
             return () => clearTimeout(timer);
         }
-    }, [gameOver, emulatorState]);
+    }, [game.over, emulatorState]);
 
     useEffect(() => {
         if (!loading) {
@@ -54,79 +89,28 @@ const SnakeGame = () => {
     }, [countdown, loading]);
 
     useEffect(() => {
+        if (game.over || loading) return;
+
         const handleKeyPress = (e: KeyboardEvent) => {
-            if (gameOver || loading) return;
-
-            const key = e.key;
-            const currentDir = directionRef.current;
-
-            if (key === "ArrowUp" && currentDir.y === 0) {
+            const direction = DIRECTIONS[e.key];
+            if (direction) {
                 e.preventDefault();
-                setDirection({ x: 0, y: -1 });
-            } else if (key === "ArrowDown" && currentDir.y === 0) {
-                e.preventDefault();
-                setDirection({ x: 0, y: 1 });
-            } else if (key === "ArrowLeft" && currentDir.x === 0) {
-                e.preventDefault();
-                setDirection({ x: -1, y: 0 });
-            } else if (key === "ArrowRight" && currentDir.x === 0) {
-                e.preventDefault();
-                setDirection({ x: 1, y: 0 });
+                setGame((current) => turn(current, direction));
             }
         };
+        const gameLoop = setInterval(() => setGame(tick), GAME_SPEED);
 
         window.addEventListener("keydown", handleKeyPress);
-        return () => window.removeEventListener("keydown", handleKeyPress);
-    }, [gameOver, loading]);
-
-    useEffect(() => {
-        if (gameOver || loading) return;
-
-        const gameLoop = setInterval(() => {
-            setSnake((prevSnake) => {
-                const head = prevSnake[0];
-                const newHead: Position = {
-                    x: head.x + directionRef.current.x,
-                    y: head.y + directionRef.current.y
-                };
-
-                if (
-                    newHead.x < 0 ||
-                    newHead.x >= GRID_WIDTH ||
-                    newHead.y < 0 ||
-                    newHead.y >= GRID_HEIGHT
-                ) {
-                    setGameOver(true);
-                    return prevSnake;
-                }
-
-                if (
-                    prevSnake.some((segment) => segment.x === newHead.x && segment.y === newHead.y)
-                ) {
-                    setGameOver(true);
-                    return prevSnake;
-                }
-
-                const newSnake = [newHead, ...prevSnake];
-
-                if (newHead.x === food.x && newHead.y === food.y) {
-                    setScore((prev) => prev + 10);
-                    setFood(randomFood(newSnake));
-                    return newSnake;
-                }
-
-                newSnake.pop();
-                return newSnake;
-            });
-        }, GAME_SPEED);
-
-        return () => clearInterval(gameLoop);
-    }, [gameOver, food, loading]);
+        return () => {
+            clearInterval(gameLoop);
+            window.removeEventListener("keydown", handleKeyPress);
+        };
+    }, [game.over, loading]);
 
     return (
         <Box sx={{ padding: 2 }}>
             <Typography sx={{ color: "#2BC903", mb: 1, fontFamily: "monospace" }}>
-                SNAKE - Score: {score}
+                SNAKE - Score: {game.score}
             </Typography>
             {loading ? (
                 <Box
@@ -143,7 +127,7 @@ const SnakeGame = () => {
                         {countdown}
                     </Typography>
                 </Box>
-            ) : gameOver ? (
+            ) : game.over ? (
                 <Box
                     sx={{
                         display: "flex",
@@ -160,7 +144,7 @@ const SnakeGame = () => {
                         GAME OVER
                     </Typography>
                     <Typography sx={{ color: "#FCFCFC", fontSize: "1.2em" }}>
-                        Final Score: {score}
+                        Final Score: {game.score}
                     </Typography>
                 </Box>
             ) : (
@@ -177,12 +161,12 @@ const SnakeGame = () => {
                     {Array.from({ length: GRID_WIDTH * GRID_HEIGHT }).map((_, index) => {
                         const x = index % GRID_WIDTH;
                         const y = Math.floor(index / GRID_WIDTH);
-                        const snakeIndex = snake.findIndex(
+                        const snakeIndex = game.snake.findIndex(
                             (segment) => segment.x === x && segment.y === y
                         );
                         const isHead = snakeIndex === 0;
                         const isSnake = snakeIndex !== -1;
-                        const isFood = food.x === x && food.y === y;
+                        const isFood = game.food.x === x && game.food.y === y;
 
                         return (
                             <Box

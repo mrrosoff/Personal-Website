@@ -90,6 +90,15 @@ describe("SnakeGame", () => {
         expect(emulatorState.getBlockingMode()).toBeUndefined();
     });
 
+    it("should keep going straight on other keys", () => {
+        startGame();
+
+        press("a");
+        tick(150 * 13);
+
+        expect(screen.getByText("GAME OVER")).toBeInTheDocument();
+    });
+
     it("should not reverse straight into itself", () => {
         startGame();
 
