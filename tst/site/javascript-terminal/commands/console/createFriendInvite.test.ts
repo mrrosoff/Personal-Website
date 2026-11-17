@@ -34,7 +34,7 @@ function invite(changes: Partial<FriendInvite> = {}, devices = inviteDevices) {
 }
 
 async function press(key: string, state = invite()) {
-    return (await handleCreateFriendInvite(key, state)).getAdminConsoleMode()!;
+    return (await handleCreateFriendInvite(key, state)).getAdminConsoleMode();
 }
 
 describe("handleCreateFriendInvite", () => {
@@ -47,25 +47,25 @@ describe("handleCreateFriendInvite", () => {
     it("should ignore keys once the invite is made", async () => {
         const result = await press("a", invite({ url: "https://maxrosoff.com/register-friend" }));
 
-        expect(result.friendInvite?.friendName).toBe("Zed");
+        expect(result?.friendInvite?.friendName).toBe("Zed");
     });
 
     it("should move between fields", async () => {
         const result = await press("ArrowUp");
 
-        expect(result.friendInvite?.currentField).toBe("devices");
+        expect(result?.friendInvite?.currentField).toBe("devices");
     });
 
     it("should type into the name, spaces included", async () => {
         const result = await press(" ");
 
-        expect(result.friendInvite?.friendName).toBe("Zed ");
+        expect(result?.friendInvite?.friendName).toBe("Zed ");
     });
 
     it("should delete from the email", async () => {
         const result = await press("Backspace", invite({ email: "z@", currentField: "email" }));
 
-        expect(result.friendInvite?.email).toBe("z");
+        expect(result?.friendInvite?.email).toBe("z");
     });
 
     it("should type a duration", async () => {
@@ -74,37 +74,37 @@ describe("handleCreateFriendInvite", () => {
             invite({ durationHours: 1, currentField: "durationHours" })
         );
 
-        expect(result.friendInvite?.durationHours).toBe(12);
+        expect(result?.friendInvite?.durationHours).toBe(12);
     });
 
     it("should nudge the duration with arrows", async () => {
         const result = await press("ArrowRight", invite({ currentField: "durationHours" }));
 
-        expect(result.friendInvite?.durationHours).toBe(7);
+        expect(result?.friendInvite?.durationHours).toBe(7);
     });
 
     it("should not nudge a text field", async () => {
         const result = await press("ArrowLeft");
 
-        expect(result.friendInvite).toEqual(blankInvite);
+        expect(result?.friendInvite).toEqual(blankInvite);
     });
 
     it("should move between devices", async () => {
         const result = await press("ArrowLeft", invite({ currentField: "devices" }));
 
-        expect(result.friendInvite?.deviceIndex).toBe(1);
+        expect(result?.friendInvite?.deviceIndex).toBe(1);
     });
 
     it("should not move when there are no devices", async () => {
         const result = await press("ArrowRight", invite({ currentField: "devices" }, []));
 
-        expect(result.friendInvite?.deviceIndex).toBe(0);
+        expect(result?.friendInvite?.deviceIndex).toBe(0);
     });
 
     it("should pick a device with space", async () => {
         const result = await press(" ", invite({ currentField: "devices" }));
 
-        expect(result.friendInvite?.deviceIds).toEqual([mockDevice.deviceId]);
+        expect(result?.friendInvite?.deviceIds).toEqual([mockDevice.deviceId]);
     });
 
     it("should unpick a device with space", async () => {
@@ -113,19 +113,19 @@ describe("handleCreateFriendInvite", () => {
             invite({ currentField: "devices", deviceIds: [mockDevice.deviceId] })
         );
 
-        expect(result.friendInvite?.deviceIds).toEqual([]);
+        expect(result?.friendInvite?.deviceIds).toEqual([]);
     });
 
     it("should do nothing with space when there are no devices", async () => {
         const result = await press(" ", invite({ currentField: "devices" }, []));
 
-        expect(result.friendInvite?.deviceIds).toEqual([]);
+        expect(result?.friendInvite?.deviceIds).toEqual([]);
     });
 
     it("should not type into the devices", async () => {
         const result = await press("a", invite({ currentField: "devices" }));
 
-        expect(result.friendInvite?.deviceIds).toEqual([]);
+        expect(result?.friendInvite?.deviceIds).toEqual([]);
     });
 
     it("should need a name to send", async () => {
@@ -137,7 +137,7 @@ describe("handleCreateFriendInvite", () => {
     it("should refuse an invalid email", async () => {
         const result = await press("Enter", invite({ email: "nope" }));
 
-        expect(result.error).toBe("Enter A Valid Email Address");
+        expect(result?.error).toBe("Enter A Valid Email Address");
     });
 
     it("should create the invite and show its link", async () => {
@@ -181,13 +181,13 @@ describe("handleCreateFriendInvite", () => {
 
         const result = await press("Enter");
 
-        expect(result.error).toBe("Failed To Create Friend Invite");
+        expect(result?.error).toBe("Failed To Create Friend Invite");
     });
 
     it("should move down through the fields", async () => {
         const result = await press("ArrowDown");
 
-        expect(result.friendInvite?.currentField).toBe("email");
+        expect(result?.friendInvite?.currentField).toBe("email");
     });
 
     it("should treat a missing device list as empty", async () => {
@@ -198,6 +198,6 @@ describe("handleCreateFriendInvite", () => {
 
         const result = await press(" ", state);
 
-        expect(result.friendInvite?.deviceIds).toEqual([]);
+        expect(result?.friendInvite?.deviceIds).toEqual([]);
     });
 });

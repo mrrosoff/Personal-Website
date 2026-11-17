@@ -67,7 +67,7 @@ function photo(name: string, type = "image/jpeg") {
 }
 
 function choose(...files: File[]) {
-    fireEvent.change(document.querySelector('input[type="file"]')!, { target: { files } });
+    fireEvent.change(screen.getByLabelText("Choose Photos"), { target: { files } });
 }
 
 beforeEach(() => {
@@ -142,7 +142,7 @@ describe("Polaroid", () => {
     it("should do nothing when the picker returns no files", async () => {
         await renderSignedIn();
 
-        fireEvent.change(document.querySelector('input[type="file"]')!, {
+        fireEvent.change(screen.getByLabelText("Choose Photos"), {
             target: { files: null }
         });
 
@@ -229,7 +229,7 @@ describe("Polaroid", () => {
             }
         });
         await renderSignedIn();
-        const dropArea = (await screen.findByText("Frame Full")).closest("label")!.parentElement!;
+        const dropArea = await screen.findByRole("region", { name: "Drop photos here" });
 
         fireEvent.dragOver(dropArea);
         fireEvent.drop(dropArea, { dataTransfer: { files: [photo("a.jpg")] } });
@@ -239,7 +239,7 @@ describe("Polaroid", () => {
 
     it("should take dropped photos", async () => {
         await renderSignedIn();
-        const dropArea = screen.getByText("Choose Photos").closest("label")!.parentElement!;
+        const dropArea = screen.getByRole("region", { name: "Drop photos here" });
 
         fireEvent.dragOver(dropArea);
         fireEvent.dragLeave(dropArea, { relatedTarget: dropArea.firstChild });
@@ -255,7 +255,7 @@ describe("Polaroid", () => {
             expect(document.querySelectorAll("img")).toHaveLength(1);
         });
 
-        await user.click(document.querySelector("img")!);
+        await user.click(document.querySelectorAll("img")[0]);
         await user.click(screen.getByTestId("DeleteOutlineIcon"));
 
         expect(axiosPost).toHaveBeenCalledWith(
@@ -272,7 +272,7 @@ describe("Polaroid", () => {
             expect(document.querySelectorAll("img")).toHaveLength(1);
         });
 
-        await user.click(document.querySelector("img")!);
+        await user.click(document.querySelectorAll("img")[0]);
         await user.click(screen.getByTestId("DeleteOutlineIcon"));
 
         expect(await screen.findByText("Couldn't remove that one.")).toBeInTheDocument();

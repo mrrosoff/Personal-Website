@@ -46,7 +46,7 @@ const CommandInput = (
             </Box>
             {props.value}
             <Box
-                id={"cursor"}
+                data-testid="cursor"
                 component={"span"}
                 sx={{
                     display: "inline-block",

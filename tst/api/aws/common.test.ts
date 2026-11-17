@@ -18,7 +18,7 @@ describe("SDK_SETTINGS", () => {
         vi.mocked(fromIni).mockReturnValue(() => Promise.resolve(credentials));
         const settings = await sdkSettings();
 
-        const result = await settings.credentials!();
+        const result = await settings.credentials?.();
 
         expect(result).toBe(credentials);
         expect(fromIni).toHaveBeenCalledWith({ profile: "website" });
@@ -29,7 +29,7 @@ describe("SDK_SETTINGS", () => {
         vi.mocked(fromNodeProviderChain).mockReturnValue(() => Promise.resolve(credentials));
         const settings = await sdkSettings();
 
-        const result = await settings.credentials!();
+        const result = await settings.credentials?.();
 
         expect(result).toBe(credentials);
     });

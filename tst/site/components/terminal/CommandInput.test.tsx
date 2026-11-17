@@ -41,7 +41,7 @@ describe("CommandInput", () => {
     it("should blink the cursor", () => {
         vi.useFakeTimers();
         renderInput();
-        const cursor = document.getElementById("cursor")!;
+        const cursor = screen.getByTestId("cursor");
 
         act(() => void vi.advanceTimersByTime(600));
 

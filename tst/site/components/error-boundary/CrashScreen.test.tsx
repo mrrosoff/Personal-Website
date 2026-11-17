@@ -29,7 +29,7 @@ describe("CrashScreen", () => {
 
     it("should blink the cursor", () => {
         renderWithApp(<CrashScreen />);
-        const cursor = screen.getByText("restart").nextElementSibling!;
+        const cursor = screen.getByTestId("cursor");
 
         advance(600);
 

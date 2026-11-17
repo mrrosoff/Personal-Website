@@ -366,6 +366,7 @@ const Terminal = (
                             </Box>
                         ) : (
                             <Box
+                                data-testid="cursor"
                                 width={8}
                                 height={18}
                                 sx={{

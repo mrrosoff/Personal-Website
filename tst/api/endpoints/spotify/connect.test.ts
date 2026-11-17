@@ -54,7 +54,8 @@ describe("connect", () => {
     it("should sign the state for the display", async () => {
         ownSpotifyDisplay();
 
-        const [encoded, signature] = (await authorizeUrl()).searchParams.get("state")!.split(".");
+        const [encoded, signature] =
+            (await authorizeUrl()).searchParams.get("state")?.split(".") ?? [];
 
         expect(signature).toBe(stateHmac(encoded, secret));
         expect(JSON.parse(Buffer.from(encoded, "base64url").toString())).toMatchObject({

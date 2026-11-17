@@ -11,4 +11,13 @@ describe("index", () => {
 
         expect(await screen.findByText("the app")).toBeInTheDocument();
     });
+
+    it("should refuse to start without a root element", async () => {
+        vi.resetModules();
+        document.body.innerHTML = "";
+
+        const result = import("../../site/index");
+
+        await expect(result).rejects.toThrow("Missing Root Element");
+    });
 });

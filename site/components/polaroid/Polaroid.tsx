@@ -344,6 +344,8 @@ function DropArea(props: DropAreaProps) {
     const compact = useMediaQuery((theme) => theme.breakpoints.down("lg"));
     return (
         <Box
+            role="region"
+            aria-label="Drop photos here"
             onDragOver={(event) => {
                 event.preventDefault();
                 if (!props.full) {

@@ -181,6 +181,7 @@ const CrashScreen = () => {
                     restart{".".repeat(dots)}
                 </Box>
                 <Box
+                    data-testid="cursor"
                     component={"span"}
                     sx={{
                         display: "inline-block",

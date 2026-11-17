@@ -47,7 +47,7 @@ function renderTerminal(emulatorState: EmulatorState = mockEmulatorState()) {
 }
 
 function input(): HTMLElement {
-    return document.querySelector("input")!;
+    return screen.getByRole("textbox");
 }
 
 function type(command: string) {
@@ -285,7 +285,7 @@ describe("password prompt", () => {
         const emulatorState = mockEmulatorState();
         emulatorState.setPasswordPromptState({});
         renderTerminal(emulatorState);
-        const cursor = screen.getByText("Password:").nextElementSibling!;
+        const cursor = screen.getByTestId("cursor");
 
         act(() => void vi.advanceTimersByTime(600));
 
