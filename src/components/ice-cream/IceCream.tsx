@@ -36,7 +36,7 @@ export const rainbowTextSx = {
     }
 } as const;
 
-const getFlavorStyles = (color: string, isSelected: boolean, isSmallScreen: boolean) => {
+function getFlavorStyles(color: string, isSelected: boolean, isSmallScreen: boolean) {
     return {
         cursor: "pointer",
         border: 1,
@@ -54,9 +54,9 @@ const getFlavorStyles = (color: string, isSelected: boolean, isSmallScreen: bool
             }
         })
     };
-};
+}
 
-const getUpcomingFlavorStyles = () => {
+function getUpcomingFlavorStyles() {
     return {
         border: 1,
         borderColor: "rgba(255, 255, 255, 0.5)",
@@ -64,7 +64,7 @@ const getUpcomingFlavorStyles = () => {
         padding: 2.5,
         borderRadius: 1
     };
-};
+}
 
 const IceCream = () => {
     const navigate = useNavigate();
@@ -163,21 +163,30 @@ const IceCream = () => {
                     <span style={{ color: TERMINAL_COLORS.errorColor }}> FAILED</span>
                 </Typography>
             )}
-            <CurrentFlavors
-                selectedPriceIds={selectedPriceIds}
-                toggleFlavor={toggleFlavor}
+            <FlavorSection
+                title={"Current Flavors"}
+                description={"Our current rotation of flavors."}
                 flavors={flavors.filter((f) => f.type === "currentFlavor")}
                 isLoading={showSkeletons}
+                skeletons={3}
+                cart={{ selectedPriceIds, toggleFlavor }}
             />
-            <LastBatch
-                selectedPriceIds={selectedPriceIds}
-                toggleFlavor={toggleFlavor}
+            <FlavorSection
+                title={"Last Batch"}
+                description={"Get them before they are gone! Limited quantities available."}
                 flavors={flavors.filter((f) => f.type === "lastBatch")}
                 isLoading={showSkeletons}
+                skeletons={2}
+                cart={{ selectedPriceIds, toggleFlavor }}
             />
-            <Schedule
+            <FlavorSection
+                title={"Whats Coming Up..."}
+                description={
+                    "The following is a list of possible upcoming flavors. Actual availability may vary by seasonal produce and other factors."
+                }
                 flavors={flavors.filter((f) => f.type === "upcoming")}
                 isLoading={showSkeletons}
+                skeletons={4}
             />
             {smallScreen && mailingList}
             {smallScreen && selectedPriceIds.length > 0 && (
@@ -231,221 +240,86 @@ const IceCream = () => {
     );
 };
 
-export const CurrentFlavors = (props: {
+type Cart = {
     selectedPriceIds: string[];
     toggleFlavor: (priceId: string | undefined) => void;
+};
+
+type FlavorSectionProps = {
+    title: string;
+    description: string;
     flavors: DatabaseFlavor[];
     isLoading: boolean;
-}) => {
+    skeletons: number;
+    cart?: Cart;
+};
+
+function FlavorSection(props: FlavorSectionProps) {
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+    const { cart } = props;
+    const shown = cart ? props.flavors.filter((flavor) => flavor.count > 0) : props.flavors;
 
     return (
         <Box display={"flex"} flexDirection={"column"} sx={{ paddingTop: smallScreen ? 4 : 2.5 }}>
-            <Typography variant="h2">Current Flavors</Typography>
-            <Typography>Our current rotation of flavors.</Typography>
+            <Typography variant="h2">{props.title}</Typography>
+            <Typography>{props.description}</Typography>
             <Grid
                 container
                 spacing={3}
                 direction={smallScreen ? "column" : undefined}
                 sx={{ paddingTop: smallScreen ? 4 : 2 }}
             >
-                {props.isLoading ? (
-                    <>
-                        {[1, 2, 3].map((i) => (
-                            <Grid
-                                key={i}
-                                display={"flex"}
-                                justifyContent={"center"}
-                                sx={{ width: smallScreen ? "100%" : undefined }}
-                            >
-                                <Skeleton
-                                    variant="rounded"
-                                    width={smallScreen ? "100%" : 200 + Math.random() * 100}
-                                    height={75}
-                                    sx={{ borderRadius: 1 }}
-                                />
-                            </Grid>
-                        ))}
-                    </>
-                ) : (
-                    props.flavors.map((flavor) => {
-                        const isSelected = props.selectedPriceIds.includes(flavor.priceId);
-                        const flavorStyles = getFlavorStyles(
-                            flavor.color || "white",
-                            isSelected,
-                            smallScreen
-                        );
-                        return (
-                            flavor.count > 0 && (
-                                <Grid
-                                    key={flavor.productId}
-                                    display={"flex"}
-                                    justifyContent={"center"}
-                                    sx={{ width: smallScreen ? "100%" : undefined }}
-                                >
-                                    <Box
-                                        display={"flex"}
-                                        onClick={() => props.toggleFlavor(flavor.priceId)}
-                                        sx={{
-                                            ...flavorStyles,
-                                            width: smallScreen ? "100%" : undefined,
-                                            justifyContent: smallScreen ? "flex-start" : "center"
-                                        }}
-                                    >
-                                        <Typography color={flavor.color || "white"}>
-                                            {flavor.name}
-                                        </Typography>
-                                    </Box>
-                                </Grid>
-                            )
-                        );
-                    })
-                )}
+                {props.isLoading
+                    ? Array.from({ length: props.skeletons }, (_, i) => (
+                          <Grid
+                              key={i}
+                              display={"flex"}
+                              justifyContent={"center"}
+                              sx={{ width: smallScreen ? "100%" : undefined }}
+                          >
+                              <Skeleton
+                                  variant="rounded"
+                                  width={smallScreen ? "100%" : 200 + Math.random() * 100}
+                                  height={75}
+                                  sx={{ borderRadius: 1 }}
+                              />
+                          </Grid>
+                      ))
+                    : shown.map((flavor) => {
+                          const color = flavor.color || "white";
+                          return (
+                              <Grid
+                                  key={flavor.productId}
+                                  display={"flex"}
+                                  justifyContent={"center"}
+                                  sx={{ width: smallScreen ? "100%" : undefined }}
+                              >
+                                  <Box
+                                      display={"flex"}
+                                      onClick={
+                                          cart ? () => cart.toggleFlavor(flavor.priceId) : undefined
+                                      }
+                                      sx={{
+                                          ...(cart
+                                              ? getFlavorStyles(
+                                                    color,
+                                                    cart.selectedPriceIds.includes(flavor.priceId),
+                                                    smallScreen
+                                                )
+                                              : getUpcomingFlavorStyles()),
+                                          width: smallScreen ? "100%" : undefined,
+                                          justifyContent: smallScreen ? "flex-start" : "center"
+                                      }}
+                                  >
+                                      <Typography color={color}>{flavor.name}</Typography>
+                                  </Box>
+                              </Grid>
+                          );
+                      })}
             </Grid>
         </Box>
     );
-};
-
-export const LastBatch = (props: {
-    selectedPriceIds: string[];
-    toggleFlavor: (priceId: string | undefined) => void;
-    flavors: DatabaseFlavor[];
-    isLoading: boolean;
-}) => {
-    const theme = useTheme();
-    const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-
-    return (
-        <Box display={"flex"} flexDirection={"column"} sx={{ paddingTop: smallScreen ? 4 : 2.5 }}>
-            <Typography variant="h2">Last Batch</Typography>
-            <Typography>Get them before they are gone! Limited quantities available.</Typography>
-            <Grid
-                container
-                spacing={3}
-                direction={smallScreen ? "column" : undefined}
-                sx={{ paddingTop: smallScreen ? 4 : 2 }}
-            >
-                {props.isLoading ? (
-                    <>
-                        {[1, 2].map((i) => (
-                            <Grid
-                                key={i}
-                                display={"flex"}
-                                justifyContent={"center"}
-                                sx={{ width: smallScreen ? "100%" : undefined }}
-                            >
-                                <Skeleton
-                                    variant="rounded"
-                                    width={smallScreen ? "100%" : 200 + Math.random() * 100}
-                                    height={75}
-                                    sx={{ borderRadius: 1 }}
-                                />
-                            </Grid>
-                        ))}
-                    </>
-                ) : (
-                    props.flavors.map((flavor) => {
-                        const isSelected = props.selectedPriceIds.includes(flavor.priceId);
-                        const flavorStyles = getFlavorStyles(
-                            flavor.color || "white",
-                            isSelected,
-                            smallScreen
-                        );
-                        return (
-                            flavor.count > 0 && (
-                                <Grid
-                                    key={flavor.productId}
-                                    display={"flex"}
-                                    justifyContent={"center"}
-                                    sx={{ width: smallScreen ? "100%" : undefined }}
-                                >
-                                    <Box
-                                        display={"flex"}
-                                        onClick={() => props.toggleFlavor(flavor.priceId)}
-                                        sx={{
-                                            ...flavorStyles,
-                                            width: smallScreen ? "100%" : undefined,
-                                            justifyContent: smallScreen ? "flex-start" : "center"
-                                        }}
-                                    >
-                                        <Typography color={flavor.color || "white"}>
-                                            {flavor.name}
-                                        </Typography>
-                                    </Box>
-                                </Grid>
-                            )
-                        );
-                    })
-                )}
-            </Grid>
-        </Box>
-    );
-};
-
-export const Schedule = (props: { flavors: DatabaseFlavor[]; isLoading: boolean }) => {
-    const theme = useTheme();
-    const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-    return (
-        <Box display={"flex"} flexDirection={"column"} sx={{ paddingTop: smallScreen ? 4 : 2.5 }}>
-            <Typography variant="h2">Whats Coming Up...</Typography>
-            <Typography>
-                The following is a list of possible upcoming flavors. Actual availability may vary
-                by seasonal produce and other factors.
-            </Typography>
-            <Grid
-                container
-                spacing={3}
-                direction={smallScreen ? "column" : undefined}
-                sx={{ paddingTop: smallScreen ? 4 : 2 }}
-            >
-                {props.isLoading ? (
-                    <>
-                        {[1, 2, 3, 4].map((i) => (
-                            <Grid
-                                key={i}
-                                display={"flex"}
-                                justifyContent={"center"}
-                                sx={{ width: smallScreen ? "100%" : undefined }}
-                            >
-                                <Skeleton
-                                    variant="rounded"
-                                    width={smallScreen ? "100%" : 200 + Math.random() * 100}
-                                    height={75}
-                                    sx={{ borderRadius: 1 }}
-                                />
-                            </Grid>
-                        ))}
-                    </>
-                ) : (
-                    props.flavors.map((flavor) => {
-                        const upcomingStyles = getUpcomingFlavorStyles();
-                        return (
-                            <Grid
-                                key={flavor.productId}
-                                display={"flex"}
-                                justifyContent={"center"}
-                                sx={{ width: smallScreen ? "100%" : undefined }}
-                            >
-                                <Box
-                                    display={"flex"}
-                                    sx={{
-                                        ...upcomingStyles,
-                                        width: smallScreen ? "100%" : undefined,
-                                        justifyContent: smallScreen ? "flex-start" : "center"
-                                    }}
-                                >
-                                    <Typography color={flavor.color || "white"}>
-                                        {flavor.name}
-                                    </Typography>
-                                </Box>
-                            </Grid>
-                        );
-                    })
-                )}
-            </Grid>
-        </Box>
-    );
-};
+}
 
 export default IceCream;
