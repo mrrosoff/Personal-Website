@@ -1,4 +1,5 @@
 import EmulatorState, {
+    type AdminConsoleMode,
     AdminConsoleScreen,
     IceCreamInventoryMenuOption
 } from "../../../emulator-state/EmulatorState";
@@ -6,10 +7,10 @@ import { postAsAdmin, setAdminConsoleError } from "../../console";
 
 export async function handleConfirmProvisionFlavor(
     key: string,
-    state: EmulatorState
+    state: EmulatorState,
+    mode: AdminConsoleMode<AdminConsoleScreen.ConfirmProvisionFlavor>
 ): Promise<EmulatorState> {
-    const mode = state.getAdminConsoleMode()!;
-    const form = mode.provisionForm!;
+    const form = mode.provisionForm;
 
     switch (key) {
         case "ArrowLeft":

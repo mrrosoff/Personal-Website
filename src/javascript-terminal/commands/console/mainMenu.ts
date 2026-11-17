@@ -1,4 +1,5 @@
 import EmulatorState, {
+    type AdminConsoleMode,
     type AdminConsoleState,
     AdminConsoleScreen,
     IceCreamInventoryMenuOption,
@@ -59,9 +60,11 @@ function openSelectedScreen(mode: AdminConsoleState): AdminConsoleState | undefi
     }
 }
 
-export function handleMainMenu(key: string, state: EmulatorState): EmulatorState {
-    const mode = state.getAdminConsoleMode()!;
-
+export function handleMainMenu(
+    key: string,
+    state: EmulatorState,
+    mode: AdminConsoleMode<AdminConsoleScreen.Main>
+): EmulatorState {
     switch (key) {
         case "ArrowDown":
         case "ArrowUp":

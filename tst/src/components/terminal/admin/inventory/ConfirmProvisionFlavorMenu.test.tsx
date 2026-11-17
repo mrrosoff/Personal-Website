@@ -5,7 +5,10 @@ import { mockSmallScreen, mockTerminalTheme, renderWithApp } from "../../../../.
 import { mockAdminState } from "../../../../../helpers/terminal";
 
 import ConfirmProvisionFlavorMenu from "../../../../../../src/components/terminal/admin/inventory/ConfirmProvisionFlavorMenu";
-import { AdminConsoleScreen } from "../../../../../../src/javascript-terminal/emulator-state/EmulatorState";
+import {
+    type AdminConsoleMode,
+    AdminConsoleScreen
+} from "../../../../../../src/javascript-terminal/emulator-state/EmulatorState";
 
 const provisionForm = {
     flavorName: "Fig",
@@ -17,14 +20,19 @@ const provisionForm = {
 
 function renderMenu(mode: object = {}) {
     const onAction = vi.fn();
-    const emulatorState = mockAdminState({
+    const consoleMode: AdminConsoleMode<AdminConsoleScreen.ConfirmProvisionFlavor> = {
         screen: AdminConsoleScreen.ConfirmProvisionFlavor,
         selectedOption: "yes",
         provisionForm,
         ...mode
-    });
+    };
+    const emulatorState = mockAdminState(consoleMode);
     const result = renderWithApp(
-        <ConfirmProvisionFlavorMenu theme={mockTerminalTheme} onAction={onAction} />,
+        <ConfirmProvisionFlavorMenu
+            theme={mockTerminalTheme}
+            onAction={onAction}
+            mode={consoleMode}
+        />,
         { emulatorState }
     );
     return { ...result, onAction, emulatorState };

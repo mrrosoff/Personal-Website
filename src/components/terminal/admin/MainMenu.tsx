@@ -1,19 +1,28 @@
 import { Box, useMediaQuery, useTheme } from "@mui/material";
 
-import { MainMenuOption } from "../../../javascript-terminal/emulator-state/EmulatorState";
+import {
+    MainMenuOption,
+    type AdminConsoleMode,
+    AdminConsoleScreen
+} from "../../../javascript-terminal/emulator-state/EmulatorState";
 import { useAppContext } from "../../AppContext";
 import type { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
 import { ConsoleHeading, ConsoleHint } from "./common/ConsoleText";
 
-const MainMenu = (props: { theme: TerminalTheme; onAction: (key: string) => void }) => {
+type MainMenuProps = {
+    theme: TerminalTheme;
+    onAction: (key: string) => void;
+    mode: AdminConsoleMode<AdminConsoleScreen.Main>;
+};
+
+const MainMenu = (props: MainMenuProps) => {
     const { emulatorState } = useAppContext();
     const muiTheme = useTheme();
     const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
-    const mode = emulatorState.getAdminConsoleMode()!;
 
     const select = (option: MainMenuOption) => {
-        emulatorState.setAdminConsoleMode({ ...mode, selectedOption: option });
+        emulatorState.setAdminConsoleMode({ ...props.mode, selectedOption: option });
         props.onAction("Enter");
     };
 
@@ -21,7 +30,7 @@ const MainMenu = (props: { theme: TerminalTheme; onAction: (key: string) => void
         <Box sx={{ paddingTop: 1 }}>
             <ConsoleHeading theme={props.theme} />
             <MenuItem
-                selected={mode.selectedOption === MainMenuOption.IceCreamInventory}
+                selected={props.mode.selectedOption === MainMenuOption.IceCreamInventory}
                 theme={props.theme}
                 onClick={
                     smallScreen
@@ -34,7 +43,7 @@ const MainMenu = (props: { theme: TerminalTheme; onAction: (key: string) => void
                 1. Ice Cream Inventory
             </MenuItem>
             <MenuItem
-                selected={mode.selectedOption === MainMenuOption.SendMarketingEmails}
+                selected={props.mode.selectedOption === MainMenuOption.SendMarketingEmails}
                 theme={props.theme}
                 onClick={
                     smallScreen
@@ -47,7 +56,7 @@ const MainMenu = (props: { theme: TerminalTheme; onAction: (key: string) => void
                 2. Send Marketing Emails
             </MenuItem>
             <MenuItem
-                selected={mode.selectedOption === MainMenuOption.AddMailingListEntry}
+                selected={props.mode.selectedOption === MainMenuOption.AddMailingListEntry}
                 theme={props.theme}
                 onClick={
                     smallScreen
@@ -60,7 +69,7 @@ const MainMenu = (props: { theme: TerminalTheme; onAction: (key: string) => void
                 3. Add To Mailing List
             </MenuItem>
             <MenuItem
-                selected={mode.selectedOption === MainMenuOption.CreateFriendInvite}
+                selected={props.mode.selectedOption === MainMenuOption.CreateFriendInvite}
                 theme={props.theme}
                 onClick={
                     smallScreen
@@ -73,7 +82,7 @@ const MainMenu = (props: { theme: TerminalTheme; onAction: (key: string) => void
                 4. Create Friend Invite
             </MenuItem>
             <MenuItem
-                selected={mode.selectedOption === MainMenuOption.Exit}
+                selected={props.mode.selectedOption === MainMenuOption.Exit}
                 theme={props.theme}
                 onClick={
                     smallScreen

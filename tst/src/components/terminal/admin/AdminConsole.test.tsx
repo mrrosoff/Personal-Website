@@ -5,16 +5,20 @@ import { mockTerminalTheme, renderWithApp } from "../../../../helpers/render";
 import { mockAdminState } from "../../../../helpers/terminal";
 
 import AdminConsole from "../../../../../src/components/terminal/admin/AdminConsole";
-import { AdminConsoleScreen } from "../../../../../src/javascript-terminal/emulator-state/EmulatorState";
+import {
+    AdminConsoleScreen,
+    type AdminConsoleState
+} from "../../../../../src/javascript-terminal/emulator-state/EmulatorState";
 
-const screens: [AdminConsoleScreen, object, string][] = [
-    [AdminConsoleScreen.Main, {}, "=== Admin Console ==="],
-    [AdminConsoleScreen.IceCreamInventory, {}, "(Ice Cream Inventory)"],
-    [AdminConsoleScreen.SelectFlavor, {}, "(Select Flavor)"],
-    [AdminConsoleScreen.ConfirmSendEmails, {}, "(Send Marketing Emails)"],
+const screens: [string, AdminConsoleState][] = [
+    ["=== Admin Console ===", { screen: AdminConsoleScreen.Main }],
+    ["(Ice Cream Inventory)", { screen: AdminConsoleScreen.IceCreamInventory }],
+    ["(Select Flavor)", { screen: AdminConsoleScreen.SelectFlavor }],
+    ["(Send Marketing Emails)", { screen: AdminConsoleScreen.ConfirmSendEmails }],
     [
-        AdminConsoleScreen.ProvisionFlavorForm,
+        "(Provision New Flavor)",
         {
+            screen: AdminConsoleScreen.ProvisionFlavorForm,
             provisionForm: {
                 flavorName: "",
                 initialQuantity: 1,
@@ -22,12 +26,12 @@ const screens: [AdminConsoleScreen, object, string][] = [
                 type: null,
                 currentField: "flavorName"
             }
-        },
-        "(Provision New Flavor)"
+        }
     ],
     [
-        AdminConsoleScreen.ConfirmProvisionFlavor,
+        "(Confirm Provision Flavor)",
         {
+            screen: AdminConsoleScreen.ConfirmProvisionFlavor,
             provisionForm: {
                 flavorName: "",
                 initialQuantity: 1,
@@ -35,12 +39,12 @@ const screens: [AdminConsoleScreen, object, string][] = [
                 type: null,
                 currentField: "flavorName"
             }
-        },
-        "(Confirm Provision Flavor)"
+        }
     ],
     [
-        AdminConsoleScreen.CreateFriendInvite,
+        "(Create Friend Invite)",
         {
+            screen: AdminConsoleScreen.CreateFriendInvite,
             friendInvite: {
                 friendName: "",
                 email: "",
@@ -50,13 +54,14 @@ const screens: [AdminConsoleScreen, object, string][] = [
                 currentField: "friendName"
             },
             inviteDevices: []
-        },
-        "(Create Friend Invite)"
+        }
     ],
     [
-        AdminConsoleScreen.AddMailingListEntry,
-        { mailingListEntry: { firstName: "", lastName: "", email: "", currentField: "firstName" } },
-        "(Add To Mailing List)"
+        "(Add To Mailing List)",
+        {
+            screen: AdminConsoleScreen.AddMailingListEntry,
+            mailingListEntry: { firstName: "", lastName: "", email: "", currentField: "firstName" }
+        }
     ]
 ];
 
@@ -67,9 +72,9 @@ describe("AdminConsole", () => {
         expect(screen.queryByText(/Admin Console/)).not.toBeInTheDocument();
     });
 
-    it.each(screens)("should show the %s screen", (screenName, mode, heading) => {
+    it.each(screens)("should show the %s screen", (heading, mode) => {
         renderWithApp(<AdminConsole theme={mockTerminalTheme} onAction={vi.fn()} />, {
-            emulatorState: mockAdminState({ screen: screenName, ...mode })
+            emulatorState: mockAdminState(mode)
         });
 
         expect(screen.getByText(heading, { exact: false })).toBeInTheDocument();

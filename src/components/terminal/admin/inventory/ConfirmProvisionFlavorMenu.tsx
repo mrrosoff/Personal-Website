@@ -1,26 +1,32 @@
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 
 import { useAppContext } from "../../../AppContext";
+import type {
+    AdminConsoleMode,
+    AdminConsoleScreen
+} from "../../../../javascript-terminal/emulator-state/EmulatorState";
 import type { TerminalTheme } from "../../Terminal";
 import MenuItem from "../common/MenuItem";
 import { ConsoleHeading, ConsoleHint } from "../common/ConsoleText";
 import useLoadingDots from "../common/useLoadingDots";
 
-const ConfirmProvisionFlavorMenu = (props: {
+type ConfirmProvisionFlavorMenuProps = {
     theme: TerminalTheme;
     onAction: (key: string) => void;
-}) => {
+    mode: AdminConsoleMode<AdminConsoleScreen.ConfirmProvisionFlavor>;
+};
+
+const ConfirmProvisionFlavorMenu = (props: ConfirmProvisionFlavorMenuProps) => {
     const { emulatorState } = useAppContext();
     const muiTheme = useTheme();
     const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
-    const mode = emulatorState.getAdminConsoleMode()!;
     const dots = useLoadingDots();
 
-    const selectedOption = mode.selectedOption as "yes" | "no";
-    const form = mode.provisionForm!;
+    const selectedOption = props.mode.selectedOption as "yes" | "no";
+    const form = props.mode.provisionForm;
 
     const select = (option: "yes" | "no") => {
-        emulatorState.setAdminConsoleMode({ ...mode, selectedOption: option });
+        emulatorState.setAdminConsoleMode({ ...props.mode, selectedOption: option });
         props.onAction("Enter");
     };
 
@@ -61,7 +67,7 @@ const ConfirmProvisionFlavorMenu = (props: {
                 <MenuItem
                     selected={selectedOption === "yes"}
                     theme={props.theme}
-                    disabled={mode.loading}
+                    disabled={props.mode.loading}
                     onClick={
                         smallScreen
                             ? () => {
@@ -75,7 +81,7 @@ const ConfirmProvisionFlavorMenu = (props: {
                 <MenuItem
                     selected={selectedOption === "no"}
                     theme={props.theme}
-                    disabled={mode.loading}
+                    disabled={props.mode.loading}
                     onClick={
                         smallScreen
                             ? () => {
@@ -88,7 +94,7 @@ const ConfirmProvisionFlavorMenu = (props: {
                 </MenuItem>
             </Box>
             <ConsoleHint theme={props.theme}>
-                {mode.loading
+                {props.mode.loading
                     ? `Loading${dots}`
                     : smallScreen
                       ? "tap Yes or No"

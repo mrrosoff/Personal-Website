@@ -6,7 +6,9 @@ import CheckIcon from "@mui/icons-material/Check";
 
 import {
     type FriendInvite,
-    type InviteDevice
+    type InviteDevice,
+    type AdminConsoleMode,
+    AdminConsoleScreen
 } from "../../../javascript-terminal/emulator-state/EmulatorState";
 import { shareTokenDurationLabel } from "../../../../api/common";
 import { API_ENDPOINT_URL } from "../../../../api/types";
@@ -17,19 +19,22 @@ import { ConsoleHeading, ConsoleHint } from "./common/ConsoleText";
 import useLoadingDots from "./common/useLoadingDots";
 import Stepper from "./common/Stepper";
 
-const CreateFriendInviteMenu = (props: {
+type CreateFriendInviteMenuProps = {
     theme: TerminalTheme;
     onAction: (key: string) => void;
-}) => {
+    mode: AdminConsoleMode<AdminConsoleScreen.CreateFriendInvite>;
+};
+
+const CreateFriendInviteMenu = (props: CreateFriendInviteMenuProps) => {
     const { emulatorState } = useAppContext();
     const muiTheme = useTheme();
     const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
-    const mode = emulatorState.getAdminConsoleMode()!;
-    const invite = mode.friendInvite!;
+    const invite = props.mode.friendInvite;
+    const inviteUrl = invite.url;
     const [copied, setCopied] = useState(false);
     const dots = useLoadingDots();
 
-    const devices = mode.inviteDevices;
+    const devices = props.mode.inviteDevices;
     const authToken = emulatorState.getEnvVariables().AUTH_TOKEN;
 
     const requestedDevices = useRef(false);
@@ -44,10 +49,7 @@ const CreateFriendInviteMenu = (props: {
                 })
                 .then(({ data }) => data.devices)
                 .catch(() => []);
-            emulatorState.setAdminConsoleMode({
-                ...emulatorState.getAdminConsoleMode(),
-                inviteDevices: loaded
-            });
+            emulatorState.updateAdminConsoleMode({ inviteDevices: loaded });
             props.onAction("");
         })();
     }, [devices, authToken, emulatorState, props]);
@@ -55,8 +57,8 @@ const CreateFriendInviteMenu = (props: {
     const outputColor = props.theme.outputColor;
     const commandColor = props.theme.commandColor;
 
-    const onCopy = async () => {
-        await navigator.clipboard.writeText(invite.url!);
+    const onCopy = async (url: string) => {
+        await navigator.clipboard.writeText(url);
         setCopied(true);
         setTimeout(() => {
             setCopied(false);
@@ -65,7 +67,7 @@ const CreateFriendInviteMenu = (props: {
 
     const toggleDevice = (index: number) => {
         emulatorState.setAdminConsoleMode({
-            ...mode,
+            ...props.mode,
             friendInvite: { ...invite, deviceIndex: index }
         });
         props.onAction(" ");
@@ -73,7 +75,7 @@ const CreateFriendInviteMenu = (props: {
 
     const selectField = (field: FriendInvite["currentField"]) => {
         emulatorState.setAdminConsoleMode({
-            ...mode,
+            ...props.mode,
             friendInvite: { ...invite, currentField: field }
         });
         props.onAction("");
@@ -94,7 +96,7 @@ const CreateFriendInviteMenu = (props: {
         <Box sx={{ paddingTop: 1 }}>
             <ConsoleHeading theme={props.theme} title={"Create Friend Invite"} />
 
-            {invite.url ? (
+            {inviteUrl ? (
                 <Box sx={{ mb: 1, px: 1 }}>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                         <Typography
@@ -106,12 +108,12 @@ const CreateFriendInviteMenu = (props: {
                                 maxWidth: 500
                             }}
                         >
-                            {invite.url}
+                            {inviteUrl}
                         </Typography>
                         <Tooltip title={copied ? "Copied" : "Copy"} placement="right">
                             <IconButton
                                 size="small"
-                                onClick={onCopy}
+                                onClick={() => void onCopy(inviteUrl)}
                                 sx={{ color: outputColor, padding: 0.25 }}
                             >
                                 {copied ? (
@@ -166,7 +168,7 @@ const CreateFriendInviteMenu = (props: {
                                     ) : (
                                         <>
                                             {value}
-                                            {active && !mode.loading && field !== "devices"
+                                            {active && !props.mode.loading && field !== "devices"
                                                 ? "_"
                                                 : ""}
                                             {active && field === "durationHours"
@@ -213,9 +215,9 @@ const CreateFriendInviteMenu = (props: {
                 </Box>
             )}
 
-            {smallScreen && !mode.loading && (
+            {smallScreen && !props.mode.loading && (
                 <Box sx={{ display: "flex", gap: 2, mb: 1 }}>
-                    {!invite.url && (
+                    {!inviteUrl && (
                         <MenuItem
                             selected={false}
                             theme={props.theme}
@@ -234,15 +236,15 @@ const CreateFriendInviteMenu = (props: {
                             props.onAction("Escape");
                         }}
                     >
-                        {invite.url ? "Back" : "Cancel"}
+                        {inviteUrl ? "Back" : "Cancel"}
                     </MenuItem>
                 </Box>
             )}
 
             <ConsoleHint theme={props.theme}>
-                {mode.loading
+                {props.mode.loading
                     ? `Loading${dots}`
-                    : invite.url
+                    : inviteUrl
                       ? smallScreen
                           ? "tap copy for full url"
                           : "click copy for full url | escape: back"

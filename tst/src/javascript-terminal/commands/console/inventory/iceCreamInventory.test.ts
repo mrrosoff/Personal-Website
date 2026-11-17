@@ -4,7 +4,7 @@ import { mockAdminState } from "../../../../../helpers/terminal";
 import { axiosPost } from "../../../../../__mocks__/axios";
 import { mockFlavor } from "../../../../../__mocks__/__data__/aws/dynamodb";
 
-import { handleIceCreamInventory } from "../../../../../../src/javascript-terminal/commands/console/inventory/iceCreamInventory";
+import { handleAdminConsoleKeyPress } from "../../../../../../src/javascript-terminal/commands/console";
 import {
     AdminConsoleScreen,
     type EditField,
@@ -25,7 +25,7 @@ function editing(editingField?: EditField) {
 
 describe("handleIceCreamInventory", () => {
     it("should move down the menu", async () => {
-        const result = await handleIceCreamInventory(
+        const result = await handleAdminConsoleKeyPress(
             "ArrowDown",
             menuAt(IceCreamInventoryMenuOption.ProvisionNewFlavor)
         );
@@ -34,7 +34,7 @@ describe("handleIceCreamInventory", () => {
     });
 
     it("should open a blank flavor form", async () => {
-        const result = await handleIceCreamInventory(
+        const result = await handleAdminConsoleKeyPress(
             "Enter",
             menuAt(IceCreamInventoryMenuOption.ProvisionNewFlavor)
         );
@@ -48,7 +48,7 @@ describe("handleIceCreamInventory", () => {
     it("should load the inventory to pick a flavor", async () => {
         axiosPost.mockResolvedValue({ data: { inventory: [mockFlavor] } });
 
-        const result = await handleIceCreamInventory(
+        const result = await handleAdminConsoleKeyPress(
             "Enter",
             menuAt(IceCreamInventoryMenuOption.ModifyFlavorInventory)
         );
@@ -60,7 +60,7 @@ describe("handleIceCreamInventory", () => {
     });
 
     it("should go back to the main menu", async () => {
-        const result = await handleIceCreamInventory(
+        const result = await handleAdminConsoleKeyPress(
             "Enter",
             menuAt(IceCreamInventoryMenuOption.GoBack)
         );
@@ -72,7 +72,7 @@ describe("handleIceCreamInventory", () => {
     });
 
     it("should go back to the main menu on escape", async () => {
-        const result = await handleIceCreamInventory(
+        const result = await handleAdminConsoleKeyPress(
             "Escape",
             menuAt(IceCreamInventoryMenuOption.ProvisionNewFlavor)
         );
@@ -81,7 +81,7 @@ describe("handleIceCreamInventory", () => {
     });
 
     it("should ignore other keys", async () => {
-        const result = await handleIceCreamInventory(
+        const result = await handleAdminConsoleKeyPress(
             "a",
             menuAt(IceCreamInventoryMenuOption.ProvisionNewFlavor)
         );
@@ -92,25 +92,25 @@ describe("handleIceCreamInventory", () => {
 
 describe("editing a flavor", () => {
     it("should start on the name", async () => {
-        const result = await handleIceCreamInventory("ArrowDown", editing());
+        const result = await handleAdminConsoleKeyPress("ArrowDown", editing());
 
         expect(result.getAdminConsoleMode()?.editingField).toBe("color");
     });
 
     it("should move up through the fields", async () => {
-        const result = await handleIceCreamInventory("ArrowUp", editing("count"));
+        const result = await handleAdminConsoleKeyPress("ArrowUp", editing("count"));
 
         expect(result.getAdminConsoleMode()?.editingField).toBe("type");
     });
 
     it("should cycle the type", async () => {
-        const result = await handleIceCreamInventory("ArrowRight", editing("type"));
+        const result = await handleAdminConsoleKeyPress("ArrowRight", editing("type"));
 
         expect(result.getAdminConsoleMode()?.editingFlavor?.type).toBe("lastBatch");
     });
 
     it("should change the count", async () => {
-        const result = await handleIceCreamInventory("ArrowLeft", editing("count"));
+        const result = await handleAdminConsoleKeyPress("ArrowLeft", editing("count"));
 
         expect(result.getAdminConsoleMode()?.editingFlavor?.count).toBe(mockFlavor.count - 1);
     });
@@ -122,25 +122,25 @@ describe("editing a flavor", () => {
             editingField: "count"
         });
 
-        const result = await handleIceCreamInventory("ArrowLeft", state);
+        const result = await handleAdminConsoleKeyPress("ArrowLeft", state);
 
         expect(result.getAdminConsoleMode()?.editingFlavor?.count).toBe(0);
     });
 
     it("should not adjust a text field with arrows", async () => {
-        const result = await handleIceCreamInventory("ArrowRight", editing("name"));
+        const result = await handleAdminConsoleKeyPress("ArrowRight", editing("name"));
 
         expect(result.getAdminConsoleMode()?.editingFlavor).toEqual(mockFlavor);
     });
 
     it("should type into the name", async () => {
-        const result = await handleIceCreamInventory("!", editing("name"));
+        const result = await handleAdminConsoleKeyPress("!", editing("name"));
 
         expect(result.getAdminConsoleMode()?.editingFlavor?.name).toBe(`${mockFlavor.name}!`);
     });
 
     it("should not type into the count", async () => {
-        const result = await handleIceCreamInventory("7", editing("count"));
+        const result = await handleAdminConsoleKeyPress("7", editing("count"));
 
         expect(result.getAdminConsoleMode()?.editingFlavor).toEqual(mockFlavor);
     });
@@ -148,7 +148,7 @@ describe("editing a flavor", () => {
     it("should save the flavor and reload the list", async () => {
         axiosPost.mockResolvedValue({ data: { inventory: [mockFlavor] } });
 
-        const result = await handleIceCreamInventory("Enter", editing("name"));
+        const result = await handleAdminConsoleKeyPress("Enter", editing("name"));
 
         expect(axiosPost).toHaveBeenCalledWith(
             "https://api.maxrosoff.com/admin/update-inventory",
@@ -171,7 +171,7 @@ describe("editing a flavor", () => {
     it("should show an error when saving fails", async () => {
         axiosPost.mockRejectedValue(new Error("offline"));
 
-        const result = await handleIceCreamInventory("Enter", editing("name"));
+        const result = await handleAdminConsoleKeyPress("Enter", editing("name"));
 
         expect(result.getAdminConsoleMode()).toMatchObject({
             loading: false,
@@ -181,7 +181,7 @@ describe("editing a flavor", () => {
     });
 
     it("should stop editing on escape", async () => {
-        const result = await handleIceCreamInventory("Escape", editing("name"));
+        const result = await handleAdminConsoleKeyPress("Escape", editing("name"));
 
         expect(result.getAdminConsoleMode()?.editingFlavor).toBeUndefined();
     });

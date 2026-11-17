@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { mockAdminState } from "../../../../helpers/terminal";
 
-import { handleMainMenu } from "../../../../../src/javascript-terminal/commands/console/mainMenu";
+import { handleAdminConsoleKeyPress } from "../../../../../src/javascript-terminal/commands/console";
 import {
     AdminConsoleScreen,
     MainMenuOption
@@ -13,22 +13,31 @@ function menuAt(selectedOption: MainMenuOption) {
 }
 
 describe("handleMainMenu", () => {
-    it("should move down the menu", () => {
-        const result = handleMainMenu("ArrowDown", menuAt(MainMenuOption.IceCreamInventory));
+    it("should move down the menu", async () => {
+        const result = await handleAdminConsoleKeyPress(
+            "ArrowDown",
+            menuAt(MainMenuOption.IceCreamInventory)
+        );
 
         expect(result.getAdminConsoleMode()?.selectedOption).toBe(
             MainMenuOption.SendMarketingEmails
         );
     });
 
-    it("should stop at the top of the menu", () => {
-        const result = handleMainMenu("ArrowUp", menuAt(MainMenuOption.IceCreamInventory));
+    it("should stop at the top of the menu", async () => {
+        const result = await handleAdminConsoleKeyPress(
+            "ArrowUp",
+            menuAt(MainMenuOption.IceCreamInventory)
+        );
 
         expect(result.getAdminConsoleMode()?.selectedOption).toBe(MainMenuOption.IceCreamInventory);
     });
 
-    it("should open the ice cream inventory", () => {
-        const result = handleMainMenu("Enter", menuAt(MainMenuOption.IceCreamInventory));
+    it("should open the ice cream inventory", async () => {
+        const result = await handleAdminConsoleKeyPress(
+            "Enter",
+            menuAt(MainMenuOption.IceCreamInventory)
+        );
 
         expect(result.getAdminConsoleMode()).toMatchObject({
             screen: AdminConsoleScreen.IceCreamInventory,
@@ -36,8 +45,11 @@ describe("handleMainMenu", () => {
         });
     });
 
-    it("should open the marketing email prompt", () => {
-        const result = handleMainMenu("Enter", menuAt(MainMenuOption.SendMarketingEmails));
+    it("should open the marketing email prompt", async () => {
+        const result = await handleAdminConsoleKeyPress(
+            "Enter",
+            menuAt(MainMenuOption.SendMarketingEmails)
+        );
 
         expect(result.getAdminConsoleMode()).toMatchObject({
             screen: AdminConsoleScreen.ConfirmSendEmails,
@@ -46,8 +58,11 @@ describe("handleMainMenu", () => {
         });
     });
 
-    it("should open a blank friend invite", () => {
-        const result = handleMainMenu("Enter", menuAt(MainMenuOption.CreateFriendInvite));
+    it("should open a blank friend invite", async () => {
+        const result = await handleAdminConsoleKeyPress(
+            "Enter",
+            menuAt(MainMenuOption.CreateFriendInvite)
+        );
 
         expect(result.getAdminConsoleMode()).toMatchObject({
             screen: AdminConsoleScreen.CreateFriendInvite,
@@ -55,8 +70,11 @@ describe("handleMainMenu", () => {
         });
     });
 
-    it("should open a blank mailing list entry", () => {
-        const result = handleMainMenu("Enter", menuAt(MainMenuOption.AddMailingListEntry));
+    it("should open a blank mailing list entry", async () => {
+        const result = await handleAdminConsoleKeyPress(
+            "Enter",
+            menuAt(MainMenuOption.AddMailingListEntry)
+        );
 
         expect(result.getAdminConsoleMode()).toMatchObject({
             screen: AdminConsoleScreen.AddMailingListEntry,
@@ -64,20 +82,26 @@ describe("handleMainMenu", () => {
         });
     });
 
-    it("should close the console on exit", () => {
-        const result = handleMainMenu("Enter", menuAt(MainMenuOption.Exit));
+    it("should close the console on exit", async () => {
+        const result = await handleAdminConsoleKeyPress("Enter", menuAt(MainMenuOption.Exit));
 
         expect(result.getAdminConsoleMode()).toBeUndefined();
     });
 
-    it("should close the console on escape", () => {
-        const result = handleMainMenu("Escape", menuAt(MainMenuOption.IceCreamInventory));
+    it("should close the console on escape", async () => {
+        const result = await handleAdminConsoleKeyPress(
+            "Escape",
+            menuAt(MainMenuOption.IceCreamInventory)
+        );
 
         expect(result.getAdminConsoleMode()).toBeUndefined();
     });
 
-    it("should ignore other keys", () => {
-        const result = handleMainMenu("a", menuAt(MainMenuOption.IceCreamInventory));
+    it("should ignore other keys", async () => {
+        const result = await handleAdminConsoleKeyPress(
+            "a",
+            menuAt(MainMenuOption.IceCreamInventory)
+        );
 
         expect(result.getAdminConsoleMode()?.selectedOption).toBe(MainMenuOption.IceCreamInventory);
     });

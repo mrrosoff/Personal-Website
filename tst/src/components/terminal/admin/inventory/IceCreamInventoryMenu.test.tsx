@@ -8,19 +8,20 @@ import { mockFlavor } from "../../../../../__mocks__/__data__/aws/dynamodb";
 import IceCreamInventoryMenu from "../../../../../../src/components/terminal/admin/inventory/IceCreamInventoryMenu";
 import {
     AdminConsoleScreen,
-    type AdminConsoleState,
+    type AdminConsoleMode,
     IceCreamInventoryMenuOption
 } from "../../../../../../src/javascript-terminal/emulator-state/EmulatorState";
 
-function renderMenu(mode: Partial<AdminConsoleState> = {}) {
+function renderMenu(mode: Partial<AdminConsoleMode<AdminConsoleScreen.IceCreamInventory>> = {}) {
     const onAction = vi.fn();
-    const emulatorState = mockAdminState({
+    const consoleMode: AdminConsoleMode<AdminConsoleScreen.IceCreamInventory> = {
         screen: AdminConsoleScreen.IceCreamInventory,
         selectedOption: IceCreamInventoryMenuOption.ProvisionNewFlavor,
         ...mode
-    });
+    };
+    const emulatorState = mockAdminState(consoleMode);
     const result = renderWithApp(
-        <IceCreamInventoryMenu theme={mockTerminalTheme} onAction={onAction} />,
+        <IceCreamInventoryMenu theme={mockTerminalTheme} onAction={onAction} mode={consoleMode} />,
         { emulatorState }
     );
     return { ...result, onAction, emulatorState };

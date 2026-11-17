@@ -7,7 +7,7 @@ import { mockAdminState } from "../../../../../helpers/terminal";
 import AddMailingListEntryMenu from "../../../../../../src/components/terminal/admin/mailingList/AddMailingListEntryMenu";
 import {
     AdminConsoleScreen,
-    type AdminConsoleState,
+    type AdminConsoleMode,
     type MailingListEntry
 } from "../../../../../../src/javascript-terminal/emulator-state/EmulatorState";
 
@@ -18,15 +18,23 @@ const blankEntry: MailingListEntry = {
     currentField: "firstName"
 };
 
-function renderMenu(entry: Partial<MailingListEntry> = {}, mode: Partial<AdminConsoleState> = {}) {
+function renderMenu(
+    entry: Partial<MailingListEntry> = {},
+    mode: Partial<AdminConsoleMode<AdminConsoleScreen.AddMailingListEntry>> = {}
+) {
     const onAction = vi.fn();
-    const emulatorState = mockAdminState({
+    const consoleMode: AdminConsoleMode<AdminConsoleScreen.AddMailingListEntry> = {
         screen: AdminConsoleScreen.AddMailingListEntry,
         mailingListEntry: { ...blankEntry, ...entry },
         ...mode
-    });
+    };
+    const emulatorState = mockAdminState(consoleMode);
     const result = renderWithApp(
-        <AddMailingListEntryMenu theme={mockTerminalTheme} onAction={onAction} />,
+        <AddMailingListEntryMenu
+            theme={mockTerminalTheme}
+            onAction={onAction}
+            mode={consoleMode}
+        />,
         { emulatorState }
     );
     return { ...result, onAction, emulatorState };

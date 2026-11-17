@@ -19,6 +19,7 @@ import {
     stepWithin
 } from "../../../../src/javascript-terminal/commands/console";
 import EmulatorState, {
+    type AdminConsoleMode,
     AdminConsoleScreen,
     MainMenuOption
 } from "../../../../src/javascript-terminal/emulator-state/EmulatorState";
@@ -194,7 +195,7 @@ describe("setAdminConsoleError", () => {
     });
 });
 
-const mainMenu = {
+const mainMenu: AdminConsoleMode<AdminConsoleScreen.Main> = {
     screen: AdminConsoleScreen.Main,
     selectedOption: MainMenuOption.IceCreamInventory
 };
@@ -206,14 +207,6 @@ describe("handleAdminConsoleKeyPress", () => {
         await handleAdminConsoleKeyPress("Enter", state);
 
         expect(state.getAdminConsoleMode()).toBeUndefined();
-    });
-
-    it("should ignore keys without a screen", async () => {
-        const state = mockAdminState({ error: "Oops" });
-
-        await handleAdminConsoleKeyPress("Enter", state);
-
-        expect(state.getAdminConsoleMode()).toEqual({ error: "Oops" });
     });
 
     it("should close the console on ctrl+c", async () => {

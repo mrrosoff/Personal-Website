@@ -67,8 +67,7 @@ export type Marketing = {
     message: string;
 };
 
-export type AdminConsoleState = {
-    screen?: AdminConsoleScreen;
+type AdminConsoleCommon = {
     selectedOption?: MainMenuOption | IceCreamInventoryMenuOption | number | "yes" | "no";
     inventoryData?: DatabaseFlavor[];
     editingFlavor?: DatabaseFlavor;
@@ -82,6 +81,24 @@ export type AdminConsoleState = {
     inviteDevices?: InviteDevice[];
     mailingListEntry?: MailingListEntry;
 };
+
+type AdminConsoleScreenData = {
+    [AdminConsoleScreen.ProvisionFlavorForm]: { provisionForm: ProvisionFlavorForm };
+    [AdminConsoleScreen.ConfirmProvisionFlavor]: { provisionForm: ProvisionFlavorForm };
+    [AdminConsoleScreen.CreateFriendInvite]: { friendInvite: FriendInvite };
+    [AdminConsoleScreen.AddMailingListEntry]: { mailingListEntry: MailingListEntry };
+};
+
+export type AdminConsoleState = {
+    [S in AdminConsoleScreen]: AdminConsoleCommon & {
+        screen: S;
+    } & (S extends keyof AdminConsoleScreenData ? AdminConsoleScreenData[S] : unknown);
+}[AdminConsoleScreen];
+
+export type AdminConsoleMode<S extends AdminConsoleScreen> = Extract<
+    AdminConsoleState,
+    { screen: S }
+>;
 
 export type PasswordPromptState = {
     targetCommand?: string;
@@ -204,6 +221,13 @@ export default class EmulatorState {
         this.state[ADMIN_CONSOLE_KEY] = newMode;
     }
 
+    updateAdminConsoleMode(changes: Partial<AdminConsoleCommon>) {
+        const mode = this.state[ADMIN_CONSOLE_KEY];
+        if (mode) {
+            this.state[ADMIN_CONSOLE_KEY] = { ...mode, ...changes };
+        }
+    }
+
     getPasswordPromptState(): PasswordPromptState | undefined {
         return this.state[PASSWORD_PROMPT_KEY];
     }
@@ -222,5 +246,5 @@ export default class EmulatorState {
 }
 
 export const relativeToAbsolutePath = (state: EmulatorState, path: string) => {
-    return PathUtil.toAbsolutePath(path, state.getEnvVariables().cwd!);
+    return PathUtil.toAbsolutePath(path, state.getEnvVariables().cwd);
 };

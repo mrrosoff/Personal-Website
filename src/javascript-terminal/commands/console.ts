@@ -70,34 +70,7 @@ export function errorMessageFrom(err: unknown, fallback: string): string {
 
 export function setAdminConsoleError(state: EmulatorState, err: unknown, fallback: string): void {
     console.error(fallback, err);
-    state.setAdminConsoleMode({
-        ...state.getAdminConsoleMode(),
-        loading: false,
-        error: errorMessageFrom(err, fallback)
-    });
-}
-
-function screenHandler(
-    screen: AdminConsoleScreen
-): (key: string, state: EmulatorState) => EmulatorState | Promise<EmulatorState> {
-    switch (screen) {
-        case AdminConsoleScreen.Main:
-            return handleMainMenu;
-        case AdminConsoleScreen.IceCreamInventory:
-            return handleIceCreamInventory;
-        case AdminConsoleScreen.SelectFlavor:
-            return handleSelectFlavor;
-        case AdminConsoleScreen.ConfirmSendEmails:
-            return handleConfirmSendEmails;
-        case AdminConsoleScreen.ProvisionFlavorForm:
-            return handleProvisionFlavorForm;
-        case AdminConsoleScreen.ConfirmProvisionFlavor:
-            return handleConfirmProvisionFlavor;
-        case AdminConsoleScreen.CreateFriendInvite:
-            return handleCreateFriendInvite;
-        case AdminConsoleScreen.AddMailingListEntry:
-            return handleAddMailingListEntry;
-    }
+    state.updateAdminConsoleMode({ loading: false, error: errorMessageFrom(err, fallback) });
 }
 
 export async function handleAdminConsoleKeyPress(
@@ -105,8 +78,8 @@ export async function handleAdminConsoleKeyPress(
     state: EmulatorState,
     ctrlKey = false
 ): Promise<EmulatorState> {
-    const mode = state.getAdminConsoleMode();
-    if (!mode?.screen) return state;
+    let mode = state.getAdminConsoleMode();
+    if (!mode) return state;
 
     if (key === "c" && ctrlKey) {
         state.setAdminConsoleMode(undefined);
@@ -116,10 +89,28 @@ export async function handleAdminConsoleKeyPress(
     if (mode.loading) return state;
 
     if (mode.error) {
-        state.setAdminConsoleMode({ ...mode, error: undefined });
+        mode = { ...mode, error: undefined };
+        state.setAdminConsoleMode(mode);
     }
 
-    return screenHandler(mode.screen)(key, state);
+    switch (mode.screen) {
+        case AdminConsoleScreen.Main:
+            return handleMainMenu(key, state, mode);
+        case AdminConsoleScreen.IceCreamInventory:
+            return handleIceCreamInventory(key, state, mode);
+        case AdminConsoleScreen.SelectFlavor:
+            return handleSelectFlavor(key, state, mode);
+        case AdminConsoleScreen.ConfirmSendEmails:
+            return handleConfirmSendEmails(key, state, mode);
+        case AdminConsoleScreen.ProvisionFlavorForm:
+            return handleProvisionFlavorForm(key, state, mode);
+        case AdminConsoleScreen.ConfirmProvisionFlavor:
+            return handleConfirmProvisionFlavor(key, state, mode);
+        case AdminConsoleScreen.CreateFriendInvite:
+            return handleCreateFriendInvite(key, state, mode);
+        case AdminConsoleScreen.AddMailingListEntry:
+            return handleAddMailingListEntry(key, state, mode);
+    }
 }
 
 export const optDef = {};

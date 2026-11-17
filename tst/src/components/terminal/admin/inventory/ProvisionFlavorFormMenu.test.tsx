@@ -6,6 +6,7 @@ import { mockAdminState } from "../../../../../helpers/terminal";
 
 import ProvisionFlavorFormMenu from "../../../../../../src/components/terminal/admin/inventory/ProvisionFlavorFormMenu";
 import {
+    type AdminConsoleMode,
     AdminConsoleScreen,
     type ProvisionFlavorForm
 } from "../../../../../../src/javascript-terminal/emulator-state/EmulatorState";
@@ -20,12 +21,17 @@ const blankForm: ProvisionFlavorForm = {
 
 function renderMenu(form: Partial<ProvisionFlavorForm> = {}) {
     const onAction = vi.fn();
-    const emulatorState = mockAdminState({
+    const consoleMode: AdminConsoleMode<AdminConsoleScreen.ProvisionFlavorForm> = {
         screen: AdminConsoleScreen.ProvisionFlavorForm,
         provisionForm: { ...blankForm, ...form }
-    });
+    };
+    const emulatorState = mockAdminState(consoleMode);
     const result = renderWithApp(
-        <ProvisionFlavorFormMenu theme={mockTerminalTheme} onAction={onAction} />,
+        <ProvisionFlavorFormMenu
+            theme={mockTerminalTheme}
+            onAction={onAction}
+            mode={consoleMode}
+        />,
         { emulatorState }
     );
     return { ...result, onAction, emulatorState };

@@ -1,5 +1,6 @@
 import type { DatabaseFlavor } from "../../../../../api/types";
 import EmulatorState, {
+    type AdminConsoleMode,
     AdminConsoleScreen,
     IceCreamInventoryMenuOption
 } from "../../../emulator-state/EmulatorState";
@@ -17,7 +18,6 @@ export function sortInventory(inventoryData: DatabaseFlavor[]): DatabaseFlavor[]
 }
 
 export async function fetchInventoryData(state: EmulatorState): Promise<void> {
-    const mode = state.getAdminConsoleMode();
     try {
         const { inventory } = await postAsAdmin<{ inventory: Partial<DatabaseFlavor>[] }>(
             state,
@@ -31,19 +31,21 @@ export async function fetchInventoryData(state: EmulatorState): Promise<void> {
             count: typeof item.count === "number" ? item.count : 0,
             type: item.type ?? null
         }));
-        state.setAdminConsoleMode({ ...mode, inventoryData });
+        state.updateAdminConsoleMode({ inventoryData });
     } catch (err) {
         console.error("Failed To Fetch Inventory", err);
-        state.setAdminConsoleMode({
-            ...mode,
+        state.updateAdminConsoleMode({
             inventoryData: [],
             error: errorMessageFrom(err, "Failed To Fetch Inventory")
         });
     }
 }
 
-export function handleSelectFlavor(key: string, state: EmulatorState): EmulatorState {
-    const mode = state.getAdminConsoleMode()!;
+export function handleSelectFlavor(
+    key: string,
+    state: EmulatorState,
+    mode: AdminConsoleMode<AdminConsoleScreen.SelectFlavor>
+): EmulatorState {
     if (!mode.inventoryData) return state;
 
     const sortedInventory = sortInventory(mode.inventoryData);

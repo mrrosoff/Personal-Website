@@ -15,26 +15,26 @@ import AddMailingListEntryMenu from "./mailingList/AddMailingListEntryMenu";
 const AdminConsole = (props: { theme: TerminalTheme; onAction: (key: string) => void }) => {
     const { emulatorState } = useAppContext();
     const mode = emulatorState.getAdminConsoleMode();
-    if (!mode?.screen) return null;
+    if (!mode) return null;
 
     const renderScreen = () => {
         switch (mode.screen) {
             case AdminConsoleScreen.Main:
-                return <MainMenu {...props} />;
+                return <MainMenu {...props} mode={mode} />;
             case AdminConsoleScreen.IceCreamInventory:
-                return <IceCreamInventoryMenu {...props} />;
+                return <IceCreamInventoryMenu {...props} mode={mode} />;
             case AdminConsoleScreen.SelectFlavor:
-                return <SelectFlavorMenu {...props} />;
+                return <SelectFlavorMenu {...props} mode={mode} />;
             case AdminConsoleScreen.ConfirmSendEmails:
-                return <ConfirmSendEmailsMenu {...props} />;
+                return <ConfirmSendEmailsMenu {...props} mode={mode} />;
             case AdminConsoleScreen.ProvisionFlavorForm:
-                return <ProvisionFlavorFormMenu {...props} />;
+                return <ProvisionFlavorFormMenu {...props} mode={mode} />;
             case AdminConsoleScreen.ConfirmProvisionFlavor:
-                return <ConfirmProvisionFlavorMenu {...props} />;
+                return <ConfirmProvisionFlavorMenu {...props} mode={mode} />;
             case AdminConsoleScreen.CreateFriendInvite:
-                return <CreateFriendInviteMenu {...props} />;
+                return <CreateFriendInviteMenu {...props} mode={mode} />;
             case AdminConsoleScreen.AddMailingListEntry:
-                return <AddMailingListEntryMenu {...props} />;
+                return <AddMailingListEntryMenu {...props} mode={mode} />;
         }
     };
 

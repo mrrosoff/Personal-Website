@@ -3,25 +3,34 @@ import { useMemo } from "react";
 
 import { sortInventory } from "../../../../javascript-terminal/commands/console/inventory/selectFlavor";
 import { useAppContext } from "../../../AppContext";
+import type {
+    AdminConsoleMode,
+    AdminConsoleScreen
+} from "../../../../javascript-terminal/emulator-state/EmulatorState";
 import type { TerminalTheme } from "../../Terminal";
 import MenuItem from "../common/MenuItem";
 import { ConsoleHeading, ConsoleHint } from "../common/ConsoleText";
 import useLoadingDots from "../common/useLoadingDots";
 
-const SelectFlavorMenu = (props: { theme: TerminalTheme; onAction: (key: string) => void }) => {
+type SelectFlavorMenuProps = {
+    theme: TerminalTheme;
+    onAction: (key: string) => void;
+    mode: AdminConsoleMode<AdminConsoleScreen.SelectFlavor>;
+};
+
+const SelectFlavorMenu = (props: SelectFlavorMenuProps) => {
     const { emulatorState } = useAppContext();
     const muiTheme = useTheme();
     const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
-    const mode = emulatorState.getAdminConsoleMode()!;
     const dots = useLoadingDots();
 
     const ITEMS_PER_PAGE = 4;
-    const selectedIndex = mode.selectedOption as number;
-    const currentPage = mode.currentPage ?? 0;
+    const selectedIndex = props.mode.selectedOption as number;
+    const currentPage = props.mode.currentPage ?? 0;
 
     const sortedInventory = useMemo(() => {
-        return sortInventory(mode.inventoryData ?? []);
-    }, [mode.inventoryData]);
+        return sortInventory(props.mode.inventoryData ?? []);
+    }, [props.mode.inventoryData]);
 
     const { totalPages, startIndex, itemsOnPage } = useMemo(() => {
         const totalPages = Math.ceil(sortedInventory.length / ITEMS_PER_PAGE);
@@ -32,19 +41,19 @@ const SelectFlavorMenu = (props: { theme: TerminalTheme; onAction: (key: string)
     }, [sortedInventory, currentPage]);
 
     const select = (globalIndex: number) => {
-        emulatorState.setAdminConsoleMode({ ...mode, selectedOption: globalIndex });
+        emulatorState.setAdminConsoleMode({ ...props.mode, selectedOption: globalIndex });
         props.onAction("Enter");
     };
     const goToPage = (page: number) => {
         emulatorState.setAdminConsoleMode({
-            ...mode,
+            ...props.mode,
             currentPage: page,
             selectedOption: page * ITEMS_PER_PAGE
         });
         props.onAction("");
     };
 
-    if (!mode.inventoryData) {
+    if (!props.mode.inventoryData) {
         return (
             <Box sx={{ paddingTop: 1 }}>
                 <ConsoleHeading theme={props.theme} title={"Select Flavor"} />
@@ -53,7 +62,7 @@ const SelectFlavorMenu = (props: { theme: TerminalTheme; onAction: (key: string)
         );
     }
 
-    if (mode.inventoryData.length === 0) {
+    if (props.mode.inventoryData.length === 0) {
         return (
             <Box sx={{ paddingTop: 1 }}>
                 <ConsoleHeading theme={props.theme} title={"Select Flavor"} />

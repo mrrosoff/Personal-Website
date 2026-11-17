@@ -1,5 +1,6 @@
 import type { DatabaseFlavor } from "../../../../../api/types";
 import EmulatorState, {
+    type AdminConsoleMode,
     type AdminConsoleState,
     AdminConsoleScreen,
     type EditField,
@@ -146,9 +147,9 @@ async function handleFlavorEdit(
 
 export async function handleIceCreamInventory(
     key: string,
-    state: EmulatorState
+    state: EmulatorState,
+    mode: AdminConsoleMode<AdminConsoleScreen.IceCreamInventory>
 ): Promise<EmulatorState> {
-    const mode = state.getAdminConsoleMode()!;
     if (mode.editingFlavor) {
         return handleFlavorEdit(key, state, mode, mode.editingFlavor);
     }

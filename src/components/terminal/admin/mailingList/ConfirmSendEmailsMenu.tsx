@@ -1,6 +1,10 @@
 import { Box, Typography, keyframes, useMediaQuery, useTheme } from "@mui/material";
 
 import { useAppContext } from "../../../AppContext";
+import type {
+    AdminConsoleMode,
+    AdminConsoleScreen
+} from "../../../../javascript-terminal/emulator-state/EmulatorState";
 import type { TerminalTheme } from "../../Terminal";
 import MenuItem from "../common/MenuItem";
 import { ConsoleHeading, ConsoleHint } from "../common/ConsoleText";
@@ -10,18 +14,20 @@ const blink = keyframes`
     50.01%, 100% { visibility: hidden; }
 `;
 
-const ConfirmSendEmailsMenu = (props: {
+type ConfirmSendEmailsMenuProps = {
     theme: TerminalTheme;
     onAction: (key: string) => void;
-}) => {
+    mode: AdminConsoleMode<AdminConsoleScreen.ConfirmSendEmails>;
+};
+
+const ConfirmSendEmailsMenu = (props: ConfirmSendEmailsMenuProps) => {
     const { emulatorState } = useAppContext();
     const muiTheme = useTheme();
     const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
-    const mode = emulatorState.getAdminConsoleMode()!;
-    const selectedOption = mode.selectedOption as "yes" | "no";
+    const selectedOption = props.mode.selectedOption as "yes" | "no";
 
     const select = (option: "yes" | "no") => {
-        emulatorState.setAdminConsoleMode({ ...mode, selectedOption: option });
+        emulatorState.setAdminConsoleMode({ ...props.mode, selectedOption: option });
         props.onAction("Enter");
     };
 
@@ -46,7 +52,7 @@ const ConfirmSendEmailsMenu = (props: {
                 }}
             >
                 {"Message: "}
-                {mode.marketing?.message}
+                {props.mode.marketing?.message}
                 <Box
                     component="span"
                     sx={{
@@ -63,7 +69,7 @@ const ConfirmSendEmailsMenu = (props: {
                 <MenuItem
                     selected={selectedOption === "yes"}
                     theme={props.theme}
-                    disabled={mode.loading}
+                    disabled={props.mode.loading}
                     onClick={
                         smallScreen
                             ? () => {
@@ -77,7 +83,7 @@ const ConfirmSendEmailsMenu = (props: {
                 <MenuItem
                     selected={selectedOption === "no"}
                     theme={props.theme}
-                    disabled={mode.loading}
+                    disabled={props.mode.loading}
                     onClick={
                         smallScreen
                             ? () => {
@@ -90,7 +96,7 @@ const ConfirmSendEmailsMenu = (props: {
                 </MenuItem>
             </Box>
             <ConsoleHint theme={props.theme}>
-                {mode.loading
+                {props.mode.loading
                     ? "Sending..."
                     : smallScreen
                       ? "tap Yes or No"

@@ -1,6 +1,7 @@
 import { validate } from "email-validator";
 
 import EmulatorState, {
+    type AdminConsoleMode,
     AdminConsoleScreen,
     type FriendInvite,
     type InviteDevice,
@@ -68,15 +69,14 @@ function typeIntoInvite(invite: FriendInvite, key: string): FriendInvite {
 }
 
 async function sendInvite(state: EmulatorState, invite: FriendInvite): Promise<void> {
-    const mode = state.getAdminConsoleMode()!;
     const email = invite.email.trim();
     if (email && !validate(email)) {
-        state.setAdminConsoleMode({ ...mode, error: "Enter A Valid Email Address" });
+        state.updateAdminConsoleMode({ error: "Enter A Valid Email Address" });
         return;
     }
 
     const durationHours = clampDurationHours(invite.durationHours);
-    state.setAdminConsoleMode({ ...mode, loading: true });
+    state.updateAdminConsoleMode({ loading: true });
     try {
         const { url } = await postAsAdmin<{ url: string }>(state, "/admin/create-friend-invite", {
             friendName: invite.friendName.trim(),
@@ -84,8 +84,7 @@ async function sendInvite(state: EmulatorState, invite: FriendInvite): Promise<v
             ...(email && { email }),
             ...(invite.deviceIds.length && { deviceIds: invite.deviceIds })
         });
-        state.setAdminConsoleMode({
-            ...state.getAdminConsoleMode(),
+        state.updateAdminConsoleMode({
             friendInvite: { ...invite, durationHours, email, url },
             loading: false
         });
@@ -96,10 +95,10 @@ async function sendInvite(state: EmulatorState, invite: FriendInvite): Promise<v
 
 export async function handleCreateFriendInvite(
     key: string,
-    state: EmulatorState
+    state: EmulatorState,
+    mode: AdminConsoleMode<AdminConsoleScreen.CreateFriendInvite>
 ): Promise<EmulatorState> {
-    const mode = state.getAdminConsoleMode()!;
-    const invite = mode.friendInvite!;
+    const invite = mode.friendInvite;
     const devices = mode.inviteDevices ?? [];
 
     if (key === "Escape") {

@@ -6,19 +6,24 @@ import { mockAdminState } from "../../../../helpers/terminal";
 
 import MainMenu from "../../../../../src/components/terminal/admin/MainMenu";
 import {
+    type AdminConsoleMode,
     AdminConsoleScreen,
     MainMenuOption
 } from "../../../../../src/javascript-terminal/emulator-state/EmulatorState";
 
 function renderMenu() {
     const onAction = vi.fn();
-    const emulatorState = mockAdminState({
+    const consoleMode: AdminConsoleMode<AdminConsoleScreen.Main> = {
         screen: AdminConsoleScreen.Main,
         selectedOption: MainMenuOption.IceCreamInventory
-    });
-    const result = renderWithApp(<MainMenu theme={mockTerminalTheme} onAction={onAction} />, {
-        emulatorState
-    });
+    };
+    const emulatorState = mockAdminState(consoleMode);
+    const result = renderWithApp(
+        <MainMenu theme={mockTerminalTheme} onAction={onAction} mode={consoleMode} />,
+        {
+            emulatorState
+        }
+    );
     return { ...result, onAction, emulatorState };
 }
 

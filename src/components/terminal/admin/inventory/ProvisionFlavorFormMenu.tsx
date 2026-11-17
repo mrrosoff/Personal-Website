@@ -1,6 +1,10 @@
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 
 import { useAppContext } from "../../../AppContext";
+import type {
+    AdminConsoleMode,
+    AdminConsoleScreen
+} from "../../../../javascript-terminal/emulator-state/EmulatorState";
 import type { TerminalTheme } from "../../Terminal";
 import MenuItem from "../common/MenuItem";
 import { ConsoleHeading, ConsoleHint } from "../common/ConsoleText";
@@ -8,19 +12,21 @@ import Stepper from "../common/Stepper";
 
 type FormField = "flavorName" | "initialQuantity" | "color" | "type";
 
-const ProvisionFlavorFormMenu = (props: {
+type ProvisionFlavorFormMenuProps = {
     theme: TerminalTheme;
     onAction: (key: string) => void;
-}) => {
+    mode: AdminConsoleMode<AdminConsoleScreen.ProvisionFlavorForm>;
+};
+
+const ProvisionFlavorFormMenu = (props: ProvisionFlavorFormMenuProps) => {
     const { emulatorState } = useAppContext();
     const muiTheme = useTheme();
     const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
-    const mode = emulatorState.getAdminConsoleMode()!;
-    const form = mode.provisionForm!;
+    const form = props.mode.provisionForm;
 
     const selectField = (field: FormField) => {
         emulatorState.setAdminConsoleMode({
-            ...mode,
+            ...props.mode,
             provisionForm: { ...form, currentField: field }
         });
         props.onAction("");

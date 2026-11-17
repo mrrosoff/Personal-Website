@@ -8,7 +8,7 @@ import { mockFlavor } from "../../../../../__mocks__/__data__/aws/dynamodb";
 import SelectFlavorMenu from "../../../../../../src/components/terminal/admin/inventory/SelectFlavorMenu";
 import {
     AdminConsoleScreen,
-    type AdminConsoleState
+    type AdminConsoleMode
 } from "../../../../../../src/javascript-terminal/emulator-state/EmulatorState";
 
 const inventory = ["a", "b", "c", "d", "e"].map((name, i) => ({
@@ -18,16 +18,17 @@ const inventory = ["a", "b", "c", "d", "e"].map((name, i) => ({
     count: 10 - i
 }));
 
-function renderMenu(mode: Partial<AdminConsoleState> = {}) {
+function renderMenu(mode: Partial<AdminConsoleMode<AdminConsoleScreen.SelectFlavor>> = {}) {
     const onAction = vi.fn();
-    const emulatorState = mockAdminState({
+    const consoleMode: AdminConsoleMode<AdminConsoleScreen.SelectFlavor> = {
         screen: AdminConsoleScreen.SelectFlavor,
         inventoryData: inventory,
         selectedOption: 0,
         ...mode
-    });
+    };
+    const emulatorState = mockAdminState(consoleMode);
     const result = renderWithApp(
-        <SelectFlavorMenu theme={mockTerminalTheme} onAction={onAction} />,
+        <SelectFlavorMenu theme={mockTerminalTheme} onAction={onAction} mode={consoleMode} />,
         {
             emulatorState
         }

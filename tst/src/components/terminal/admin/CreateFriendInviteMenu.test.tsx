@@ -9,7 +9,7 @@ import { DeviceKind } from "../../../../../api/types";
 import CreateFriendInviteMenu from "../../../../../src/components/terminal/admin/CreateFriendInviteMenu";
 import {
     AdminConsoleScreen,
-    type AdminConsoleState,
+    type AdminConsoleMode,
     type FriendInvite
 } from "../../../../../src/javascript-terminal/emulator-state/EmulatorState";
 
@@ -29,20 +29,18 @@ const inviteDevices = [
 
 function renderMenu(
     invite: Partial<FriendInvite> = {},
-    mode: Partial<AdminConsoleState> = { inviteDevices },
+    mode: Partial<AdminConsoleMode<AdminConsoleScreen.CreateFriendInvite>> = { inviteDevices },
     environmentVariables?: Record<string, string>
 ) {
     const onAction = vi.fn();
-    const emulatorState = mockAdminState(
-        {
-            screen: AdminConsoleScreen.CreateFriendInvite,
-            friendInvite: { ...blankInvite, ...invite },
-            ...mode
-        },
-        environmentVariables
-    );
+    const consoleMode: AdminConsoleMode<AdminConsoleScreen.CreateFriendInvite> = {
+        screen: AdminConsoleScreen.CreateFriendInvite,
+        friendInvite: { ...blankInvite, ...invite },
+        ...mode
+    };
+    const emulatorState = mockAdminState(consoleMode, environmentVariables);
     const result = renderWithApp(
-        <CreateFriendInviteMenu theme={mockTerminalTheme} onAction={onAction} />,
+        <CreateFriendInviteMenu theme={mockTerminalTheme} onAction={onAction} mode={consoleMode} />,
         { emulatorState }
     );
     return { ...result, onAction, emulatorState };

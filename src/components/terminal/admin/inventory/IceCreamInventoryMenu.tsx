@@ -1,6 +1,10 @@
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 
-import { IceCreamInventoryMenuOption } from "../../../../javascript-terminal/emulator-state/EmulatorState";
+import {
+    IceCreamInventoryMenuOption,
+    type AdminConsoleMode,
+    AdminConsoleScreen
+} from "../../../../javascript-terminal/emulator-state/EmulatorState";
 import { useAppContext } from "../../../AppContext";
 import type { TerminalTheme } from "../../Terminal";
 import MenuItem from "../common/MenuItem";
@@ -10,43 +14,46 @@ import Stepper from "../common/Stepper";
 
 type EditField = "name" | "color" | "type" | "count";
 
-const IceCreamInventoryMenu = (props: {
+type IceCreamInventoryMenuProps = {
     theme: TerminalTheme;
     onAction: (key: string) => void;
-}) => {
+    mode: AdminConsoleMode<AdminConsoleScreen.IceCreamInventory>;
+};
+
+const IceCreamInventoryMenu = (props: IceCreamInventoryMenuProps) => {
     const { emulatorState } = useAppContext();
     const muiTheme = useTheme();
     const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
-    const mode = emulatorState.getAdminConsoleMode()!;
     const dots = useLoadingDots();
 
     const selectOption = (option: IceCreamInventoryMenuOption) => {
-        emulatorState.setAdminConsoleMode({ ...mode, selectedOption: option });
+        emulatorState.setAdminConsoleMode({ ...props.mode, selectedOption: option });
         props.onAction("Enter");
     };
 
     const selectField = (field: EditField) => {
-        emulatorState.setAdminConsoleMode({ ...mode, editingField: field });
+        emulatorState.setAdminConsoleMode({ ...props.mode, editingField: field });
         props.onAction("");
     };
 
-    if (mode.editingFlavor) {
+    const flavor = props.mode.editingFlavor;
+    if (flavor) {
         return (
             <Box sx={{ paddingTop: 1 }}>
                 <ConsoleHeading theme={props.theme} title={"Modify Flavor Inventory"} />
-                <Box sx={{ opacity: mode.loading ? 0.4 : 1 }}>
+                <Box sx={{ opacity: props.mode.loading ? 0.4 : 1 }}>
                     {(["name", "color", "type", "count"] as const).map((field) => {
-                        const active = (mode.editingField || "name") === field;
+                        const active = (props.mode.editingField || "name") === field;
                         let value: string;
-                        if (field === "type") value = mode.editingFlavor!.type || "Not Listed";
-                        else if (field === "count") value = String(mode.editingFlavor!.count);
-                        else value = mode.editingFlavor![field] || "_";
+                        if (field === "type") value = flavor.type || "Not Listed";
+                        else if (field === "count") value = String(flavor.count);
+                        else value = flavor[field] || "_";
                         const stepper = field === "type" || field === "count";
                         return (
                             <Typography
                                 key={field}
                                 onClick={
-                                    smallScreen && !mode.loading
+                                    smallScreen && !props.mode.loading
                                         ? () => {
                                               selectField(field);
                                           }
@@ -85,7 +92,7 @@ const IceCreamInventoryMenu = (props: {
                         );
                     })}
                 </Box>
-                {smallScreen && !mode.loading && (
+                {smallScreen && !props.mode.loading && (
                     <Box sx={{ display: "flex", gap: 2, mb: 1 }}>
                         <MenuItem
                             selected={false}
@@ -108,7 +115,7 @@ const IceCreamInventoryMenu = (props: {
                     </Box>
                 )}
                 <ConsoleHint theme={props.theme}>
-                    {mode.loading
+                    {props.mode.loading
                         ? `Loading${dots}`
                         : smallScreen
                           ? "tap a field to edit, then Save"
@@ -122,7 +129,9 @@ const IceCreamInventoryMenu = (props: {
         <Box sx={{ paddingTop: 1 }}>
             <ConsoleHeading theme={props.theme} title={"Ice Cream Inventory"} />
             <MenuItem
-                selected={mode.selectedOption === IceCreamInventoryMenuOption.ProvisionNewFlavor}
+                selected={
+                    props.mode.selectedOption === IceCreamInventoryMenuOption.ProvisionNewFlavor
+                }
                 theme={props.theme}
                 onClick={
                     smallScreen
@@ -135,7 +144,9 @@ const IceCreamInventoryMenu = (props: {
                 1. Provision New Flavor
             </MenuItem>
             <MenuItem
-                selected={mode.selectedOption === IceCreamInventoryMenuOption.ModifyFlavorInventory}
+                selected={
+                    props.mode.selectedOption === IceCreamInventoryMenuOption.ModifyFlavorInventory
+                }
                 theme={props.theme}
                 onClick={
                     smallScreen
@@ -148,7 +159,7 @@ const IceCreamInventoryMenu = (props: {
                 2. Modify Flavor Inventory
             </MenuItem>
             <MenuItem
-                selected={mode.selectedOption === IceCreamInventoryMenuOption.GoBack}
+                selected={props.mode.selectedOption === IceCreamInventoryMenuOption.GoBack}
                 theme={props.theme}
                 onClick={
                     smallScreen

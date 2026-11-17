@@ -5,7 +5,7 @@ import { axiosPost } from "../../../../__mocks__/axios";
 import { mockDevice } from "../../../../__mocks__/__data__/aws/dynamodb";
 
 import { DeviceKind } from "../../../../../api/types";
-import { handleCreateFriendInvite } from "../../../../../src/javascript-terminal/commands/console/createFriendInvite";
+import { handleAdminConsoleKeyPress } from "../../../../../src/javascript-terminal/commands/console";
 import {
     AdminConsoleScreen,
     type FriendInvite
@@ -34,7 +34,7 @@ function invite(changes: Partial<FriendInvite> = {}, devices = inviteDevices) {
 }
 
 async function press(key: string, state = invite()) {
-    return (await handleCreateFriendInvite(key, state)).getAdminConsoleMode()!;
+    return (await handleAdminConsoleKeyPress(key, state)).getAdminConsoleMode()!;
 }
 
 describe("handleCreateFriendInvite", () => {

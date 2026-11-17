@@ -1,6 +1,10 @@
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 
-import type { MailingListEntry } from "../../../../javascript-terminal/emulator-state/EmulatorState";
+import {
+    type MailingListEntry,
+    type AdminConsoleMode,
+    AdminConsoleScreen
+} from "../../../../javascript-terminal/emulator-state/EmulatorState";
 import { useAppContext } from "../../../AppContext";
 import type { TerminalTheme } from "../../Terminal";
 import MenuItem from "../common/MenuItem";
@@ -9,15 +13,17 @@ import useLoadingDots from "../common/useLoadingDots";
 
 type FormField = MailingListEntry["currentField"];
 
-const AddMailingListEntryMenu = (props: {
+type AddMailingListEntryMenuProps = {
     theme: TerminalTheme;
     onAction: (key: string) => void;
-}) => {
+    mode: AdminConsoleMode<AdminConsoleScreen.AddMailingListEntry>;
+};
+
+const AddMailingListEntryMenu = (props: AddMailingListEntryMenuProps) => {
     const { emulatorState } = useAppContext();
     const muiTheme = useTheme();
     const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
-    const mode = emulatorState.getAdminConsoleMode()!;
-    const entry = mode.mailingListEntry!;
+    const entry = props.mode.mailingListEntry;
     const dots = useLoadingDots();
 
     const outputColor = props.theme.outputColor;
@@ -25,7 +31,7 @@ const AddMailingListEntryMenu = (props: {
 
     const selectField = (field: FormField) => {
         emulatorState.setAdminConsoleMode({
-            ...mode,
+            ...props.mode,
             mailingListEntry: { ...entry, currentField: field }
         });
         props.onAction("");
@@ -71,14 +77,14 @@ const AddMailingListEntryMenu = (props: {
                             >
                                 {active ? "> " : "  "}
                                 {label}: {entry[field]}
-                                {active && !mode.loading && "_"}
+                                {active && !props.mode.loading && "_"}
                             </Typography>
                         );
                     })}
                 </Box>
             )}
 
-            {smallScreen && !mode.loading && (
+            {smallScreen && !props.mode.loading && (
                 <Box sx={{ display: "flex", gap: 2, mb: 1 }}>
                     {!entry.added && (
                         <MenuItem
@@ -105,7 +111,7 @@ const AddMailingListEntryMenu = (props: {
             )}
 
             <ConsoleHint theme={props.theme}>
-                {mode.loading
+                {props.mode.loading
                     ? `Adding${dots}`
                     : entry.added
                       ? smallScreen

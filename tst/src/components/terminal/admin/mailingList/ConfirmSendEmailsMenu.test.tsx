@@ -5,18 +5,22 @@ import { mockSmallScreen, mockTerminalTheme, renderWithApp } from "../../../../.
 import { mockAdminState } from "../../../../../helpers/terminal";
 
 import ConfirmSendEmailsMenu from "../../../../../../src/components/terminal/admin/mailingList/ConfirmSendEmailsMenu";
-import { AdminConsoleScreen } from "../../../../../../src/javascript-terminal/emulator-state/EmulatorState";
+import {
+    type AdminConsoleMode,
+    AdminConsoleScreen
+} from "../../../../../../src/javascript-terminal/emulator-state/EmulatorState";
 
 function renderMenu(mode: object = {}) {
     const onAction = vi.fn();
-    const emulatorState = mockAdminState({
+    const consoleMode: AdminConsoleMode<AdminConsoleScreen.ConfirmSendEmails> = {
         screen: AdminConsoleScreen.ConfirmSendEmails,
         selectedOption: "yes",
         marketing: { message: "New flavors!" },
         ...mode
-    });
+    };
+    const emulatorState = mockAdminState(consoleMode);
     const result = renderWithApp(
-        <ConfirmSendEmailsMenu theme={mockTerminalTheme} onAction={onAction} />,
+        <ConfirmSendEmailsMenu theme={mockTerminalTheme} onAction={onAction} mode={consoleMode} />,
         { emulatorState }
     );
     return { ...result, onAction, emulatorState };

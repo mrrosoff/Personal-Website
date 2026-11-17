@@ -3,6 +3,7 @@ import { validate } from "email-validator";
 import type { MailingListRegistration } from "../../../../../api/types";
 import { registerMailingListUser } from "../../../../components/ice-cream/MailingList";
 import EmulatorState, {
+    type AdminConsoleMode,
     AdminConsoleScreen,
     MainMenuOption
 } from "../../../emulator-state/EmulatorState";
@@ -12,10 +13,10 @@ const MAILING_LIST_FIELDS: (keyof MailingListRegistration)[] = ["firstName", "la
 
 export async function handleAddMailingListEntry(
     key: string,
-    state: EmulatorState
+    state: EmulatorState,
+    mode: AdminConsoleMode<AdminConsoleScreen.AddMailingListEntry>
 ): Promise<EmulatorState> {
-    const mode = state.getAdminConsoleMode()!;
-    const entry = mode.mailingListEntry!;
+    const entry = mode.mailingListEntry;
 
     if (key === "Escape" || (entry.added && key === "Enter")) {
         state.setAdminConsoleMode({
@@ -59,8 +60,7 @@ export async function handleAddMailingListEntry(
                 setAdminConsoleError(state, err, "Failed To Add To Mailing List");
                 break;
             }
-            state.setAdminConsoleMode({
-                ...state.getAdminConsoleMode(),
+            state.updateAdminConsoleMode({
                 mailingListEntry: { ...entry, added: true },
                 loading: false
             });
