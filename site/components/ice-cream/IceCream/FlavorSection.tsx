@@ -2,12 +2,13 @@ import { useState } from "react";
 import { Box, Grid, Skeleton, Typography, useMediaQuery, useTheme } from "@mui/material";
 
 import type { DatabaseFlavor } from "../../../../api/types";
+import { COLORS } from "../../../theme";
 
 function getFlavorStyles(color: string, isSelected: boolean, isSmallScreen: boolean) {
     return {
         cursor: "pointer",
         border: 1,
-        borderColor: isSelected ? color : "rgba(255, 255, 255, 0.5)",
+        borderColor: isSelected ? color : COLORS.muted,
         backgroundColor: isSelected
             ? `color-mix(in srgb, ${color} 8%, transparent)`
             : "transparent",
@@ -26,7 +27,7 @@ function getFlavorStyles(color: string, isSelected: boolean, isSmallScreen: bool
 function getUpcomingFlavorStyles() {
     return {
         border: 1,
-        borderColor: "rgba(255, 255, 255, 0.5)",
+        borderColor: COLORS.muted,
         backgroundColor: "transparent",
         padding: 2.5,
         borderRadius: 1

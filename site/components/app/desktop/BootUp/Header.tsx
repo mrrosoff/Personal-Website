@@ -1,4 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material";
+import { COLORS } from "../../../../theme";
 
 type HeaderProps = { creationDate: string; smallScreen: boolean };
 
@@ -29,7 +30,7 @@ export default function Header(props: HeaderProps) {
                     component="a"
                     href="https://github.com/mrrosoff/Personal-Website"
                     target="_blank"
-                    sx={{ color: "#FCFCFC", fontSize: 22 }}
+                    sx={{ color: COLORS.text, fontSize: 22 }}
                 >
                     Open Source (BETA 4.1.2)
                 </Box>

@@ -9,6 +9,7 @@ import { API_ENDPOINT_URL } from "../../../api/types";
 import type { ErrorResponseBody } from "../../../api/types";
 import FormField, { emailProblem } from "../FormField";
 import IceCreamPage from "./IceCreamPage";
+import { COLORS } from "../../theme";
 
 type SubmitStatus =
     | { state: "idle" }
@@ -73,9 +74,9 @@ const UnsubscribeForm = () => {
                     mt: smallScreen ? 5 : 6,
                     width: smallScreen ? 300 : 532,
                     fontSize: 20,
-                    backgroundColor: "#52535F",
+                    backgroundColor: COLORS.button,
                     color: "white",
-                    ":hover": { backgroundColor: "#5F6272" }
+                    ":hover": { backgroundColor: COLORS.buttonHover }
                 }}
                 disabled={!validate(email) || status.state === "sent"}
                 endIcon={status.state === "sent" ? <ThumbUpIcon /> : undefined}

@@ -3,6 +3,7 @@ import { useEffect, useId, useState } from "react";
 import { Box, TextField, Typography } from "@mui/material";
 import type { TextFieldProps } from "@mui/material";
 import { validate } from "email-validator";
+import { COLORS } from "../theme";
 
 export const emailProblem = (email: string) => (validate(email) ? null : "Enter a valid email.");
 
@@ -41,13 +42,13 @@ const FormField = ({ label, problem, helperText, sx, ...props }: FormFieldProps)
                 fullWidth
                 sx={{
                     "& .MuiOutlinedInput-root": {
-                        backgroundColor: "#1C1C1E",
+                        backgroundColor: COLORS.surface,
                         borderRadius: "4px",
                         fontSize: 22,
-                        color: "#F9F9F9",
-                        "& fieldset": { borderColor: "rgba(255,255,255,0.5)" },
-                        "&:hover fieldset": { borderColor: "rgba(255,255,255,0.5)" },
-                        "&.Mui-focused fieldset": { borderColor: "#F9F9F9", borderWidth: 1 }
+                        color: COLORS.light,
+                        "& fieldset": { borderColor: COLORS.muted },
+                        "&:hover fieldset": { borderColor: COLORS.muted },
+                        "&.Mui-focused fieldset": { borderColor: COLORS.light, borderWidth: 1 }
                     },
                     "& .MuiOutlinedInput-input": { padding: "9px 12px" },
                     "& .MuiOutlinedInput-input::placeholder": {

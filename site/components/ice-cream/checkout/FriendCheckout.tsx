@@ -10,6 +10,7 @@ import FormField, { emailProblem } from "../../FormField";
 import { decodeToken } from "../../../auth";
 import { useIceCreamCart } from "../IceCreamCartContext";
 import { rainbowTextSx } from "../IceCream";
+import { COLORS } from "../../../theme";
 
 type FriendCheckoutProps = {
     priceIds: string[];
@@ -85,7 +86,7 @@ const FriendCheckout = ({ priceIds, friendToken }: FriendCheckoutProps) => {
                     <Box
                         sx={{
                             border: 1,
-                            borderColor: "rgba(255, 255, 255, 0.5)",
+                            borderColor: COLORS.muted,
                             borderRadius: 1,
                             px: smallScreen ? 2 : 3
                         }}
@@ -125,9 +126,9 @@ const FriendCheckout = ({ priceIds, friendToken }: FriendCheckoutProps) => {
                 sx={{
                     mt: 4,
                     fontSize: 20,
-                    backgroundColor: "#52535F",
+                    backgroundColor: COLORS.button,
                     color: "white",
-                    ":hover": { backgroundColor: "#5F6272" }
+                    ":hover": { backgroundColor: COLORS.buttonHover }
                 }}
             >
                 Complete Order

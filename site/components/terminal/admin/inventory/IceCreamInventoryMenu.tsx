@@ -9,6 +9,7 @@ import MenuItem from "../common/MenuItem";
 import { ConsoleHeading, ConsoleHint } from "../common/ConsoleText";
 import useLoadingDots from "../common/useLoadingDots";
 import Stepper from "../common/Stepper";
+import { COLORS } from "../../../../theme";
 
 type EditField = "name" | "color" | "type" | "count";
 
@@ -59,9 +60,7 @@ const IceCreamInventoryMenu = (props: IceCreamInventoryMenuProps) => {
                                     color: active
                                         ? props.theme.commandColor
                                         : props.theme.outputColor,
-                                    backgroundColor: active
-                                        ? "rgba(255,255,255,0.1)"
-                                        : "transparent",
+                                    backgroundColor: active ? COLORS.faint : "transparent",
                                     padding: "4px 8px",
                                     mb: field === "count" ? 2 : 1,
                                     cursor: smallScreen ? "pointer" : undefined

@@ -3,6 +3,7 @@ import { Badge, Fab, useTheme, Zoom } from "@mui/material";
 import IcecreamOutlinedIcon from "@mui/icons-material/IcecreamOutlined";
 
 import { useIceCreamCart } from "../IceCreamCartContext";
+import { COLORS } from "../../../theme";
 
 export default function CartButton() {
     const theme = useTheme();
@@ -38,9 +39,9 @@ export default function CartButton() {
                         borderRadius: 12,
                         fontSize: 15,
                         fontWeight: 600,
-                        backgroundColor: "#F9F9F9",
-                        color: "#121212",
-                        border: "2px solid #121212",
+                        backgroundColor: COLORS.light,
+                        color: COLORS.background,
+                        border: `2px solid ${COLORS.background}`,
                         zIndex: theme.zIndex.fab + 1
                     }
                 }}
@@ -49,11 +50,11 @@ export default function CartButton() {
                     aria-label={`Checkout, ${selectedPriceIds.length.toString()} in cart`}
                     onClick={handleCartClick}
                     sx={{
-                        backgroundColor: "#52535F",
+                        backgroundColor: COLORS.button,
                         color: "white",
-                        border: "1px solid rgba(255,255,255,0.5)",
+                        border: `1px solid ${COLORS.muted}`,
                         boxShadow: "0 6px 20px rgba(0, 0, 0, 0.5)",
-                        ":hover": { backgroundColor: "#5F6272" }
+                        ":hover": { backgroundColor: COLORS.buttonHover }
                     }}
                 >
                     <IcecreamOutlinedIcon />

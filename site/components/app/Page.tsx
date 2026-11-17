@@ -11,6 +11,7 @@ import BootUp from "./desktop/BootUp";
 import TerminalEmbed from "./desktop/TerminalEmbed";
 import { useIceCreamCart } from "../ice-cream/IceCreamCartContext";
 import { useAppContext } from "../AppContext";
+import { COLORS } from "../../theme";
 
 type PageProps = {
     inputRef: RefObject<HTMLInputElement | null>;
@@ -59,7 +60,7 @@ export const LinksAndMenu = () => {
                     height: 55,
                     borderStyle: "solid",
                     borderWidth: "1px",
-                    borderColor: "#FFFFFF",
+                    borderColor: COLORS.white,
                     position: "absolute",
                     top: 0,
                     right: 0
@@ -88,7 +89,7 @@ const Links = (props: { open: boolean; setOpen: Dispatch<SetStateAction<boolean>
             <Box
                 component={Link}
                 to={linkToIceCream ? "/ice-cream" : "/"}
-                sx={{ color: "#FCFCFC", fontSize: 22 }}
+                sx={{ color: COLORS.text, fontSize: 22 }}
             >
                 {linkToIceCream ? "Ice Cream" : "Home"}
             </Box>
@@ -108,7 +109,7 @@ const Links = (props: { open: boolean; setOpen: Dispatch<SetStateAction<boolean>
                             color:
                                 selectedPriceIds.length === 0
                                     ? "rgba(252, 252, 252, 0.5)"
-                                    : "#FCFCFC",
+                                    : COLORS.text,
                             fontSize: 22,
                             cursor: selectedPriceIds.length === 0 ? "default" : "pointer"
                         }}
@@ -147,7 +148,7 @@ const Links = (props: { open: boolean; setOpen: Dispatch<SetStateAction<boolean>
                 disableRipple
                 onClick={() => props.setOpen(!props.open)}
                 sx={{
-                    color: "#FCFCFC",
+                    color: COLORS.text,
                     fontSize: 22,
                     textTransform: "none",
                     padding: 0,

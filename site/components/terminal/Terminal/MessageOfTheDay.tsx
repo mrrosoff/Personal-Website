@@ -2,6 +2,7 @@ import { Box, useMediaQuery, useTheme } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 import type { TerminalTheme } from "../Terminal";
+import { COLORS } from "../../../theme";
 
 const MOTD_LINKS: Partial<Record<string, { mobile?: string; path?: string }>> = {
     "https://maxrosoff.com/ice-cream": { mobile: "maxrosoff.com", path: "/ice-cream" },
@@ -67,7 +68,7 @@ export default function MessageOfTheDay(props: MessageOfTheDayProps) {
                                         : undefined
                                 }
                                 sx={{
-                                    color: "#FCFCFC",
+                                    color: COLORS.text,
                                     fontSize: 20
                                 }}
                             >

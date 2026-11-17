@@ -5,6 +5,7 @@ import { Box, Button, Skeleton, Typography } from "@mui/material";
 import { PaymentElement, useCheckoutElements } from "@stripe/react-stripe-js/checkout";
 
 import { isDeliverable, useCheckoutForm } from "./CheckoutFormContext";
+import { COLORS } from "../../../../theme";
 
 type LoadingPaymentElementProps = {
     accordion: boolean;
@@ -39,13 +40,13 @@ export const LoadingPaymentElement = (props: LoadingPaymentElementProps) => {
     );
 };
 
-export const skeletonSx = { bgcolor: "rgba(255,255,255,0.1)" };
+export const skeletonSx = { bgcolor: COLORS.faint };
 
 const outlinedBoxSx = {
     border: 1,
-    borderColor: "rgba(255,255,255,0.5)",
+    borderColor: COLORS.muted,
     borderRadius: "4px",
-    backgroundColor: "#1C1C1E"
+    backgroundColor: COLORS.surface
 };
 
 type SkeletonFieldProps = { flex: number };
@@ -100,9 +101,9 @@ export const PayButton = () => {
                 sx={{
                     mt: 4,
                     fontSize: 20,
-                    backgroundColor: "#52535F",
+                    backgroundColor: COLORS.button,
                     color: "white",
-                    ":hover": { backgroundColor: "#5F6272" }
+                    ":hover": { backgroundColor: COLORS.buttonHover }
                 }}
             >
                 Pay {state.type === "success" ? state.checkout.total.total.amount : ""}

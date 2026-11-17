@@ -9,6 +9,7 @@ import type { TerminalTheme } from "../../Terminal";
 import MenuItem from "../common/MenuItem";
 import { ConsoleHeading, ConsoleHint } from "../common/ConsoleText";
 import Stepper from "../common/Stepper";
+import { COLORS } from "../../../../theme";
 
 type FormField = "flavorName" | "initialQuantity" | "color" | "type";
 
@@ -52,7 +53,7 @@ const ProvisionFlavorFormMenu = (props: ProvisionFlavorFormMenuProps) => {
                             onClick={smallScreen ? () => selectField(field) : undefined}
                             sx={{
                                 color: active ? props.theme.commandColor : props.theme.outputColor,
-                                backgroundColor: active ? "rgba(255,255,255,0.1)" : "transparent",
+                                backgroundColor: active ? COLORS.faint : "transparent",
                                 padding: "4px 8px",
                                 mb: 1,
                                 cursor: smallScreen ? "pointer" : undefined

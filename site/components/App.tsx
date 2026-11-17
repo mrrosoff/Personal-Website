@@ -3,7 +3,7 @@ import type { RefObject } from "react";
 import { BrowserRouter, Navigate, Outlet, Route, Routes, useMatch } from "react-router-dom";
 
 import { Box, useMediaQuery } from "@mui/material";
-import { createTheme, ThemeProvider, StyledEngineProvider, useTheme } from "@mui/material/styles";
+import { ThemeProvider, StyledEngineProvider, useTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 
 import { AppProvider } from "./AppContext";
@@ -16,88 +16,18 @@ import PrivacyPolicy from "./PrivacyPolicy";
 import RegisterFriend from "./RegisterFriend";
 import SpotifyCallback from "./SpotifyCallback";
 import Page, { LinksAndMenu } from "./app/Page";
+import { createMuiTheme } from "../theme";
 
 const Checkout = lazy(() => import("./ice-cream/checkout/Checkout"));
 const CancelSubscription = lazy(() => import("./ice-cream/CancelSubscription"));
 const Polaroid = lazy(() => import("./polaroid/Polaroid"));
 
-const App = () => {
-    const theme = createTheme({
-        palette: {
-            mode: "dark",
-            primary: { main: "#FFFFFF" },
-            secondary: { main: "#5F6272" }
-        },
-        typography: {
-            h1: {
-                fontSize: 60
-            },
-            h2: {
-                fontSize: 35
-            },
-            h4: {
-                fontSize: 26
-            },
-            body1: {
-                fontSize: "clamp(18px, 5.3vw, 22px)"
-            }
-        },
-        components: {
-            MuiFilledInput: {
-                styleOverrides: {
-                    root: {
-                        backgroundColor: "#30313D",
-                        border: "1px solid rgba(255, 255, 255, 0.1)",
-                        borderRadius: "6px",
-                        boxShadow:
-                            "0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25)",
-                        transition:
-                            "background 0.15s ease, border 0.15s ease, box-shadow 0.15s ease, color 0.15s ease, outline 0.15s ease",
-                        overflow: "hidden",
-                        outline: "0px solid transparent",
-                        "&:hover": {
-                            backgroundColor: "#30313D",
-                            border: "1px solid rgba(255, 255, 255, 0.15)"
-                        },
-                        "&.Mui-focused": {
-                            backgroundColor: "#30313D",
-                            borderColor: "#F9F9F9",
-                            outline: "2.5px solid rgba(249, 249, 249, 0.20)",
-                            boxShadow:
-                                "0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25), 0 0 0 3px rgba(249, 249, 249, 0.1)"
-                        },
-                        "&::before, &::after": {
-                            display: "none"
-                        }
-                    },
-                    input: {
-                        padding: "16px 16px",
-                        lineHeight: "1.5",
-                        color: "#F9F9F9"
-                    }
-                }
-            },
-            MuiInputLabel: {
-                styleOverrides: {
-                    filled: {
-                        color: "rgba(249, 249, 249, 0.7)",
-                        transform: "translate(17px, 16px) scale(1)",
-                        "&.Mui-focused": {
-                            color: "rgba(249, 249, 249, 0.7)"
-                        },
-                        "&.MuiInputLabel-shrink": {
-                            opacity: 0,
-                            transform: "translate(17px, 16px) scale(1)"
-                        }
-                    }
-                }
-            }
-        }
-    });
+const muiTheme = createMuiTheme();
 
+const App = () => {
     return (
         <StyledEngineProvider injectFirst>
-            <ThemeProvider theme={theme}>
+            <ThemeProvider theme={muiTheme}>
                 <CssBaseline />
                 <BrowserRouter>
                     <AppProvider>

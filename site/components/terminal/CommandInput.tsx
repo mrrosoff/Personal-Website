@@ -5,6 +5,7 @@ import { Box, InputBase, Typography } from "@mui/material";
 
 import PromptSymbol from "./PromptSymbol";
 import type { TerminalTheme } from "./Terminal";
+import { COLORS } from "../../theme";
 
 const CommandInput = (
     props: {
@@ -44,7 +45,7 @@ const CommandInput = (
                     height: "18px",
                     verticalAlign: "middle",
                     visibility: visibleCursor ? "visible" : "hidden",
-                    background: "#FFFFFF"
+                    background: COLORS.white
                 }}
             />
             <InputBase

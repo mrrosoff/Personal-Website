@@ -1,6 +1,7 @@
 import { Typography } from "@mui/material";
 
 import type { TerminalTheme } from "../../Terminal";
+import { COLORS } from "../../../../theme";
 
 const MenuItem = (props: {
     selected: boolean;
@@ -22,7 +23,7 @@ const MenuItem = (props: {
             }
             sx={{
                 color: props.selected ? props.theme.commandColor : props.theme.outputColor,
-                backgroundColor: props.selected ? "rgba(255,255,255,0.1)" : "transparent",
+                backgroundColor: props.selected ? COLORS.faint : "transparent",
                 padding: "4px 8px",
                 marginBottom: "4px",
                 userSelect: "none",

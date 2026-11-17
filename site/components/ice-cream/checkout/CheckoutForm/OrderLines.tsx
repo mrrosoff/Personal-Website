@@ -4,6 +4,7 @@ import { useCheckoutElements } from "@stripe/react-stripe-js/checkout";
 
 import type { DatabaseFlavor } from "../../../../../api/types";
 import { skeletonSx } from "./PaymentFields";
+import { COLORS } from "../../../../theme";
 
 function lineItemAmount(state: ReturnType<typeof useCheckoutElements>, name: string): string {
     if (state.type !== "success") {
@@ -49,7 +50,7 @@ const OrderLines = (props: OrderLinesProps) => {
 
 export const orderBoxSx = (smallScreen: boolean) => ({
     border: 1,
-    borderColor: "rgba(255, 255, 255, 0.5)",
+    borderColor: COLORS.muted,
     borderRadius: 1,
     px: smallScreen ? 2 : 3
 });

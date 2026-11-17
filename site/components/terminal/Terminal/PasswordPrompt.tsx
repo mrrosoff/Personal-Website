@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Box } from "@mui/material";
 
 import type { TerminalTheme } from "../Terminal";
+import { COLORS } from "../../../theme";
 
 type PasswordPromptProps = { theme: TerminalTheme; loading: boolean; children: ReactNode };
 
@@ -30,7 +31,7 @@ export default function PasswordPrompt(props: PasswordPromptProps) {
                         width: 8,
                         height: 18,
                         visibility: ticks % 2 === 0 ? "visible" : "hidden",
-                        background: "#FFFFFF"
+                        background: COLORS.white
                     }}
                 />
             )}

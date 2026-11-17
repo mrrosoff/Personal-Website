@@ -10,12 +10,13 @@ import { DateTime } from "luxon";
 import FormField, { emailProblem } from "./FormField";
 import { decodeToken } from "../auth";
 import { API_ENDPOINT_URL, DeviceKind } from "../../api/types";
+import { COLORS } from "../theme";
 
 const Code = ({ children }: { children: string }) => (
     <Box
         component="code"
         sx={{
-            backgroundColor: "rgba(255,255,255,0.1)",
+            backgroundColor: COLORS.faint,
             padding: "2px 6px",
             borderRadius: "4px",
             fontFamily: "monospace"
@@ -141,9 +142,9 @@ const RegisterForm = (props: { token: string; friendName: string }) => {
                 disabled={!isValidEmail}
                 sx={{
                     fontSize: 20,
-                    backgroundColor: "#52535F",
+                    backgroundColor: COLORS.button,
                     color: "white",
-                    ":hover": { backgroundColor: "#5F6272" }
+                    ":hover": { backgroundColor: COLORS.buttonHover }
                 }}
             >
                 Register Passkey

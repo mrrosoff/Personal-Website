@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 
 import { HAS_BOOTED_KEY } from "../AppContext";
+import { COLORS } from "../../theme";
 
 type Phase = "crashed" | "restarting" | "booting" | "clearing";
 
@@ -89,7 +90,14 @@ const CrashScreen = () => {
     if (phase === "clearing") {
         return (
             <Box
-                sx={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, bgcolor: "#121212" }}
+                sx={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    bgcolor: COLORS.background
+                }}
             />
         );
     }
@@ -108,12 +116,12 @@ const CrashScreen = () => {
                     flexDirection: "column",
                     justifyContent: "flex-start",
                     p: 4,
-                    backgroundColor: "#121212",
+                    backgroundColor: COLORS.background,
                     overflow: "hidden"
                 }}
             >
                 {lines.map((line, index) => (
-                    <Typography key={index} sx={{ color: "#FCFCFC", fontSize: 14 }}>
+                    <Typography key={index} sx={{ color: COLORS.text, fontSize: 14 }}>
                         {line}
                     </Typography>
                 ))}
@@ -134,22 +142,22 @@ const CrashScreen = () => {
                 flexDirection: "column",
                 justifyContent: "center",
                 p: 4,
-                backgroundColor: "#121212",
+                backgroundColor: COLORS.background,
                 overflow: "hidden"
             }}
         >
-            <Typography sx={{ color: "#FCFCFC", fontSize: 22 }}>
-                <Box component={"span"} sx={{ color: "#2BC903" }}>
+            <Typography sx={{ color: COLORS.text, fontSize: 22 }}>
+                <Box component={"span"} sx={{ color: COLORS.green }}>
                     dev@rosoff
                 </Box>
                 :~$ run --production
             </Typography>
-            <Typography sx={{ color: "#ff0606", fontSize: 22 }}>
+            <Typography sx={{ color: COLORS.red, fontSize: 22 }}>
                 Segmentation fault (core dumped)
             </Typography>
             <Box sx={{ height: 16 }} />
-            <Typography component={"div"} sx={{ color: "#FCFCFC", fontSize: 22 }}>
-                <Box component={"span"} sx={{ color: "#2BC903" }}>
+            <Typography component={"div"} sx={{ color: COLORS.text, fontSize: 22 }}>
+                <Box component={"span"} sx={{ color: COLORS.green }}>
                     dev@rosoff
                 </Box>
                 :~${" "}
@@ -157,13 +165,13 @@ const CrashScreen = () => {
                     component={phase === "restarting" ? "span" : "a"}
                     onClick={phase === "restarting" ? undefined : () => setPhase("restarting")}
                     sx={{
-                        color: "#FCFCFC",
+                        color: COLORS.text,
                         cursor: phase === "restarting" ? "default" : "pointer",
                         fontWeight: "bold",
                         textDecoration: "none",
                         animation: "crash-screen-pulse 2.5s ease-in-out infinite",
                         ...(phase !== "restarting" && {
-                            "&:hover": { color: "#2BC903", textDecoration: "underline" }
+                            "&:hover": { color: COLORS.green, textDecoration: "underline" }
                         }),
                         "@keyframes crash-screen-pulse": {
                             "0%, 100%": { opacity: 1 },
@@ -183,7 +191,7 @@ const CrashScreen = () => {
                         ml: 1,
                         verticalAlign: "middle",
                         visibility: phase !== "restarting" && visibleCursor ? "visible" : "hidden",
-                        background: "#FFFFFF"
+                        background: COLORS.white
                     }}
                 />
             </Typography>

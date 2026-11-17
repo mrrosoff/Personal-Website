@@ -11,6 +11,7 @@ import type { ErrorResponseBody } from "../../../../api/types";
 import { useAppContext } from "../../AppContext";
 import CheckoutForm from "./CheckoutForm";
 import FriendCheckout from "./FriendCheckout";
+import { COLORS, FONT } from "../../../theme";
 
 const stripePublishableApiKey =
     import.meta.env.MODE === "development"
@@ -40,30 +41,30 @@ async function fetchClientSecret(isSubscription: boolean, priceIdsString: string
 const APPEARANCE: Appearance = {
     theme: "night",
     variables: {
-        fontFamily: "Clacon",
+        fontFamily: FONT.family,
         fontSizeBase: "22px",
         fontWeightNormal: "200",
         fontWeightMedium: "400",
-        colorPrimary: "#52535F",
-        colorPrimaryText: "#FFFFFF",
-        colorBackground: "#1C1C1E",
-        colorText: "#F9F9F9",
+        colorPrimary: COLORS.button,
+        colorPrimaryText: COLORS.white,
+        colorBackground: COLORS.surface,
+        colorText: COLORS.light,
         borderRadius: "4px",
         spacingUnit: "4px"
     },
     rules: {
         ".Input": {
-            fontFamily: "Clacon",
+            fontFamily: FONT.family,
             fontSize: "22px",
-            borderColor: "rgba(255,255,255,0.5)"
+            borderColor: COLORS.muted
         },
-        ".Input:focus": { borderColor: "#F9F9F9", boxShadow: "none" },
-        ".Label": { fontFamily: "Clacon", fontSize: "18px", opacity: "0.7" },
-        ".Tab": { fontFamily: "Clacon", borderColor: "rgba(255,255,255,0.5)" },
-        ".Tab--selected": { borderColor: "#F9F9F9", color: "#F9F9F9" },
-        ".AccordionItem": { fontFamily: "Clacon", borderColor: "rgba(255,255,255,0.5)" },
-        ".Error": { fontFamily: "Clacon", fontSize: "18px" },
-        ".Block": { borderColor: "rgba(255,255,255,0.5)" }
+        ".Input:focus": { borderColor: COLORS.light, boxShadow: "none" },
+        ".Label": { fontFamily: FONT.family, fontSize: "18px", opacity: "0.7" },
+        ".Tab": { fontFamily: FONT.family, borderColor: COLORS.muted },
+        ".Tab--selected": { borderColor: COLORS.light, color: COLORS.light },
+        ".AccordionItem": { fontFamily: FONT.family, borderColor: COLORS.muted },
+        ".Error": { fontFamily: FONT.family, fontSize: "18px" },
+        ".Block": { borderColor: COLORS.muted }
     }
 };
 
@@ -82,9 +83,7 @@ function PaidCheckout({ priceIdsString, subscription }: PaidCheckoutProps) {
                 clientSecret,
                 elementsOptions: {
                     appearance: APPEARANCE,
-                    fonts: [
-                        { family: "Clacon", src: "url(https://maxrosoff.com/fonts/clacon.ttf)" }
-                    ]
+                    fonts: [{ family: FONT.family, src: `url(${FONT.url})` }]
                 }
             }}
         >

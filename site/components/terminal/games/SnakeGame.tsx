@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 
 import { useAppContext } from "../../AppContext";
+import { COLORS } from "../../../theme";
 
 type Position = { x: number; y: number };
 
@@ -107,7 +108,7 @@ const SnakeGame = () => {
 
     return (
         <Box sx={{ padding: 2 }}>
-            <Typography sx={{ color: "#2BC903", mb: 1, fontFamily: "monospace" }}>
+            <Typography sx={{ color: COLORS.green, mb: 1, fontFamily: "monospace" }}>
                 SNAKE - Score: {game.score}
             </Typography>
             {loading ? (
@@ -117,10 +118,10 @@ const SnakeGame = () => {
                         alignItems: "center",
                         justifyContent: "center",
                         ...FRAME,
-                        border: "2px solid #2BC903"
+                        border: `2px solid ${COLORS.green}`
                     }}
                 >
-                    <Typography sx={{ color: "#2BC903", fontSize: "1.5em" }}>
+                    <Typography sx={{ color: COLORS.green, fontSize: "1.5em" }}>
                         {countdown}
                     </Typography>
                 </Box>
@@ -132,14 +133,14 @@ const SnakeGame = () => {
                         alignItems: "center",
                         justifyContent: "center",
                         ...FRAME,
-                        border: "2px solid #ff0606",
+                        border: `2px solid ${COLORS.red}`,
                         gap: 2
                     }}
                 >
-                    <Typography sx={{ color: "#ff0606", fontSize: "2em", fontWeight: "bold" }}>
+                    <Typography sx={{ color: COLORS.red, fontSize: "2em", fontWeight: "bold" }}>
                         GAME OVER
                     </Typography>
-                    <Typography sx={{ color: "#FCFCFC", fontSize: "1.2em" }}>
+                    <Typography sx={{ color: COLORS.text, fontSize: "1.2em" }}>
                         Final Score: {game.score}
                     </Typography>
                 </Box>
@@ -150,7 +151,7 @@ const SnakeGame = () => {
                         gridTemplateColumns: `repeat(${BOARD.width.toString()}, ${BOARD.cell.toString()}px)`,
                         gridTemplateRows: `repeat(${BOARD.height.toString()}, ${BOARD.cell.toString()}px)`,
                         gap: 0,
-                        border: "2px solid #2BC903",
+                        border: `2px solid ${COLORS.green}`,
                         width: "fit-content"
                     }}
                 >
@@ -171,10 +172,10 @@ const SnakeGame = () => {
                                     width: BOARD.cell,
                                     height: BOARD.cell,
                                     backgroundColor: isSnake
-                                        ? "#2BC903"
+                                        ? COLORS.green
                                         : isFood
-                                          ? "#ff0606"
-                                          : "#121212",
+                                          ? COLORS.red
+                                          : COLORS.background,
                                     border: "1px solid #1a1a1a",
                                     display: "flex",
                                     alignItems: "center",
@@ -190,7 +191,7 @@ const SnakeGame = () => {
                     })}
                 </Box>
             )}
-            <Typography sx={{ color: "#FCFCFC", mt: 1, fontSize: "0.9em" }}>
+            <Typography sx={{ color: COLORS.text, mt: 1, fontSize: "0.9em" }}>
                 Use arrow keys to move
             </Typography>
         </Box>

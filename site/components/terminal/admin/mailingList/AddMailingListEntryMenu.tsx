@@ -10,6 +10,7 @@ import type { TerminalTheme } from "../../Terminal";
 import MenuItem from "../common/MenuItem";
 import { ConsoleHeading, ConsoleHint } from "../common/ConsoleText";
 import useLoadingDots from "../common/useLoadingDots";
+import { COLORS } from "../../../../theme";
 
 type FormField = MailingListEntry["currentField"];
 
@@ -60,9 +61,7 @@ const AddMailingListEntryMenu = (props: AddMailingListEntryMenuProps) => {
                                 onClick={smallScreen ? () => selectField(field) : undefined}
                                 sx={{
                                     color: active ? commandColor : outputColor,
-                                    backgroundColor: active
-                                        ? "rgba(255,255,255,0.1)"
-                                        : "transparent",
+                                    backgroundColor: active ? COLORS.faint : "transparent",
                                     padding: "4px 8px",
                                     mb: 1,
                                     cursor: smallScreen ? "pointer" : undefined,

@@ -16,15 +16,16 @@ import HiddenInput from "./Terminal/HiddenInput";
 import MessageOfTheDay from "./Terminal/MessageOfTheDay";
 import Outputs from "./Terminal/Outputs";
 import PasswordPrompt from "./Terminal/PasswordPrompt";
+import { COLORS } from "../../theme";
 
 const AdminConsole = lazy(() => import("./admin/AdminConsole"));
 
 export const TERMINAL_COLORS = {
-    background: "#121212",
-    promptSymbolColor: "#2BC903",
-    commandColor: "#FCFCFC",
-    outputColor: "#FCFCFC",
-    errorColor: "#ff0606"
+    background: COLORS.background,
+    promptSymbolColor: COLORS.green,
+    commandColor: COLORS.text,
+    outputColor: COLORS.text,
+    errorColor: COLORS.red
 };
 
 export type TerminalTheme = {
