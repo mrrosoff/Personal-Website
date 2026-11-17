@@ -1,7 +1,5 @@
-import EmulatorState, {
-    AdminConsoleScreen,
-    MainMenuOption
-} from "../../../emulator-state/EmulatorState";
+import type EmulatorState from "../../../emulator-state/EmulatorState";
+import { AdminConsoleScreen, MainMenuOption } from "../../../emulator-state/EmulatorState";
 import { editText, postAsAdmin, setAdminConsoleError } from "../../console";
 
 export async function handleConfirmSendEmails(

@@ -1,4 +1,5 @@
-import EmulatorState, {
+import type EmulatorState from "../../emulator-state/EmulatorState";
+import {
     type AdminConsoleState,
     AdminConsoleScreen,
     IceCreamInventoryMenuOption,

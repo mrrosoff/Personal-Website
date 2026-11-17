@@ -1,6 +1,6 @@
 import { decodeToken, ownsDeviceKind } from "../../auth";
 import { DeviceKind } from "../../../api/types";
-import EmulatorState from "../emulator-state/EmulatorState";
+import type EmulatorState from "../emulator-state/EmulatorState";
 
 export const optDef = {};
 

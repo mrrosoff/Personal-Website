@@ -1,5 +1,6 @@
 import { parseOptions } from "../parser";
-import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
+import type EmulatorState from "../emulator-state/EmulatorState";
+import { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import * as DirOp from "../fs/operations/directory-operations";
 import * as FileOp from "../fs/operations/file-operations";
 

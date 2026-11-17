@@ -1,5 +1,6 @@
 import type { DatabaseFlavor } from "../../../../../api/types";
-import EmulatorState, {
+import type EmulatorState from "../../../emulator-state/EmulatorState";
+import {
     AdminConsoleScreen,
     IceCreamInventoryMenuOption
 } from "../../../emulator-state/EmulatorState";

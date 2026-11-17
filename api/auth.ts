@@ -1,5 +1,5 @@
 import type { APIGatewayProxyEvent } from "aws-lambda";
-import { IncomingMessage } from "http";
+import type { IncomingMessage } from "http";
 import { sign, verify, type SignOptions } from "jsonwebtoken";
 import { JWK } from "node-jose";
 

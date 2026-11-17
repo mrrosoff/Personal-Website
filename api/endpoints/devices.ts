@@ -1,6 +1,6 @@
 import type { APIGatewayProxyEvent } from "aws-lambda";
 import { createHash } from "node:crypto";
-import { IncomingMessage } from "http";
+import type { IncomingMessage } from "http";
 
 import { bearerToken } from "../auth";
 import { getItem, getItemByIndex, updateItem } from "../aws/services/dynamodb";

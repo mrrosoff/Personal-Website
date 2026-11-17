@@ -1,5 +1,5 @@
 import type { APIGatewayProxyEvent } from "aws-lambda";
-import { IncomingMessage } from "http";
+import type { IncomingMessage } from "http";
 
 import { type AccessToken, authenticateHTTPAccessToken, UserType } from "./auth";
 import { deviceForOwner } from "./endpoints/devices";

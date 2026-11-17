@@ -1,5 +1,5 @@
 import { parseOptions } from "../parser";
-import EmulatorState from "../emulator-state/EmulatorState";
+import type EmulatorState from "../emulator-state/EmulatorState";
 
 export const optDef = {};
 

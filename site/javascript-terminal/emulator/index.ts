@@ -4,7 +4,7 @@ import * as CommandMappingUtil from "../emulator-state/CommandMapping";
 import { errorMessage } from "../emulator-state/CommandMapping";
 import * as PathUtil from "../fs/util/path-util";
 import { fsSearchParent } from "../fs/operations/base-operations";
-import EmulatorState from "../emulator-state/EmulatorState";
+import type EmulatorState from "../emulator-state/EmulatorState";
 import type { CommandMapping, CommandResult } from "../emulator-state/CommandMapping";
 
 export default class Emulator {

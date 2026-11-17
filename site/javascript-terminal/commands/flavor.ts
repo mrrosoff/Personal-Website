@@ -2,7 +2,7 @@ import axios from "axios";
 
 import { API_ENDPOINT_URL, UserType } from "../../../api/types";
 import { decodeToken } from "../../auth";
-import EmulatorState from "../emulator-state/EmulatorState";
+import type EmulatorState from "../emulator-state/EmulatorState";
 import { parseOptions } from "../parser";
 
 export const optDef = {};

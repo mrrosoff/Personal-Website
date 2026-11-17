@@ -9,7 +9,7 @@ import {
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-import { POLAROID_PHOTOS_BUCKET } from "../../common";
+import type { POLAROID_PHOTOS_BUCKET } from "../../common";
 import type { PolaroidObjectKey } from "../../types";
 import { SDK_SETTINGS } from "../common";
 

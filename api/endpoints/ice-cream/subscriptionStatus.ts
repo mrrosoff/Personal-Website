@@ -1,5 +1,5 @@
 import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
-import Stripe from "stripe";
+import type Stripe from "stripe";
 
 import { stripeForEvent } from "../../stripe/environment";
 import { HttpResponseStatus, buildErrorResponse, buildResponse } from "../../common";

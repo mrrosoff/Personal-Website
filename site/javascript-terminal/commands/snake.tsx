@@ -1,4 +1,4 @@
-import EmulatorState from "../emulator-state/EmulatorState";
+import type EmulatorState from "../emulator-state/EmulatorState";
 import Snake from "../../components/terminal/games/SnakeGame";
 
 export const optDef = {};

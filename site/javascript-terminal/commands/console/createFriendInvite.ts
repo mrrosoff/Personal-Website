@@ -1,6 +1,7 @@
 import { validate } from "email-validator";
 
-import EmulatorState, {
+import type EmulatorState from "../../emulator-state/EmulatorState";
+import {
     AdminConsoleScreen,
     type FriendInvite,
     type InviteDevice,

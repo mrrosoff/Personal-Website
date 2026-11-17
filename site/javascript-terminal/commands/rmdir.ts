@@ -1,5 +1,6 @@
 import { parseOptions } from "../parser";
-import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
+import type EmulatorState from "../emulator-state/EmulatorState";
+import { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import * as DirOp from "../fs/operations/directory-operations";
 import * as PathUtil from "../fs/util/path-util";
 import { fsSearchParent } from "../fs/operations/base-operations";

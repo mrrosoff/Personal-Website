@@ -1,5 +1,5 @@
 import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
-import Stripe from "stripe";
+import type Stripe from "stripe";
 
 import { decrementField, getEntireTable } from "../../aws/services/dynamodb";
 import { getParameter } from "../../aws/services/parameterStore";

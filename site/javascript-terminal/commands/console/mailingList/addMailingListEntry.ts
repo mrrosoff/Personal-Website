@@ -2,10 +2,8 @@ import { validate } from "email-validator";
 
 import type { MailingListRegistration } from "../../../../../api/types";
 import { registerMailingListUser } from "../../../../components/ice-cream/MailingList";
-import EmulatorState, {
-    AdminConsoleScreen,
-    MainMenuOption
-} from "../../../emulator-state/EmulatorState";
+import type EmulatorState from "../../../emulator-state/EmulatorState";
+import { AdminConsoleScreen, MainMenuOption } from "../../../emulator-state/EmulatorState";
 import { arrowStep, editText, setAdminConsoleError, stepAround } from "../../console";
 
 const MAILING_LIST_FIELDS: (keyof MailingListRegistration)[] = ["firstName", "lastName", "email"];

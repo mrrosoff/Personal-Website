@@ -4,10 +4,10 @@ import {
     type PublicKeyCredentialRequestOptionsJSON
 } from "@simplewebauthn/browser";
 
-import EmulatorState from "../emulator-state/EmulatorState";
+import type EmulatorState from "../emulator-state/EmulatorState";
 import { parseOptions } from "../parser";
 import * as CommandMappingUtil from "../emulator-state/CommandMapping";
-import Emulator from "../emulator";
+import type Emulator from "../emulator";
 import { API_ENDPOINT_URL } from "../../../api/types";
 import { AUTH_TOKEN_KEY } from "../../auth";
 

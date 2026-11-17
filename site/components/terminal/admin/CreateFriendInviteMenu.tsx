@@ -4,11 +4,11 @@ import { Box, IconButton, Tooltip, Typography, useMediaQuery, useTheme } from "@
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CheckIcon from "@mui/icons-material/Check";
 
+import type { AdminConsoleScreen } from "../../../javascript-terminal/emulator-state/EmulatorState";
 import {
     type FriendInvite,
     type InviteDevice,
-    type AdminConsoleMode,
-    AdminConsoleScreen
+    type AdminConsoleMode
 } from "../../../javascript-terminal/emulator-state/EmulatorState";
 import { shareTokenDurationLabel } from "../../../../api/common";
 import { API_ENDPOINT_URL } from "../../../../api/types";

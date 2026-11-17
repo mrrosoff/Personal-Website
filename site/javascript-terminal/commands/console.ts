@@ -8,7 +8,8 @@ import {
     type ErrorResponseBody
 } from "../../../api/types";
 import { decodeToken } from "../../auth";
-import EmulatorState, { AdminConsoleScreen, MainMenuOption } from "../emulator-state/EmulatorState";
+import type EmulatorState from "../emulator-state/EmulatorState";
+import { AdminConsoleScreen, MainMenuOption } from "../emulator-state/EmulatorState";
 import { handleAddMailingListEntry } from "./console/mailingList/addMailingListEntry";
 import { handleConfirmProvisionFlavor } from "./console/inventory/confirmProvisionFlavor";
 import { handleConfirmSendEmails } from "./console/mailingList/confirmSendEmails";
