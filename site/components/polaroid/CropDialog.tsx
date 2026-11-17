@@ -117,11 +117,13 @@ export default function CropDialog({ file, remaining, onCancel, onConfirm }: Cro
                     {image.status === "loading" && file && (
                         <Stack sx={{ alignItems: "center" }} spacing={2}>
                             <CircularProgress />
-                            <Typography color="text.secondary">Opening…</Typography>
+                            <Typography sx={{ color: "text.secondary" }}>Opening…</Typography>
                         </Stack>
                     )}
                     {image.status === "failed" && (
-                        <Typography color="text.secondary">Couldn't read that one.</Typography>
+                        <Typography sx={{ color: "text.secondary" }}>
+                            Couldn't read that one.
+                        </Typography>
                     )}
                     {image.status === "ready" && (
                         <Cropper
@@ -139,7 +141,7 @@ export default function CropDialog({ file, remaining, onCancel, onConfirm }: Cro
                     )}
                 </Box>
                 <Box sx={{ px: 3, pt: 2, pb: 1 }}>
-                    <Typography color="text.secondary" variant="body2">
+                    <Typography variant="body2" sx={{ color: "text.secondary" }}>
                         Drag to move, pinch or scroll to zoom. The panel shows exactly what you see
                         here.
                     </Typography>
@@ -147,7 +149,7 @@ export default function CropDialog({ file, remaining, onCancel, onConfirm }: Cro
             </DialogContent>
             <DialogActions disableSpacing sx={{ px: 3, pb: 2, gap: 2 }}>
                 {remaining > 0 && (
-                    <Typography color="text.secondary" variant="body2" noWrap>
+                    <Typography variant="body2" noWrap sx={{ color: "text.secondary" }}>
                         {remaining} more
                     </Typography>
                 )}

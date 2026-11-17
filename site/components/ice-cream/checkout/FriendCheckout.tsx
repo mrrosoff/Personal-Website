@@ -101,7 +101,7 @@ const FriendCheckout = ({ priceIds, friendToken }: FriendCheckoutProps) => {
                                         py: smallScreen ? 1.5 : 2
                                     }}
                                 >
-                                    <Typography color={flavor.color || "white"} noWrap>
+                                    <Typography noWrap sx={{ color: flavor.color || "white" }}>
                                         {flavor.name}
                                     </Typography>
                                     <Typography sx={{ ...rainbowTextSx, flexShrink: 0 }}>

@@ -114,7 +114,7 @@ export default function FlavorSection(props: FlavorSectionProps) {
                                           justifyContent: smallScreen ? "flex-start" : "center"
                                       }}
                                   >
-                                      <Typography color={color}>{flavor.name}</Typography>
+                                      <Typography sx={{ color }}>{flavor.name}</Typography>
                                   </Box>
                               </Grid>
                           );

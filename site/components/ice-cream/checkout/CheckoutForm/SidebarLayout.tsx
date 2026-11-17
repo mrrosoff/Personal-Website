@@ -39,7 +39,7 @@ const SidebarLayout = () => {
                         <OrderLines
                             flavors={selectedFlavors}
                             smallScreen={smallScreen}
-                            nameSx={{ fontSize: smallScreen ? "1.2rem" : "1.5rem" }}
+                            nameFontSize={smallScreen ? "1.2rem" : "1.5rem"}
                             priceSx={{ fontSize: "1.2rem" }}
                         />
                     </Box>

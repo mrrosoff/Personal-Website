@@ -29,6 +29,12 @@ describe("FlavorSection", () => {
         expect(screen.queryByText("Gone")).not.toBeInTheDocument();
     });
 
+    it("should color each flavor's name", () => {
+        renderSection();
+
+        expect(screen.getByText(mockFlavor.name)).toHaveStyle({ color: mockFlavor.color });
+    });
+
     it("should add a flavor to the cart on a tap", async () => {
         const { user, toggleFlavor } = renderSection();
 

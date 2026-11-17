@@ -149,12 +149,12 @@ export default function Polaroid() {
             <Typography variant="h2" gutterBottom>
                 Polaroid
             </Typography>
-            <Typography color="text.secondary" sx={{ mb: -1, fontSize: { xs: 18, sm: 22 } }}>
+            <Typography sx={{ color: "text.secondary", mb: -1, fontSize: { xs: 18, sm: 22 } }}>
                 Drop photos in and they'll develop onto the frame, a new one every hour or so.
                 {compact && " " + secondaryText}
             </Typography>
             {!compact && (
-                <Typography color="text.secondary" sx={{ fontSize: { xs: 18, sm: 22 } }}>
+                <Typography sx={{ color: "text.secondary", fontSize: { xs: 18, sm: 22 } }}>
                     {secondaryText}
                 </Typography>
             )}

@@ -1,5 +1,4 @@
 import { Box, Divider, Skeleton, Typography } from "@mui/material";
-import type { SxProps, Theme } from "@mui/material";
 import type { CSSObject } from "@mui/material/styles";
 import { useCheckoutElements } from "@stripe/react-stripe-js/checkout";
 
@@ -16,7 +15,7 @@ function lineItemAmount(state: ReturnType<typeof useCheckoutElements>, name: str
 type OrderLinesProps = {
     flavors: DatabaseFlavor[];
     smallScreen: boolean;
-    nameSx?: SxProps<Theme>;
+    nameFontSize?: string;
     priceSx?: CSSObject;
 };
 
@@ -33,7 +32,10 @@ const OrderLines = (props: OrderLinesProps) => {
                     py: props.smallScreen ? 1.5 : 2
                 }}
             >
-                <Typography color={flavor.color || "white"} noWrap sx={props.nameSx}>
+                <Typography
+                    noWrap
+                    sx={{ color: flavor.color || "white", fontSize: props.nameFontSize }}
+                >
                     {flavor.name}
                 </Typography>
                 <Typography sx={{ flexShrink: 0, ...props.priceSx }}>
