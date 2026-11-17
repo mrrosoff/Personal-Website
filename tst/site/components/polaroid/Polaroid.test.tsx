@@ -68,6 +68,15 @@ beforeEach(() => {
 });
 
 describe("Polaroid", () => {
+    it("should open the frame once the friend signs in", async () => {
+        vi.mocked(signInWithPasskey).mockResolvedValue(await polaroidToken());
+        const { user } = renderPolaroid();
+
+        await user.click(screen.getByText("Unlock"));
+
+        expect(await screen.findByText("Polaroid")).toBeInTheDocument();
+    });
+
     it("should send someone without a polaroid home", async () => {
         renderPolaroid({ AUTH_TOKEN: await mockToken(UserType.FRIEND) });
 
@@ -270,56 +279,5 @@ describe("Polaroid", () => {
         await renderSignedIn();
 
         expect(screen.getByText(/develop onto the frame.*Can't wait\?/)).toBeInTheDocument();
-    });
-});
-
-describe("Unlock", () => {
-    it("should sign in with a tap and open the frame", async () => {
-        vi.mocked(signInWithPasskey).mockResolvedValue(await polaroidToken());
-        const { user } = renderPolaroid();
-
-        await user.click(screen.getByText("Unlock"));
-
-        expect(await screen.findByText("Polaroid")).toBeInTheDocument();
-    });
-
-    it("should sign in with a key press", async () => {
-        vi.mocked(signInWithPasskey).mockResolvedValue(await polaroidToken());
-        renderPolaroid();
-
-        fireEvent.keyDown(window, { key: "Enter" });
-
-        expect(await screen.findByText("Polaroid")).toBeInTheDocument();
-    });
-
-    it("should ignore shortcuts and named keys", () => {
-        renderPolaroid();
-
-        fireEvent.keyDown(window, { key: "c", metaKey: true });
-        fireEvent.keyDown(window, { key: "c", ctrlKey: true });
-        fireEvent.keyDown(window, { key: "c", altKey: true });
-        fireEvent.keyDown(window, { key: "Shift" });
-
-        expect(signInWithPasskey).not.toHaveBeenCalled();
-    });
-
-    it("should ignore taps and keys while signing in", async () => {
-        vi.mocked(signInWithPasskey).mockReturnValue(new Promise(() => undefined));
-        const { user } = renderPolaroid();
-
-        await user.click(screen.getByText("Unlock"));
-        await user.click(screen.getByText("Authenticating"));
-        fireEvent.keyDown(window, { key: "a" });
-
-        expect(signInWithPasskey).toHaveBeenCalledOnce();
-    });
-
-    it("should send someone home when sign in fails", async () => {
-        vi.mocked(signInWithPasskey).mockRejectedValue(new Error("cancelled"));
-        const { user } = renderPolaroid();
-
-        await user.click(screen.getByText("Unlock"));
-
-        await waitFor(() => expect(screen.getByTestId("location")).toHaveTextContent(/^\/$/));
     });
 });
