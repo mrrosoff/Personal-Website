@@ -24,7 +24,7 @@ vi.mock("../../../../src/components/polaroid/CropDialog", () => ({
     }) =>
         props.file && (
             <div>
-                <p>{`cropping ${props.file.name}, ${String(props.remaining)} more`}</p>
+                <p>{`cropping ${props.file.name}, ${props.remaining.toString()} more`}</p>
                 <button
                     onClick={() => {
                         props.onConfirm(new Blob(["jpeg"]));
@@ -201,7 +201,7 @@ describe("Polaroid", () => {
             data: {
                 photos: Array.from({ length: 49 }, (_, i) => ({
                     ...photos[0],
-                    id: `p${String(i)}`
+                    id: `p${i.toString()}`
                 }))
             }
         });
@@ -222,7 +222,7 @@ describe("Polaroid", () => {
             data: {
                 photos: Array.from({ length: 50 }, (_, i) => ({
                     ...photos[0],
-                    id: `p${String(i)}`
+                    id: `p${i.toString()}`
                 }))
             }
         });

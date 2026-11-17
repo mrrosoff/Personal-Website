@@ -25,7 +25,10 @@ describe("PhotoGrid", () => {
     });
 
     it("should leave fewer empty slots as the frame fills", () => {
-        const full = Array.from({ length: 50 }, (_, i) => ({ ...photos[0], id: `p${String(i)}` }));
+        const full = Array.from({ length: 50 }, (_, i) => ({
+            ...photos[0],
+            id: `p${i.toString()}`
+        }));
 
         renderWithApp(<PhotoGrid photos={full} uploading={false} onRemove={vi.fn()} />);
 

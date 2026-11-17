@@ -54,8 +54,8 @@ export default function PhotoGrid({ photos, uploading, onRemove }: PhotoGridProp
                     position: "absolute",
                     // Overflow clips at the edges, so the hover glow needs room
                     // inside the scroller rather than beyond it.
-                    inset: `-${String(GLOW)}px`,
-                    padding: `${String(GLOW)}px`,
+                    inset: `-${GLOW.toString()}px`,
+                    padding: `${GLOW.toString()}px`,
                     display: "flex",
                     flexDirection: "column",
                     gap: 3,
@@ -168,7 +168,7 @@ function PhotoCell({ photo, compact, onEnlarge }: PhotoCellProps) {
                 // Shadow only. Rotating or scaling resamples the dither and it
                 // shimmers like glare.
                 ...(!compact && {
-                    "&:hover": { boxShadow: `0 0 ${String(GLOW)}px rgba(255, 255, 255, 0.2)` }
+                    "&:hover": { boxShadow: `0 0 ${GLOW.toString()}px rgba(255, 255, 255, 0.2)` }
                 })
             }}
         >

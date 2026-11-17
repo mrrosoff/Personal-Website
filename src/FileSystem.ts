@@ -71,7 +71,7 @@ Fun fact: π is good to eat!`
                             "newyear.txt": {
                                 type: "-",
                                 permissions: "rwx------",
-                                contents: `🎉 Happy New Year ${String(date.year)}! 🎊`
+                                contents: `🎉 Happy New Year ${date.year.toString()}! 🎊`
                             }
                         })
                 }

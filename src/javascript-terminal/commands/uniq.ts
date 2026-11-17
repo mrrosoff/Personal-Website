@@ -40,7 +40,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     if (options.count) {
         return {
             output: uniqueLines
-                .map(({ line, count }) => `${String(count).padStart(7, " ")} ${line}`)
+                .map(({ line, count }) => `${count.toString().padStart(7, " ")} ${line}`)
                 .join("\n")
         };
     }

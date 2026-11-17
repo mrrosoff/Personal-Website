@@ -22,7 +22,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
             return lines
                 .map(
                     (line: string, index: number) =>
-                        `${String(index + 1).padStart(6, " ")}\t${line}`
+                        `${(index + 1).toString().padStart(6, " ")}\t${line}`
                 )
                 .join("\n");
         });

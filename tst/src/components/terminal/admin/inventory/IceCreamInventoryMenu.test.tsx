@@ -58,7 +58,9 @@ describe("editing a flavor", () => {
         renderMenu({ editingFlavor: mockFlavor });
 
         expect(screen.getByText(/Name:/)).toHaveTextContent(`> Name: ${mockFlavor.name}`);
-        expect(screen.getByText(/Count:/)).toHaveTextContent(`Count: ${String(mockFlavor.count)}`);
+        expect(screen.getByText(/Count:/)).toHaveTextContent(
+            `Count: ${mockFlavor.count.toString()}`
+        );
         expect(screen.getByText(/enter: save/)).toBeInTheDocument();
     });
 
