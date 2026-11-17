@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { mockShell } from "../../../setup";
+import { mockShell } from "../../../helpers/terminal";
 
 describe("tail", () => {
     it("should show the last lines", () => {
@@ -25,5 +25,13 @@ describe("tail", () => {
         const result = shell.run("tail");
 
         expect(result).toBe("usage: tail [-n count] [file]");
+    });
+
+    it("should fail on a missing file", () => {
+        const shell = mockShell();
+
+        const result = shell.run("tail /home/missing.txt");
+
+        expect(result).toBe("Not A File At Specified Path: /home/missing.txt");
     });
 });

@@ -65,4 +65,12 @@ describe("keys", () => {
         expect(framebufferKey("d", "p")).toBe("framebuffer/d/p.bin");
         expect(previewKey("d", "p")).toBe("preview/d/p.png");
     });
+
+    it("should skip an object without a key", async () => {
+        mockS3Client.on(ListObjectsV2Command).resolves({ Contents: [{}] });
+
+        const result = await listPhotos(mockDevice.deviceId);
+
+        expect(result).toBeEmpty();
+    });
 });

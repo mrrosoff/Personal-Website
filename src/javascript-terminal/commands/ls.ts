@@ -28,19 +28,13 @@ const makeSortedReturn = (listing: string[]) => {
 const makeLongFormatReturn = (fs: FileSystem, dirPath: string, listing: string[]) => {
     const dirContents = fsSearch(fs, dirPath);
 
-    const formattedLines = listing
-        .sort()
-        .map((name) => {
-            if (name === "." || name === "..") {
-                return `drwx------ ${name}`;
-            }
-            const file = dirContents[name];
-            if (!file) {
-                return null;
-            }
-            return `${file.type}${file.permissions} ${name}`;
-        })
-        .filter((line) => line !== null);
+    const formattedLines = listing.sort().map((name) => {
+        if (name === "." || name === "..") {
+            return `drwx------ ${name}`;
+        }
+        const file = dirContents[name];
+        return `${file.type}${file.permissions} ${name}`;
+    });
 
     return { output: formattedLines.join("\n") };
 };

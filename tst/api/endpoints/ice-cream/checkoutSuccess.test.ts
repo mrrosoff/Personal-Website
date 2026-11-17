@@ -5,7 +5,7 @@ import { mockEvent } from "../../../setup";
 import { mockDocumentClient } from "../../../__mocks__/__aws__/dynamodb";
 import { mockFlavor } from "../../../__mocks__/__data__/aws/dynamodb";
 import { mockResend } from "../../../__mocks__/resend";
-import { mockCheckoutSession, mockStripe } from "../../../__mocks__/stripe";
+import { mockCheckoutSession, mockLineItem, mockStripe } from "../../../__mocks__/stripe";
 
 import { handler } from "../../../../api/endpoints/ice-cream/checkoutSuccess";
 
@@ -126,5 +126,64 @@ describe("checkoutSuccess", () => {
 
         expect(mockResend.contacts.get).toHaveBeenCalled();
         expect(mockDocumentClient).not.toHaveReceivedCommand(UpdateCommand);
+    });
+
+    it("should handle a guest who left no details", async () => {
+        mockStripe.webhooks.constructEventAsync.mockResolvedValue({
+            type: "checkout.session.completed",
+            data: { object: { ...mockCheckoutSession, customer_details: null } }
+        });
+        mockStripe.checkout.sessions.listLineItems.mockResolvedValue({
+            data: [{ ...mockLineItem, description: null, quantity: null }]
+        });
+
+        await handler(event);
+
+        expect(mockResend.contacts.get).not.toHaveBeenCalled();
+        expect(mockResend.emails.send).toHaveBeenCalledWith(
+            expect.objectContaining({ subject: "Ice Cream Order" })
+        );
+    });
+
+    it("should fall back to the session email", async () => {
+        mockStripe.webhooks.constructEventAsync.mockResolvedValue({
+            type: "checkout.session.completed",
+            data: {
+                object: {
+                    ...mockCheckoutSession,
+                    customer_details: null,
+                    customer_email: "a@b.com"
+                }
+            }
+        });
+
+        await handler(event);
+
+        expect(mockResend.contacts.get).toHaveBeenCalledWith(
+            expect.objectContaining({ email: "a@b.com" })
+        );
+    });
+
+    it("should not refund an oversold pint that cost nothing", async () => {
+        mockDocumentClient.on(UpdateCommand).resolves({ Attributes: { ...mockFlavor, count: -1 } });
+        mockStripe.checkout.sessions.listLineItems.mockResolvedValue({
+            data: [{ ...mockLineItem, amount_total: 0 }]
+        });
+
+        await handler(event);
+
+        expect(mockStripe.refunds.create).not.toHaveBeenCalled();
+    });
+
+    it("should not refund without a payment", async () => {
+        mockDocumentClient.on(UpdateCommand).resolves({ Attributes: { ...mockFlavor, count: -1 } });
+        mockStripe.webhooks.constructEventAsync.mockResolvedValue({
+            type: "checkout.session.completed",
+            data: { object: { ...mockCheckoutSession, payment_intent: null } }
+        });
+
+        await handler(event);
+
+        expect(mockStripe.refunds.create).not.toHaveBeenCalled();
     });
 });

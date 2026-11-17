@@ -143,11 +143,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         rendered = renderPhoto(source);
     } catch (err) {
         console.info(err);
-        return buildErrorResponse(
-            event,
-            HttpResponseStatus.BAD_REQUEST,
-            err instanceof Error ? err.message : "Could Not Read Photo"
-        );
+        return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, (err as Error).message);
     }
 
     const photoId = randomUUID().replace(/-/g, "").slice(0, 12);
@@ -185,9 +181,6 @@ function renderPhoto(input: Buffer): RenderResult {
     const full = ditherToPalette(linear, PANEL_WIDTH, PANEL_HEIGHT);
 
     const framebuffer = packFramebuffer(full);
-    if (framebuffer.length !== PANEL_BYTES) {
-        throw new Error(`framebuffer is ${framebuffer.length} bytes, must be ${PANEL_BYTES}`);
-    }
 
     const preview = Buffer.from(
         encodePng({
@@ -257,10 +250,8 @@ function boxResize(image: RgbImage, rect: CropRect, targetW: number, targetH: nu
             for (let sy = sy0; sy < sy1; sy++) {
                 // Partial coverage, so a non-integer scale doesn't shimmer.
                 const wy = Math.min(sy + 1, y1) - Math.max(sy, y0);
-                if (wy <= 0) continue;
                 for (let sx = sx0; sx < sx1; sx++) {
                     const wx = Math.min(sx + 1, x1) - Math.max(sx, x0);
-                    if (wx <= 0) continue;
                     const w = wx * wy;
                     const i = (sy * image.width + sx) * 3;
                     r += image.data[i]! * w;
@@ -349,10 +340,6 @@ function vignetteFactor(
     height: number,
     stock: FilmStock
 ): number {
-    if (stock.vignette <= 0) {
-        return 1;
-    }
-
     const dx = (x / width - 0.5) * 2;
     const dy = (y / height - 0.5) * 2;
     const radius = Math.sqrt(dx * dx + dy * dy) / Math.SQRT2;
@@ -546,10 +533,6 @@ function linearToByte(value: number): number {
 // 4bpp, two pixels per byte, high nibble first, no padding, no header.
 function packFramebuffer(indices: Uint8Array): Buffer {
     const inks = SPECTRA_6;
-    if (indices.length !== PANEL_WIDTH * PANEL_HEIGHT) {
-        throw new Error(`expected ${PANEL_WIDTH * PANEL_HEIGHT} pixels, got ${indices.length}`);
-    }
-
     const out = Buffer.allocUnsafe(PANEL_BYTES);
 
     for (let y = 0; y < PANEL_HEIGHT; y++) {

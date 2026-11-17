@@ -85,4 +85,12 @@ describe("s3", () => {
 
         expect(result).toBe(mockPresignedUrl);
     });
+
+    it("should list nothing for an empty prefix", async () => {
+        mockS3Client.on(ListObjectsV2Command).resolves({});
+
+        const result = await listObjects(POLAROID_PHOTOS_BUCKET, "framebuffer/");
+
+        expect(result).toBeEmpty();
+    });
 });

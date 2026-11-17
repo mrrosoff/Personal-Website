@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { mockShell } from "../../../setup";
+import { mockShell } from "../../../helpers/terminal";
 
 describe("execute", () => {
     it("should report an unknown command", () => {
@@ -95,5 +95,42 @@ describe("autocomplete", () => {
         expect(shell.state.getOutputs().at(-1)?.output[0].output).toBe(
             "home/people.csv home/projects"
         );
+    });
+
+    it("should keep the working directory for a command that lists its output", () => {
+        const shell = mockShell();
+        shell.state.setCommandMapping({
+            go: {
+                optDef: {},
+                functionDef: () => ({
+                    output: ["a", "b"] as never,
+                    type: "cwd",
+                    oldCwdPath: "/home"
+                })
+            },
+            stay: { optDef: {}, functionDef: () => ({ output: ["a"] as never, type: "cwd" }) }
+        });
+
+        shell.run("go");
+        shell.run("stay");
+
+        expect(shell.state.getOutputs().map(({ cwd }) => cwd)).toEqual(["/home", "/"]);
+    });
+
+    it("should leave text alone with nothing to suggest", () => {
+        const shell = mockShell();
+
+        const result = shell.emulator.autocomplete(shell.state, "zzz");
+
+        expect(result).toBe("zzz");
+    });
+
+    it("should suggest everything after a space", () => {
+        const shell = mockShell();
+        shell.run("cd /home/projects");
+
+        const result = shell.emulator.autocomplete(shell.state, "pwd ");
+
+        expect(result).toBe("pwd site.ts");
     });
 });

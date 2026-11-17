@@ -1,7 +1,9 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
-import { mockShell, mockToken } from "../../../setup";
+import { mockToken } from "../../../setup";
+import { mockShell } from "../../../helpers/terminal";
 import { DeviceKind, UserType } from "../../../../api/types";
+import { axiosPost } from "../../../__mocks__/axios";
 
 describe("spotify", () => {
     it("should show help without reconnect", () => {
@@ -38,5 +40,36 @@ describe("spotify", () => {
         const result = shell.run("spotify reconnect");
 
         expect(result).toBe("Opening Spotify Authorization Page...");
+    });
+
+    it("should open the authorize page spotify returns", async () => {
+        axiosPost.mockResolvedValue({
+            data: { authorizeUrl: "https://accounts.spotify.com/authorize" }
+        });
+        const assign = vi.fn();
+        vi.stubGlobal("location", { assign });
+        const shell = mockShell({
+            AUTH_TOKEN: await mockToken(UserType.FRIEND, { deviceKinds: [DeviceKind.SPOTIFY] })
+        });
+
+        shell.run("spotify reconnect");
+
+        await vi.waitFor(() =>
+            expect(assign).toHaveBeenCalledWith("https://accounts.spotify.com/authorize")
+        );
+    });
+
+    it("should log when spotify cannot be reached", async () => {
+        axiosPost.mockRejectedValue(new Error("offline"));
+        const error = vi.spyOn(console, "error").mockImplementation(() => undefined);
+        const shell = mockShell({
+            AUTH_TOKEN: await mockToken(UserType.FRIEND, { deviceKinds: [DeviceKind.SPOTIFY] })
+        });
+
+        shell.run("spotify reconnect");
+
+        await vi.waitFor(() =>
+            expect(error).toHaveBeenCalledWith("Spotify Authentication Failed:", expect.any(Error))
+        );
     });
 });

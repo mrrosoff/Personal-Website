@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { mockShell } from "../../../setup";
+import { mockShell } from "../../../helpers/terminal";
 
 describe("sed", () => {
     it("should replace the first match on each line", () => {
@@ -41,5 +41,13 @@ describe("sed", () => {
         const result = shell.run("sed s/a/b/");
 
         expect(result).toBe("sed: missing operand");
+    });
+
+    it("should report an invalid pattern", () => {
+        const shell = mockShell();
+
+        const result = shell.run("sed s/(/x/ /home/fruit.txt");
+
+        expect(result).toContain("Invalid regular expression: /(/: Unterminated group");
     });
 });

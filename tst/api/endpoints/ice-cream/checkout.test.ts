@@ -80,4 +80,18 @@ describe("checkout", () => {
 
         expect(mockDocumentClient).not.toHaveReceivedCommand(UpdateCommand);
     });
+
+    it("should refuse a checkout with no flavors", async () => {
+        const result = await handler(mockEvent());
+
+        expect(responseBody(result).message).toBe("One of those flavors isn't available anymore.");
+    });
+
+    it("should let a friend check out without an email", async () => {
+        const token = await mockToken(UserType.FRIEND);
+
+        await handler(mockEvent({ token, query }));
+
+        expect(mockResend.emails.send).toHaveBeenCalledOnce();
+    });
 });

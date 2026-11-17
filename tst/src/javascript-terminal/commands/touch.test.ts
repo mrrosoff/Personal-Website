@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { mockShell } from "../../../setup";
+import { mockShell } from "../../../helpers/terminal";
 
 describe("touch", () => {
     it("should create an empty file", () => {
@@ -18,5 +18,13 @@ describe("touch", () => {
         const result = shell.run("touch");
 
         expect(result).toBe("usage: touch file");
+    });
+
+    it("should fail inside a file", () => {
+        const shell = mockShell();
+
+        const result = shell.run("touch /home/fruit.txt/x");
+
+        expect(result).toBe("Cannot Descend Into File");
     });
 });

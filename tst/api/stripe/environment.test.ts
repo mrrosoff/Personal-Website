@@ -10,6 +10,8 @@ import {
     siteUrlForEvent,
     stripeForEvent
 } from "../../../api/stripe/environment";
+import { GetParametersCommand } from "@aws-sdk/client-ssm";
+import { mockSSMClient } from "../../__mocks__/__aws__/parameterStore";
 
 describe("isLocalTest", () => {
     it("should be true for local development", () => {
@@ -67,5 +69,29 @@ describe("checkoutLineItem", () => {
         const result = await checkoutLineItem(mockEvent({ local: true }), mockFlavor.priceId);
 
         expect(result.price_data?.recurring).toEqual({ interval: "month", interval_count: 1 });
+    });
+
+    it("should use test keys for local development", async () => {
+        await stripeForEvent(mockEvent({ local: true }));
+
+        expect(mockSSMClient).toHaveReceivedCommandWith(GetParametersCommand, {
+            Names: ["/website/stripe/test/api-key"]
+        });
+    });
+
+    it("should copy a free price as zero", async () => {
+        mockStripe.prices.retrieve.mockResolvedValue({
+            currency: "usd",
+            unit_amount: null,
+            recurring: null,
+            product: { name: "Free", tax_code: null }
+        });
+
+        const result = await checkoutLineItem(mockEvent({ local: true }), mockFlavor.priceId);
+
+        expect(result.price_data).toMatchObject({
+            unit_amount: 0,
+            product_data: { tax_code: undefined }
+        });
     });
 });

@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { mockEvent, mockToken, responseBody } from "../../../setup";
 import { mockDevice, mockPasskey } from "../../../__mocks__/__data__/aws/dynamodb";
@@ -7,6 +7,11 @@ import { mockResend } from "../../../__mocks__/resend";
 import { decryptToken } from "../../../../api/auth";
 import { handler } from "../../../../api/endpoints/admin/createFriendInvite";
 import { UserType } from "../../../../api/types";
+import FriendInviteEmail from "../../../../src/emails/FriendInviteEmail";
+
+vi.mock("../../../../src/emails/FriendInviteEmail", () => ({ default: vi.fn() }));
+
+const mockFriendInviteEmail = vi.mocked(FriendInviteEmail);
 
 describe("createFriendInvite", () => {
     it("should need a body", async () => {
@@ -86,5 +91,60 @@ describe("createFriendInvite", () => {
         );
 
         await expect(result).rejects.toThrow("Error Sending Friend Invite Email");
+    });
+
+    it("should say how long a one day invite lasts", async () => {
+        const token = await mockToken(UserType.ADMIN);
+
+        await handler(
+            mockEvent({
+                token,
+                body: { friendName: "Zed", email: "zed@example.com", expiresInHours: 24 }
+            })
+        );
+
+        expect(mockFriendInviteEmail).toHaveBeenCalledWith(
+            expect.objectContaining({ validFor: "1 Day" })
+        );
+    });
+
+    it("should say how long a one hour invite lasts", async () => {
+        const token = await mockToken(UserType.ADMIN);
+
+        await handler(
+            mockEvent({
+                token,
+                body: { friendName: "Zed", email: "zed@example.com", expiresInHours: 1 }
+            })
+        );
+
+        expect(mockFriendInviteEmail).toHaveBeenCalledWith(
+            expect.objectContaining({ validFor: "1 Hour" })
+        );
+    });
+
+    it("should say how long a multi day invite lasts", async () => {
+        const token = await mockToken(UserType.ADMIN);
+
+        await handler(
+            mockEvent({
+                token,
+                body: { friendName: "Zed", email: "zed@example.com", expiresInHours: 48 }
+            })
+        );
+
+        expect(mockFriendInviteEmail).toHaveBeenCalledWith(
+            expect.objectContaining({ validFor: "2 Days" })
+        );
+    });
+
+    it("should say how long a multi hour invite lasts", async () => {
+        const token = await mockToken(UserType.ADMIN);
+
+        await handler(mockEvent({ token, body: { friendName: "Zed", email: "zed@example.com" } }));
+
+        expect(mockFriendInviteEmail).toHaveBeenCalledWith(
+            expect.objectContaining({ validFor: "6 Hours" })
+        );
     });
 });

@@ -43,4 +43,10 @@ describe("base-operations", () => {
         expect(Object.keys(fsSearch(fs, "/empty"))).toEqual(["new.txt"]);
         expect(Object.keys(fsSearch(fs, "/home"))).not.toContain("fruit.txt");
     });
+
+    it("should stop at the deepest folder that exists", () => {
+        const result = fsSearchParent(mockFileSystem(), "/home/missing/deeper/file");
+
+        expect(Object.keys(result)).toContain("fruit.txt");
+    });
 });

@@ -72,4 +72,10 @@ describe("exchange", () => {
             Name: refreshTokenSetAtParam(mockDevice.deviceId)
         });
     });
+
+    it("should reject a state without a signature", async () => {
+        const result = await handler(mockEvent({ body: { code: "c", state: "unsigned" } }));
+
+        expect(responseBody(result).message).toBe("Invalid or Expired State");
+    });
 });

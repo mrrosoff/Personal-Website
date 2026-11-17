@@ -1,7 +1,10 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
-import { mockShell, mockToken } from "../../../setup";
+import { mockToken } from "../../../setup";
+import { mockShell } from "../../../helpers/terminal";
 import { DeviceKind, UserType } from "../../../../api/types";
+import polaroidCommand from "../../../../src/javascript-terminal/commands/polaroid";
+import EmulatorState from "../../../../src/javascript-terminal/emulator-state/EmulatorState";
 
 describe("polaroid", () => {
     it("should deny a signed out visitor", () => {
@@ -30,5 +33,16 @@ describe("polaroid", () => {
         const result = shell.run("polaroid");
 
         expect(result).toBe("/polaroid");
+    });
+
+    it("should report an unexpected failure", () => {
+        const state = EmulatorState.create({});
+        vi.spyOn(state, "getEnvVariables").mockImplementation(() => {
+            throw new Error("broken state");
+        });
+
+        const result = polaroidCommand.functionDef(state, []);
+
+        expect(result).toEqual({ output: "broken state", type: "error" });
     });
 });

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { mockShell } from "../../../setup";
+import { mockShell } from "../../../helpers/terminal";
 
 describe("icecream", () => {
     it("should navigate to the shop", () => {

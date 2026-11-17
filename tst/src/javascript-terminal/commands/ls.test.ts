@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { mockShell } from "../../../setup";
+import { mockShell } from "../../../helpers/terminal";
 
 describe("ls", () => {
     it("should list visible entries in order", () => {
@@ -50,5 +50,13 @@ describe("ls", () => {
         const result = shell.run("ls nowhere");
 
         expect(result).toBe("Specified Path Not In Filesystem");
+    });
+
+    it("should show . and .. in long format", () => {
+        const shell = mockShell();
+
+        const result = shell.run("ls -la /empty");
+
+        expect(result).toBe("drwx------ .\ndrwx------ ..");
     });
 });

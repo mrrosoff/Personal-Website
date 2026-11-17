@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { mockShell } from "../../../setup";
+import { mockShell } from "../../../helpers/terminal";
 
 describe("cd", () => {
     it("should change the working directory", () => {
@@ -47,5 +47,15 @@ describe("cd", () => {
         const result = shell.run("cd /home/fruit.txt");
 
         expect(result).toBe("File At Specified Location");
+    });
+
+    it("should go to the root with a dash when there is no previous directory", () => {
+        const shell = mockShell();
+        shell.run("cd /home");
+        shell.state.setEnvVariables({ cwd: "/home" });
+
+        shell.run("cd -");
+
+        expect(shell.run("pwd")).toBe("/");
     });
 });

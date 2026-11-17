@@ -43,4 +43,14 @@ describe("suggestFileSystemNames", () => {
 
         expect(result).toEqual(["media/song.mp3", "media/photo.png"]);
     });
+
+    it("should suggest nothing for a command without options", () => {
+        const result = suggestCommandOptions(
+            { bare: { functionDef: () => ({}) } } as never,
+            "bare",
+            "-"
+        );
+
+        expect(result).toBeEmpty();
+    });
 });

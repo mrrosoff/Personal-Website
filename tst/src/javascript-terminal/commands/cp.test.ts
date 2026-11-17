@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { mockShell } from "../../../setup";
+import { mockShell } from "../../../helpers/terminal";
 
 describe("cp", () => {
     it("should copy a file", () => {
@@ -43,5 +43,22 @@ describe("cp", () => {
         const result = shell.run("cp /home/fruit.txt");
 
         expect(result).toBe("usage: cp [-rv] source dest");
+    });
+
+    it("should copy a directory with -r", () => {
+        const shell = mockShell();
+        shell.run("cp -r /home/projects /home/backup");
+
+        const result = shell.run("ls /home/backup");
+
+        expect(result).toBe("site.ts");
+    });
+
+    it("should fail on a missing source", () => {
+        const shell = mockShell();
+
+        const result = shell.run("cp /home/missing.txt /home/copy.txt");
+
+        expect(result).toBe("Not A File At Specified Path: /home/missing.txt");
     });
 });

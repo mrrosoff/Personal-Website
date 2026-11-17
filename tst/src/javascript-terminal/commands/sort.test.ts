@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { mockShell } from "../../../setup";
+import { mockShell } from "../../../helpers/terminal";
 
 describe("sort", () => {
     it("should sort alphabetically", () => {
@@ -33,5 +33,13 @@ describe("sort", () => {
         const result = shell.run("sort");
 
         expect(result).toBe("usage: sort [-rn] [file]");
+    });
+
+    it("should fail on a missing file", () => {
+        const shell = mockShell();
+
+        const result = shell.run("sort /home/missing.txt");
+
+        expect(result).toBe("Not A File At Specified Path: /home/missing.txt");
     });
 });

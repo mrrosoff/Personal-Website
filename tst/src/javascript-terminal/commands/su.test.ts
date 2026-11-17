@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { mockShell, mockToken } from "../../../setup";
+import { mockToken } from "../../../setup";
+import { mockShell } from "../../../helpers/terminal";
 import { UserType } from "../../../../api/types";
 import { mockPasskey } from "../../../__mocks__/__data__/aws/dynamodb";
 
@@ -35,5 +36,13 @@ describe("su", () => {
         shell.run(`su ${mockPasskey.name}`);
 
         expect(shell.state.getPasswordPromptState()).toEqual({});
+    });
+
+    it("should deny a token it cannot read", () => {
+        const shell = mockShell({ AUTH_TOKEN: "junk" });
+
+        const result = shell.run("su ada");
+
+        expect(result).toBe("Permission Denied");
     });
 });

@@ -1,6 +1,8 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
-import { mockShell } from "../../../setup";
+import { mockShell } from "../../../helpers/terminal";
+import grepCommand from "../../../../src/javascript-terminal/commands/grep";
+import EmulatorState from "../../../../src/javascript-terminal/emulator-state/EmulatorState";
 
 describe("grep", () => {
     it("should find matching lines", () => {
@@ -57,5 +59,24 @@ describe("grep", () => {
         const result = shell.run("grep app");
 
         expect(result).toBe("grep: missing file operand");
+    });
+
+    it("should fail on a missing file", () => {
+        const shell = mockShell();
+
+        const result = shell.run("grep a /home/missing.txt");
+
+        expect(result).toBe("No such file or directory: /home/missing.txt");
+    });
+
+    it("should report an unexpected failure", () => {
+        const state = EmulatorState.create({});
+        vi.spyOn(state, "getFileSystem").mockImplementation(() => {
+            throw new Error("broken state");
+        });
+
+        const result = grepCommand.functionDef(state, ["a", "/home/fruit.txt"]);
+
+        expect(result).toEqual({ output: "broken state", type: "error" });
     });
 });

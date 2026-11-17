@@ -1,6 +1,8 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
-import { mockShell } from "../../../setup";
+import { mockShell } from "../../../helpers/terminal";
+import rmCommand from "../../../../src/javascript-terminal/commands/rm";
+import EmulatorState from "../../../../src/javascript-terminal/emulator-state/EmulatorState";
 
 describe("rm", () => {
     it("should remove a file", () => {
@@ -44,5 +46,24 @@ describe("rm", () => {
         const result = shell.run("ls /");
 
         expect(result).toBe("empty\nhome\nmedia");
+    });
+
+    it("should do nothing without a path", () => {
+        const shell = mockShell();
+
+        const result = shell.run("rm");
+
+        expect(result).toBe("");
+    });
+
+    it("should report an unexpected failure", () => {
+        const state = EmulatorState.create({});
+        vi.spyOn(state, "getFileSystem").mockImplementation(() => {
+            throw new Error("broken state");
+        });
+
+        const result = rmCommand.functionDef(state, ["/media/song.mp3"]);
+
+        expect(result).toEqual({ output: "broken state", type: "error" });
     });
 });

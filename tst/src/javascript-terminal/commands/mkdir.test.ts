@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { mockShell } from "../../../setup";
+import { mockShell } from "../../../helpers/terminal";
 
 describe("mkdir", () => {
     it("should make a directory", () => {
@@ -27,5 +27,22 @@ describe("mkdir", () => {
         const result = shell.run("mkdir");
 
         expect(result).toBe("usage: mkdir [-p] directory_name");
+    });
+
+    it("should fail inside a file", () => {
+        const shell = mockShell();
+
+        const result = shell.run("mkdir /home/fruit.txt/x");
+
+        expect(result).toBe("Cannot Descend Into File");
+    });
+
+    it("should skip parents it cannot make", () => {
+        const shell = mockShell();
+        shell.run("mkdir -p /home/fruit.txt/x");
+
+        const result = shell.run("ls /home");
+
+        expect(result).toBe("fruit.txt\nnumbers.txt\nother.txt\npeople.csv\nprojects");
     });
 });

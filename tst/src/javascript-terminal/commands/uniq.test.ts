@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { mockShell } from "../../../setup";
+import { mockShell } from "../../../helpers/terminal";
 
 describe("uniq", () => {
     it("should drop adjacent duplicates", () => {
@@ -25,5 +25,13 @@ describe("uniq", () => {
         const result = shell.run("uniq");
 
         expect(result).toBe("uniq: missing file operand");
+    });
+
+    it("should fail on a missing file", () => {
+        const shell = mockShell();
+
+        const result = shell.run("uniq /home/missing.txt");
+
+        expect(result).toBe("Not A File At Specified Path: /home/missing.txt");
     });
 });

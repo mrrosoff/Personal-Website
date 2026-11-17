@@ -82,4 +82,12 @@ describe("authenticateHTTPAccessToken", () => {
 
         expect(result.token?.userType).toBe(UserType.ADMIN);
     });
+
+    it("should ignore a header sent more than once", () => {
+        const result = bearerToken({
+            headers: { authorization: ["Bearer a", "Bearer b"] }
+        } as never);
+
+        expect(result).toBeUndefined();
+    });
 });

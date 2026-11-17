@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { mockShell } from "../../../setup";
+import { mockShell } from "../../../helpers/terminal";
 
 describe("head", () => {
     it("should show the first lines", () => {
@@ -25,5 +25,13 @@ describe("head", () => {
         const result = shell.run("head");
 
         expect(result).toBe("usage: head [-n count] [file]");
+    });
+
+    it("should fail on a missing file", () => {
+        const shell = mockShell();
+
+        const result = shell.run("head /home/missing.txt");
+
+        expect(result).toBe("Not A File At Specified Path: /home/missing.txt");
     });
 });

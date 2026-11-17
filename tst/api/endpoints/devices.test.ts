@@ -115,4 +115,14 @@ describe("deviceForOwner", () => {
             IndexName: "email"
         });
     });
+
+    it("should record a device that has never been seen", async () => {
+        mockDocumentClient
+            .on(GetCommand, { TableName: DEVICES_TABLE })
+            .resolves({ Item: { ...mockDevice, lastSeenAt: undefined } });
+
+        await resolveDevice(mockEvent({ token: mockDeviceToken }), DeviceKind.POLAROID);
+
+        expect(mockDocumentClient).toHaveReceivedCommand(UpdateCommand);
+    });
 });

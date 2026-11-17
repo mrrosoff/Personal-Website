@@ -120,4 +120,15 @@ describe("passkeyRegister", () => {
             Item: expect.not.objectContaining({ deviceIds: expect.anything() })
         });
     });
+
+    it("should let the admin register without granting devices", async () => {
+        mockDocumentClient.on(QueryCommand, { TableName: PASSKEYS_TABLE }).resolves({ Items: [] });
+        verified();
+
+        await handler(mockEvent({ token: await mockToken(UserType.ADMIN), body }));
+
+        expect(mockDocumentClient).toHaveReceivedCommandWith(PutCommand, {
+            Item: expect.objectContaining({ name: "admin" })
+        });
+    });
 });

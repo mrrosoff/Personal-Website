@@ -19,6 +19,14 @@ async function upload(body: string) {
     return handler(mockEvent({ token, body, isBase64Encoded: true }));
 }
 
+function mockNoiseJpeg(width: number, height: number): string {
+    const pixels = Buffer.alloc(width * height * 4);
+    for (let i = 0; i < pixels.length; i++) {
+        pixels[i] = (i * 2654435761) % 7 < 3 ? 0 : 255;
+    }
+    return encodeJpeg({ data: pixels, width, height }, 100).data.toString("base64");
+}
+
 describe("upload", () => {
     it("should need a friend with a polaroid", async () => {
         const result = await handler(mockEvent({ body: mockJpeg(8, 8) }));
@@ -73,5 +81,27 @@ describe("upload", () => {
         expect(mockS3Client).toHaveReceivedNthSpecificCommandWith(2, PutObjectCommand, {
             ContentType: "application/octet-stream"
         });
+    });
+
+    it("should render harsh black and white noise", async () => {
+        const result = await upload(mockNoiseJpeg(1003, 677));
+
+        expect(result.statusCode).toBe(200);
+    });
+
+    it("should upscale a tiny photo", async () => {
+        const result = await upload(mockNoiseJpeg(3, 7));
+
+        expect(result.statusCode).toBe(200);
+    });
+
+    it("should read a photo sent as raw bytes", async () => {
+        const token = await mockToken(UserType.FRIEND);
+
+        const result = await handler(
+            mockEvent({ token, body: Buffer.from(mockJpeg(8, 8), "base64").toString("latin1") })
+        );
+
+        expect(result.statusCode).toBe(400);
     });
 });

@@ -31,14 +31,6 @@ export type Table =
     typeof PASSKEYS_TABLE |
     typeof DEVICES_TABLE;
 
-// prettier-ignore
-type ItemKeyInput<T extends Table> =
-    T extends typeof FLAVORS_TABLE ? string :
-    T extends typeof PASSKEY_CHALLENGES_TABLE ? string :
-    T extends typeof PASSKEYS_TABLE ? string :
-    T extends typeof DEVICES_TABLE ? string :
-    never;
-
 type UpdateItemInput<T extends Table> = Partial<
     Record<ValuesOfType<TableObject<T>, DynamoDBFieldValue>, DynamoDBFieldValue>
 >;
@@ -78,12 +70,11 @@ export async function getEntireTable<T extends Table>(table: T): Promise<TableOb
 
 export async function getItem<T extends Table>(
     table: T,
-    key: ItemKeyInput<T>
+    key: string
 ): Promise<TableObject<T> | undefined> {
     console.debug(`Getting item from ${table} with key ${JSON.stringify(key)}`);
-    const compositeKey = generateCompositeKey(table, key);
 
-    const getItemRequest = new GetCommand({ TableName: table, Key: compositeKey });
+    const getItemRequest = new GetCommand({ TableName: table, Key: { [primaryKeys[table]]: key } });
     const itemOutput = await documentClient.send(getItemRequest);
     return itemOutput.Item as TableObject<T> | undefined;
 }
@@ -120,7 +111,7 @@ export async function getItemsByIndex<T extends Table>(
 
 export async function decrementField<T extends Table>(
     table: T,
-    key: ItemKeyInput<T>,
+    key: string,
     fieldName: ValuesOfType<TableObject<T>, number>
 ): Promise<TableObject<T>> {
     return adjustField(table, key, fieldName, -1);
@@ -128,7 +119,7 @@ export async function decrementField<T extends Table>(
 
 export async function incrementField<T extends Table>(
     table: T,
-    key: ItemKeyInput<T>,
+    key: string,
     fieldName: ValuesOfType<TableObject<T>, number>
 ): Promise<TableObject<T>> {
     return adjustField(table, key, fieldName, 1);
@@ -136,18 +127,17 @@ export async function incrementField<T extends Table>(
 
 async function adjustField<T extends Table>(
     table: T,
-    key: ItemKeyInput<T>,
+    key: string,
     fieldName: ValuesOfType<TableObject<T>, number>,
     delta: number
 ): Promise<TableObject<T>> {
     console.debug(
         `Adjusting ${String(fieldName)} by ${delta} for item in ${table} with id ${JSON.stringify(key)}`
     );
-    const compositeKey = generateCompositeKey(table, key);
 
     const updateItemRequest = new UpdateCommand({
         TableName: table,
-        Key: compositeKey,
+        Key: { [primaryKeys[table]]: key },
         UpdateExpression: `SET #prop = #prop + :delta`,
         ExpressionAttributeNames: {
             "#prop": fieldName
@@ -177,7 +167,7 @@ export async function putItem<T extends Table>(
 
 export async function updateItem<T extends Table>(
     table: T,
-    id: ItemKeyInput<T>,
+    id: string,
     key: ValuesOfType<TableObject<T>, DynamoDBFieldValue>,
     value: DynamoDBFieldValue
 ): Promise<TableObject<T>> {
@@ -186,13 +176,12 @@ export async function updateItem<T extends Table>(
 
 export async function updateItemFields<T extends Table>(
     table: T,
-    key: ItemKeyInput<T>,
+    key: string,
     fields: UpdateItemInput<T>
 ): Promise<TableObject<T>> {
     console.debug(
         `Updating ${Object.keys(fields).join(", ")} for item in ${table} with id ${JSON.stringify(key)}`
     );
-    const compositeKey = generateCompositeKey(table, key);
 
     const setExpressions: string[] = [];
     const removeExpressions: string[] = [];
@@ -214,7 +203,7 @@ export async function updateItemFields<T extends Table>(
 
     const updateItemRequest = new UpdateCommand({
         TableName: table,
-        Key: compositeKey,
+        Key: { [primaryKeys[table]]: key },
         UpdateExpression: expressionParts.filter(Boolean).join(" "),
         ExpressionAttributeNames: dynamoAttributeNames,
         ...(Object.keys(dynamoAttributeValues).length && {
@@ -230,16 +219,12 @@ export async function updateItemFields<T extends Table>(
     return object;
 }
 
-export async function deleteItem<T extends Table>(
-    table: T,
-    key: ItemKeyInput<T>
-): Promise<TableObject<T>> {
+export async function deleteItem<T extends Table>(table: T, key: string): Promise<TableObject<T>> {
     console.debug(`Deleting item in ${table} with key ${JSON.stringify(key)}.`);
-    const compositeKey = generateCompositeKey(table, key);
 
     const deleteItemRequest = new DeleteCommand({
         TableName: table,
-        Key: compositeKey,
+        Key: { [primaryKeys[table]]: key },
         ReturnValues: "ALL_OLD"
     });
     const itemOutput = await documentClient.send(deleteItemRequest);
@@ -248,11 +233,4 @@ export async function deleteItem<T extends Table>(
         throw new Error("Called DynamoDB Without Validating Item Exists");
     }
     return object;
-}
-
-function generateCompositeKey<T extends Table>(
-    table: T,
-    key: ItemKeyInput<T>
-): Record<string, string> {
-    return typeof key === "string" ? { [primaryKeys[table]]: key } : key;
 }

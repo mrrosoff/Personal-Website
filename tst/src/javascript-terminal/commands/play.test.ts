@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { mockShell } from "../../../setup";
+import { mockShell } from "../../../helpers/terminal";
 
 describe("play", () => {
     it("should render a player", () => {
@@ -25,5 +25,13 @@ describe("play", () => {
         const result = shell.run("play");
 
         expect(result).toBe("usage: play [file ...]");
+    });
+
+    it("should fail on a missing file", () => {
+        const shell = mockShell();
+
+        const result = shell.run("play /media/missing.mp3");
+
+        expect(result).toBe("Not A File At Specified Path: /media/missing.mp3");
     });
 });

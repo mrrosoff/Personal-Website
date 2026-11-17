@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { mockShell, mockToken } from "../../../setup";
+import { mockToken } from "../../../setup";
+import { mockShell } from "../../../helpers/terminal";
 import { UserType } from "../../../../api/types";
 
 describe("flavor", () => {
