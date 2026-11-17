@@ -10,7 +10,7 @@ export default defineConfig({
         { name: "ipad", use: { ...devices["iPad Pro 11"] } },
         { name: "pixel", use: { ...devices["Pixel 10"] } },
         { name: "galaxy", use: { ...devices["Galaxy S24"] } },
-        { name: "moto", use: { ...devices["Moto G4"] } }
+        { name: "iphone-se", use: { ...devices["iPhone SE (3rd gen)"] } }
     ],
     webServer: {
         command: "npx vite build && npx vite preview --port 4173 --strictPort",
