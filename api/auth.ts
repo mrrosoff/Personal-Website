@@ -34,7 +34,6 @@ export async function generateToken(
         expiresIn?: SignOptions["expiresIn"];
     }
 ): Promise<string> {
-    console.debug(`Generating auth token for user ${id}`);
     const key = await privateKey();
     return sign(
         {

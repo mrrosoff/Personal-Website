@@ -28,7 +28,6 @@ export async function putObject<T extends Bucket>(
     body: Buffer,
     contentType: string
 ): Promise<void> {
-    console.debug(`Putting ${key} into ${bucket}`);
     const putObjectRequest = new PutObjectCommand({
         Bucket: bucket,
         Key: key,
@@ -43,7 +42,6 @@ export async function getObject<T extends Bucket>(
     bucket: T,
     key: ObjectKey<T>
 ): Promise<Buffer | undefined> {
-    console.debug(`Getting ${key} from ${bucket}`);
     try {
         const getObjectRequest = new GetObjectCommand({
             Bucket: bucket,
@@ -59,7 +57,6 @@ export async function getObject<T extends Bucket>(
 }
 
 export async function listObjects(bucket: Bucket, prefix: string): Promise<_Object[]> {
-    console.debug(`Listing ${prefix} in ${bucket}`);
     const objects: _Object[] = [];
     let continuationToken: string | undefined;
 
@@ -91,7 +88,6 @@ export async function objectExists<T extends Bucket>(
 }
 
 export async function deleteObject<T extends Bucket>(bucket: T, key: ObjectKey<T>): Promise<void> {
-    console.debug(`Deleting ${key} from ${bucket}`);
     await s3Client.send(new DeleteObjectCommand({ Bucket: bucket, Key: key }));
 }
 

@@ -59,7 +59,6 @@ export const primaryKeys: Record<Table, string> = {
 };
 
 export async function getEntireTable<T extends Table>(table: T): Promise<TableObject<T>[]> {
-    console.debug(`Getting all items from ${table}`);
     const scanItemsRequest = new ScanCommand({ TableName: table });
     const itemOutput = await documentClient.send(scanItemsRequest);
     return (itemOutput.Items ?? []) as TableObject<T>[];
@@ -69,8 +68,6 @@ export async function getItem<T extends Table>(
     table: T,
     key: string
 ): Promise<TableObject<T> | undefined> {
-    console.debug(`Getting item from ${table} with key ${JSON.stringify(key)}`);
-
     const getItemRequest = new GetCommand({ TableName: table, Key: { [primaryKeys[table]]: key } });
     const itemOutput = await documentClient.send(getItemRequest);
     return itemOutput.Item as TableObject<T> | undefined;
@@ -93,8 +90,6 @@ export async function getItemsByIndex<T extends Table>(
     key: ValuesOfType<TableObject<T>, string>,
     value: string
 ): Promise<TableObject<T>[]> {
-    console.debug(`Querying items from ${table} with ${key} ${value}`);
-
     const queryRequest = new QueryCommand({
         TableName: table,
         IndexName: key,
@@ -128,10 +123,6 @@ async function adjustField<T extends Table>(
     fieldName: ValuesOfType<TableObject<T>, number>,
     delta: number
 ): Promise<TableObject<T>> {
-    console.debug(
-        `Adjusting ${fieldName} by ${delta.toString()} for item in ${table} with id ${JSON.stringify(key)}`
-    );
-
     const updateItemRequest = new UpdateCommand({
         TableName: table,
         Key: { [primaryKeys[table]]: key },
@@ -156,7 +147,6 @@ export async function putItem<T extends Table>(
     table: T,
     item: Partial<TableObject<T>>
 ): Promise<TableObject<T>> {
-    console.debug(`Putting item into ${table}`);
     const putItemRequest = new PutCommand({ TableName: table, Item: item });
     await documentClient.send(putItemRequest);
     return item as TableObject<T>;
@@ -176,10 +166,6 @@ export async function updateItemFields<T extends Table>(
     key: string,
     fields: UpdateItemInput<T>
 ): Promise<TableObject<T>> {
-    console.debug(
-        `Updating ${Object.keys(fields).join(", ")} for item in ${table} with id ${JSON.stringify(key)}`
-    );
-
     const setExpressions: string[] = [];
     const removeExpressions: string[] = [];
     const dynamoAttributeNames: Record<string, string> = {};
@@ -217,8 +203,6 @@ export async function updateItemFields<T extends Table>(
 }
 
 export async function deleteItem<T extends Table>(table: T, key: string): Promise<TableObject<T>> {
-    console.debug(`Deleting item in ${table} with key ${JSON.stringify(key)}.`);
-
     const deleteItemRequest = new DeleteCommand({
         TableName: table,
         Key: { [primaryKeys[table]]: key },
