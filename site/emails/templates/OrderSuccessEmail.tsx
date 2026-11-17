@@ -25,6 +25,11 @@ const subtitles = [
     "Ice cream waits for no one!"
 ];
 
+export const orderSubtitle = (forCustomer: boolean): string => {
+    const pool = forCustomer ? customerSubtitles : subtitles;
+    return pool[Math.floor(Math.random() * pool.length)];
+};
+
 const orderHeading = (forCustomer: boolean, customerName?: string) => {
     if (forCustomer) {
         return customerName ? `Thanks, ${customerName}!` : "Thanks For Your Order!";
@@ -32,16 +37,17 @@ const orderHeading = (forCustomer: boolean, customerName?: string) => {
     return customerName ? `Order From ${customerName}` : "New Order";
 };
 
-const OrderSuccessEmail = (props: {
+type OrderSuccessEmailProps = {
     customerName?: string;
     customerEmail?: string;
     shippingAddress?: Stripe.Address;
     items: OrderItem[];
+    subtitle: string;
     forCustomer?: boolean;
-}) => {
+};
+
+const OrderSuccessEmail = (props: OrderSuccessEmailProps) => {
     const forCustomer = props.forCustomer ?? false;
-    const pool = forCustomer ? customerSubtitles : subtitles;
-    const subtitle = pool[Math.floor(Math.random() * pool.length)];
     const heading = orderHeading(forCustomer, props.customerName);
     const pints = `${props.items.length.toString()} ${props.items.length === 1 ? "pint" : "pints"}`;
     const preview = forCustomer
@@ -59,7 +65,7 @@ const OrderSuccessEmail = (props: {
                         marginBottom: 0
                     }}
                 >
-                    {subtitle}
+                    {props.subtitle}
                     {!forCustomer && props.customerEmail && (
                         <>
                             {" "}
@@ -177,6 +183,7 @@ const formatAddress = (address: Stripe.Address) =>
     ].filter((line): line is string => !!line);
 
 OrderSuccessEmail.PreviewProps = {
+    subtitle: subtitles[0],
     customerName: "Max",
     customerEmail: "me@maxrosoff.com",
     shippingAddress: {

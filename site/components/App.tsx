@@ -140,10 +140,12 @@ const AppRoutes = () => {
     );
 };
 
-const Layout = (props: {
+type LayoutProps = {
     inputRef: RefObject<HTMLInputElement | null>;
     scrollContainerRef: RefObject<HTMLDivElement | null>;
-}) => {
+};
+
+const Layout = ({ inputRef, scrollContainerRef }: LayoutProps) => {
     const theme = useTheme();
     const mdScreen = useMediaQuery(theme.breakpoints.down("md"));
     const isHome = useMatch("/");
@@ -179,12 +181,12 @@ const Layout = (props: {
             onClick={() => {
                 const selection = window.getSelection();
                 if (selection && !selection.isCollapsed) return;
-                props.inputRef.current?.focus();
+                inputRef.current?.focus();
             }}
         >
             {(!mdScreen || isHome) && <LinksAndMenu />}
             <Box
-                ref={props.scrollContainerRef}
+                ref={scrollContainerRef}
                 sx={{
                     width: "100%",
                     height: "100%",

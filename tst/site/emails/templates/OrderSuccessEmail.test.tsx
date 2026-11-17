@@ -1,8 +1,10 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { renderEmail } from "../../../helpers/render";
 
-import OrderSuccessEmail from "../../../../site/emails/templates/OrderSuccessEmail";
+import OrderSuccessEmail, {
+    orderSubtitle
+} from "../../../../site/emails/templates/OrderSuccessEmail";
 
 const address = {
     line1: "123 Main St",
@@ -17,6 +19,7 @@ describe("OrderSuccessEmail", () => {
     it("should tell Max who ordered what and where it goes", async () => {
         const result = await renderEmail(
             <OrderSuccessEmail
+                subtitle={"Scoops away!"}
                 customerName={"Ada"}
                 customerEmail={"ada@example.com"}
                 shippingAddress={address}
@@ -37,6 +40,7 @@ describe("OrderSuccessEmail", () => {
     it("should name an order by its email when there is no name", async () => {
         const result = await renderEmail(
             <OrderSuccessEmail
+                subtitle={"Scoops away!"}
                 customerEmail={"ada@example.com"}
                 items={[{ name: "Fig", quantity: 1 }]}
             />
@@ -47,7 +51,9 @@ describe("OrderSuccessEmail", () => {
     });
 
     it("should handle an order with no details", async () => {
-        const result = await renderEmail(<OrderSuccessEmail items={[]} />);
+        const result = await renderEmail(
+            <OrderSuccessEmail subtitle={"Scoops away!"} items={[]} />
+        );
 
         expect(result).toContain("New order from a customer for 0 pints");
         expect(result).not.toContain("Deliver To");
@@ -56,6 +62,7 @@ describe("OrderSuccessEmail", () => {
     it("should thank the customer", async () => {
         const result = await renderEmail(
             <OrderSuccessEmail
+                subtitle={"Scoops away!"}
                 forCustomer
                 customerName={"Ada"}
                 customerEmail={"ada@example.com"}
@@ -72,8 +79,32 @@ describe("OrderSuccessEmail", () => {
     });
 
     it("should thank a customer without a name", async () => {
-        const result = await renderEmail(<OrderSuccessEmail forCustomer items={[]} />);
+        const result = await renderEmail(
+            <OrderSuccessEmail subtitle={"Max is on it!"} forCustomer items={[]} />
+        );
 
         expect(result).toContain("Thanks For Your Order!");
+    });
+
+    it("should show its subtitle", async () => {
+        const result = await renderEmail(
+            <OrderSuccessEmail subtitle={"Scoops away!"} items={[]} />
+        );
+
+        expect(result).toContain("Scoops away!");
+    });
+});
+
+describe("orderSubtitle", () => {
+    it("should cheer Max on", () => {
+        vi.spyOn(Math, "random").mockReturnValue(0);
+
+        expect(orderSubtitle(false)).toBe("Time to fire up the ice cream machine!");
+    });
+
+    it("should reassure the customer", () => {
+        vi.spyOn(Math, "random").mockReturnValue(0);
+
+        expect(orderSubtitle(true)).toBe("Your pints are being packed!");
     });
 });

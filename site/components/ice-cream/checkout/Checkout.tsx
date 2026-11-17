@@ -16,30 +16,35 @@ const stripePublishableApiKey =
         : "pk_live_51SSn4jGZZEzkLsbifOmvMvPB5xo33fgFS19ejvNuOibMMPHFu3ixt00c2nbCn4EPiIXWXvJvH1t3AZLXJE3dIrKz00aPsF6Dt2";
 const stripeLoader = loadStripe(stripePublishableApiKey);
 
+async function fetchClientSecret(isSubscription: boolean, priceIdsString: string): Promise<string> {
+    try {
+        const result = isSubscription
+            ? await axios.post<{ client_secret: string }>(
+                  `${API_ENDPOINT_URL}/ice-cream/subscribe`,
+                  {}
+              )
+            : await axios.post<{ client_secret: string }>(
+                  `${API_ENDPOINT_URL}/ice-cream/checkout?priceIds=${priceIdsString}`
+              );
+        return result.data.client_secret;
+    } catch (error) {
+        if (isAxiosError<ErrorResponseBody>(error) && error.response?.data.message) {
+            throw new Error(error.response.data.message);
+        }
+        throw error;
+    }
+}
+
 const Checkout = () => {
     const [searchParams] = useSearchParams();
     const { friendToken } = useAppContext();
     const priceIdsString = searchParams.get("priceIds") ?? "";
     const priceIdsArray = priceIdsString.split(",").filter(Boolean);
     const isSubscription = searchParams.get("subscription") === "true";
-    const fetchClientSecret = useMemo(async () => {
-        try {
-            const result = isSubscription
-                ? await axios.post<{ client_secret: string }>(
-                      `${API_ENDPOINT_URL}/ice-cream/subscribe`,
-                      {}
-                  )
-                : await axios.post<{ client_secret: string }>(
-                      `${API_ENDPOINT_URL}/ice-cream/checkout?priceIds=${priceIdsString}`
-                  );
-            return result.data.client_secret;
-        } catch (error) {
-            if (isAxiosError<ErrorResponseBody>(error) && error.response?.data.message) {
-                throw new Error(error.response.data.message);
-            }
-            throw error;
-        }
-    }, [priceIdsString, isSubscription]);
+    const clientSecret = useMemo(
+        () => fetchClientSecret(isSubscription, priceIdsString),
+        [isSubscription, priceIdsString]
+    );
 
     if (!isSubscription && (!priceIdsString || priceIdsArray.length === 0)) {
         return <Navigate to={"/ice-cream"} replace />;
@@ -83,7 +88,7 @@ const Checkout = () => {
         <CheckoutProvider
             stripe={stripeLoader}
             options={{
-                clientSecret: fetchClientSecret,
+                clientSecret,
                 elementsOptions: {
                     appearance,
                     fonts: [

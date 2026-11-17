@@ -5,7 +5,7 @@ import type Stripe from "stripe";
 import { getParameter } from "../../aws/services/parameterStore";
 import { getEntireTable } from "../../aws/services/dynamodb";
 import MailingListEmail from "../../../site/emails/templates/MailingListEmail";
-import OrderSuccessEmail from "../../../site/emails/templates/OrderSuccessEmail";
+import OrderSuccessEmail, { orderSubtitle } from "../../../site/emails/templates/OrderSuccessEmail";
 import { FLAVORS_TABLE, HttpResponseStatus, buildErrorResponse, buildResponse } from "../../common";
 import { isAdmin } from "../../permissions";
 
@@ -89,7 +89,7 @@ export async function sendOrderSuccessEmails({
         from: "Max's Freezer Stash <orders@ice-cream.maxrosoff.com>",
         to: "me@maxrosoff.com",
         subject: "Ice Cream Order",
-        react: OrderSuccessEmail(params)
+        react: OrderSuccessEmail({ ...params, subtitle: orderSubtitle(false) })
     });
 
     if (error) {
@@ -106,7 +106,7 @@ export async function sendOrderSuccessEmails({
         to: params.customerEmail,
         replyTo: "me@maxrosoff.com",
         subject: "Your Ice Cream Order",
-        react: OrderSuccessEmail({ ...params, forCustomer: true })
+        react: OrderSuccessEmail({ ...params, subtitle: orderSubtitle(true), forCustomer: true })
     });
 
     if (customerError) {

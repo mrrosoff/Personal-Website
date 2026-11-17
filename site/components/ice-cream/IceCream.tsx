@@ -17,7 +17,7 @@ import IcecreamOutlinedIcon from "@mui/icons-material/IcecreamOutlined";
 
 import { useIceCreamCart } from "./IceCreamCartContext";
 import { useAppContext } from "../AppContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import type { DatabaseFlavor } from "../../../api/types";
 import { TERMINAL_COLORS } from "../terminal/Terminal";
 
@@ -261,6 +261,9 @@ function FlavorSection(props: FlavorSectionProps) {
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
     const { cart } = props;
     const shown = cart ? props.flavors.filter((flavor) => flavor.count > 0) : props.flavors;
+    const [skeletonWidths] = useState(() =>
+        Array.from({ length: props.skeletons }, () => 200 + Math.random() * 100)
+    );
 
     return (
         <Box display={"flex"} flexDirection={"column"} sx={{ paddingTop: smallScreen ? 4 : 2.5 }}>
@@ -273,7 +276,7 @@ function FlavorSection(props: FlavorSectionProps) {
                 sx={{ paddingTop: smallScreen ? 4 : 2 }}
             >
                 {props.isLoading
-                    ? Array.from({ length: props.skeletons }, (_, i) => (
+                    ? skeletonWidths.map((width, i) => (
                           <Grid
                               key={i}
                               display={"flex"}
@@ -282,7 +285,7 @@ function FlavorSection(props: FlavorSectionProps) {
                           >
                               <Skeleton
                                   variant="rounded"
-                                  width={smallScreen ? "100%" : 200 + Math.random() * 100}
+                                  width={smallScreen ? "100%" : width}
                                   height={75}
                                   sx={{ borderRadius: 1 }}
                               />

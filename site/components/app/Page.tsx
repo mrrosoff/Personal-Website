@@ -11,10 +11,12 @@ import TerminalEmbed from "./desktop/TerminalEmbed";
 import { useIceCreamCart } from "../ice-cream/IceCreamCartContext";
 import { useAppContext } from "../AppContext";
 
-const Page = (props: {
+type PageProps = {
     inputRef: RefObject<HTMLInputElement | null>;
     scrollContainerRef: RefObject<HTMLDivElement | null>;
-}) => {
+};
+
+const Page = ({ inputRef, scrollContainerRef }: PageProps) => {
     const { shouldBootUp } = useAppContext();
 
     const [bootingUp, setBootingUp] = useState(shouldBootUp);
@@ -30,7 +32,7 @@ const Page = (props: {
         );
     }
 
-    return <TerminalEmbed ref={props.inputRef} scrollContainerRef={props.scrollContainerRef} />;
+    return <TerminalEmbed ref={inputRef} scrollContainerRef={scrollContainerRef} />;
 };
 
 export const LinksAndMenu = () => {
