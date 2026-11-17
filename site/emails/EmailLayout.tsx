@@ -13,6 +13,7 @@ import {
     Section,
     Text
 } from "@react-email/components";
+import { COLORS, EMAIL_COLORS } from "../theme";
 
 type EmailLayoutProps = { preview: string; children: ReactNode };
 
@@ -21,7 +22,7 @@ export const EmailLayout = (props: EmailLayoutProps) => (
         <Head />
         <Body
             style={{
-                backgroundColor: "#DBDDDE",
+                backgroundColor: EMAIL_COLORS.page,
                 fontFamily:
                     '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif'
             }}
@@ -29,7 +30,7 @@ export const EmailLayout = (props: EmailLayoutProps) => (
             <Preview>{props.preview}</Preview>
             <Container
                 style={{
-                    backgroundColor: "#FFFFFF",
+                    backgroundColor: COLORS.white,
                     paddingLeft: "20px",
                     paddingRight: "20px"
                 }}
@@ -48,7 +49,7 @@ export const EmailFooter = (props: EmailFooterProps) => {
             style={{
                 fontSize: 12,
                 fontWeight: 600,
-                color: "rgb(107,114,128)"
+                color: EMAIL_COLORS.muted
             }}
         >
             {props.tagline}
@@ -69,7 +70,7 @@ export const EmailFooter = (props: EmailFooterProps) => {
                             marginBottom: "0px",
                             fontSize: 12,
                             fontWeight: 600,
-                            color: "rgb(17,24,39)"
+                            color: EMAIL_COLORS.text
                         }}
                     >
                         Max's Freezer Stash
@@ -112,7 +113,7 @@ export const EmailFooter = (props: EmailFooterProps) => {
                                 textAlign: "right",
                                 fontSize: 12,
                                 fontWeight: 600,
-                                color: "rgb(107,114,128)"
+                                color: EMAIL_COLORS.muted
                             }}
                         >
                             4122 17th Street
@@ -124,7 +125,7 @@ export const EmailFooter = (props: EmailFooterProps) => {
                                 textAlign: "right",
                                 fontSize: 12,
                                 fontWeight: 600,
-                                color: "rgb(107,114,128)"
+                                color: EMAIL_COLORS.muted
                             }}
                         >
                             San Francisco, CA 94114
@@ -134,7 +135,7 @@ export const EmailFooter = (props: EmailFooterProps) => {
                                 textAlign: "right",
                                 fontSize: 12,
                                 fontWeight: 600,
-                                color: "rgb(107,114,128)"
+                                color: EMAIL_COLORS.muted
                             }}
                         >
                             me@maxrosoff.com

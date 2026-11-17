@@ -2,6 +2,7 @@ import { Column, Heading, Hr, Link, Row, Section, Text } from "@react-email/comp
 import { EmailFooter, EmailLayout } from "../EmailLayout";
 
 import type { DatabaseFlavor } from "../../../api/types";
+import { EMAIL_COLORS } from "../../theme";
 
 const MailingListEmail = (props: {
     currentFlavors: DatabaseFlavor[];
@@ -18,7 +19,7 @@ const MailingListEmail = (props: {
                         marginBottom: "0px",
                         fontSize: 14,
                         lineHeight: "24px",
-                        color: "rgb(107,114,128)"
+                        color: EMAIL_COLORS.muted
                     }}
                 >
                     We are excited to share our latest flavors with you. Only $5 per pint.
@@ -28,7 +29,7 @@ const MailingListEmail = (props: {
                         marginTop: "0px",
                         fontSize: 14,
                         lineHeight: "24px",
-                        color: "rgb(107,114,128)"
+                        color: EMAIL_COLORS.muted
                     }}
                 >
                     If you are in San Francisco, buy online at{" "}
@@ -43,7 +44,7 @@ const MailingListEmail = (props: {
                         style={{
                             fontSize: 15,
                             lineHeight: "24px",
-                            color: "rgb(17,24,39)",
+                            color: EMAIL_COLORS.text,
                             whiteSpace: "pre-wrap"
                         }}
                     >
@@ -90,7 +91,7 @@ const FlavorsList = (props: { title: string; description: string; flavors: Datab
                             margin: "0px",
                             fontSize: 24,
                             fontWeight: 600,
-                            color: "rgb(17,24,39)"
+                            color: EMAIL_COLORS.text
                         }}
                     >
                         {props.title}
@@ -100,7 +101,7 @@ const FlavorsList = (props: { title: string; description: string; flavors: Datab
                             marginTop: 8,
                             fontSize: 16,
                             lineHeight: "24px",
-                            color: "rgb(107,114,128)"
+                            color: EMAIL_COLORS.muted
                         }}
                     >
                         {props.description}
@@ -114,7 +115,7 @@ const FlavorsList = (props: { title: string; description: string; flavors: Datab
                     width: "100%",
                     borderWidth: 1,
                     borderStyle: "solid",
-                    borderColor: "rgb(209,213,219) !important"
+                    borderColor: `${EMAIL_COLORS.border} !important`
                 }}
             />
             {props.flavors.map((flavor, index) => (
@@ -128,7 +129,7 @@ const FlavorsList = (props: { title: string; description: string; flavors: Datab
                                         style={{
                                             height: 30,
                                             width: 30,
-                                            backgroundColor: "rgb(199,210,254)",
+                                            backgroundColor: EMAIL_COLORS.accentLight,
                                             borderRadius: 9999,
                                             padding: "0px"
                                         }}
@@ -137,7 +138,7 @@ const FlavorsList = (props: { title: string; description: string; flavors: Datab
                                             style={{
                                                 fontWeight: 600,
                                                 margin: "0px",
-                                                color: "rgb(79,70,229)"
+                                                color: EMAIL_COLORS.accent
                                             }}
                                         >
                                             {index + 1}
@@ -152,7 +153,7 @@ const FlavorsList = (props: { title: string; description: string; flavors: Datab
                                         fontSize: 20,
                                         lineHeight: "28px",
                                         fontWeight: 600,
-                                        color: "rgb(17,24,39)"
+                                        color: EMAIL_COLORS.text
                                     }}
                                 >
                                     {flavor.priceId ? (
@@ -177,7 +178,7 @@ const FlavorsList = (props: { title: string; description: string; flavors: Datab
                             width: "100%",
                             borderWidth: 1,
                             borderStyle: "solid",
-                            borderColor: "rgb(209,213,219) !important"
+                            borderColor: `${EMAIL_COLORS.border} !important`
                         }}
                     />
                 </>

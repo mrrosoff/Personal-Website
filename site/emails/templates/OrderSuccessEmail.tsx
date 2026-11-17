@@ -1,6 +1,7 @@
 import { Column, Heading, Hr, Link, Row, Section, Text } from "@react-email/components";
 import { EmailFooter, EmailLayout } from "../EmailLayout";
 import type Stripe from "stripe";
+import { EMAIL_COLORS } from "../../theme";
 
 type OrderItem = {
     name: string;
@@ -60,7 +61,7 @@ const OrderSuccessEmail = (props: OrderSuccessEmailProps) => {
                 <Text
                     style={{
                         fontSize: 16,
-                        color: "rgb(107,114,128)",
+                        color: EMAIL_COLORS.muted,
                         marginTop: 8,
                         marginBottom: 0
                     }}
@@ -72,7 +73,7 @@ const OrderSuccessEmail = (props: OrderSuccessEmailProps) => {
                             Reach them at{" "}
                             <Link
                                 href={`mailto:${props.customerEmail}`}
-                                style={{ color: "rgb(79,70,229)" }}
+                                style={{ color: EMAIL_COLORS.accent }}
                             >
                                 {props.customerEmail}
                             </Link>
@@ -92,7 +93,7 @@ const OrderSuccessEmail = (props: OrderSuccessEmailProps) => {
                                         style={{
                                             height: 30,
                                             width: 30,
-                                            backgroundColor: "rgb(254,215,170)",
+                                            backgroundColor: EMAIL_COLORS.highlightLight,
                                             borderRadius: 9999,
                                             padding: "0px"
                                         }}
@@ -101,7 +102,7 @@ const OrderSuccessEmail = (props: OrderSuccessEmailProps) => {
                                             style={{
                                                 fontWeight: 600,
                                                 margin: "0px",
-                                                color: "rgb(234,88,12)"
+                                                color: EMAIL_COLORS.highlight
                                             }}
                                         >
                                             {item.quantity}x
@@ -116,7 +117,7 @@ const OrderSuccessEmail = (props: OrderSuccessEmailProps) => {
                                         fontSize: 20,
                                         lineHeight: "28px",
                                         fontWeight: 600,
-                                        color: "rgb(17,24,39)"
+                                        color: EMAIL_COLORS.text
                                     }}
                                 >
                                     {item.name}
@@ -132,7 +133,7 @@ const OrderSuccessEmail = (props: OrderSuccessEmailProps) => {
                         style={{
                             fontSize: 14,
                             fontWeight: 600,
-                            color: "rgb(107,114,128)",
+                            color: EMAIL_COLORS.muted,
                             margin: "0px"
                         }}
                     >
@@ -142,13 +143,13 @@ const OrderSuccessEmail = (props: OrderSuccessEmailProps) => {
                         style={{
                             fontSize: 16,
                             lineHeight: "24px",
-                            color: "rgb(17,24,39)",
+                            color: EMAIL_COLORS.text,
                             margin: "4px 0px 0px"
                         }}
                     >
                         <Link
                             href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(formatAddress(props.shippingAddress).join(", "))}`}
-                            style={{ color: "rgb(79,70,229)" }}
+                            style={{ color: EMAIL_COLORS.accent }}
                         >
                             {formatAddress(props.shippingAddress).map((line) => (
                                 <span key={line}>
@@ -165,7 +166,7 @@ const OrderSuccessEmail = (props: OrderSuccessEmailProps) => {
                     width: "100%",
                     borderWidth: 1,
                     borderStyle: "solid",
-                    borderColor: "rgb(209,213,219)"
+                    borderColor: EMAIL_COLORS.border
                 }}
             />
             <EmailFooter tagline={"Order Up!"} />

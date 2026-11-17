@@ -1,5 +1,6 @@
 import { Heading, Hr, Section, Text } from "@react-email/components";
 import { EmailFooter, EmailLayout } from "../EmailLayout";
+import { EMAIL_COLORS } from "../../theme";
 
 type FlavorSuggestionEmailProps = {
     friendName: string;
@@ -17,7 +18,7 @@ const FlavorSuggestionEmail = ({ friendName, flavor }: FlavorSuggestionEmailProp
                     style={{
                         fontSize: 24,
                         fontWeight: 200,
-                        color: "rgb(17,24,39)",
+                        color: EMAIL_COLORS.text,
                         marginTop: 16,
                         marginBottom: 0
                     }}
@@ -30,7 +31,7 @@ const FlavorSuggestionEmail = ({ friendName, flavor }: FlavorSuggestionEmailProp
                     width: "100%",
                     borderWidth: 1,
                     borderStyle: "solid",
-                    borderColor: "rgb(209,213,219)"
+                    borderColor: EMAIL_COLORS.border
                 }}
             />
             <EmailFooter tagline={"Flavor Lab"} />

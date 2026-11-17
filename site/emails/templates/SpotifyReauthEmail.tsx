@@ -1,7 +1,8 @@
 import { Button, Heading, Hr, Link, Section, Text } from "@react-email/components";
 import { EmailLayout } from "../EmailLayout";
+import { COLORS, EMAIL_COLORS, FONT } from "../../theme";
 
-const SPOTIFY_GREEN = "#1ED760";
+const SPOTIFY_GREEN = EMAIL_COLORS.spotify;
 
 type SpotifyReauthEmailProps = {
     name?: string;
@@ -13,10 +14,10 @@ const SpotifyReauthEmail = (props: SpotifyReauthEmailProps) => {
     const greeting = props.name ? `Hi ${props.name},` : "Hi,";
     const userName = props.name ?? "your name";
     const codeStyle = {
-        backgroundColor: "rgb(243,244,246)",
+        backgroundColor: EMAIL_COLORS.surface,
         padding: "2px 6px",
         borderRadius: 4,
-        fontFamily: "monospace"
+        fontFamily: FONT.mono
     };
     return (
         <EmailLayout
@@ -31,7 +32,7 @@ const SpotifyReauthEmail = (props: SpotifyReauthEmailProps) => {
                 <Text
                     style={{
                         fontSize: 16,
-                        color: "rgb(107,114,128)",
+                        color: EMAIL_COLORS.muted,
                         marginTop: 8,
                         marginBottom: 0
                     }}
@@ -40,8 +41,10 @@ const SpotifyReauthEmail = (props: SpotifyReauthEmailProps) => {
                 </Text>
             </Section>
             <Section style={{ marginTop: 16 }}>
-                <Text style={{ fontSize: 16, color: "rgb(17,24,39)", margin: 0 }}>{greeting}</Text>
-                <Text style={{ fontSize: 16, color: "rgb(17,24,39)" }}>
+                <Text style={{ fontSize: 16, color: EMAIL_COLORS.text, margin: 0 }}>
+                    {greeting}
+                </Text>
+                <Text style={{ fontSize: 16, color: EMAIL_COLORS.text }}>
                     The Spotify connection that powers the display is set to expire in about{" "}
                     <strong>
                         {props.daysLeft} {props.daysLeft === 1 ? "day" : "days"}
@@ -49,10 +52,10 @@ const SpotifyReauthEmail = (props: SpotifyReauthEmailProps) => {
                     . Once it lapses, the panel stops showing what's playing until it's reconnected.
                     You can refresh it now in under a minute. No need to wait.
                 </Text>
-                <Text style={{ fontSize: 16, color: "rgb(17,24,39)" }}>
+                <Text style={{ fontSize: 16, color: EMAIL_COLORS.text }}>
                     Four steps, all of them on the site itself:
                 </Text>
-                <Text style={{ fontSize: 16, color: "rgb(17,24,39)" }}>
+                <Text style={{ fontSize: 16, color: EMAIL_COLORS.text }}>
                     <strong>1. Open the terminal.</strong> Go to{" "}
                     <Link href={props.reconnectUrl} style={{ color: SPOTIFY_GREEN }}>
                         maxrosoff.com
@@ -60,17 +63,17 @@ const SpotifyReauthEmail = (props: SpotifyReauthEmailProps) => {
                     on a computer. The terminal is the panel on the home page. Click it once so it
                     takes what you type.
                 </Text>
-                <Text style={{ fontSize: 16, color: "rgb(17,24,39)" }}>
+                <Text style={{ fontSize: 16, color: EMAIL_COLORS.text }}>
                     <strong>2. Sign in as yourself.</strong> Type{" "}
                     <span style={codeStyle}>sudo su {userName}</span> and press enter. Your device
                     will ask for your face, fingerprint, or screen lock. Approve it.
                 </Text>
-                <Text style={{ fontSize: 16, color: "rgb(17,24,39)" }}>
+                <Text style={{ fontSize: 16, color: EMAIL_COLORS.text }}>
                     <strong>3. Start the reconnect.</strong> Type{" "}
                     <span style={codeStyle}>sudo spotify reconnect</span> and press enter. The site
                     will hand you over to Spotify.
                 </Text>
-                <Text style={{ fontSize: 16, color: "rgb(17,24,39)" }}>
+                <Text style={{ fontSize: 16, color: EMAIL_COLORS.text }}>
                     <strong>4. Approve the Spotify prompt.</strong> Spotify asks whether the display
                     can see what you're playing. Say yes, and it drops you back on the site with the
                     connection renewed for another two months.
@@ -81,7 +84,7 @@ const SpotifyReauthEmail = (props: SpotifyReauthEmailProps) => {
                     href={props.reconnectUrl}
                     style={{
                         backgroundColor: SPOTIFY_GREEN,
-                        color: "#FFFFFF",
+                        color: COLORS.white,
                         fontWeight: 600,
                         fontSize: 16,
                         borderRadius: 9999,
@@ -96,7 +99,7 @@ const SpotifyReauthEmail = (props: SpotifyReauthEmailProps) => {
                     width: "100%",
                     borderWidth: 1,
                     borderStyle: "solid",
-                    borderColor: "rgb(209,213,219)"
+                    borderColor: EMAIL_COLORS.border
                 }}
             />
             <Text
@@ -104,7 +107,7 @@ const SpotifyReauthEmail = (props: SpotifyReauthEmailProps) => {
                     marginTop: 16,
                     marginBottom: 16,
                     fontSize: 12,
-                    color: "rgb(107,114,128)",
+                    color: EMAIL_COLORS.muted,
                     lineHeight: 1.5
                 }}
             >

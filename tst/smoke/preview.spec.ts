@@ -66,3 +66,14 @@ test("serves the site to browsers on the home page", async ({ request }) => {
 
     expect(response.headers()["content-type"]).toContain("text/html");
 });
+
+test("sends security headers on pages with and without a function", async ({ request }) => {
+    for (const path of ["/", "/polaroid", "/ice-cream"]) {
+        const headers = (await request.get(path)).headers();
+
+        expect(headers["strict-transport-security"]).toBe("max-age=31536000");
+        expect(headers["x-frame-options"]).toBe("DENY");
+        expect(headers["content-security-policy"]).toBe("frame-ancestors 'none'");
+        expect(headers["referrer-policy"]).toBe("strict-origin-when-cross-origin");
+    }
+});

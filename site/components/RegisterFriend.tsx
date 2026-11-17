@@ -10,7 +10,7 @@ import { DateTime } from "luxon";
 import FormField, { emailProblem } from "./FormField";
 import { decodeToken } from "../auth";
 import { API_ENDPOINT_URL, DeviceKind } from "../../api/types";
-import { COLORS } from "../theme";
+import { COLORS, FONT } from "../theme";
 
 const Code = ({ children }: { children: string }) => (
     <Box
@@ -19,7 +19,7 @@ const Code = ({ children }: { children: string }) => (
             backgroundColor: COLORS.faint,
             padding: "2px 6px",
             borderRadius: "4px",
-            fontFamily: "monospace"
+            fontFamily: FONT.mono
         }}
     >
         {children}

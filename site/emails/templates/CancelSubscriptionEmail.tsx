@@ -1,7 +1,6 @@
 import { Button, Heading, Hr, Link, Section, Text } from "@react-email/components";
 import { EmailLayout } from "../EmailLayout";
-
-const ICE_CREAM_PINK = "#E8709A";
+import { COLORS, EMAIL_COLORS } from "../../theme";
 
 type CancelSubscriptionEmailProps = {
     cancelUrl: string;
@@ -16,7 +15,7 @@ const CancelSubscriptionEmail = ({ cancelUrl, minutesValid }: CancelSubscription
                 <Text
                     style={{
                         fontSize: 16,
-                        color: "rgb(107,114,128)",
+                        color: EMAIL_COLORS.muted,
                         marginTop: 8,
                         marginBottom: 0
                     }}
@@ -25,12 +24,12 @@ const CancelSubscriptionEmail = ({ cancelUrl, minutesValid }: CancelSubscription
                 </Text>
             </Section>
             <Section style={{ marginTop: 16 }}>
-                <Text style={{ fontSize: 16, color: "rgb(17,24,39)" }}>
+                <Text style={{ fontSize: 16, color: EMAIL_COLORS.text }}>
                     Someone asked to cancel the ice cream subscription for this address. Use the
                     button below and the monthly charge stops right away. Pints you have already
                     paid for are still yours.
                 </Text>
-                <Text style={{ fontSize: 16, color: "rgb(17,24,39)" }}>
+                <Text style={{ fontSize: 16, color: EMAIL_COLORS.text }}>
                     If that wasn't you, ignore this email and nothing changes.
                 </Text>
             </Section>
@@ -38,8 +37,8 @@ const CancelSubscriptionEmail = ({ cancelUrl, minutesValid }: CancelSubscription
                 <Button
                     href={cancelUrl}
                     style={{
-                        backgroundColor: ICE_CREAM_PINK,
-                        color: "#FFFFFF",
+                        backgroundColor: EMAIL_COLORS.pink,
+                        color: COLORS.white,
                         fontWeight: 600,
                         fontSize: 16,
                         borderRadius: 9999,
@@ -54,7 +53,7 @@ const CancelSubscriptionEmail = ({ cancelUrl, minutesValid }: CancelSubscription
                     width: "100%",
                     borderWidth: 1,
                     borderStyle: "solid",
-                    borderColor: "rgb(209,213,219)"
+                    borderColor: EMAIL_COLORS.border
                 }}
             />
             <Text
@@ -62,13 +61,13 @@ const CancelSubscriptionEmail = ({ cancelUrl, minutesValid }: CancelSubscription
                     marginTop: 16,
                     marginBottom: 16,
                     fontSize: 12,
-                    color: "rgb(107,114,128)",
+                    color: EMAIL_COLORS.muted,
                     lineHeight: 1.5
                 }}
             >
                 This link works for {minutesValid.toString()} minutes. If it expires, ask for a new
                 one from{" "}
-                <Link href="https://maxrosoff.com/ice-cream" style={{ color: ICE_CREAM_PINK }}>
+                <Link href="https://maxrosoff.com/ice-cream" style={{ color: EMAIL_COLORS.pink }}>
                     maxrosoff.com/ice-cream
                 </Link>
                 .

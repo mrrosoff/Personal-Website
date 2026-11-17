@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 
 import { useAppContext } from "../../AppContext";
-import { COLORS } from "../../../theme";
+import { COLORS, FONT } from "../../../theme";
 
 type Position = { x: number; y: number };
 
@@ -108,7 +108,7 @@ const SnakeGame = () => {
 
     return (
         <Box sx={{ padding: 2 }}>
-            <Typography sx={{ color: COLORS.green, mb: 1, fontFamily: "monospace" }}>
+            <Typography sx={{ color: COLORS.green, mb: 1, fontFamily: FONT.mono }}>
                 SNAKE - Score: {game.score}
             </Typography>
             {loading ? (

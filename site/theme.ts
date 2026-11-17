@@ -15,8 +15,23 @@ export const COLORS = {
     faint: "rgba(255, 255, 255, 0.1)"
 };
 
+export const EMAIL_COLORS = {
+    page: "#DBDDDE",
+    text: "rgb(17,24,39)",
+    muted: "rgb(107,114,128)",
+    border: "rgb(209,213,219)",
+    surface: "rgb(243,244,246)",
+    accent: "rgb(79,70,229)",
+    accentLight: "rgb(199,210,254)",
+    highlight: "rgb(234,88,12)",
+    highlightLight: "rgb(254,215,170)",
+    pink: "#E8709A",
+    spotify: "#1ED760"
+};
+
 export const FONT = {
     family: "Clacon",
+    mono: "monospace",
     url: "https://maxrosoff.com/fonts/clacon.ttf"
 };
 
