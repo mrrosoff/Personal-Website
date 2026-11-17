@@ -83,8 +83,10 @@ const CompactLayout = () => {
                                     role={"button"}
                                     tabIndex={canManage ? 0 : -1}
                                     aria-disabled={!canManage}
-                                    onClick={() => canManage && onManage()}
-                                    onKeyDown={(e) => e.key === "Enter" && canManage && onManage()}
+                                    onClick={canManage ? () => void onManage() : undefined}
+                                    onKeyDown={(e) => {
+                                        if (canManage && e.key === "Enter") void onManage();
+                                    }}
                                     underline={canManage ? "hover" : "none"}
                                     sx={{
                                         color: "inherit",

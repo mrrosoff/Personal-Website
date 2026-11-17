@@ -41,7 +41,7 @@ const CancelSubscription = () => {
     };
 
     const payload = unexpiredToken(token) ? decodeToken(token) : null;
-    if (!payload || payload.userType !== UserType.SUBSCRIBER || invalidToken) {
+    if (payload?.userType !== UserType.SUBSCRIBER || invalidToken) {
         return <Navigate to={"/"} replace />;
     }
 
@@ -67,7 +67,7 @@ const CancelSubscription = () => {
                     <Button
                         variant={"outlined"}
                         sx={{ fontSize: 18 }}
-                        onClick={() => navigate("/ice-cream")}
+                        onClick={() => void navigate("/ice-cream")}
                     >
                         Back To The Flavors
                     </Button>
@@ -77,7 +77,7 @@ const CancelSubscription = () => {
                         sx={{ fontSize: 18 }}
                         disabled={cancelling}
                         loading={cancelling}
-                        onClick={onCancel}
+                        onClick={() => void onCancel()}
                     >
                         {result === "failed" ? "Try Again" : "Cancel Subscription"}
                     </Button>

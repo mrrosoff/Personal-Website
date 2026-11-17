@@ -10,7 +10,7 @@ import type { FileSystem } from "../../FileSystem";
 
 export const suggestCommands = (cmdMapping: CommandMapping, partialStr: string) => {
     const commandNameSeq = getCommandNames(cmdMapping);
-    return commandNameSeq.filter((cmd) => partialStr === cmd.substr(0, partialStr.length));
+    return commandNameSeq.filter((cmd) => cmd.startsWith(partialStr));
 };
 
 export const suggestCommandOptions = (
@@ -25,7 +25,7 @@ export const suggestCommandOptions = (
     const optDefSeq = Object.keys(getCommandOptDef(cmdMapping, commandName) ?? {}).flatMap((opts) =>
         opts.split(",").map((opt) => opt.trim())
     );
-    return optDefSeq.filter((option) => partialStr === option.substr(0, partialStr.length));
+    return optDefSeq.filter((option) => option.startsWith(partialStr));
 };
 
 export const suggestFileSystemNames = (fs: FileSystem, cwd: string, partialStr: string) => {
@@ -36,7 +36,7 @@ export const suggestFileSystemNames = (fs: FileSystem, cwd: string, partialStr: 
             if (partialStr.endsWith("/")) return true;
             return (
                 PathUtil.getLastPathPart(path, false).toLowerCase() ===
-                suggestion.substr(0, PathUtil.getLastPathPart(path, false).length).toLowerCase()
+                suggestion.slice(0, PathUtil.getLastPathPart(path, false).length).toLowerCase()
             );
         })
         .map((suggestion) => {

@@ -40,6 +40,20 @@ const MailingListForm = () => {
     const [registerError, setRegisterError] = useState("");
     const [success, setSuccess] = useState(false);
 
+    const signUp = async () => {
+        try {
+            setLoading(true);
+            await registerMailingListUser({ firstName, lastName, email });
+            setSuccess(true);
+        } catch (error: unknown) {
+            setRegisterError(
+                (isAxiosError<{ message?: string }>(error) && error.response?.data?.message) ||
+                    "Something Unexpected Happened..."
+            );
+        }
+        setLoading(false);
+    };
+
     return (
         <Box
             display={"flex"}
@@ -103,20 +117,7 @@ const MailingListForm = () => {
                 disabled={!firstName || !lastName || !validate(email) || success}
                 endIcon={success ? <ThumbUpIcon /> : undefined}
                 loading={loading}
-                onClick={async () => {
-                    try {
-                        setLoading(true);
-                        await registerMailingListUser({ firstName, lastName, email });
-                        setSuccess(true);
-                    } catch (error: unknown) {
-                        setRegisterError(
-                            (isAxiosError<{ message?: string }>(error) &&
-                                error.response?.data?.message) ||
-                                "Something Unexpected Happened..."
-                        );
-                    }
-                    setLoading(false);
-                }}
+                onClick={() => void signUp()}
             >
                 Sign Up
             </Button>

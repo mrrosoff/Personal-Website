@@ -24,7 +24,11 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         return { output: "", type: "text" };
     }
 
-    options.recursive === true ? DirOp.remove(fs, deletionPath) : FileOp.remove(fs, deletionPath);
+    if (options.recursive === true) {
+        DirOp.remove(fs, deletionPath);
+    } else {
+        FileOp.remove(fs, deletionPath);
+    }
 
     if (options.verbose) {
         return { output: `removed '${argv[0]}'` };

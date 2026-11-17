@@ -58,7 +58,7 @@ export async function getObject<T extends Bucket>(
     }
 }
 
-export async function listObjects<T extends Bucket>(bucket: T, prefix: string): Promise<_Object[]> {
+export async function listObjects(bucket: Bucket, prefix: string): Promise<_Object[]> {
     console.debug(`Listing ${prefix} in ${bucket}`);
     const objects: _Object[] = [];
     let continuationToken: string | undefined;

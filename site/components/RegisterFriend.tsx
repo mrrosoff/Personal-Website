@@ -138,7 +138,7 @@ const RegisterForm = (props: { token: string; friendName: string }) => {
             <Button
                 variant={"contained"}
                 size={"large"}
-                onClick={handleRegister}
+                onClick={() => void handleRegister()}
                 loading={isLoading}
                 disabled={!isValidEmail}
                 sx={{

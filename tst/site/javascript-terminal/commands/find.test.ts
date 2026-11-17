@@ -36,11 +36,11 @@ describe("find", () => {
         expect(result).toBe("/home/projects/site.ts");
     });
 
-    it("should find nothing below a file", () => {
+    it("should refuse to search inside a file", () => {
         const shell = mockShell();
 
         const result = shell.run("find /home/fruit.txt");
 
-        expect(result).toBe("");
+        expect(result).toBe("Cannot Descend Into File");
     });
 });

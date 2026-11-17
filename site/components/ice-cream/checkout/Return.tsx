@@ -35,7 +35,7 @@ const Return = () => {
                 );
                 setStatus(result.data.status);
                 setCustomerEmail(result.data.customer_details?.email ?? result.data.customer_email);
-            } catch (error) {
+            } catch {
                 return navigate("/ice-cream");
             }
         };

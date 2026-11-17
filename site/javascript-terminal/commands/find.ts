@@ -13,34 +13,32 @@ const findInDirectory = (
     namePattern: string | undefined,
     results: string[] = []
 ): string[] => {
-    try {
-        const dirContents = fsSearch(fs, path);
+    const dirContents = fsSearch(fs, path);
 
-        Object.keys(dirContents).forEach((name) => {
-            const fullPath = path === "/" ? `/${name}` : `${path}/${name}`;
+    Object.keys(dirContents).forEach((name) => {
+        const fullPath = path === "/" ? `/${name}` : `${path}/${name}`;
 
-            let matches = true;
-            if (namePattern) {
-                const regex = new RegExp(
-                    "^" +
-                        namePattern
-                            .replace(/[.+^${}()|[\]\\]/g, "\\$&")
-                            .replace(/\*/g, ".*")
-                            .replace(/\?/g, ".") +
-                        "$"
-                );
-                matches = regex.test(name);
-            }
+        let matches = true;
+        if (namePattern) {
+            const regex = new RegExp(
+                "^" +
+                    namePattern
+                        .replace(/[.+^${}()|[\]\\]/g, "\\$&")
+                        .replace(/\*/g, ".*")
+                        .replace(/\?/g, ".") +
+                    "$"
+            );
+            matches = regex.test(name);
+        }
 
-            if (matches) {
-                results.push(fullPath);
-            }
+        if (matches) {
+            results.push(fullPath);
+        }
 
-            if (dirContents[name].type === "d") {
-                findInDirectory(fs, fullPath, namePattern, results);
-            }
-        });
-    } catch (err) {}
+        if (dirContents[name].type === "d") {
+            findInDirectory(fs, fullPath, namePattern, results);
+        }
+    });
 
     return results;
 };

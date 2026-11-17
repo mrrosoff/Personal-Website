@@ -204,7 +204,7 @@ const Terminal = (
         }
 
         switch (e.key) {
-            case "ArrowUp":
+            case "ArrowUp": {
                 e.preventDefault();
                 const historyUp = emulatorState.getHistory();
                 setHistoryIndex((prevState) => {
@@ -215,8 +215,9 @@ const Terminal = (
                 });
                 scrollToBottom();
                 break;
+            }
 
-            case "ArrowDown":
+            case "ArrowDown": {
                 e.preventDefault();
                 const historyDown = emulatorState.getHistory();
                 setHistoryIndex((prevState) => {
@@ -226,6 +227,7 @@ const Terminal = (
                 });
                 scrollToBottom();
                 break;
+            }
 
             case "Tab":
                 e.preventDefault();
@@ -234,7 +236,7 @@ const Terminal = (
                 scrollToBottom();
                 break;
 
-            case "Enter":
+            case "Enter": {
                 e.preventDefault();
                 const newState = emulator.execute(emulatorState, input, props.errorStr);
                 const outputs = newState.getOutputs();
@@ -254,6 +256,7 @@ const Terminal = (
                     void navigate(target.output as string, { replace: true });
                 }
                 break;
+            }
         }
     };
 
@@ -342,7 +345,10 @@ const Terminal = (
                 {emulatorState.getAdminConsoleMode()?.screen && (
                     <Box height={280}>
                         <Suspense fallback={null}>
-                            <AdminConsole theme={props.theme} onAction={runAdminAction} />
+                            <AdminConsole
+                                theme={props.theme}
+                                onAction={(key) => void runAdminAction(key)}
+                            />
                         </Suspense>
                     </Box>
                 )}
@@ -395,7 +401,7 @@ const Terminal = (
                             type="text"
                             value=""
                             onKeyDown={onKeyDown}
-                            onPaste={onPaste}
+                            onPaste={(e) => void onPaste(e)}
                             style={{
                                 width: 0,
                                 height: 0,

@@ -38,7 +38,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
                 } else {
                     break;
                 }
-            } catch (err) {
+            } catch {
                 break;
             }
         }

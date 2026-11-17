@@ -28,6 +28,20 @@ const UnsubscribeForm = () => {
     const [registerError, setRegisterError] = useState("");
     const [success, setSuccess] = useState(false);
 
+    const unsubscribe = async () => {
+        try {
+            setLoading(true);
+            await axios.post(`${API_ENDPOINT_URL}/email/unsubscribe`, { email });
+            setSuccess(true);
+        } catch (error: unknown) {
+            setRegisterError(
+                (isAxiosError<{ message?: string }>(error) && error.response?.data?.message) ||
+                    "Something Unexpected Happened..."
+            );
+        }
+        setLoading(false);
+    };
+
     return (
         <Box
             display={"flex"}
@@ -61,20 +75,7 @@ const UnsubscribeForm = () => {
                 disabled={!validate(email) || success}
                 endIcon={success ? <ThumbUpIcon /> : undefined}
                 loading={loading}
-                onClick={async () => {
-                    try {
-                        setLoading(true);
-                        await axios.post(`${API_ENDPOINT_URL}/email/unsubscribe`, { email });
-                        setSuccess(true);
-                    } catch (error: unknown) {
-                        setRegisterError(
-                            (isAxiosError<{ message?: string }>(error) &&
-                                error.response?.data?.message) ||
-                                "Something Unexpected Happened..."
-                        );
-                    }
-                    setLoading(false);
-                }}
+                onClick={() => void unsubscribe()}
             >
                 Remove From Mailing List
             </Button>

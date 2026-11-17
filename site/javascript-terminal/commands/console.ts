@@ -15,12 +15,12 @@ import { handleSelectFlavor } from "./console/inventory/selectFlavor";
 const FLAVOR_TYPE_OPTIONS: (FlavorType | null)[] = [...FLAVOR_TYPES, null];
 
 export function isPrintableKey(key: string): boolean {
-    return [...key].length === 1;
+    return Array.from(key).length === 1;
 }
 
 export function editText(value: string, key: string): string {
     if (key === "Backspace") {
-        return [...value].slice(0, -1).join("");
+        return Array.from(value).slice(0, -1).join("");
     }
     return isPrintableKey(key) ? value + key : value;
 }

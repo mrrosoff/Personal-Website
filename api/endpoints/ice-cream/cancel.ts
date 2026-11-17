@@ -20,7 +20,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     }
 
     const accessToken = await decryptToken(payload.token).catch(() => null);
-    if (!accessToken || accessToken.userType !== UserType.SUBSCRIBER) {
+    if (accessToken?.userType !== UserType.SUBSCRIBER) {
         return buildErrorResponse(
             event,
             HttpResponseStatus.UNAUTHORIZED,

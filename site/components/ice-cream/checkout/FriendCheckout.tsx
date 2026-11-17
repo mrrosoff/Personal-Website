@@ -42,7 +42,7 @@ const FriendCheckout = ({ priceIds, friendToken }: FriendCheckoutProps) => {
                 { headers: { Authorization: `Bearer ${friendToken}` } }
             );
             await navigate("/ice-cream/checkout/return");
-        } catch (err) {
+        } catch {
             setMessage("Checkout Failed");
             setIsLoading(false);
         }
@@ -123,7 +123,7 @@ const FriendCheckout = ({ priceIds, friendToken }: FriendCheckoutProps) => {
                 fullWidth
                 disabled={isLoading || !validate(email)}
                 loading={isLoading}
-                onClick={onSubmit}
+                onClick={() => void onSubmit()}
                 sx={{
                     mt: 4,
                     fontSize: 20,
