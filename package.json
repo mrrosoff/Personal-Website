@@ -16,8 +16,7 @@
         "bootstrap": "cdk bootstrap",
         "deploy": "cdk deploy --require-approval=never --all",
         "register-passkey": "ts-node scripts/registerPasskey.ts",
-        "test": "vitest run --silent",
-        "test-smoke": "playwright test"
+        "test": "vitest run --silent && playwright test"
     },
     "author": "Max Rosoff",
     "license": "MIT",

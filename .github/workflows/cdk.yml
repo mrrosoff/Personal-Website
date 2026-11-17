@@ -43,14 +43,11 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Test
-        run: npm test
-
-      - name: Install Browser
+      - name: Install Browsers
         run: npx playwright install --with-deps chromium webkit
 
-      - name: Smoke Test
-        run: npm run test-smoke
+      - name: Test
+        run: npm test
 
       - name: Build
         run: npm run build-cdk

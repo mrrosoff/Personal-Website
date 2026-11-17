@@ -42,6 +42,8 @@ describe("devices", () => {
     });
 
     it("should list devices by name", async () => {
+        mockDynamoDB.clear(PASSKEYS_TABLE);
+        mockDynamoDB.seed(PASSKEYS_TABLE, { ...mockPasskey, name: "Zed" });
         mockDynamoDB.seed(DEVICES_TABLE, {
             ...mockDevice,
             deviceId: "spotify",
@@ -52,8 +54,8 @@ describe("devices", () => {
         const result = await handler(mockEvent({ token }));
 
         expect(responseBody(result).devices).toMatchObject([
-            { name: `${mockPasskey.name}'s Polaroid` },
-            { name: "Unclaimed Spotify Display" }
+            { name: "Unclaimed Spotify Display" },
+            { name: "Zed's Polaroid" }
         ]);
     });
 
