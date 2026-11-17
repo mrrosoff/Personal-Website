@@ -38,9 +38,10 @@ type AwsSdkMockMatchers = {
     ): void;
 };
 
-declare module "@vitest/expect" {
-    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/no-explicit-any
-    interface Assertion<T = any> extends TestingLibraryMatchers<unknown, T>, AwsSdkMockMatchers {}
+declare module "vitest" {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+    interface Matchers<R extends void | Promise<void> = void | Promise<void>, T = unknown>
+        extends TestingLibraryMatchers<T, R>, AwsSdkMockMatchers {}
 }
 
 type MockEventOptions = {

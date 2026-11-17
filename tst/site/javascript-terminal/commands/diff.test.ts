@@ -35,6 +35,14 @@ describe("diff", () => {
         expect(result).toBe("Not A File At Specified Path: /home/missing.txt");
     });
 
+    it("should show lines only the first file has", () => {
+        const shell = mockShell();
+
+        const result = shell.run("diff /home/fruit.txt /home/numbers.txt");
+
+        expect(result).toBe("< banana\n> 10\n---\n< apple\n> 2\n---\n< apple\n> 33\n---\n< cherry");
+    });
+
     it("should show lines only one file has", () => {
         const shell = mockShell();
 

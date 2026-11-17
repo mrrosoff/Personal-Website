@@ -93,11 +93,9 @@ function boxResize(image: RgbImage, rect: CropRect, targetW: number, targetH: nu
             }
 
             const o = (ty * targetW + tx) * 3;
-            if (weight > 0) {
-                out[o] = Math.round(r / weight);
-                out[o + 1] = Math.round(g / weight);
-                out[o + 2] = Math.round(b / weight);
-            }
+            out[o] = Math.round(r / weight);
+            out[o + 1] = Math.round(g / weight);
+            out[o + 2] = Math.round(b / weight);
         }
     }
 

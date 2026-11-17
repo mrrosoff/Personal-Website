@@ -42,6 +42,22 @@ describe("devices", () => {
         expect(responseBody(result).devices).toMatchObject([{ name: "Ada, Bo & Cy's Polaroid" }]);
     });
 
+    it("should list devices by name", async () => {
+        mockDynamoDB.seed(DEVICES_TABLE, {
+            ...mockDevice,
+            deviceId: "spotify",
+            kind: DeviceKind.SPOTIFY
+        });
+        const token = await mockToken(UserType.ADMIN);
+
+        const result = await handler(mockEvent({ token }));
+
+        expect(responseBody(result).devices).toMatchObject([
+            { name: `${mockPasskey.name}'s Polaroid` },
+            { name: "Unclaimed Spotify Display" }
+        ]);
+    });
+
     it("should mark a device nobody has claimed", async () => {
         mockDynamoDB.clear(PASSKEYS_TABLE);
         mockDynamoDB.seed(DEVICES_TABLE, { ...mockDevice, kind: DeviceKind.SPOTIFY });

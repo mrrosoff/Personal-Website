@@ -63,7 +63,7 @@ export default defineConfig({
         coverage: {
             enabled: true,
             provider: "v8",
-            include: ["api/**", "site/**"],
+            include: ["api/**/*.{ts,tsx}", "site/**/*.{ts,tsx}"],
             thresholds: { statements: 100, branches: 100, functions: 100, lines: 100 }
         }
     }

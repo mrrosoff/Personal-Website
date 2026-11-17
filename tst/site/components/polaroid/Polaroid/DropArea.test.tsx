@@ -25,6 +25,19 @@ describe("DropArea", () => {
         expect(setDragging).toHaveBeenCalledWith(true);
     });
 
+    it("should stay lit while dragging over its own children", () => {
+        const { area, setDragging } = renderDropArea();
+
+        area.dispatchEvent(
+            new MouseEvent("dragleave", {
+                bubbles: true,
+                relatedTarget: screen.getByText("photos")
+            })
+        );
+
+        expect(setDragging).not.toHaveBeenCalled();
+    });
+
     it("should take dropped files", () => {
         const { area, onFiles } = renderDropArea();
         const file = new File(["x"], "a.jpg", { type: "image/jpeg" });

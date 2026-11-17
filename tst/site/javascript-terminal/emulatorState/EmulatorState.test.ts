@@ -29,6 +29,14 @@ describe("EmulatorState", () => {
         expect(state.getFileSystem()).toBe(fs);
     });
 
+    it("should leave a closed admin console closed when updating it", () => {
+        const state = EmulatorState.create({});
+
+        state.updateAdminConsoleMode({ loading: true });
+
+        expect(state.getAdminConsoleMode()).toBeUndefined();
+    });
+
     it("should refuse the admin console mode for a screen it is not on", () => {
         const state = EmulatorState.create({});
         state.setAdminConsoleMode({ screen: AdminConsoleScreen.Main });

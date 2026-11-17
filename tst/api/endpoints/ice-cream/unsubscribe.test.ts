@@ -39,6 +39,16 @@ describe("unsubscribe", () => {
         expect(mockInbox).toHaveLength(0);
     });
 
+    it("should not email a customer whose subscription has ended", async () => {
+        mockStripe.subscriptions.list.mockResolvedValue({
+            data: [{ id: "sub_old", status: "canceled" }]
+        });
+
+        await handler(mockEvent({ body: { email: "a@b.com" } }));
+
+        expect(mockInbox).toHaveLength(0);
+    });
+
     it("should throw if the email fails to send", async () => {
         mockResend.emails.send.mockResolvedValue({ data: null, error: { message: "down" } });
 

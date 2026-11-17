@@ -96,6 +96,22 @@ describe("token", () => {
         expect(result.statusCode).toBe(503);
     });
 
+    it("should rethrow a bad request that isn't a revoked grant", async () => {
+        axiosPost.mockRejectedValue(spotifyError(400, { error: "invalid_request" }));
+
+        const result = handler(event);
+
+        await expect(result).rejects.toThrow();
+    });
+
+    it("should rethrow an error that didn't come from the request", async () => {
+        axiosPost.mockRejectedValue(new Error("boom"));
+
+        const result = handler(event);
+
+        await expect(result).rejects.toThrow("boom");
+    });
+
     it("should rethrow anything else", async () => {
         axiosPost.mockRejectedValue(spotifyError(401, { error: "invalid_client" }));
 
