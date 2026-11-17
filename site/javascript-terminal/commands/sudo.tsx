@@ -1,8 +1,6 @@
 import axios from "axios";
-import {
-    startAuthentication,
-    type PublicKeyCredentialRequestOptionsJSON
-} from "@simplewebauthn/browser";
+import { startAuthentication } from "@simplewebauthn/browser";
+import type { PublicKeyCredentialRequestOptionsJSON } from "@simplewebauthn/browser";
 
 import type EmulatorState from "../emulator-state/EmulatorState";
 import { parseOptions } from "../parser";

@@ -1,4 +1,5 @@
-import { type ReactElement, type ReactNode, useState } from "react";
+import { useState } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { MemoryRouter, useLocation } from "react-router-dom";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -8,7 +9,8 @@ import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
 import { AppContext } from "../../site/components/AppContext";
-import { TERMINAL_COLORS, type TerminalTheme } from "../../site/components/terminal/Terminal";
+import { TERMINAL_COLORS } from "../../site/components/terminal/Terminal";
+import type { TerminalTheme } from "../../site/components/terminal/Terminal";
 import type EmulatorState from "../../site/javascript-terminal/emulator-state/EmulatorState";
 import { mockEmulatorState } from "./terminal";
 

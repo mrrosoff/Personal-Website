@@ -1,11 +1,5 @@
-import {
-    createContext,
-    useContext,
-    useState,
-    type Dispatch,
-    type ReactNode,
-    type SetStateAction
-} from "react";
+import { createContext, useContext, useState } from "react";
+import type { Dispatch, ReactNode, SetStateAction } from "react";
 
 import { AUTH_TOKEN_KEY, unexpiredToken } from "../auth";
 import { DefaultCommandMapping, EmulatorState } from "../javascript-terminal";

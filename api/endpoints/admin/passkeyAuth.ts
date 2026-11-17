@@ -1,8 +1,6 @@
 import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
-import {
-    type AuthenticationResponseJSON,
-    verifyAuthenticationResponse
-} from "@simplewebauthn/server";
+import { verifyAuthenticationResponse } from "@simplewebauthn/server";
+import type { AuthenticationResponseJSON } from "@simplewebauthn/server";
 import { DateTime } from "luxon";
 
 import { deleteItem, getItem } from "../../aws/services/dynamodb";

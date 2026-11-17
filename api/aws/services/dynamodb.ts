@@ -16,12 +16,12 @@ import {
     PASSKEYS_TABLE
 } from "../../common";
 import { SDK_SETTINGS } from "../common";
-import {
-    type DatabaseDevice,
-    type DatabaseFlavor,
-    type DatabasePasskey,
-    type DatabasePasskeyChallenge,
-    type DynamoDBFieldValue
+import type {
+    DatabaseDevice,
+    DatabaseFlavor,
+    DatabasePasskey,
+    DatabasePasskeyChallenge,
+    DynamoDBFieldValue
 } from "../../types";
 
 // prettier-ignore

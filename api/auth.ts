@@ -1,13 +1,15 @@
 import type { APIGatewayProxyEvent } from "aws-lambda";
 import type { IncomingMessage } from "http";
-import { sign, verify, type SignOptions } from "jsonwebtoken";
+import { sign, verify } from "jsonwebtoken";
+import type { SignOptions } from "jsonwebtoken";
 import { JWK } from "node-jose";
 
 import keys from "./endpoints/jwks/keys.json";
 import keyMapping from "./endpoints/jwks/keyMapping.json";
 import { getParameter } from "./aws/services/parameterStore";
 
-import { type AccessToken, API_ENDPOINT_URL, type DeviceKind, UserType } from "./types";
+import { API_ENDPOINT_URL, UserType } from "./types";
+import type { AccessToken, DeviceKind } from "./types";
 
 export { UserType };
 export type { AccessToken };

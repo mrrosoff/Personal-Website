@@ -1,9 +1,9 @@
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 
 import type { AdminConsoleScreen } from "../../../../javascript-terminal/emulator-state/EmulatorState";
-import {
-    type MailingListEntry,
-    type AdminConsoleMode
+import type {
+    MailingListEntry,
+    AdminConsoleMode
 } from "../../../../javascript-terminal/emulator-state/EmulatorState";
 import { useAppContext } from "../../../AppContext";
 import type { TerminalTheme } from "../../Terminal";

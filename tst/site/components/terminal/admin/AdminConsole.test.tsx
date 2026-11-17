@@ -5,10 +5,8 @@ import { mockTerminalTheme, renderWithApp } from "../../../../helpers/render";
 import { mockAdminState } from "../../../../helpers/terminal";
 
 import AdminConsole from "../../../../../site/components/terminal/admin/AdminConsole";
-import {
-    AdminConsoleScreen,
-    type AdminConsoleState
-} from "../../../../../site/javascript-terminal/emulator-state/EmulatorState";
+import { AdminConsoleScreen } from "../../../../../site/javascript-terminal/emulator-state/EmulatorState";
+import type { AdminConsoleState } from "../../../../../site/javascript-terminal/emulator-state/EmulatorState";
 
 const screens: [string, AdminConsoleState][] = [
     ["=== Admin Console ===", { screen: AdminConsoleScreen.Main }],

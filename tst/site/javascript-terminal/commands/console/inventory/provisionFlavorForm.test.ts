@@ -3,10 +3,8 @@ import { describe, expect, it } from "vitest";
 import { mockAdminState } from "../../../../../helpers/terminal";
 
 import { handleProvisionFlavorForm } from "../../../../../../site/javascript-terminal/commands/console/inventory/provisionFlavorForm";
-import {
-    AdminConsoleScreen,
-    type ProvisionFlavorForm
-} from "../../../../../../site/javascript-terminal/emulator-state/EmulatorState";
+import { AdminConsoleScreen } from "../../../../../../site/javascript-terminal/emulator-state/EmulatorState";
+import type { ProvisionFlavorForm } from "../../../../../../site/javascript-terminal/emulator-state/EmulatorState";
 
 const blankForm: ProvisionFlavorForm = {
     flavorName: "Fig",

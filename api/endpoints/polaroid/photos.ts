@@ -10,7 +10,8 @@ import {
     HttpResponseStatus,
     POLAROID_PHOTOS_BUCKET
 } from "../../common";
-import { DeviceKind, type PolaroidFramebufferKey, type PolaroidPreviewKey } from "../../types";
+import { DeviceKind } from "../../types";
+import type { PolaroidFramebufferKey, PolaroidPreviewKey } from "../../types";
 import { listObjects, presignGetObject } from "../../aws/services/s3";
 
 export function framebufferKey(deviceId: string, photoId: string): PolaroidFramebufferKey {

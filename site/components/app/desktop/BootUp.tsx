@@ -1,4 +1,5 @@
-import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import type { Dispatch, SetStateAction } from "react";
 
 import { Box, Grid, Typography, useMediaQuery, useTheme } from "@mui/material";
 

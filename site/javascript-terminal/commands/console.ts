@@ -1,12 +1,7 @@
 import axios, { isAxiosError } from "axios";
 
-import {
-    API_ENDPOINT_URL,
-    FLAVOR_TYPES,
-    type FlavorType,
-    UserType,
-    type ErrorResponseBody
-} from "../../../api/types";
+import { API_ENDPOINT_URL, FLAVOR_TYPES, UserType } from "../../../api/types";
+import type { FlavorType, ErrorResponseBody } from "../../../api/types";
 import { decodeToken } from "../../auth";
 import type EmulatorState from "../emulator-state/EmulatorState";
 import { AdminConsoleScreen, MainMenuOption } from "../emulator-state/EmulatorState";

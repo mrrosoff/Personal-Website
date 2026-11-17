@@ -1,16 +1,18 @@
 import {
     DeleteObjectCommand,
-    type DeleteObjectCommandInput,
     GetObjectCommand,
-    type GetObjectCommandInput,
     HeadObjectCommand,
-    type HeadObjectCommandInput,
     ListObjectsV2Command,
-    type ListObjectsV2CommandInput,
     NoSuchKey,
     PutObjectCommand,
-    type PutObjectCommandInput,
     S3Client
+} from "@aws-sdk/client-s3";
+import type {
+    DeleteObjectCommandInput,
+    GetObjectCommandInput,
+    HeadObjectCommandInput,
+    ListObjectsV2CommandInput,
+    PutObjectCommandInput
 } from "@aws-sdk/client-s3";
 import { faker } from "@faker-js/faker";
 import { mockClient } from "aws-sdk-client-mock";

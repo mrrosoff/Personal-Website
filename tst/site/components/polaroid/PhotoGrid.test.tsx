@@ -3,7 +3,8 @@ import { describe, expect, it, vi } from "vitest";
 
 import { mockSmallScreen, renderWithApp } from "../../../helpers/render";
 
-import PhotoGrid, { type Photo } from "../../../../site/components/polaroid/PhotoGrid";
+import PhotoGrid from "../../../../site/components/polaroid/PhotoGrid";
+import type { Photo } from "../../../../site/components/polaroid/PhotoGrid";
 
 const photos: Photo[] = [
     { id: "p1", uploadedAt: 2, previewUrl: "https://example.com/p1.png" },

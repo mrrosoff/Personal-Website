@@ -5,7 +5,8 @@ import axios, { isAxiosError } from "axios";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 
 import { decodeToken, unexpiredToken } from "../../auth";
-import { API_ENDPOINT_URL, UserType, type ErrorResponseBody } from "../../../api/types";
+import { API_ENDPOINT_URL, UserType } from "../../../api/types";
+import type { ErrorResponseBody } from "../../../api/types";
 import IceCreamPage from "./IceCreamPage";
 
 const CancelSubscription = () => {

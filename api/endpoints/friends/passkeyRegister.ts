@@ -1,5 +1,6 @@
 import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
-import { type RegistrationResponseJSON, verifyRegistrationResponse } from "@simplewebauthn/server";
+import { verifyRegistrationResponse } from "@simplewebauthn/server";
+import type { RegistrationResponseJSON } from "@simplewebauthn/server";
 import { DateTime } from "luxon";
 import { validate } from "email-validator";
 

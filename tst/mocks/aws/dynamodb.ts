@@ -1,22 +1,25 @@
 import {
     DeleteCommand,
-    type DeleteCommandInput,
     DynamoDBDocument,
     GetCommand,
-    type GetCommandInput,
     PutCommand,
-    type PutCommandInput,
     QueryCommand,
-    type QueryCommandInput,
     ScanCommand,
-    type ScanCommandInput,
-    UpdateCommand,
-    type UpdateCommandInput
+    UpdateCommand
+} from "@aws-sdk/lib-dynamodb";
+import type {
+    DeleteCommandInput,
+    GetCommandInput,
+    PutCommandInput,
+    QueryCommandInput,
+    ScanCommandInput,
+    UpdateCommandInput
 } from "@aws-sdk/lib-dynamodb";
 import { mockClient } from "aws-sdk-client-mock";
 import { afterEach, beforeEach } from "vitest";
 
-import { primaryKeys, type Table, type TableObject } from "../../../api/aws/services/dynamodb";
+import { primaryKeys } from "../../../api/aws/services/dynamodb";
+import type { Table, TableObject } from "../../../api/aws/services/dynamodb";
 import {
     DEVICES_TABLE,
     FLAVORS_TABLE,

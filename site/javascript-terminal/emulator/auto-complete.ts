@@ -1,10 +1,6 @@
 import * as PathUtil from "../fs/util/path-util";
-import {
-    type CommandMapping,
-    getCommandNames,
-    getCommandOptDef,
-    isCommandSet
-} from "../emulator-state/CommandMapping";
+import { getCommandNames, getCommandOptDef, isCommandSet } from "../emulator-state/CommandMapping";
+import type { CommandMapping } from "../emulator-state/CommandMapping";
 import { fsSearchAutoComplete } from "../fs/operations/base-operations";
 import type { FileSystem } from "../../FileSystem";
 

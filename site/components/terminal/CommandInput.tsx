@@ -1,11 +1,5 @@
-import {
-    forwardRef,
-    useEffect,
-    useState,
-    type ChangeEvent,
-    type KeyboardEvent,
-    type Ref
-} from "react";
+import { forwardRef, useEffect, useState } from "react";
+import type { ChangeEvent, KeyboardEvent, Ref } from "react";
 
 import { Box, InputBase, Typography } from "@mui/material";
 

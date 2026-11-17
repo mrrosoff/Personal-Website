@@ -1,6 +1,7 @@
 import { useEffect, useId, useState } from "react";
 
-import { Box, TextField, type TextFieldProps, Typography } from "@mui/material";
+import { Box, TextField, Typography } from "@mui/material";
+import type { TextFieldProps } from "@mui/material";
 import { validate } from "email-validator";
 
 export const emailProblem = (email: string) => (validate(email) ? null : "Enter a valid email.");

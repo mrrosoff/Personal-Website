@@ -5,10 +5,10 @@ import { mockSmallScreen, mockTerminalTheme, renderWithApp } from "../../../../.
 import { mockAdminState } from "../../../../../helpers/terminal";
 
 import ProvisionFlavorFormMenu from "../../../../../../site/components/terminal/admin/inventory/ProvisionFlavorFormMenu";
-import {
-    type AdminConsoleMode,
-    AdminConsoleScreen,
-    type ProvisionFlavorForm
+import { AdminConsoleScreen } from "../../../../../../site/javascript-terminal/emulator-state/EmulatorState";
+import type {
+    AdminConsoleMode,
+    ProvisionFlavorForm
 } from "../../../../../../site/javascript-terminal/emulator-state/EmulatorState";
 
 const blankForm: ProvisionFlavorForm = {

@@ -6,10 +6,10 @@ import { mockAdminState } from "../../../../helpers/terminal";
 
 import MainMenu from "../../../../../site/components/terminal/admin/MainMenu";
 import {
-    type AdminConsoleMode,
     AdminConsoleScreen,
     MainMenuOption
 } from "../../../../../site/javascript-terminal/emulator-state/EmulatorState";
+import type { AdminConsoleMode } from "../../../../../site/javascript-terminal/emulator-state/EmulatorState";
 
 function renderMenu() {
     const onAction = vi.fn();

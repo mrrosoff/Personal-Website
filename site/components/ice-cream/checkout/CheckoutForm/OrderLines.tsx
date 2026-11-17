@@ -1,4 +1,5 @@
-import { Box, Divider, Skeleton, type SxProps, type Theme, Typography } from "@mui/material";
+import { Box, Divider, Skeleton, Typography } from "@mui/material";
+import type { SxProps, Theme } from "@mui/material";
 import type { CSSObject } from "@mui/material/styles";
 import { useCheckout } from "@stripe/react-stripe-js/checkout";
 

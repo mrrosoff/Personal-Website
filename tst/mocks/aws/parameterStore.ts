@@ -1,10 +1,5 @@
-import {
-    GetParametersCommand,
-    type GetParametersCommandInput,
-    PutParameterCommand,
-    type PutParameterCommandInput,
-    SSMClient
-} from "@aws-sdk/client-ssm";
+import { GetParametersCommand, PutParameterCommand, SSMClient } from "@aws-sdk/client-ssm";
+import type { GetParametersCommandInput, PutParameterCommandInput } from "@aws-sdk/client-ssm";
 import { faker } from "@faker-js/faker";
 import { mockClient } from "aws-sdk-client-mock";
 import { afterEach, beforeEach } from "vitest";

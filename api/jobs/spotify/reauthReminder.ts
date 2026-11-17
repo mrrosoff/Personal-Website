@@ -5,7 +5,8 @@ import { DEVICES_TABLE, PASSKEYS_TABLE } from "../../common";
 import SpotifyReauthEmail from "../../../site/emails/templates/SpotifyReauthEmail";
 import { getEntireTable } from "../../aws/services/dynamodb";
 import { getParameter } from "../../aws/services/parameterStore";
-import { type DatabasePasskey, DeviceKind } from "../../types";
+import { DeviceKind } from "../../types";
+import type { DatabasePasskey } from "../../types";
 import { refreshTokenSetAtParam } from "../../endpoints/spotify/exchange";
 
 const TOKEN_LIFETIME = Duration.fromObject({ months: 6 });

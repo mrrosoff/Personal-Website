@@ -1,14 +1,5 @@
-import {
-    forwardRef,
-    lazy,
-    Suspense,
-    useEffect,
-    useReducer,
-    useState,
-    type ChangeEvent,
-    type KeyboardEvent,
-    type Ref
-} from "react";
+import { forwardRef, lazy, Suspense, useEffect, useReducer, useState } from "react";
+import type { ChangeEvent, KeyboardEvent, Ref } from "react";
 import { Box, Grid, useMediaQuery, useTheme } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 

@@ -1,7 +1,8 @@
 import { jwtDecode } from "jwt-decode";
 import { DateTime } from "luxon";
 
-import { type AccessToken, type DeviceKind, UserType } from "../api/types";
+import { UserType } from "../api/types";
+import type { AccessToken, DeviceKind } from "../api/types";
 
 export const AUTH_TOKEN_KEY = "AUTH_TOKEN";
 

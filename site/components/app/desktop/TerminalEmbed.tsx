@@ -1,4 +1,5 @@
-import { forwardRef, type Ref, useEffect } from "react";
+import { forwardRef, useEffect } from "react";
+import type { Ref } from "react";
 
 import Terminal, { TERMINAL_COLORS } from "../../terminal/Terminal";
 

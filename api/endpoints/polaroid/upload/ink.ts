@@ -1,4 +1,5 @@
-import { type Lab, linearToByteTriple, rgbToOklab, srgbToLinear } from "./color";
+import { linearToByteTriple, rgbToOklab, srgbToLinear } from "./color";
+import type { Lab } from "./color";
 
 type InkCode = (typeof INK)[keyof typeof INK];
 

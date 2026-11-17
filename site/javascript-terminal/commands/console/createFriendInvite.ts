@@ -1,12 +1,8 @@
 import { validate } from "email-validator";
 
 import type EmulatorState from "../../emulator-state/EmulatorState";
-import {
-    AdminConsoleScreen,
-    type FriendInvite,
-    type InviteDevice,
-    MainMenuOption
-} from "../../emulator-state/EmulatorState";
+import { AdminConsoleScreen, MainMenuOption } from "../../emulator-state/EmulatorState";
+import type { FriendInvite, InviteDevice } from "../../emulator-state/EmulatorState";
 import { SHARE_TOKEN_MAX_HOURS, SHARE_TOKEN_MIN_HOURS } from "../../../../api/common";
 import {
     arrowStep,

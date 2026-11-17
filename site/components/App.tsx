@@ -1,4 +1,5 @@
-import { lazy, type RefObject, Suspense, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import type { RefObject } from "react";
 import { BrowserRouter, Navigate, Outlet, Route, Routes, useMatch } from "react-router-dom";
 
 import { Box, useMediaQuery } from "@mui/material";

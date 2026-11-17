@@ -1,9 +1,9 @@
 import type EmulatorState from "../../../emulator-state/EmulatorState";
 import {
     AdminConsoleScreen,
-    IceCreamInventoryMenuOption,
-    type ProvisionFlavorForm
+    IceCreamInventoryMenuOption
 } from "../../../emulator-state/EmulatorState";
+import type { ProvisionFlavorForm } from "../../../emulator-state/EmulatorState";
 import { arrowStep, cycleFlavorType, editNumber, editText, stepAround } from "../../console";
 
 const FORM_FIELDS: ProvisionFlavorForm["currentField"][] = [

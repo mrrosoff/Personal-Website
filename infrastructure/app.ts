@@ -1,4 +1,5 @@
-import { App, type Environment } from "aws-cdk-lib";
+import { App } from "aws-cdk-lib";
+import type { Environment } from "aws-cdk-lib";
 import WebsiteAPIStack from "./WebsiteAPIStack";
 
 const app = new App();

@@ -6,10 +6,8 @@ import { mockDevice } from "../../../../fixtures/aws/dynamodb";
 
 import { DeviceKind } from "../../../../../api/types";
 import { handleCreateFriendInvite } from "../../../../../site/javascript-terminal/commands/console/createFriendInvite";
-import {
-    AdminConsoleScreen,
-    type FriendInvite
-} from "../../../../../site/javascript-terminal/emulator-state/EmulatorState";
+import { AdminConsoleScreen } from "../../../../../site/javascript-terminal/emulator-state/EmulatorState";
+import type { FriendInvite } from "../../../../../site/javascript-terminal/emulator-state/EmulatorState";
 
 const blankInvite: FriendInvite = {
     friendName: "Zed",

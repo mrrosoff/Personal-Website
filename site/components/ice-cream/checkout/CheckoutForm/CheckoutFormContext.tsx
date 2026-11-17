@@ -1,18 +1,13 @@
-import {
-    createContext,
-    type Dispatch,
-    type ReactNode,
-    type SetStateAction,
-    useContext,
-    useEffect,
-    useState
-} from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import type { Dispatch, ReactNode, SetStateAction } from "react";
 
 import axios from "axios";
-import { useCheckout, type StripeCheckoutValue } from "@stripe/react-stripe-js/checkout";
+import { useCheckout } from "@stripe/react-stripe-js/checkout";
+import type { StripeCheckoutValue } from "@stripe/react-stripe-js/checkout";
 import type { StripeCheckoutContact } from "@stripe/stripe-js";
 
-import { API_ENDPOINT_URL, type DatabaseFlavor } from "../../../../../api/types";
+import { API_ENDPOINT_URL } from "../../../../../api/types";
+import type { DatabaseFlavor } from "../../../../../api/types";
 import { useIceCreamCart } from "../../IceCreamCartContext";
 
 export type DeliveryAddress = { line1: string; line2: string; postalCode: string };

@@ -8,9 +8,9 @@ import { mockFlavor } from "../../../../../fixtures/aws/dynamodb";
 import IceCreamInventoryMenu from "../../../../../../site/components/terminal/admin/inventory/IceCreamInventoryMenu";
 import {
     AdminConsoleScreen,
-    type AdminConsoleMode,
     IceCreamInventoryMenuOption
 } from "../../../../../../site/javascript-terminal/emulator-state/EmulatorState";
+import type { AdminConsoleMode } from "../../../../../../site/javascript-terminal/emulator-state/EmulatorState";
 
 function renderMenu(mode: Partial<AdminConsoleMode<AdminConsoleScreen.IceCreamInventory>> = {}) {
     const onAction = vi.fn();

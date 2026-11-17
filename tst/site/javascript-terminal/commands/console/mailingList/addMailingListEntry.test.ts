@@ -4,10 +4,8 @@ import { mockAdminState } from "../../../../../helpers/terminal";
 import { axiosPost } from "../../../../../mocks/axios";
 
 import { handleAddMailingListEntry } from "../../../../../../site/javascript-terminal/commands/console/mailingList/addMailingListEntry";
-import {
-    AdminConsoleScreen,
-    type MailingListEntry
-} from "../../../../../../site/javascript-terminal/emulator-state/EmulatorState";
+import { AdminConsoleScreen } from "../../../../../../site/javascript-terminal/emulator-state/EmulatorState";
+import type { MailingListEntry } from "../../../../../../site/javascript-terminal/emulator-state/EmulatorState";
 
 const blankEntry: MailingListEntry = {
     firstName: "Ada",

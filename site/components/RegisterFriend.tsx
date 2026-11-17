@@ -2,12 +2,8 @@ import { useEffect, useState, useMemo } from "react";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 
 import { Box, Button, Typography } from "@mui/material";
-import {
-    browserSupportsWebAuthn,
-    startRegistration,
-    WebAuthnError,
-    type PublicKeyCredentialCreationOptionsJSON
-} from "@simplewebauthn/browser";
+import { browserSupportsWebAuthn, startRegistration, WebAuthnError } from "@simplewebauthn/browser";
+import type { PublicKeyCredentialCreationOptionsJSON } from "@simplewebauthn/browser";
 import axios from "axios";
 import { DateTime } from "luxon";
 

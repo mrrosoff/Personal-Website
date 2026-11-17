@@ -7,9 +7,9 @@ import { mockFlavor } from "../../../../../fixtures/aws/dynamodb";
 import { handleIceCreamInventory } from "../../../../../../site/javascript-terminal/commands/console/inventory/iceCreamInventory";
 import {
     AdminConsoleScreen,
-    type EditField,
     IceCreamInventoryMenuOption
 } from "../../../../../../site/javascript-terminal/emulator-state/EmulatorState";
+import type { EditField } from "../../../../../../site/javascript-terminal/emulator-state/EmulatorState";
 
 function menuAt(selectedOption: IceCreamInventoryMenuOption) {
     return mockAdminState({ screen: AdminConsoleScreen.IceCreamInventory, selectedOption });

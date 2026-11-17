@@ -4,7 +4,8 @@ import { DateTime } from "luxon";
 
 import { getParameters, putSecureParameter } from "../../aws/services/parameterStore";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
-import { REDIRECT_URI, type StatePayload, stateHmac } from "./connect";
+import { REDIRECT_URI, stateHmac } from "./connect";
+import type { StatePayload } from "./connect";
 
 export function refreshTokenParam(deviceId: string): string {
     return `/website/spotify/devices/${deviceId}/refresh-token`;

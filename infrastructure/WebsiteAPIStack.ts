@@ -1,7 +1,8 @@
 import { globSync } from "node:fs";
 import { basename } from "node:path";
 
-import { Duration, RemovalPolicy, Stack, type StackProps } from "aws-cdk-lib";
+import { Duration, RemovalPolicy, Stack } from "aws-cdk-lib";
+import type { StackProps } from "aws-cdk-lib";
 import {
     ContentHandling,
     EndpointType,

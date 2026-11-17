@@ -5,7 +5,8 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import axios, { isAxiosError } from "axios";
 
-import { API_ENDPOINT_URL, type ErrorResponseBody } from "../../api/types";
+import { API_ENDPOINT_URL } from "../../api/types";
+import type { ErrorResponseBody } from "../../api/types";
 
 const SPOTIFY_GREEN = "#1DB954";
 

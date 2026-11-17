@@ -2,13 +2,12 @@ import { faker } from "@faker-js/faker";
 import { createHash } from "node:crypto";
 import { DateTime } from "luxon";
 
-import {
-    type DatabaseDevice,
-    type DatabaseFlavor,
-    type DatabasePasskey,
-    type DatabasePasskeyChallenge,
-    DeviceKind,
-    UserType
+import { DeviceKind, UserType } from "../../../api/types";
+import type {
+    DatabaseDevice,
+    DatabaseFlavor,
+    DatabasePasskey,
+    DatabasePasskeyChallenge
 } from "../../../api/types";
 
 const mockDeviceSecret = faker.string.alphanumeric(32);

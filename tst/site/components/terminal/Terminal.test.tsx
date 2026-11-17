@@ -1,5 +1,6 @@
 import { act, fireEvent, screen, waitFor } from "@testing-library/react";
-import { createRef, type ReactNode } from "react";
+import { createRef } from "react";
+import type { ReactNode } from "react";
 import { describe, expect, it, vi } from "vitest";
 
 import { mockSmallScreen, mockTerminalTheme, renderWithApp } from "../../../helpers/render";

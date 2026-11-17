@@ -6,10 +6,8 @@ import { mockAdminState } from "../../../../../helpers/terminal";
 import { mockFlavor } from "../../../../../fixtures/aws/dynamodb";
 
 import SelectFlavorMenu from "../../../../../../site/components/terminal/admin/inventory/SelectFlavorMenu";
-import {
-    AdminConsoleScreen,
-    type AdminConsoleMode
-} from "../../../../../../site/javascript-terminal/emulator-state/EmulatorState";
+import { AdminConsoleScreen } from "../../../../../../site/javascript-terminal/emulator-state/EmulatorState";
+import type { AdminConsoleMode } from "../../../../../../site/javascript-terminal/emulator-state/EmulatorState";
 
 const inventory = ["a", "b", "c", "d", "e"].map((name, i) => ({
     ...mockFlavor,

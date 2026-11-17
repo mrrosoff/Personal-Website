@@ -5,7 +5,8 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import axios, { isAxiosError } from "axios";
 import { validate } from "email-validator";
 
-import { API_ENDPOINT_URL, type ErrorResponseBody } from "../../../api/types";
+import { API_ENDPOINT_URL } from "../../../api/types";
+import type { ErrorResponseBody } from "../../../api/types";
 import FormField, { emailProblem } from "../FormField";
 import IceCreamPage from "./IceCreamPage";
 

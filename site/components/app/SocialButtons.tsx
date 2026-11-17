@@ -1,4 +1,5 @@
-import { Box, Button, IconButton, type SxProps, type Theme, Typography } from "@mui/material";
+import { Box, Button, IconButton, Typography } from "@mui/material";
+import type { SxProps, Theme } from "@mui/material";
 
 import DescriptionIcon from "@mui/icons-material/Description";
 import EmailIcon from "@mui/icons-material/Email";

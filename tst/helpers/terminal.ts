@@ -1,8 +1,7 @@
 import commands from "../../site/javascript-terminal/commands";
 import Emulator from "../../site/javascript-terminal/emulator";
-import EmulatorState, {
-    type AdminConsoleState
-} from "../../site/javascript-terminal/emulator-state/EmulatorState";
+import EmulatorState from "../../site/javascript-terminal/emulator-state/EmulatorState";
+import type { AdminConsoleState } from "../../site/javascript-terminal/emulator-state/EmulatorState";
 import { mockFileSystem } from "../fixtures/fileSystem";
 
 export function mockEmulatorState(
