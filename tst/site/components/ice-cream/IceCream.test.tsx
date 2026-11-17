@@ -1,7 +1,7 @@
 import { act, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { mockSmallScreen, renderWithApp } from "../../../helpers/render";
+import { mockScreenWidth, mockSmallScreen, renderWithApp } from "../../../helpers/render";
 import { axiosPost } from "../../../mocks/axios";
 import { mockFlavor } from "../../../mocks/aws/dynamodb";
 
@@ -96,6 +96,15 @@ describe("IceCream", () => {
         expect(screen.getByTestId("location")).toHaveTextContent(
             "/ice-cream/checkout?priceIds=price_Fig"
         );
+    });
+
+    it("should offer the cart button on a tablet, where the header links are hidden", async () => {
+        mockScreenWidth(834);
+        const { user } = renderShop();
+
+        await user.click(await screen.findByText("Fig"));
+
+        expect(screen.getByLabelText("Checkout, 1 in cart")).toBeInTheDocument();
     });
 
     it("should not pick upcoming flavors", async () => {

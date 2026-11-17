@@ -29,6 +29,7 @@ const IceCream = () => {
     const [params] = useSearchParams();
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+    const headerLinksHidden = useMediaQuery(theme.breakpoints.down("md"));
     const {
         selectedPriceIds,
         isLoadingFlavors,
@@ -120,7 +121,7 @@ const IceCream = () => {
                 skeletons={4}
             />
             {smallScreen && <MailingListLink />}
-            {smallScreen && selectedPriceIds.length > 0 && <CartButton />}
+            {headerLinksHidden && selectedPriceIds.length > 0 && <CartButton />}
         </Box>
     );
 };

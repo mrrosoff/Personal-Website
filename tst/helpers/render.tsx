@@ -89,6 +89,20 @@ export function mockSmallScreen(): void {
     );
 }
 
+export function mockScreenWidth(width: number): void {
+    vi.stubGlobal(
+        "matchMedia",
+        vi.fn((media: string) => ({
+            matches: Number(/max-width:\s*([\d.]+)px/.exec(media)?.[1] ?? 0) >= width,
+            media,
+            addEventListener: vi.fn(),
+            removeEventListener: vi.fn(),
+            addListener: vi.fn(),
+            removeListener: vi.fn()
+        }))
+    );
+}
+
 export async function renderEmail(email: ReactElement): Promise<string> {
     return (await renderEmailHtml(email)).replaceAll("<!-- -->", "");
 }
