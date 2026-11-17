@@ -40,9 +40,10 @@ export const suggestFileSystemNames = (fs: FileSystem, cwd: string, partialStr: 
             if (!partialStr.endsWith("/")) {
                 pathPrefix = pathPrefix.slice(0, -1);
             }
-            if (pathPrefix.join("/")) {
-                return pathPrefix.join("/") + "/" + suggestion;
+            const prefix = PathUtil.toPath(pathPrefix);
+            if (!prefix) {
+                return suggestion;
             }
-            return suggestion;
+            return prefix.endsWith("/") ? prefix + suggestion : `${prefix}/${suggestion}`;
         });
 };

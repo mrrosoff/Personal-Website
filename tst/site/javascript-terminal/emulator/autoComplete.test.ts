@@ -44,6 +44,18 @@ describe("suggestFileSystemNames", () => {
         expect(result).toEqual(["media/song.mp3", "media/photo.png"]);
     });
 
+    it("should suggest names from the root with a single slash", () => {
+        const result = suggestFileSystemNames(mockFileSystem(), "/home", "/med");
+
+        expect(result).toEqual(["/media"]);
+    });
+
+    it("should suggest names inside an absolute directory with single slashes", () => {
+        const result = suggestFileSystemNames(mockFileSystem(), "/home", "/media/s");
+
+        expect(result).toEqual(["/media/song.mp3"]);
+    });
+
     it("should suggest nothing for a command without options", () => {
         const result = suggestCommandOptions(
             { bare: { functionDef: () => ({}) } } as never,
