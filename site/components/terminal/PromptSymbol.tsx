@@ -8,7 +8,7 @@ import type { TerminalTheme } from "./Terminal";
 const PromptSymbol = (props: { theme: TerminalTheme; cwd?: string; children: string }) => {
     const { emulatorState } = useAppContext();
     return (
-        <Grid container alignContent={"center"} alignItems={"center"} spacing={1}>
+        <Grid container sx={{ alignContent: "center", alignItems: "center" }} spacing={1}>
             <Grid>
                 <Typography style={{ color: props.theme.promptSymbolColor }}>
                     {props.children}

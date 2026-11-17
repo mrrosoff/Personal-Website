@@ -49,10 +49,12 @@ const UnsubscribeForm = () => {
 
     return (
         <Box
-            display={"flex"}
-            flexDirection={"column"}
-            justifyContent={"center"}
-            sx={{ paddingTop: smallScreen ? 6 : 4 }}
+            sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                paddingTop: smallScreen ? 6 : 4
+            }}
         >
             <FormField
                 label="Email"
@@ -82,7 +84,7 @@ const UnsubscribeForm = () => {
             >
                 Remove From Mailing List
             </Button>
-            <Typography mt={smallScreen ? 0.5 : 1} fontSize={16} color={"error"}>
+            <Typography sx={{ mt: smallScreen ? 0.5 : 1, fontSize: 16 }} color={"error"}>
                 {status.state === "failed" && status.message}
             </Typography>
         </Box>

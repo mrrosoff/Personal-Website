@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Box, Typography, keyframes } from "@mui/material";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
+import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
 import axios, { isAxiosError } from "axios";
 
 import { API_ENDPOINT_URL } from "../../api/types";
@@ -16,8 +16,8 @@ const bounce = keyframes`
 `;
 
 const ConnectingAnimation = () => (
-    <Box display="flex" flexDirection="column" alignItems="center" gap={3}>
-        <Box display="flex" alignItems="flex-end" gap="6px" height={56}>
+    <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 3 }}>
+        <Box sx={{ display: "flex", alignItems: "flex-end", gap: "6px", height: 56 }}>
             {[0, 1, 2, 3, 4].map((index) => (
                 <Box
                     key={index}
@@ -94,25 +94,27 @@ const SpotifyCallback = () => {
 
     return (
         <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-            height="100%"
-            textAlign="center"
-            gap={2}
+            sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "100%",
+                textAlign: "center",
+                gap: 2
+            }}
         >
             {status === "loading" && <ConnectingAnimation />}
             {status === "success" && (
                 <>
-                    <CheckCircleOutlineIcon sx={{ fontSize: 48 }} />
+                    <CheckCircleOutlinedIcon sx={{ fontSize: 48 }} />
                     <Typography variant="h1">Spotify Connected</Typography>
                     <Typography>The display is reconnected.</Typography>
                 </>
             )}
             {status === "error" && (
                 <>
-                    <ErrorOutlineIcon sx={{ fontSize: 48 }} color="error" />
+                    <ErrorOutlinedIcon sx={{ fontSize: 48 }} color="error" />
                     <Typography variant="h1">Connection Failed</Typography>
                     <Typography color="error">{message}</Typography>
                 </>

@@ -26,9 +26,9 @@ export default function PasswordPrompt(props: PasswordPromptProps) {
             ) : (
                 <Box
                     data-testid="cursor"
-                    width={8}
-                    height={18}
                     sx={{
+                        width: 8,
+                        height: 18,
                         visibility: ticks % 2 === 0 ? "visible" : "hidden",
                         background: "#FFFFFF"
                     }}

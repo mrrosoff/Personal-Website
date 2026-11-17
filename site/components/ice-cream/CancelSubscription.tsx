@@ -61,11 +61,13 @@ const CancelSubscription = () => {
             }
         >
             <Box
-                mt={4}
-                display={"flex"}
-                gap={2}
-                flexWrap={"wrap"}
-                justifyContent={smallScreen ? "center" : undefined}
+                sx={{
+                    mt: 4,
+                    display: "flex",
+                    gap: 2,
+                    flexWrap: "wrap",
+                    justifyContent: smallScreen ? "center" : undefined
+                }}
             >
                 {status.state === "cancelled" ? (
                     <Button

@@ -87,23 +87,30 @@ const CrashScreen = () => {
     }, [phase]);
 
     if (phase === "clearing") {
-        return <Box position={"fixed"} top={0} left={0} right={0} bottom={0} bgcolor={"#121212"} />;
+        return (
+            <Box
+                sx={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, bgcolor: "#121212" }}
+            />
+        );
     }
 
     if (phase === "booting") {
         return (
             <Box
-                position={"fixed"}
-                top={0}
-                left={0}
-                right={0}
-                bottom={0}
-                display={"flex"}
-                flexDirection={"column"}
-                justifyContent={"flex-start"}
-                boxSizing={"border-box"}
-                p={4}
-                sx={{ backgroundColor: "#121212", overflow: "hidden" }}
+                sx={{
+                    boxSizing: "border-box",
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "flex-start",
+                    p: 4,
+                    backgroundColor: "#121212",
+                    overflow: "hidden"
+                }}
             >
                 {lines.map((line, index) => (
                     <Typography key={index} style={{ color: "#FCFCFC", fontSize: 14 }}>
@@ -116,17 +123,20 @@ const CrashScreen = () => {
 
     return (
         <Box
-            position={"fixed"}
-            top={0}
-            left={0}
-            right={0}
-            bottom={0}
-            display={"flex"}
-            flexDirection={"column"}
-            justifyContent={"center"}
-            boxSizing={"border-box"}
-            p={4}
-            sx={{ backgroundColor: "#121212", overflow: "hidden" }}
+            sx={{
+                boxSizing: "border-box",
+                position: "fixed",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                p: 4,
+                backgroundColor: "#121212",
+                overflow: "hidden"
+            }}
         >
             <Typography style={{ color: "#FCFCFC", fontSize: 22 }}>
                 <Box component={"span"} style={{ color: "#2BC903" }}>
@@ -137,7 +147,7 @@ const CrashScreen = () => {
             <Typography style={{ color: "#ff0606", fontSize: 22 }}>
                 Segmentation fault (core dumped)
             </Typography>
-            <Box height={16} />
+            <Box sx={{ height: 16 }} />
             <Typography component={"div"} style={{ color: "#FCFCFC", fontSize: 22 }}>
                 <Box component={"span"} style={{ color: "#2BC903" }}>
                     dev@rosoff

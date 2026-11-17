@@ -6,7 +6,7 @@ export default function MailingListLink() {
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
     return (
-        <Typography mt={smallScreen ? 4 : -1}>
+        <Typography sx={{ mt: smallScreen ? 4 : -1 }}>
             Want to stay updated?{" "}
             <Link
                 component={RouterLink}

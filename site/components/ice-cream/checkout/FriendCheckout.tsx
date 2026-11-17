@@ -50,11 +50,11 @@ const FriendCheckout = ({ priceIds, friendToken }: FriendCheckoutProps) => {
 
     const friendName = decodeToken(friendToken)?.id;
     return (
-        <Box pb={4}>
-            <Typography variant={"h1"} mb={2}>
+        <Box sx={{ pb: 4 }}>
+            <Typography variant={"h1"} sx={{ mb: 2 }}>
                 Checkout
             </Typography>
-            <Typography variant={"body1"} mb={3}>
+            <Typography variant={"body1"} sx={{ mb: 3 }}>
                 Thanks for being a friend,{" "}
                 <Typography component={"span"} sx={{ fontSize: "inherit", ...rainbowTextSx }}>
                     {friendName}
@@ -64,10 +64,10 @@ const FriendCheckout = ({ priceIds, friendToken }: FriendCheckoutProps) => {
             <Grid
                 container
                 spacing={smallScreen ? 4 : 2}
-                direction={smallScreen ? "column-reverse" : "row"}
+                sx={{ flexDirection: smallScreen ? "column-reverse" : "row" }}
             >
                 <Grid size={{ xs: 12, md: 6 }} sx={{ pr: smallScreen ? 0 : 10 }}>
-                    <Typography variant={"h2"} mb={2}>
+                    <Typography variant={"h2"} sx={{ mb: 2 }}>
                         Contact Info
                     </Typography>
                     <FormField
@@ -79,7 +79,7 @@ const FriendCheckout = ({ priceIds, friendToken }: FriendCheckoutProps) => {
                     />
                 </Grid>
                 <Grid size={{ xs: 12, md: 6 }}>
-                    <Typography variant={"h2"} mb={2}>
+                    <Typography variant={"h2"} sx={{ mb: 2 }}>
                         Your Order
                     </Typography>
                     <Box
@@ -132,7 +132,7 @@ const FriendCheckout = ({ priceIds, friendToken }: FriendCheckoutProps) => {
             >
                 Complete Order
             </Button>
-            {message && <Typography mt={2}>{message}</Typography>}
+            {message && <Typography sx={{ mt: 2 }}>{message}</Typography>}
         </Box>
     );
 };

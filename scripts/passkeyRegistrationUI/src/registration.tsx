@@ -40,7 +40,7 @@ const Registration = () => {
             <Button disabled={loading} loading={loading} onClick={handleClick}>
                 {loading ? "Loading" : "Register Passkey"}
             </Button>
-            <Typography variant="body1" mt={2}>
+            <Typography variant="body1" sx={{ mt: 2 }}>
                 {message}
             </Typography>
         </Box>

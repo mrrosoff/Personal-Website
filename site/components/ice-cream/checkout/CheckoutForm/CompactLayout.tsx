@@ -29,20 +29,20 @@ const CompactLayout = () => {
     };
 
     return (
-        <Box pb={4}>
-            <Typography variant={"h1"} mb={3}>
+        <Box sx={{ pb: 4 }}>
+            <Typography variant={"h1"} sx={{ mb: 3 }}>
                 Checkout
             </Typography>
             <Grid
                 container
                 spacing={smallScreen ? 4 : 2}
-                direction={smallScreen ? "column-reverse" : "row"}
+                sx={{ flexDirection: smallScreen ? "column-reverse" : "row" }}
             >
                 <Grid size={{ xs: 12, md: 6 }} sx={{ pr: smallScreen ? 0 : 10 }}>
                     <ContactFields />
                 </Grid>
                 <Grid size={{ xs: 12, md: 6 }}>
-                    <Typography variant={"h2"} mb={2}>
+                    <Typography variant={"h2"} sx={{ mb: 2 }}>
                         Your Order
                     </Typography>
                     <Box sx={orderBoxSx(smallScreen)}>
@@ -70,7 +70,7 @@ const CompactLayout = () => {
                         <OrderLines flavors={selectedFlavors} smallScreen={smallScreen} />
                     </Box>
                     {subscription && (
-                        <Typography mt={1.5} sx={{ fontSize: "0.9em", opacity: 0.7 }}>
+                        <Typography sx={{ mt: 1.5, fontSize: "0.9em", opacity: 0.7 }}>
                             {state.type === "success" &&
                                 `Renews monthly at ${state.checkout.total.total.amount} until you cancel. `}
                             {manageResult === "sent" ? (
@@ -102,7 +102,7 @@ const CompactLayout = () => {
                     )}
                 </Grid>
             </Grid>
-            <Typography variant={"h2"} mt={4} mb={2}>
+            <Typography variant={"h2"} sx={{ mt: 4, mb: 2 }}>
                 Payment
             </Typography>
             <LoadingPaymentElement accordion={smallScreen} onComplete={setPaymentComplete} />

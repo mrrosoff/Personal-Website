@@ -108,7 +108,7 @@ const RegisterForm = (props: { token: string; friendName: string }) => {
                 Then run <Code>{`sudo su ${props.friendName}`}</Code> in the terminal.
             </Typography>
             {devices.length > 0 && (
-                <Typography variant={"body1"} mt={3}>
+                <Typography variant={"body1"} sx={{ mt: 3 }}>
                     You've been added to{" "}
                     {devices
                         .map((kind) => `a ${kind[0] + kind.slice(1).toLowerCase()} device`)
@@ -148,7 +148,7 @@ const RegisterForm = (props: { token: string; friendName: string }) => {
                 Register Passkey
             </Button>
             {error && (
-                <Typography mt={3} color="error">
+                <Typography sx={{ mt: 3 }} color="error">
                     {error}
                 </Typography>
             )}
@@ -169,14 +169,16 @@ const RegisterFriend = () => {
 
     return (
         <Box
-            display={"flex"}
-            flexDirection={"column"}
-            alignItems={"center"}
-            justifyContent={"center"}
-            height={"100%"}
-            textAlign={"center"}
+            sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "100%",
+                textAlign: "center"
+            }}
         >
-            <Typography variant={"h1"} mb={3}>
+            <Typography variant={"h1"} sx={{ mb: 3 }}>
                 Welcome, {friendName}
             </Typography>
             {isExpired ? (

@@ -57,22 +57,26 @@ export default function FlavorSection(props: FlavorSectionProps) {
     );
 
     return (
-        <Box display={"flex"} flexDirection={"column"} sx={{ paddingTop: smallScreen ? 4 : 2.5 }}>
+        <Box sx={{ display: "flex", flexDirection: "column", paddingTop: smallScreen ? 4 : 2.5 }}>
             <Typography variant="h2">{props.title}</Typography>
             <Typography>{props.description}</Typography>
             <Grid
                 container
                 spacing={3}
-                direction={smallScreen ? "column" : undefined}
-                sx={{ paddingTop: smallScreen ? 4 : 2 }}
+                sx={{
+                    flexDirection: smallScreen ? "column" : "row",
+                    paddingTop: smallScreen ? 4 : 2
+                }}
             >
                 {props.isLoading
                     ? skeletonWidths.map((width, i) => (
                           <Grid
                               key={i}
-                              display={"flex"}
-                              justifyContent={"center"}
-                              sx={{ width: smallScreen ? "100%" : undefined }}
+                              sx={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  width: smallScreen ? "100%" : undefined
+                              }}
                           >
                               <Skeleton
                                   variant="rounded"
@@ -87,16 +91,18 @@ export default function FlavorSection(props: FlavorSectionProps) {
                           return (
                               <Grid
                                   key={flavor.productId}
-                                  display={"flex"}
-                                  justifyContent={"center"}
-                                  sx={{ width: smallScreen ? "100%" : undefined }}
+                                  sx={{
+                                      display: "flex",
+                                      justifyContent: "center",
+                                      width: smallScreen ? "100%" : undefined
+                                  }}
                               >
                                   <Box
-                                      display={"flex"}
                                       onClick={
                                           cart ? () => cart.toggleFlavor(flavor.priceId) : undefined
                                       }
                                       sx={{
+                                          display: "flex",
                                           ...(cart
                                               ? getFlavorStyles(
                                                     color,

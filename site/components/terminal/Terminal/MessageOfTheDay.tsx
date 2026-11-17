@@ -38,7 +38,7 @@ export default function MessageOfTheDay(props: MessageOfTheDayProps) {
                     </Box>
                 ];
                 if (trimmedLine.startsWith("*")) {
-                    outputs.splice(0, 0, <Box key={"indent"} width={20} />);
+                    outputs.splice(0, 0, <Box key={"indent"} sx={{ width: 20 }} />);
                 }
                 const index = trimmedLine.indexOf("~");
                 if (index !== -1) {
@@ -77,12 +77,12 @@ export default function MessageOfTheDay(props: MessageOfTheDayProps) {
                     );
                 }
                 return (
-                    <Box key={key} display={"flex"}>
+                    <Box key={key} sx={{ display: "flex" }}>
                         {outputs}
                     </Box>
                 );
             })}
-            <Box height={20} />
+            <Box sx={{ height: 20 }} />
         </>
     );
 }

@@ -252,7 +252,7 @@ describe("Polaroid", () => {
         await waitFor(() => expect(document.querySelectorAll("img")).toHaveLength(1));
 
         await user.click(document.querySelectorAll("img")[0]);
-        await user.click(screen.getByTestId("DeleteOutlineIcon"));
+        await user.click(screen.getByTestId("DeleteOutlinedIcon"));
 
         expect(axiosPost).toHaveBeenCalledWith(
             "https://api.maxrosoff.com/polaroid/remove",
@@ -267,7 +267,7 @@ describe("Polaroid", () => {
         await waitFor(() => expect(document.querySelectorAll("img")).toHaveLength(1));
 
         await user.click(document.querySelectorAll("img")[0]);
-        await user.click(screen.getByTestId("DeleteOutlineIcon"));
+        await user.click(screen.getByTestId("DeleteOutlinedIcon"));
 
         expect(await screen.findByText("Couldn't remove that one.")).toBeInTheDocument();
         await waitFor(() => expect(axiosGet).toHaveBeenCalledTimes(2));

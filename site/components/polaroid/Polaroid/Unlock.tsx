@@ -87,10 +87,10 @@ export default function Unlock({ onUnlock }: UnlockProps) {
                         component={"rect"}
                         x={4}
                         y={12}
-                        width={16}
-                        height={9}
                         rx={0.5}
                         sx={{
+                            width: 16,
+                            height: 9,
                             fill: "none",
                             stroke: "currentColor",
                             strokeWidth: 1.75,
@@ -101,9 +101,7 @@ export default function Unlock({ onUnlock }: UnlockProps) {
                         component={"rect"}
                         x={11.25}
                         y={15}
-                        width={1.5}
-                        height={3.5}
-                        sx={{ fill: "currentColor" }}
+                        sx={{ width: 1.5, height: 3.5, fill: "currentColor" }}
                     />
                 </Box>
                 <Typography sx={{ fontSize: "0.9em", opacity: 0.7 }}>

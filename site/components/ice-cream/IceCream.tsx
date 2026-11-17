@@ -54,9 +54,9 @@ const IceCream = () => {
     }, [params, toggleFlavor]);
 
     return (
-        <Box display={"flex"} flexDirection={"column"} pb={4}>
+        <Box sx={{ display: "flex", flexDirection: "column", pb: 4 }}>
             <Typography variant="h1">Max's Freezer Stash</Typography>
-            <Typography mt={smallScreen ? 2 : undefined}>
+            <Typography sx={{ mt: smallScreen ? 2 : undefined }}>
                 High quality. Small batch. Creative flavors{" "}
                 {friendToken ? (
                     <Typography component={"span"} sx={{ fontSize: "inherit", ...rainbowTextSx }}>
@@ -82,12 +82,12 @@ const IceCream = () => {
                     </>
                 )}
             </Typography>
-            <Typography mt={smallScreen ? 2 : -1}>
+            <Typography sx={{ mt: smallScreen ? 2 : -1 }}>
                 In SF? Come stop by! Outside SF? Don't buy anything you can't carry home.
             </Typography>
             {!smallScreen && <MailingListLink />}
             {flavorsError && (
-                <Typography mt={3}>
+                <Typography sx={{ mt: 3 }}>
                     Checking Freezer Stash . . . . . .
                     <span style={{ color: TERMINAL_COLORS.errorColor }}> FAILED</span>
                 </Typography>

@@ -50,7 +50,7 @@ const ContactFields = () => {
     const { email, setEmail, emailError } = useCheckoutForm();
     return (
         <>
-            <Typography variant={"h2"} mb={2}>
+            <Typography variant={"h2"} sx={{ mb: 2 }}>
                 Contact Info
             </Typography>
             <FormField

@@ -172,8 +172,8 @@ const Layout = ({ inputRef, scrollContainerRef }: LayoutProps) => {
     return (
         <Box
             component="main"
-            height={"100dvh"}
             sx={{
+                height: "100dvh",
                 p: mdScreen ? (isHome ? 2 : 3) : 6,
                 ...(mdScreen ? { pt: 4, pb: screenBottomPadding } : { pb: 3 }),
                 boxSizing: "border-box",

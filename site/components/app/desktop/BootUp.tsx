@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
 
-import { Box, Grid, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Grid, Stack, Typography, useMediaQuery, useTheme } from "@mui/material";
 
 import { HAS_BOOTED_KEY, useAppContext } from "../../AppContext";
 
@@ -48,7 +48,7 @@ const BootUp = ({ setBootingUp, creationDate }: BootUpProps) => {
     }, [setBootingUp, setShouldBootUp]);
 
     return (
-        <Grid container direction={"column"} spacing={4}>
+        <Stack spacing={4}>
             <Grid>
                 <Header />
             </Grid>
@@ -68,7 +68,7 @@ const BootUp = ({ setBootingUp, creationDate }: BootUpProps) => {
             ) : null}
             {state >= 15 ? (
                 <Grid>
-                    <Grid container direction={"column"} spacing={1}>
+                    <Stack spacing={1}>
                         <NetworkInfo state={state} />
                         {state >= 17 && !smallScreen ? (
                             <Grid>
@@ -81,7 +81,7 @@ const BootUp = ({ setBootingUp, creationDate }: BootUpProps) => {
                                 </Typography>
                             </Grid>
                         ) : null}
-                    </Grid>
+                    </Stack>
                 </Grid>
             ) : null}
             {state >= 19 ? (
@@ -89,7 +89,7 @@ const BootUp = ({ setBootingUp, creationDate }: BootUpProps) => {
                     <StartingComputer />
                 </Grid>
             ) : null}
-        </Grid>
+        </Stack>
     );
 };
 
@@ -102,14 +102,7 @@ const Header = () => {
                 <img src="/images/logo.webp" alt={"Logo"} style={{ width: 100, height: 100 }} />
             </Grid>
             <Grid>
-                <Grid
-                    container
-                    justifyContent={"center"}
-                    alignContent={"center"}
-                    alignItems={"center"}
-                    direction={"column"}
-                    style={{ height: "100%" }}
-                >
+                <Stack sx={{ justifyContent: "center", alignItems: "center", height: "100%" }}>
                     <Grid>
                         {smallScreen ? (
                             <>
@@ -120,7 +113,7 @@ const Header = () => {
                             <Typography>Rosoff OS (BETA PROGRAM)</Typography>
                         )}
                     </Grid>
-                </Grid>
+                </Stack>
             </Grid>
         </Grid>
     );
@@ -128,7 +121,7 @@ const Header = () => {
 
 const ReleaseData = (props: { creationDate: string }) => {
     return (
-        <Grid container justifyContent={"center"} direction={"column"} style={{ height: "100%" }}>
+        <Stack sx={{ justifyContent: "center", height: "100%" }}>
             <Grid>
                 <Typography>Released: {props.creationDate}</Typography>
             </Grid>
@@ -141,13 +134,13 @@ const ReleaseData = (props: { creationDate: string }) => {
                     Open Source (BETA 4.1.2)
                 </a>
             </Grid>
-        </Grid>
+        </Stack>
     );
 };
 
 const SystemInfo = (props: { state: number }) => {
     return (
-        <Grid container direction={"column"} style={{ paddingLeft: 20 }}>
+        <Stack sx={{ paddingLeft: "20px" }}>
             {props.state >= 3 ? (
                 <Grid>
                     <Box sx={{ pl: 1, pr: 1 }}>
@@ -200,7 +193,7 @@ const SystemInfo = (props: { state: number }) => {
                     </Box>
                 </Grid>
             ) : null}
-        </Grid>
+        </Stack>
     );
 };
 
@@ -208,7 +201,7 @@ const DriveInfo = (props: { state: number }) => {
     const muiTheme = useTheme();
     const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
     return (
-        <Grid container direction={"column"} spacing={1}>
+        <Stack spacing={1}>
             {props.state >= 12 ? (
                 <Grid>
                     <header>
@@ -235,7 +228,7 @@ const DriveInfo = (props: { state: number }) => {
                     </header>
                 </Grid>
             ) : null}
-        </Grid>
+        </Stack>
     );
 };
 const NetworkInfo = (props: { state: number }) => {

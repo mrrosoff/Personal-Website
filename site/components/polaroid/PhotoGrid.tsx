@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
 import { Box, CircularProgress, Dialog, IconButton, useMediaQuery } from "@mui/material";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 
 import { MAX_PHOTOS } from "../../../api/common";
 
@@ -131,7 +131,7 @@ export default function PhotoGrid({ photos, uploading, onRemove }: PhotoGridProp
                                 right: 12
                             }}
                         >
-                            <DeleteOutlineIcon />
+                            <DeleteOutlinedIcon />
                         </IconButton>
                     )}
                 </Box>

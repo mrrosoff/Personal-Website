@@ -11,18 +11,18 @@ const SidebarLayout = () => {
     const smallScreen = useMediaQuery(theme.breakpoints.down("lg"));
 
     return (
-        <Box pb={4}>
-            <Typography variant={"h1"} mb={3}>
+        <Box sx={{ pb: 4 }}>
+            <Typography variant={"h1"} sx={{ mb: 3 }}>
                 Checkout
             </Typography>
             <Grid
                 container
                 spacing={smallScreen ? 4 : 6}
-                direction={smallScreen ? "column-reverse" : "row"}
+                sx={{ flexDirection: smallScreen ? "column-reverse" : "row" }}
             >
                 <Grid size={{ xs: 12, md: 7 }}>
                     <ContactFields />
-                    <Typography variant={"h2"} mt={4} mb={2}>
+                    <Typography variant={"h2"} sx={{ mt: 4, mb: 2 }}>
                         Payment
                     </Typography>
                     <LoadingPaymentElement
@@ -32,7 +32,7 @@ const SidebarLayout = () => {
                     <PayButton />
                 </Grid>
                 <Grid size={{ xs: 12, md: 5 }} sx={{ minWidth: smallScreen ? undefined : 400 }}>
-                    <Typography variant={"h2"} mb={2}>
+                    <Typography variant={"h2"} sx={{ mb: 2 }}>
                         Your Order
                     </Typography>
                     <Box sx={orderBoxSx(smallScreen)}>

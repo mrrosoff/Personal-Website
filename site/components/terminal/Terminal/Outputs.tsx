@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+import { Grid, Stack } from "@mui/material";
 
 import { useAppContext } from "../../AppContext";
 import OutputError from "../output/OutputError";
@@ -11,7 +11,7 @@ type OutputsProps = { theme: TerminalTheme; promptSymbol: string };
 export default function Outputs(props: OutputsProps) {
     const { emulatorState } = useAppContext();
     return emulatorState.getOutputs().map((content, index) => (
-        <Grid key={index} container direction={"column"}>
+        <Stack key={index}>
             <Grid>
                 <OutputHeader
                     theme={props.theme}
@@ -41,6 +41,6 @@ export default function Outputs(props: OutputsProps) {
                     </Grid>
                 );
             })}
-        </Grid>
+        </Stack>
     ));
 }

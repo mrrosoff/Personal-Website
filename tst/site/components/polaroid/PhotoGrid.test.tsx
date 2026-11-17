@@ -58,7 +58,7 @@ describe("PhotoGrid", () => {
         );
 
         await user.click(images()[1]);
-        await user.click(screen.getByTestId("DeleteOutlineIcon"));
+        await user.click(screen.getByTestId("DeleteOutlinedIcon"));
 
         expect(onRemove).toHaveBeenCalledWith("p2");
         await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());

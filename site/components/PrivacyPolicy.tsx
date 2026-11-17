@@ -24,11 +24,11 @@ const sections = [
 ];
 
 const PrivacyPolicy = () => (
-    <Box pb={4}>
+    <Box sx={{ pb: 4 }}>
         <Typography variant="h1">Privacy Policy</Typography>
         {sections.map((section) => (
-            <Box key={section.heading} mt={3}>
-                <Typography variant="h2" mb={1}>
+            <Box key={section.heading} sx={{ mt: 3 }}>
+                <Typography variant="h2" sx={{ mb: 1 }}>
                     {section.heading}
                 </Typography>
                 <Typography>{section.body}</Typography>

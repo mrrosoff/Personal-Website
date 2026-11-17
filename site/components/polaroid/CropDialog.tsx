@@ -115,7 +115,7 @@ export default function CropDialog({ file, remaining, onCancel, onConfirm }: Cro
                     }}
                 >
                     {image.status === "loading" && file && (
-                        <Stack alignItems="center" spacing={2}>
+                        <Stack sx={{ alignItems: "center" }} spacing={2}>
                             <CircularProgress />
                             <Typography color="text.secondary">Opening…</Typography>
                         </Stack>

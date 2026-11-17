@@ -1,6 +1,6 @@
 import { forwardRef, lazy, Suspense, useEffect, useReducer, useState } from "react";
 import type { ChangeEvent, KeyboardEvent, Ref } from "react";
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 import { UserType } from "../../../api/types";
@@ -192,10 +192,10 @@ const Terminal = (
     return (
         <>
             {showMOTD && <MessageOfTheDay theme={props.theme} />}
-            <Grid container direction={"column"} justifyContent={"flex-start"} spacing={1}>
+            <Stack spacing={1}>
                 <Outputs theme={props.theme} promptSymbol={promptSymbol} />
                 {emulatorState.getAdminConsoleMode()?.screen && (
-                    <Box height={280}>
+                    <Box sx={{ height: 280 }}>
                         <Suspense fallback={null}>
                             <AdminConsole
                                 theme={props.theme}
@@ -229,7 +229,7 @@ const Terminal = (
                         theme={props.theme}
                     />
                 )}
-            </Grid>
+            </Stack>
         </>
     );
 };

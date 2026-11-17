@@ -15,8 +15,8 @@ const CheckoutForm = ({ priceIds, subscription }: CheckoutFormProps) => {
 
     if (state.type === "error") {
         return (
-            <Box pb={4}>
-                <Typography variant={"h1"} mb={3}>
+            <Box sx={{ pb: 4 }}>
+                <Typography variant={"h1"} sx={{ mb: 3 }}>
                     Checkout
                 </Typography>
                 <Typography>

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Navigate, Link as RouterLink, useNavigate, useSearchParams } from "react-router-dom";
 
 import { Box, Link, Typography, useMediaQuery, useTheme } from "@mui/material";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import LaunchIcon from "@mui/icons-material/Launch";
 
 import { API_ENDPOINT_URL } from "../../../../api/types";
@@ -60,18 +60,22 @@ const OrderConfirmation = (props: { customerEmail: string | null }) => {
 
     return (
         <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="space-around"
-            height={"100%"}
+            sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "space-around",
+                height: "100%"
+            }}
         >
             <Box>
                 <Box
-                    display="flex"
-                    flexDirection={smallScreen ? "column" : undefined}
-                    alignItems="center"
-                    mb={smallScreen ? 2 : 3}
+                    sx={{
+                        display: "flex",
+                        flexDirection: smallScreen ? "column" : undefined,
+                        alignItems: "center",
+                        mb: smallScreen ? 2 : 3
+                    }}
                 >
                     <Typography
                         variant="h1"
@@ -80,15 +84,12 @@ const OrderConfirmation = (props: { customerEmail: string | null }) => {
                     >
                         Order Confirmed
                     </Typography>
-                    {!smallScreen && <CheckCircleOutlineIcon sx={{ fontSize: 48, ml: 2 }} />}
+                    {!smallScreen && <CheckCircleOutlinedIcon sx={{ fontSize: 48, ml: 2 }} />}
                 </Box>
 
                 <Typography
                     align={smallScreen ? "center" : undefined}
-                    mt={smallScreen ? 1 : undefined}
-                    sx={{
-                        color: "text.primary"
-                    }}
+                    sx={{ mt: smallScreen ? 1 : undefined, color: "text.primary" }}
                 >
                     {decodedToken ? (
                         <>
@@ -103,7 +104,7 @@ const OrderConfirmation = (props: { customerEmail: string | null }) => {
                         </>
                     )}
                 </Typography>
-                <Typography mt={4} align={smallScreen ? "center" : undefined}>
+                <Typography sx={{ mt: 4 }} align={smallScreen ? "center" : undefined}>
                     If you have any questions, please email{" "}
                     <Link
                         href="mailto:help@maxrosoff.com"
@@ -122,7 +123,7 @@ const OrderConfirmation = (props: { customerEmail: string | null }) => {
                     </Link>
                     .
                 </Typography>
-                <Typography mt={0.5} align={smallScreen ? "center" : undefined}>
+                <Typography sx={{ mt: 0.5 }} align={smallScreen ? "center" : undefined}>
                     Or even better, head{" "}
                     <Link
                         component={RouterLink}
@@ -144,7 +145,7 @@ const OrderConfirmation = (props: { customerEmail: string | null }) => {
                     to buy more ice cream.
                 </Typography>
             </Box>
-            <Box height={320} overflow="hidden">
+            <Box sx={{ height: 320, overflow: "hidden" }}>
                 <img
                     src="/images/ice-cream.webp"
                     alt="Ice Cream"
