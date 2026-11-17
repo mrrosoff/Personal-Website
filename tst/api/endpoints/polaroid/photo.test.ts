@@ -1,8 +1,7 @@
-import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { describe, expect, it } from "vitest";
 
 import { mockEvent, responseBody } from "../../../setup";
-import { mockFramebuffer, mockS3Client } from "../../../__mocks__/__aws__/s3";
+import { mockFramebuffer, mockPhotoId } from "../../../__mocks__/__aws__/s3";
 import { mockDeviceToken } from "../../../__mocks__/__data__/aws/dynamodb";
 
 import { handler } from "../../../../api/endpoints/polaroid/photo";
@@ -27,15 +26,17 @@ describe("photo", () => {
     });
 
     it("should 404 a missing photo", async () => {
-        mockS3Client.on(GetObjectCommand).rejects(new Error("NoSuchKey"));
-
-        const result = await handler(mockEvent({ token: mockDeviceToken, body: { id: "p" } }));
+        const result = await handler(
+            mockEvent({ token: mockDeviceToken, body: { id: "missing" } })
+        );
 
         expect(result.statusCode).toBe(404);
     });
 
     it("should send the framebuffer bytes", async () => {
-        const result = await handler(mockEvent({ token: mockDeviceToken, body: { id: "p" } }));
+        const result = await handler(
+            mockEvent({ token: mockDeviceToken, body: { id: mockPhotoId } })
+        );
 
         expect(result).toMatchObject({
             isBase64Encoded: true,

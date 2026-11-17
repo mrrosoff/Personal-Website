@@ -66,6 +66,16 @@ describe("keys", () => {
         expect(previewKey("d", "p")).toBe("preview/d/p.png");
     });
 
+    it("should date a photo without a modified time at zero", async () => {
+        mockS3Client
+            .on(ListObjectsV2Command)
+            .resolves({ Contents: [{ Key: "framebuffer/d/p.bin" }] });
+
+        const result = await listPhotos(mockDevice.deviceId);
+
+        expect(result).toEqual([{ photoId: "p", hash: "", uploadedAt: 0 }]);
+    });
+
     it("should skip an object without a key", async () => {
         mockS3Client.on(ListObjectsV2Command).resolves({ Contents: [{}] });
 

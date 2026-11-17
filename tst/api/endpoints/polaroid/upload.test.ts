@@ -1,11 +1,13 @@
-import { ListObjectsV2Command, PutObjectCommand } from "@aws-sdk/client-s3";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { encode as encodeJpeg } from "jpeg-js";
 import { describe, expect, it } from "vitest";
 
 import { mockEvent, mockToken, responseBody } from "../../../setup";
-import { mockPresignedUrl, mockS3Client } from "../../../__mocks__/__aws__/s3";
+import { mockPresignedUrl, mockS3, mockS3Client } from "../../../__mocks__/__aws__/s3";
+import { mockDevice } from "../../../__mocks__/__data__/aws/dynamodb";
 
 import { MAX_PHOTOS } from "../../../../api/common";
+import { framebufferKey } from "../../../../api/endpoints/polaroid/photos";
 import { handler } from "../../../../api/endpoints/polaroid/upload";
 import { UserType } from "../../../../api/types";
 
@@ -43,11 +45,9 @@ describe("upload", () => {
     });
 
     it("should refuse a photo when the frame is full", async () => {
-        mockS3Client.on(ListObjectsV2Command).resolves({
-            Contents: Array.from({ length: MAX_PHOTOS }, (_, i) => ({
-                Key: `framebuffer/d/${i.toString()}.bin`
-            }))
-        });
+        for (let i = 0; i < MAX_PHOTOS; i++) {
+            mockS3.seed(framebufferKey(mockDevice.deviceId, i.toString()));
+        }
 
         const result = await upload(mockJpeg(8, 8));
 
@@ -65,11 +65,9 @@ describe("upload", () => {
     it("should render a landscape photo into a framebuffer", async () => {
         const result = await upload(mockJpeg(32, 16));
 
+        const id = responseBody(result).id as string;
         expect(responseBody(result).previewUrl).toBe(mockPresignedUrl);
-        expect(mockS3Client).toHaveReceivedCommandWith(PutObjectCommand, {
-            ContentType: "application/octet-stream",
-            Body: expect.toSatisfy((body: Buffer) => body.length === 120000)
-        });
+        expect(mockS3.get(framebufferKey(mockDevice.deviceId, id))).toHaveLength(120000);
     });
 
     it("should write the preview before the framebuffer", async () => {

@@ -1,8 +1,7 @@
-import { DeleteObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s3";
 import { describe, expect, it } from "vitest";
 
 import { mockEvent, mockToken, responseBody } from "../../../setup";
-import { mockS3Client } from "../../../__mocks__/__aws__/s3";
+import { mockPhotoId, mockS3 } from "../../../__mocks__/__aws__/s3";
 import { mockDevice } from "../../../__mocks__/__data__/aws/dynamodb";
 
 import { handler } from "../../../../api/endpoints/polaroid/remove";
@@ -32,10 +31,9 @@ describe("remove", () => {
     });
 
     it("should 404 a missing photo", async () => {
-        mockS3Client.on(HeadObjectCommand).rejects(new Error("NotFound"));
         const token = await mockToken(UserType.FRIEND);
 
-        const result = await handler(mockEvent({ token, body: { id: "p" } }));
+        const result = await handler(mockEvent({ token, body: { id: "missing" } }));
 
         expect(result.statusCode).toBe(404);
     });
@@ -43,14 +41,11 @@ describe("remove", () => {
     it("should delete the framebuffer and preview", async () => {
         const token = await mockToken(UserType.FRIEND);
 
-        const result = await handler(mockEvent({ token, body: { id: "p" } }));
+        mockS3.seed(`preview/${mockDevice.deviceId}/${mockPhotoId}.png`);
 
-        expect(responseBody(result)).toEqual({ removed: true, id: "p" });
-        expect(mockS3Client).toHaveReceivedCommandWith(DeleteObjectCommand, {
-            Key: `framebuffer/${mockDevice.deviceId}/p.bin`
-        });
-        expect(mockS3Client).toHaveReceivedCommandWith(DeleteObjectCommand, {
-            Key: `preview/${mockDevice.deviceId}/p.png`
-        });
+        const result = await handler(mockEvent({ token, body: { id: mockPhotoId } }));
+
+        expect(responseBody(result)).toEqual({ removed: true, id: mockPhotoId });
+        expect(mockS3.keys()).toHaveLength(0);
     });
 });

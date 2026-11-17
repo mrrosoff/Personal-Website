@@ -1,13 +1,13 @@
-import {
-    DeleteObjectCommand,
-    GetObjectCommand,
-    HeadObjectCommand,
-    ListObjectsV2Command,
-    PutObjectCommand
-} from "@aws-sdk/client-s3";
+import { ListObjectsV2Command, PutObjectCommand } from "@aws-sdk/client-s3";
 import { describe, expect, it } from "vitest";
 
-import { mockFramebuffer, mockPresignedUrl, mockS3Client } from "../../../__mocks__/__aws__/s3";
+import {
+    mockFramebuffer,
+    mockPhotoKey,
+    mockPresignedUrl,
+    mockS3,
+    mockS3Client
+} from "../../../__mocks__/__aws__/s3";
 
 import {
     deleteObject,
@@ -19,28 +19,27 @@ import {
 } from "../../../../api/aws/services/s3";
 import { POLAROID_PHOTOS_BUCKET } from "../../../../api/common";
 
-const key = "framebuffer/device/photo.bin" as const;
+const missingKey = "framebuffer/device/missing.bin" as const;
+const newKey = "preview/device/new.png" as const;
 
 describe("s3", () => {
     it("should put an object that caches forever", async () => {
-        await putObject(POLAROID_PHOTOS_BUCKET, key, Buffer.from("x"), "application/octet-stream");
+        await putObject(POLAROID_PHOTOS_BUCKET, newKey, Buffer.from("x"), "image/png");
 
+        expect(mockS3.get(newKey)).toEqual(Buffer.from("x"));
         expect(mockS3Client).toHaveReceivedCommandWith(PutObjectCommand, {
-            Key: key,
             CacheControl: "public, max-age=31536000, immutable"
         });
     });
 
     it("should get an object's bytes", async () => {
-        const result = await getObject(POLAROID_PHOTOS_BUCKET, key);
+        const result = await getObject(POLAROID_PHOTOS_BUCKET, mockPhotoKey);
 
         expect(result).toEqual(mockFramebuffer);
     });
 
     it("should return nothing for a missing object", async () => {
-        mockS3Client.on(GetObjectCommand).rejects(new Error("NoSuchKey"));
-
-        const result = await getObject(POLAROID_PHOTOS_BUCKET, key);
+        const result = await getObject(POLAROID_PHOTOS_BUCKET, missingKey);
 
         expect(result).toBeUndefined();
     });
@@ -61,35 +60,39 @@ describe("s3", () => {
     });
 
     it("should report an object exists", async () => {
-        const result = await objectExists(POLAROID_PHOTOS_BUCKET, key);
+        const result = await objectExists(POLAROID_PHOTOS_BUCKET, mockPhotoKey);
 
         expect(result).toBe(true);
     });
 
     it("should report a missing object", async () => {
-        mockS3Client.on(HeadObjectCommand).rejects(new Error("NotFound"));
-
-        const result = await objectExists(POLAROID_PHOTOS_BUCKET, key);
+        const result = await objectExists(POLAROID_PHOTOS_BUCKET, missingKey);
 
         expect(result).toBe(false);
     });
 
     it("should delete an object", async () => {
-        await deleteObject(POLAROID_PHOTOS_BUCKET, key);
+        await deleteObject(POLAROID_PHOTOS_BUCKET, mockPhotoKey);
 
-        expect(mockS3Client).toHaveReceivedCommandWith(DeleteObjectCommand, { Key: key });
+        expect(mockS3.keys()).toHaveLength(0);
     });
 
     it("should presign a download link", async () => {
-        const result = await presignGetObject(POLAROID_PHOTOS_BUCKET, key);
+        const result = await presignGetObject(POLAROID_PHOTOS_BUCKET, mockPhotoKey);
 
         expect(result).toBe(mockPresignedUrl);
     });
 
-    it("should list nothing for an empty prefix", async () => {
+    it("should treat a listing without contents as empty", async () => {
         mockS3Client.on(ListObjectsV2Command).resolves({});
 
         const result = await listObjects(POLAROID_PHOTOS_BUCKET, "framebuffer/");
+
+        expect(result).toHaveLength(0);
+    });
+
+    it("should list nothing for an empty prefix", async () => {
+        const result = await listObjects(POLAROID_PHOTOS_BUCKET, "preview/");
 
         expect(result).toHaveLength(0);
     });
