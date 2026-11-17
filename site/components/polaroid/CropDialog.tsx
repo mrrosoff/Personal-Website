@@ -10,7 +10,8 @@ import {
     Stack,
     Typography
 } from "@mui/material";
-import Cropper, { type Area } from "react-easy-crop";
+import Cropper from "react-easy-crop";
+import type { Area } from "react-easy-crop";
 
 const OUTPUT_WIDTH = 1200;
 const OUTPUT_HEIGHT = 1800;

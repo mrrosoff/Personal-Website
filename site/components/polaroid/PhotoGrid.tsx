@@ -1,4 +1,5 @@
-import { type ReactNode, useState } from "react";
+import { useState } from "react";
+import type { ReactNode } from "react";
 import { Box, CircularProgress, Dialog, IconButton, useMediaQuery } from "@mui/material";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
