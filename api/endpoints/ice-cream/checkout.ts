@@ -35,7 +35,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     );
 
     const session = await stripe.checkout.sessions.create({
-        ui_mode: "custom",
+        ui_mode: "elements",
         automatic_tax: { enabled: true },
         line_items: lineItems,
         mode: "payment",

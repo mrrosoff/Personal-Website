@@ -13,7 +13,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     const stripe = await stripeForEvent(event);
     const subscriptionPrice = await getParameter("/website/stripe/subscription-price");
     const session = await stripe.checkout.sessions.create({
-        ui_mode: "custom",
+        ui_mode: "elements",
         automatic_tax: { enabled: true },
         line_items: [await checkoutLineItem(event, subscriptionPrice)],
         mode: "subscription",
