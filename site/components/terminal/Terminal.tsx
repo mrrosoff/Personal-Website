@@ -7,7 +7,6 @@ import {
     useState,
     type ChangeEvent,
     type KeyboardEvent,
-    type ReactElement,
     type Ref
 } from "react";
 import { Box, Grid, useMediaQuery, useTheme } from "@mui/material";
@@ -92,6 +91,8 @@ const renderOutputs = (
     ));
 };
 
+const emulator = new Emulator();
+
 const Terminal = (
     props: {
         errorStr: string;
@@ -104,20 +105,14 @@ const Terminal = (
     const muiTheme = useTheme();
     const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
     const navigate = useNavigate();
-    const [showMOTD, setShowMOTD] = useState(true);
     const [input, setInput] = useState("");
-    const [renderedOutputs, setRenderedOutputs] = useState<ReactElement[]>(() =>
-        renderOutputs(emulatorState, props)
-    );
     const [_, setHistoryIndex] = useState(-1);
     const [loadingDots, setLoadingDots] = useState(0);
-    const [, bumpAdminConsole] = useReducer((count: number) => count + 1, 0);
-
-    const emulator = new Emulator();
+    const [, rerender] = useReducer((count: number) => count + 1, 0);
 
     const runAdminAction = async (key: string, ctrlKey = false) => {
         await handleAdminConsoleKeyPress(key, emulatorState, ctrlKey);
-        bumpAdminConsole();
+        rerender();
     };
 
     useEffect(() => {
@@ -129,22 +124,24 @@ const Terminal = (
         };
     }, []);
 
+    const passwordPrompt = emulatorState.getPasswordPromptState();
+    const adminConsoleScreen = emulatorState.getAdminConsoleMode()?.screen;
+
     useEffect(() => {
         if (typeof ref === "object" && ref?.current) {
             ref.current.focus({ preventScroll: true });
         }
-    }, [emulatorState.getPasswordPromptState(), emulatorState.getAdminConsoleMode()?.screen]);
+    }, [ref, passwordPrompt, adminConsoleScreen]);
 
     useEffect(() => {
-        const passwordPrompt = emulatorState.getPasswordPromptState();
         if (passwordPrompt && !passwordPrompt.loading) {
             const authenticate = async () => {
                 await authenticateWithPasskey(emulator, emulatorState);
-                setRenderedOutputs(calculateOutputs());
+                rerender();
             };
             void authenticate();
         }
-    }, [emulatorState.getPasswordPromptState()]);
+    }, [emulatorState, passwordPrompt]);
 
     const authToken = emulatorState.getEnvVariables().AUTH_TOKEN;
     const authPayload = authToken ? decodeToken(authToken) : null;
@@ -152,13 +149,11 @@ const Terminal = (
         authPayload?.userType === UserType.ADMIN ? "admin" : (authPayload?.id ?? "dev");
     const promptSymbol = `${promptUser}@rosoff`;
 
+    const friendToken = authPayload?.userType === UserType.FRIEND ? authToken : undefined;
+
     useEffect(() => {
-        if (!authToken || !authPayload) {
-            setFriendToken("");
-            return;
-        }
-        setFriendToken(authPayload.userType === UserType.FRIEND ? authToken : "");
-    }, [authToken]);
+        setFriendToken(friendToken ?? "");
+    }, [friendToken, setFriendToken]);
 
     const scrollToBottom = () => {
         setTimeout(() => {
@@ -174,11 +169,10 @@ const Terminal = (
         for (const character of e.clipboardData.getData("text")) {
             await handleAdminConsoleKeyPress(character, emulatorState);
         }
-        bumpAdminConsole();
+        rerender();
     };
 
     const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-        const passwordPrompt = emulatorState.getPasswordPromptState();
         if (passwordPrompt) {
             return;
         }
@@ -232,7 +226,7 @@ const Terminal = (
             case "Tab":
                 e.preventDefault();
                 setInput(emulator.autocomplete(emulatorState, input));
-                setRenderedOutputs(calculateOutputs());
+                rerender();
                 scrollToBottom();
                 break;
 
@@ -248,7 +242,7 @@ const Terminal = (
                 setEmulatorState(newState);
                 setInput("");
                 setHistoryIndex(-1);
-                setRenderedOutputs(calculateOutputs());
+                rerender();
                 scrollToBottom();
 
                 const target = latest?.output.find((result) => result.type === "navigate");
@@ -260,12 +254,7 @@ const Terminal = (
         }
     };
 
-    const calculateOutputs = () => {
-        if (showMOTD && emulatorState.getHistory().includes("clear")) {
-            setShowMOTD(false);
-        }
-        return renderOutputs(emulatorState, props, promptSymbol);
-    };
+    const showMOTD = !emulatorState.getHistory().includes("clear");
 
     const iceCreamLine = smallScreen
         ? "\n\t\t\t* Ice Cream: ~https://maxrosoff.com/ice-cream~"
@@ -278,8 +267,6 @@ const Terminal = (
 		0 packages can be updated.
 		0 updates are ready to be installed.
 	`;
-
-    const passwordPrompt = emulatorState.getPasswordPromptState();
 
     return (
         <>
@@ -341,7 +328,7 @@ const Terminal = (
                 </>
             )}
             <Grid container direction={"column"} justifyContent={"flex-start"} spacing={1}>
-                {renderedOutputs}
+                {renderOutputs(emulatorState, props, promptSymbol)}
                 {emulatorState.getAdminConsoleMode()?.screen && (
                     <Box height={280}>
                         <Suspense fallback={null}>
