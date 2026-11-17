@@ -1,5 +1,8 @@
 import axios from "axios";
-import { startAuthentication } from "@simplewebauthn/browser";
+import {
+    startAuthentication,
+    type PublicKeyCredentialRequestOptionsJSON
+} from "@simplewebauthn/browser";
 
 import EmulatorState from "../emulator-state/EmulatorState";
 import { parseOptions } from "../parser";
@@ -39,7 +42,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
 };
 
 export const signInWithPasskey = async (): Promise<string> => {
-    const { data: authOptions } = await axios.post(
+    const { data: authOptions } = await axios.post<PublicKeyCredentialRequestOptionsJSON>(
         `${API_ENDPOINT_URL}/admin/passkey-auth-options`
     );
     const authResponse = await startAuthentication({ optionsJSON: authOptions });
@@ -87,10 +90,12 @@ export const authenticateWithPasskey = async (
             return;
         }
 
-        const result = emulator.runCommand(commandMapping, promptState.targetCommand, [
+        const result = emulator.runCommand(
+            commandMapping,
+            promptState.targetCommand,
             emulatorState,
             promptState.targetOptions
-        ]);
+        );
 
         if (promptState.targetCommand === "su" && result.type === "error") {
             const { AUTH_TOKEN: _, ...remainingVars } = emulatorState.getEnvVariables();

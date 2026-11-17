@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { Box, Typography, keyframes } from "@mui/material";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 
 import { API_ENDPOINT_URL } from "../../api/types";
 
@@ -74,7 +74,7 @@ const SpotifyCallback = () => {
                 setStatus("success");
             } catch (err: unknown) {
                 let detail = "Could Not Connect Spotify, Please Try Again";
-                if (axios.isAxiosError(err) && err.response?.data?.message) {
+                if (isAxiosError<{ message?: string }>(err) && err.response?.data?.message) {
                     detail = err.response.data.message;
                 }
                 setMessage(detail);

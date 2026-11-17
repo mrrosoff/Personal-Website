@@ -14,7 +14,6 @@
             "sourceMap": true
         }
     },
-    "exclude": ["vite.config.mts"],
     "extends": "@tsconfig/vite-react/tsconfig.json",
     "$schema": "https://json.schemastore.org/tsconfig"
 }

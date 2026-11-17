@@ -67,7 +67,7 @@ export function mockEvent(options: MockEventOptions = {}): APIGatewayEvent {
 }
 
 export function responseBody(result: APIGatewayProxyResult) {
-    return JSON.parse(result.body);
+    return JSON.parse(result.body) as Record<string, unknown>;
 }
 
 export function mockToken(

@@ -27,7 +27,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Request Body");
     }
 
-    const body: PasskeyAuthPayload = JSON.parse(event.body);
+    const body = JSON.parse(event.body) as PasskeyAuthPayload;
 
     const challengeRecord = await getItem(PASSKEY_CHALLENGES_TABLE, body.challenge);
     if (!challengeRecord) {

@@ -87,14 +87,11 @@ export default class Emulator {
 
         for (const { commandName, commandOptions } of parseCommands(commandStrToExecute)) {
             const commandMapping = state.getCommandMapping();
-            const commandArgs = [state, commandOptions];
-
             const {
-                output: output,
-                type: type = "output",
-                // @ts-ignore
+                output,
+                type = "output",
                 oldCwdPath
-            } = this.runCommand(commandMapping, commandName, commandArgs, errorString);
+            } = this.runCommand(commandMapping, commandName, state, commandOptions, errorString);
 
             if (output instanceof Array) {
                 output.forEach((outputItem) => {
@@ -146,17 +143,17 @@ export default class Emulator {
     runCommand(
         commandMapping: CommandMapping,
         commandName: string,
-        commandArgs: (EmulatorState | string[])[],
+        state: EmulatorState,
+        commandOptions: string[],
         errorString = "Command Not Found"
-    ) {
+    ): CommandResult {
         const command = CommandMappingUtil.getCommandFn(commandMapping, commandName);
         if (!command) {
             return { output: errorString, type: "error" };
         }
 
         try {
-            // @ts-ignore
-            return command(...commandArgs);
+            return command(state, commandOptions);
         } catch (err: unknown) {
             return { output: errorMessage(err), type: "error" };
         }

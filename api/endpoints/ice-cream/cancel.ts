@@ -14,7 +14,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Request Body");
     }
 
-    const payload: CancelPayload = JSON.parse(event.body);
+    const payload = JSON.parse(event.body) as CancelPayload;
     if (!payload.token) {
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Token");
     }

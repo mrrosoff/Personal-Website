@@ -15,7 +15,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 
     const resendKeys = await getParameters("/website/resend/api-key", "/website/resend/audience");
     const resend = new Resend(resendKeys["/website/resend/api-key"]);
-    const payload: UnsubscribePayload = JSON.parse(event.body);
+    const payload = JSON.parse(event.body) as UnsubscribePayload;
     await unsubscribeUser(resend, resendKeys["/website/resend/audience"], payload.email);
     return buildResponse(event, HttpResponseStatus.OK, {});
 };

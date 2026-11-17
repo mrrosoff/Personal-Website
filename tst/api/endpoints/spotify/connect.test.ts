@@ -21,7 +21,7 @@ function ownSpotifyDisplay() {
 async function authorizeUrl() {
     const token = await mockToken(UserType.FRIEND);
     const result = await handler(mockEvent({ token }));
-    return new URL(responseBody(result).authorizeUrl);
+    return new URL(responseBody(result).authorizeUrl as string);
 }
 
 describe("connect", () => {
@@ -57,8 +57,8 @@ describe("connect", () => {
         const [encoded, signature] = (await authorizeUrl()).searchParams.get("state")!.split(".");
 
         expect(signature).toBe(stateHmac(encoded, secret));
-        expect(JSON.parse(Buffer.from(encoded, "base64url").toString()).deviceId).toBe(
-            mockDevice.deviceId
-        );
+        expect(JSON.parse(Buffer.from(encoded, "base64url").toString())).toMatchObject({
+            deviceId: mockDevice.deviceId
+        });
     });
 });

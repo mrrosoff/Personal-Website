@@ -70,7 +70,7 @@ describe("passkeyAuth", () => {
 
         const result = await handler(mockEvent({ body }));
 
-        const token = await decryptToken(responseBody(result).token);
+        const token = await decryptToken(responseBody(result).token as string);
         expect(token).toMatchObject({
             id: mockPasskey.name,
             userType: UserType.FRIEND,
@@ -87,7 +87,7 @@ describe("passkeyAuth", () => {
 
         const result = await handler(mockEvent({ body }));
 
-        const token = await decryptToken(responseBody(result).token);
+        const token = await decryptToken(responseBody(result).token as string);
         expect(token).toMatchObject({ id: "admin", userType: UserType.ADMIN });
     });
 

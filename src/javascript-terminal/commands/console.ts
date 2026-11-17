@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 
 import { API_ENDPOINT_URL, FLAVOR_TYPES, type FlavorType, UserType } from "../../../api/types";
 import { decodeToken } from "../../auth";
@@ -62,8 +62,8 @@ export async function postAsAdmin<T>(
 }
 
 export function errorMessageFrom(err: unknown, fallback: string): string {
-    if (axios.isAxiosError(err)) {
-        return (err.response?.data as { message?: string } | undefined)?.message ?? fallback;
+    if (isAxiosError<{ message?: string }>(err)) {
+        return err.response?.data.message ?? fallback;
     }
     return fallback;
 }

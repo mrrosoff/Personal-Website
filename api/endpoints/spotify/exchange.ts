@@ -55,7 +55,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Request Body");
     }
 
-    const { code, state } = JSON.parse(event.body);
+    const { code, state } = JSON.parse(event.body) as { code?: string; state?: string };
     if (!code || !state) {
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Code or State");
     }

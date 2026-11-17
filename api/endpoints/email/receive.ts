@@ -45,7 +45,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         );
     }
 
-    const { data }: WebhookPayload = JSON.parse(event.body);
+    const { data } = JSON.parse(event.body) as WebhookPayload;
     const email = await retrieveEmailData(resend, data.email_id);
     const attachments = await retrieveEmailAttachments(resend, data.email_id);
     await forwardEmail(resend, email, attachments);

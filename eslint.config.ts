@@ -45,11 +45,15 @@ export default tseslint.config(
         ...vitest.configs.recommended,
         rules: {
             ...vitest.configs.recommended.rules,
+            "@typescript-eslint/no-unsafe-assignment": "off",
             "@typescript-eslint/unbound-method": "off"
         }
     },
     {
         files: ["tst/setup.ts"],
-        rules: { "@typescript-eslint/consistent-type-definitions": "off" }
+        rules: {
+            "@typescript-eslint/consistent-type-definitions": "off",
+            "@typescript-eslint/no-explicit-any": "off"
+        }
     }
 );

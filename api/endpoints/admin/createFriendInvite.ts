@@ -36,7 +36,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         );
     }
 
-    const body: CreateFriendInvitePayload = JSON.parse(event.body);
+    const body = JSON.parse(event.body) as CreateFriendInvitePayload;
     const friendName = body.friendName.replace(/\s+/g, " ").trim();
     if (!friendName) {
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Friend Name");

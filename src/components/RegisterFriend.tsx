@@ -2,7 +2,12 @@ import { useEffect, useState } from "react";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 
 import { Box, Button, Typography } from "@mui/material";
-import { browserSupportsWebAuthn, startRegistration, WebAuthnError } from "@simplewebauthn/browser";
+import {
+    browserSupportsWebAuthn,
+    startRegistration,
+    WebAuthnError,
+    type PublicKeyCredentialCreationOptionsJSON
+} from "@simplewebauthn/browser";
 import axios from "axios";
 import { DateTime } from "luxon";
 
@@ -69,7 +74,11 @@ const RegisterForm = (props: { token: string; friendName: string }) => {
         setIsLoading(true);
         try {
             const optionsUrl = `${API_ENDPOINT_URL}/friends/passkey-register-options`;
-            const { data: options } = await axios.post(optionsUrl, {}, authHeaders);
+            const { data: options } = await axios.post<PublicKeyCredentialCreationOptionsJSON>(
+                optionsUrl,
+                {},
+                authHeaders
+            );
 
             const registrationResponse = await startRegistration({ optionsJSON: options });
             await axios.post(

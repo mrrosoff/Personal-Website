@@ -10,7 +10,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Request Body");
     }
 
-    const payload: MailingListRegistration = JSON.parse(event.body);
+    const payload = JSON.parse(event.body) as MailingListRegistration;
     const userId = await registerNewMailingListUser(payload);
     return buildResponse(event, HttpResponseStatus.OK, { userId });
 };

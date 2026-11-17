@@ -10,12 +10,11 @@ import FormField, { emailProblem } from "../FormField";
 import IceCreamPage from "./IceCreamPage";
 
 export const registerMailingListUser = async (registration: MailingListRegistration) => {
-    const { data } = await axios.post(`${API_ENDPOINT_URL}/email/register`, {
+    await axios.post(`${API_ENDPOINT_URL}/email/register`, {
         firstName: registration.firstName?.trim() || undefined,
         lastName: registration.lastName?.trim() || undefined,
         email: registration.email.trim()
     });
-    return data;
 };
 
 const MailingList = () => (
@@ -105,7 +104,8 @@ const MailingListForm = () => {
                         setSuccess(true);
                     } catch (error: unknown) {
                         setRegisterError(
-                            (isAxiosError(error) && error.response?.data?.message) ||
+                            (isAxiosError<{ message?: string }>(error) &&
+                                error.response?.data?.message) ||
                                 "Something Unexpected Happened..."
                         );
                     }

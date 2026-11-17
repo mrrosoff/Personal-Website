@@ -56,7 +56,7 @@ describe("createFriendInvite", () => {
             })
         );
 
-        const invite = await decryptToken(responseBody(result).token);
+        const invite = await decryptToken(responseBody(result).token as string);
         expect(invite).toMatchObject({
             id: "Zed Q",
             userType: UserType.SHARE,

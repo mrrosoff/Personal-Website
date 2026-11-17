@@ -77,7 +77,7 @@ const handleFriendCheckout = async (
         selectedFlavors.map((flavor) => decrementField(FLAVORS_TABLE, flavor.productId, "count"))
     );
 
-    const { email } = JSON.parse(event.body ?? "{}");
+    const { email } = JSON.parse(event.body ?? "{}") as { email?: string };
     await sendOrderSuccessEmails({
         customerName,
         customerEmail: email,

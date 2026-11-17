@@ -21,7 +21,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Request Body");
     }
 
-    const payload: SubscriptionStatusPayload = JSON.parse(event.body);
+    const payload = JSON.parse(event.body) as SubscriptionStatusPayload;
     const email = payload.email?.trim();
     if (!email) {
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Email");

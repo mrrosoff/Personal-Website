@@ -66,10 +66,13 @@ const CheckoutFormContext = createContext<CheckoutFormState | undefined>(undefin
 
 async function alreadySubscribed(email: string): Promise<boolean> {
     try {
-        const result = await axios.post(`${API_ENDPOINT_URL}/ice-cream/subscription-status`, {
-            email
-        });
-        return result.data.subscribed === true;
+        const result = await axios.post<{ subscribed: boolean }>(
+            `${API_ENDPOINT_URL}/ice-cream/subscription-status`,
+            {
+                email
+            }
+        );
+        return result.data.subscribed;
     } catch {
         return false;
     }

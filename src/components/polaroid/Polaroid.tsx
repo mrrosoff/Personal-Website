@@ -1,7 +1,7 @@
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Box, Button, Typography, useMediaQuery } from "@mui/material";
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 
 import { MAX_PHOTOS } from "../../../api/common";
 import { API_ENDPOINT_URL, DeviceKind } from "../../../api/types";
@@ -98,8 +98,8 @@ export default function Polaroid() {
                 });
                 await refresh();
             } catch (err) {
-                const message = axios.isAxiosError(err)
-                    ? (err.response?.data as { message?: string } | undefined)?.message
+                const message = isAxiosError<{ message?: string }>(err)
+                    ? err.response?.data.message
                     : undefined;
                 setError(message ?? "That photo didn't go through. Try another?");
                 await refresh();

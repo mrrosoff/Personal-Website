@@ -12,7 +12,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     }
 
     const stripe = await stripeForEvent(event);
-    const payload: GetCheckoutSessionStatusPayload = JSON.parse(event.body);
+    const payload = JSON.parse(event.body) as GetCheckoutSessionStatusPayload;
 
     const session = await stripe.checkout.sessions.retrieve(payload.sessionId);
     return buildResponse(event, HttpResponseStatus.OK, session);

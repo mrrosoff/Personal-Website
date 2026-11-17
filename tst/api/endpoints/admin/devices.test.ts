@@ -42,7 +42,7 @@ describe("devices", () => {
 
         const result = await handler(mockEvent({ token }));
 
-        expect(responseBody(result).devices[0].name).toBe("Ada, Bo & Cy's Polaroid");
+        expect(responseBody(result).devices).toMatchObject([{ name: "Ada, Bo & Cy's Polaroid" }]);
     });
 
     it("should mark a device nobody has claimed", async () => {
@@ -53,6 +53,6 @@ describe("devices", () => {
 
         const result = await handler(mockEvent({ token }));
 
-        expect(responseBody(result).devices[0].name).toBe("Unclaimed Spotify Display");
+        expect(responseBody(result).devices).toMatchObject([{ name: "Unclaimed Spotify Display" }]);
     });
 });

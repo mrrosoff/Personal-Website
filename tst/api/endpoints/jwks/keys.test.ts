@@ -9,12 +9,12 @@ describe("keys", () => {
     it("should publish the signing key", async () => {
         const result = await handler(mockEvent());
 
-        expect(responseBody(result).keys[0].kid).toBe(keyMapping.authentication);
+        expect(responseBody(result).keys).toMatchObject([{ kid: keyMapping.authentication }]);
     });
 
     it("should never publish the private half", async () => {
         const result = await handler(mockEvent());
 
-        expect(responseBody(result).keys[0]).not.toHaveProperty("d");
+        expect(result.body).not.toContain('"d"');
     });
 });

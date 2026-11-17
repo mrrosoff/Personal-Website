@@ -66,7 +66,8 @@ const UnsubscribeForm = () => {
                         setSuccess(true);
                     } catch (error: unknown) {
                         setRegisterError(
-                            (isAxiosError(error) && error.response?.data?.message) ||
+                            (isAxiosError<{ message?: string }>(error) &&
+                                error.response?.data?.message) ||
                                 "Something Unexpected Happened..."
                         );
                     }

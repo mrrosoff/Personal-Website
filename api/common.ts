@@ -44,7 +44,7 @@ export function buildErrorResponse(
 export function buildResponse(
     event: APIGatewayEvent,
     statusCode: HttpResponseStatus,
-    body: Record<string, any>
+    body: object
 ): APIGatewayProxyResult {
     const alternativeAllowedOrigins = [LOCAL_ORIGIN];
     const originHeader = event.headers?.Origin || event.headers?.origin;

@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Navigate, useSearchParams } from "react-router-dom";
 
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import { type Appearance, loadStripe } from "@stripe/stripe-js";
 import { CheckoutProvider } from "@stripe/react-stripe-js/checkout";
 
@@ -25,13 +25,17 @@ const Checkout = () => {
     const fetchClientSecret = useMemo(async () => {
         try {
             const result = isSubscription
-                ? await axios.post(`${API_ENDPOINT_URL}/ice-cream/subscribe`, {})
-                : await axios.post(
+                ? await axios.post<{ client_secret: string }>(
+                      `${API_ENDPOINT_URL}/ice-cream/subscribe`,
+                      {}
+                  )
+                : await axios.post<{ client_secret: string }>(
                       `${API_ENDPOINT_URL}/ice-cream/checkout?priceIds=${priceIdsString}`
                   );
             return result.data.client_secret;
         } catch (error) {
-            const message = axios.isAxiosError(error) && error.response?.data?.message;
+            const message =
+                isAxiosError<{ message?: string }>(error) && error.response?.data?.message;
             throw message ? new Error(message) : error;
         }
     }, [priceIdsString, isSubscription]);

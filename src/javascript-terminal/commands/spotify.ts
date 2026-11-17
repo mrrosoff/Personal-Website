@@ -9,7 +9,7 @@ export const optDef = {};
 
 async function openAuthorization(token: string) {
     try {
-        const { data } = await axios.post(
+        const { data } = await axios.post<{ authorizeUrl: string }>(
             `${API_ENDPOINT_URL}/spotify/connect`,
             {},
             { headers: { Authorization: `Bearer ${token}` } }

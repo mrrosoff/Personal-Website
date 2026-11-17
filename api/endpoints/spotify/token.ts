@@ -1,5 +1,5 @@
 import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 
 import { getParameter, getParameters } from "../../aws/services/parameterStore";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
@@ -50,7 +50,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
             }
         ));
     } catch (err: unknown) {
-        if (axios.isAxiosError(err)) {
+        if (isAxiosError<{ error?: string }>(err)) {
             if (err.response?.status === 400 && err.response.data?.error === "invalid_grant") {
                 return buildErrorResponse(
                     event,

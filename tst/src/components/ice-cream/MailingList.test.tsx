@@ -19,12 +19,11 @@ describe("registerMailingListUser", () => {
     it("should trim the details and leave out blank names", async () => {
         axiosPost.mockResolvedValue({ data: { userId: "u1" } });
 
-        const result = await registerMailingListUser({
+        await registerMailingListUser({
             firstName: "  ",
             email: " ada@example.com "
         });
 
-        expect(result).toEqual({ userId: "u1" });
         expect(axiosPost).toHaveBeenCalledWith("https://api.maxrosoff.com/email/register", {
             firstName: undefined,
             lastName: undefined,

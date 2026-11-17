@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Box, Button, useMediaQuery, useTheme } from "@mui/material";
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 
 import { decodeToken, unexpiredToken } from "../../auth";
@@ -26,14 +26,13 @@ const CancelSubscription = () => {
             await axios.post(`${API_ENDPOINT_URL}/ice-cream/cancel`, { token });
             setResult("cancelled");
         } catch (error) {
-            if (axios.isAxiosError(error) && error.response?.status === 401) {
+            if (isAxiosError(error) && error.response?.status === 401) {
                 setInvalidToken(true);
                 setCancelling(false);
                 return;
             }
             setMessage(
-                (axios.isAxiosError(error) &&
-                    (error.response?.data as { message?: string } | undefined)?.message) ||
+                (isAxiosError<{ message?: string }>(error) && error.response?.data.message) ||
                     "That did not go through. Try again in a minute."
             );
             setResult("failed");

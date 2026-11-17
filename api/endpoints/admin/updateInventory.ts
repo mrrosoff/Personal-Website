@@ -20,7 +20,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Missing Request Body");
     }
 
-    const body: UpdateInventoryPayload = JSON.parse(event.body);
+    const body = JSON.parse(event.body) as UpdateInventoryPayload;
 
     if (!(await isAdmin(event))) {
         return buildErrorResponse(

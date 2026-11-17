@@ -36,7 +36,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         );
     }
 
-    const body: Payload = JSON.parse(event.body);
+    const body = JSON.parse(event.body) as Payload;
     const email = body.email?.trim().toLowerCase();
     if (!email || !validate(email)) {
         return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, "Valid Email Required");

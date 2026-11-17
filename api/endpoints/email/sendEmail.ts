@@ -26,7 +26,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         );
     }
 
-    const body: SendEmailPayload = JSON.parse(event.body);
+    const body = JSON.parse(event.body) as SendEmailPayload;
     const message = body.message.trim();
 
     const apiKey = await getParameter("/website/resend/api-key");
