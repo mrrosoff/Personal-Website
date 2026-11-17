@@ -28,7 +28,7 @@ vi.mock("../src/components/terminal/games/SnakeGame", () => ({ default: () => nu
 
 type AwsCommand = new (input: never) => unknown;
 
-interface AwsSdkMockMatchers {
+type AwsSdkMockMatchers = {
     toHaveReceivedCommand(command: AwsCommand): void;
     toHaveReceivedCommandWith(command: AwsCommand, input: Record<string, unknown>): void;
     toHaveReceivedNthSpecificCommandWith(
@@ -36,9 +36,10 @@ interface AwsSdkMockMatchers {
         command: AwsCommand,
         input: Record<string, unknown>
     ): void;
-}
+};
 
 declare module "@vitest/expect" {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/no-explicit-any
     interface Assertion<T = any> extends TestingLibraryMatchers<unknown, T>, AwsSdkMockMatchers {}
 }
 

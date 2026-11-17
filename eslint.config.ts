@@ -2,9 +2,10 @@ import eslint from "@eslint/js";
 import vitest from "@vitest/eslint-plugin";
 import prettier from "eslint-config-prettier";
 import reactHooks from "eslint-plugin-react-hooks";
+import { defineConfig } from "eslint/config";
 import tseslint from "typescript-eslint";
 
-export default tseslint.config(
+export default defineConfig(
     { ignores: ["dist", "cdk.out", "coverage", "node_modules", "scripts/passkeyRegistrationUI"] },
     eslint.configs.recommended,
     ...tseslint.configs.strictTypeChecked,
@@ -18,13 +19,7 @@ export default tseslint.config(
             }
         },
         rules: {
-            "@typescript-eslint/consistent-type-definitions": "off",
-            "@typescript-eslint/no-confusing-void-expression": "off",
-            "@typescript-eslint/no-non-null-assertion": "off",
-            "@typescript-eslint/no-misused-promises": [
-                "error",
-                { checksVoidReturn: { attributes: false } }
-            ],
+            "@typescript-eslint/consistent-type-definitions": ["error", "type"],
             "@typescript-eslint/no-unused-vars": [
                 "error",
                 {
@@ -50,16 +45,12 @@ export default tseslint.config(
     },
     {
         files: ["tst/**"],
-        ...vitest.configs.recommended,
+        extends: [vitest.configs.recommended],
         rules: {
-            ...vitest.configs.recommended.rules,
             "@typescript-eslint/no-unsafe-assignment": "off",
             "@typescript-eslint/require-await": "off",
-            "@typescript-eslint/unbound-method": "off"
+            "@typescript-eslint/unbound-method": "off",
+            "vitest/no-mocks-import": "off"
         }
-    },
-    {
-        files: ["tst/setup.ts"],
-        rules: { "@typescript-eslint/no-explicit-any": "off" }
     }
 );
