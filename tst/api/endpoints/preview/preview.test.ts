@@ -8,7 +8,7 @@ import { mockDocumentClient, mockFlavor } from "../../../mocks/aws/dynamodb";
 import { mockToken } from "../../../setup";
 
 import { handler } from "../../../../api/endpoints/preview/preview";
-import { UserType } from "../../../../api/types";
+import { PREVIEW_CARD_PAGES, UserType } from "../../../../api/types";
 
 vi.mock("@cf-wasm/og/node", () => ({
     render: vi.fn(),
@@ -107,5 +107,21 @@ describe("preview", () => {
         await handler({ queryStringParameters: { page: "/ice-cream/cancel", token } });
 
         expect(renderedText()).toMatch(/Terminal[ .]+ONLINE/);
+    });
+
+    it("should give every page that runs the preview function its own card", async () => {
+        const tokens = {
+            "/register-friend": await mockToken(UserType.SHARE, { id: "Ada" }),
+            "/ice-cream/cancel": await mockToken(UserType.SUBSCRIBER, { id: "sub_1" })
+        };
+
+        for (const page of PREVIEW_CARD_PAGES) {
+            vi.mocked(render).mockClear();
+            const token = page in tokens ? tokens[page as keyof typeof tokens] : undefined;
+
+            await handler({ queryStringParameters: { page, token } });
+
+            expect(renderedText()).not.toMatch(/Terminal[ .]+ONLINE/);
+        }
     });
 });

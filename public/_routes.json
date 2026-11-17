@@ -1,5 +1,0 @@
-{
-    "version": 1,
-    "include": ["/ice-cream", "/ice-cream/*", "/register-friend"],
-    "exclude": []
-}

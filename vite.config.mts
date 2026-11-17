@@ -5,9 +5,24 @@ import { resolve } from "node:path";
 import { defineConfig } from "vite";
 import type { Plugin } from "vite";
 
+import { PREVIEW_CARD_PAGES } from "./api/types";
+
 import react from "@vitejs/plugin-react";
 
 const mockJwks = resolve("tst/mocks/jwks");
+
+function pagesRoutes(): Plugin {
+    return {
+        name: "pages-routes",
+        generateBundle() {
+            this.emitFile({
+                type: "asset",
+                fileName: "_routes.json",
+                source: JSON.stringify({ version: 1, include: PREVIEW_CARD_PAGES, exclude: [] })
+            });
+        }
+    };
+}
 
 function base64Assets(): Plugin {
     return {
@@ -22,7 +37,7 @@ function base64Assets(): Plugin {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [react()],
+    plugins: [react(), pagesRoutes()],
     build: {
         sourcemap: true,
         rollupOptions: {

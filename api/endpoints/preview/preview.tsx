@@ -7,7 +7,7 @@ import { readToken } from "../../auth";
 import { getEntireTable } from "../../aws/services/dynamodb";
 import { FLAVORS_TABLE } from "../../common";
 import { UserType } from "../../types";
-import type { AccessToken, DatabaseFlavor } from "../../types";
+import type { AccessToken, DatabaseFlavor, PreviewCardPage } from "../../types";
 import FreezerCard from "./cards/FreezerCard";
 import HomeCard from "./cards/HomeCard";
 import InviteCard from "./cards/InviteCard";
@@ -29,7 +29,7 @@ export const handler = async (event: PreviewEvent = {}): Promise<string> => {
 };
 
 async function cardFor(params: APIGatewayProxyEventQueryStringParameters): Promise<ReactElement> {
-    switch (params.page) {
+    switch (params.page as PreviewCardPage | undefined) {
         case "/ice-cream":
         case "/ice-cream/checkout":
         case "/ice-cream/checkout/return":
