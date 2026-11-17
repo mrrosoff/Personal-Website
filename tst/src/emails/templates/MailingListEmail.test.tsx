@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { renderEmail } from "../../helpers/render";
+import { renderEmail } from "../../../helpers/render";
 
-import { mockFlavor } from "../../__mocks__/__data__/aws/dynamodb";
+import { mockFlavor } from "../../../__mocks__/__data__/aws/dynamodb";
 
-import MailingListEmail from "../../../src/emails/MailingListEmail";
+import MailingListEmail from "../../../../src/emails/templates/MailingListEmail";
 
 describe("MailingListEmail", () => {
     it("should list each kind of flavor with links to buy", async () => {

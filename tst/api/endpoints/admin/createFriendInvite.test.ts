@@ -7,9 +7,9 @@ import { mockResend } from "../../../__mocks__/resend";
 import { decryptToken } from "../../../../api/auth";
 import { handler } from "../../../../api/endpoints/admin/createFriendInvite";
 import { UserType } from "../../../../api/types";
-import FriendInviteEmail from "../../../../src/emails/FriendInviteEmail";
+import FriendInviteEmail from "../../../../src/emails/templates/FriendInviteEmail";
 
-vi.mock("../../../../src/emails/FriendInviteEmail", () => ({ default: vi.fn() }));
+vi.mock("../../../../src/emails/templates/FriendInviteEmail", () => ({ default: vi.fn() }));
 
 const mockFriendInviteEmail = vi.mocked(FriendInviteEmail);
 

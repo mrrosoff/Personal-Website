@@ -4,8 +4,8 @@ import type Stripe from "stripe";
 
 import { getParameter } from "../../aws/services/parameterStore";
 import { getEntireTable } from "../../aws/services/dynamodb";
-import MailingListEmail from "../../../src/emails/MailingListEmail";
-import OrderSuccessEmail from "../../../src/emails/OrderSuccessEmail";
+import MailingListEmail from "../../../src/emails/templates/MailingListEmail";
+import OrderSuccessEmail from "../../../src/emails/templates/OrderSuccessEmail";
 import { FLAVORS_TABLE, HttpResponseStatus, buildErrorResponse, buildResponse } from "../../common";
 import { isAdmin } from "../../permissions";
 

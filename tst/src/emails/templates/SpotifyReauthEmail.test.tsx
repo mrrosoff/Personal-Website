@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { renderEmail } from "../../helpers/render";
+import { renderEmail } from "../../../helpers/render";
 
-import SpotifyReauthEmail from "../../../src/emails/SpotifyReauthEmail";
+import SpotifyReauthEmail from "../../../../src/emails/templates/SpotifyReauthEmail";
 
 describe("SpotifyReauthEmail", () => {
     it("should greet the owner and count down the days", async () => {

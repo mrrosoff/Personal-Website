@@ -1,10 +1,10 @@
+import type { ReactNode } from "react";
+
 import {
     Body,
     Column,
     Container,
     Head,
-    Heading,
-    Hr,
     Html,
     Img,
     Link,
@@ -14,64 +14,46 @@ import {
     Text
 } from "@react-email/components";
 
-type FlavorSuggestionEmailProps = {
-    friendName: string;
-    flavor: string;
-};
+type EmailLayoutProps = { preview: string; children: ReactNode };
 
-const FlavorSuggestionEmail = ({ friendName, flavor }: FlavorSuggestionEmailProps) => {
-    return (
-        <Html>
-            <Head />
-            <Body
+export const EmailLayout = (props: EmailLayoutProps) => (
+    <Html>
+        <Head />
+        <Body
+            style={{
+                backgroundColor: "#DBDDDE",
+                fontFamily:
+                    '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif'
+            }}
+        >
+            <Preview>{props.preview}</Preview>
+            <Container
                 style={{
-                    backgroundColor: "#DBDDDE",
-                    fontFamily:
-                        '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif'
+                    backgroundColor: "#FFFFFF",
+                    paddingLeft: "20px",
+                    paddingRight: "20px"
                 }}
             >
-                <Preview>
-                    {friendName} suggested a new flavor: {flavor}
-                </Preview>
-                <Container
-                    style={{
-                        backgroundColor: "#FFFFFF",
-                        paddingLeft: "20px",
-                        paddingRight: "20px"
-                    }}
-                >
-                    <Section>
-                        <Heading style={{ marginBottom: 24 }}>
-                            💡 Flavor Suggestion From {friendName}
-                        </Heading>
-                        <Text
-                            style={{
-                                fontSize: 24,
-                                fontWeight: 200,
-                                color: "rgb(17,24,39)",
-                                marginTop: 16,
-                                marginBottom: 0
-                            }}
-                        >
-                            {flavor}
-                        </Text>
-                    </Section>
-                    <Hr
-                        style={{
-                            width: "100%",
-                            borderWidth: 1,
-                            borderStyle: "solid",
-                            borderColor: "rgb(209,213,219)"
-                        }}
-                    />
-                    <Footer />
-                </Container>
-            </Body>
-        </Html>
-    );
-};
+                {props.children}
+            </Container>
+        </Body>
+    </Html>
+);
 
-const Footer = () => {
+type EmailFooterProps = { tagline: string; href?: string };
+
+export const EmailFooter = (props: EmailFooterProps) => {
+    const tagline = (
+        <Text
+            style={{
+                fontSize: 12,
+                fontWeight: 600,
+                color: "rgb(107,114,128)"
+            }}
+        >
+            {props.tagline}
+        </Text>
+    );
     return (
         <Section style={{ marginTop: 16, marginBottom: 16 }}>
             <Row>
@@ -83,7 +65,6 @@ const Footer = () => {
                     />
                     <Text
                         style={{
-                            lineHeight: undefined,
                             marginTop: "12px",
                             marginBottom: "0px",
                             fontSize: 12,
@@ -93,17 +74,7 @@ const Footer = () => {
                     >
                         Max's Freezer Stash
                     </Text>
-                    <Text
-                        style={{
-                            margin: undefined,
-                            fontSize: 12,
-                            lineHeight: undefined,
-                            fontWeight: 600,
-                            color: "rgb(107,114,128)"
-                        }}
-                    >
-                        Flavor Lab
-                    </Text>
+                    {props.href ? <Link href={props.href}>{tagline}</Link> : tagline}
                 </Column>
                 <Column align="right" style={{ display: "table-cell", verticalAlign: "bottom" }}>
                     <Row
@@ -140,7 +111,6 @@ const Footer = () => {
                                 marginBottom: "0px",
                                 textAlign: "right",
                                 fontSize: 12,
-                                lineHeight: undefined,
                                 fontWeight: 600,
                                 color: "rgb(107,114,128)"
                             }}
@@ -153,19 +123,16 @@ const Footer = () => {
                                 marginBottom: "4px",
                                 textAlign: "right",
                                 fontSize: 12,
-                                lineHeight: undefined,
                                 fontWeight: 600,
                                 color: "rgb(107,114,128)"
                             }}
                         >
-                            San Fransisco, CA 94114
+                            San Francisco, CA 94114
                         </Text>
                         <Text
                             style={{
                                 textAlign: "right",
-                                margin: undefined,
                                 fontSize: 12,
-                                lineHeight: undefined,
                                 fontWeight: 600,
                                 color: "rgb(107,114,128)"
                             }}
@@ -178,10 +145,3 @@ const Footer = () => {
         </Section>
     );
 };
-
-FlavorSuggestionEmail.PreviewProps = {
-    friendName: "Max",
-    flavor: "Lavender Honey Cardamom"
-};
-
-export default FlavorSuggestionEmail;

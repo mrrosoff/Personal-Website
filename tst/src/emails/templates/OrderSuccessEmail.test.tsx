@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { renderEmail } from "../../helpers/render";
+import { renderEmail } from "../../../helpers/render";
 
-import OrderSuccessEmail from "../../../src/emails/OrderSuccessEmail";
+import OrderSuccessEmail from "../../../../src/emails/templates/OrderSuccessEmail";
 
 const address = {
     line1: "123 Main St",

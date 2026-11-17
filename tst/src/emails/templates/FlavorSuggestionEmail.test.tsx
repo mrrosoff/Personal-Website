@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { renderEmail } from "../../helpers/render";
+import { renderEmail } from "../../../helpers/render";
 
-import FlavorSuggestionEmail from "../../../src/emails/FlavorSuggestionEmail";
+import FlavorSuggestionEmail from "../../../../src/emails/templates/FlavorSuggestionEmail";
 
 describe("FlavorSuggestionEmail", () => {
     it("should say who suggested which flavor", async () => {

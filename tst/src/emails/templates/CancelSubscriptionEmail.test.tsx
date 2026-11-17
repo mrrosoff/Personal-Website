@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { renderEmail } from "../../helpers/render";
+import { renderEmail } from "../../../helpers/render";
 
-import CancelSubscriptionEmail from "../../../src/emails/CancelSubscriptionEmail";
+import CancelSubscriptionEmail from "../../../../src/emails/templates/CancelSubscriptionEmail";
 
 describe("CancelSubscriptionEmail", () => {
     it("should link to the cancel page and say how long it lasts", async () => {

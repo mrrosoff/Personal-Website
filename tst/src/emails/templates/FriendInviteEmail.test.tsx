@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { renderEmail } from "../../helpers/render";
+import { renderEmail } from "../../../helpers/render";
 
-import FriendInviteEmail from "../../../src/emails/FriendInviteEmail";
+import FriendInviteEmail from "../../../../src/emails/templates/FriendInviteEmail";
 
 describe("FriendInviteEmail", () => {
     it("should invite the friend by name with a link that expires", async () => {
