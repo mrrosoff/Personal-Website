@@ -1,8 +1,7 @@
-import { PutParameterCommand } from "@aws-sdk/client-ssm";
 import { describe, expect, it } from "vitest";
 
 import { mockEvent, responseBody } from "../../../setup";
-import { mockParameters, mockSSMClient } from "../../../mocks/aws/parameterStore";
+import { mockParameterStore, mockParameters } from "../../../mocks/aws/parameterStore";
 import { axiosPost } from "../../../mocks/axios";
 import { mockDevice } from "../../../fixtures/aws/dynamodb";
 
@@ -64,13 +63,8 @@ describe("exchange", () => {
         const result = await handler(mockEvent({ body: { code: "c", state: validState } }));
 
         expect(responseBody(result)).toEqual({ connected: true });
-        expect(mockSSMClient).toHaveReceivedCommandWith(PutParameterCommand, {
-            Name: refreshTokenParam(mockDevice.deviceId),
-            Value: "refresh"
-        });
-        expect(mockSSMClient).toHaveReceivedCommandWith(PutParameterCommand, {
-            Name: refreshTokenSetAtParam(mockDevice.deviceId)
-        });
+        expect(mockParameterStore.get(refreshTokenParam(mockDevice.deviceId))).toBe("refresh");
+        expect(mockParameterStore.has(refreshTokenSetAtParam(mockDevice.deviceId))).toBe(true);
     });
 
     it("should reject a state without a signature", async () => {

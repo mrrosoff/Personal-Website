@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 import { mockEvent, responseBody } from "../../../setup";
 import { mockDynamoDB } from "../../../mocks/aws/dynamodb";
-import { mockDeviceParameters, mockSSMClient } from "../../../mocks/aws/parameterStore";
+import { mockParameterStore, mockSSMClient } from "../../../mocks/aws/parameterStore";
 import { AxiosError, axiosPost } from "../../../mocks/axios";
 import { mockDevice, mockDeviceToken } from "../../../fixtures/aws/dynamodb";
 
@@ -27,7 +27,7 @@ function spotifyError(status?: number, data?: object) {
 
 beforeEach(() => {
     mockDynamoDB.seed(DEVICES_TABLE, { ...mockDevice, kind: DeviceKind.SPOTIFY });
-    mockDeviceParameters.set(refreshParam, "refresh");
+    mockParameterStore.set(refreshParam, "refresh");
     axiosPost.mockResolvedValue({ data: { access_token: "access", expires_in: 3600 } });
 });
 
@@ -39,7 +39,7 @@ describe("token", () => {
     });
 
     it("should ask to connect a display that never has", async () => {
-        mockDeviceParameters.delete(refreshParam);
+        mockParameterStore.delete(refreshParam);
 
         const result = await handler(event);
 
@@ -59,10 +59,7 @@ describe("token", () => {
 
         await handler(event);
 
-        expect(mockSSMClient).toHaveReceivedCommandWith(PutParameterCommand, {
-            Name: refreshParam,
-            Value: "new"
-        });
+        expect(mockParameterStore.get(refreshParam)).toBe("new");
     });
 
     it("should not rewrite an unchanged refresh token", async () => {

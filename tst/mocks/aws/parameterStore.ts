@@ -2,6 +2,7 @@ import {
     GetParametersCommand,
     type GetParametersCommandInput,
     PutParameterCommand,
+    type PutParameterCommandInput,
     SSMClient
 } from "@aws-sdk/client-ssm";
 import { faker } from "@faker-js/faker";
@@ -25,25 +26,27 @@ export const mockParameters: Record<string, string> = {
     "/website/spotify/client-secret": faker.string.alphanumeric(32)
 };
 
-export const mockDeviceParameters = new Map<string, string>();
-
-function parameterValue(name: string): string | undefined {
-    return mockDeviceParameters.get(name) ?? mockParameters[name];
-}
+export const mockParameterStore = new Map<string, string>();
 
 beforeEach(() => {
+    for (const [name, value] of Object.entries(mockParameters)) {
+        mockParameterStore.set(name, value);
+    }
     mockSSMClient
         .on(GetParametersCommand)
         .callsFake(({ Names = [] }: GetParametersCommandInput) => ({
-            Parameters: Names.filter((Name) => parameterValue(Name) !== undefined).map((Name) => ({
+            Parameters: Names.filter((Name) => mockParameterStore.has(Name)).map((Name) => ({
                 Name,
-                Value: parameterValue(Name)
+                Value: mockParameterStore.get(Name)
             }))
         }));
-    mockSSMClient.on(PutParameterCommand).resolves({});
+    mockSSMClient.on(PutParameterCommand).callsFake(({ Name, Value }: PutParameterCommandInput) => {
+        mockParameterStore.set(String(Name), String(Value));
+        return {};
+    });
 });
 
 afterEach(() => {
     mockSSMClient.reset();
-    mockDeviceParameters.clear();
+    mockParameterStore.clear();
 });

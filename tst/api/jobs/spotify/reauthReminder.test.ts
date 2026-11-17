@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { mockDynamoDB } from "../../../mocks/aws/dynamodb";
-import { mockDeviceParameters } from "../../../mocks/aws/parameterStore";
+import { mockParameterStore } from "../../../mocks/aws/parameterStore";
 import { mockDevice, mockPasskey } from "../../../fixtures/aws/dynamodb";
 import { mockResend } from "../../../mocks/resend";
 
@@ -14,7 +14,7 @@ const setAtParam = refreshTokenSetAtParam(mockDevice.deviceId);
 const spotifyDisplay = { ...mockDevice, kind: DeviceKind.SPOTIFY };
 
 function connectedDaysAgo(days: number) {
-    mockDeviceParameters.set(setAtParam, String(Date.now() - days * 24 * 60 * 60 * 1000));
+    mockParameterStore.set(setAtParam, String(Date.now() - days * 24 * 60 * 60 * 1000));
 }
 
 beforeEach(() => {

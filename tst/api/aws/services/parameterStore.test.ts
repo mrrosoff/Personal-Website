@@ -1,7 +1,11 @@
 import { GetParametersCommand, PutParameterCommand } from "@aws-sdk/client-ssm";
 import { describe, expect, it } from "vitest";
 
-import { mockParameters, mockSSMClient } from "../../../mocks/aws/parameterStore";
+import {
+    mockParameterStore,
+    mockParameters,
+    mockSSMClient
+} from "../../../mocks/aws/parameterStore";
 
 import {
     getParameter,
@@ -44,6 +48,7 @@ describe("parameterStore", () => {
     it("should store a secure parameter", async () => {
         await putSecureParameter("/website/test", "value");
 
+        expect(mockParameterStore.get("/website/test")).toBe("value");
         expect(mockSSMClient).toHaveReceivedCommandWith(PutParameterCommand, {
             Name: "/website/test",
             Value: "value",
