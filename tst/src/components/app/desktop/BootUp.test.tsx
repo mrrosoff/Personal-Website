@@ -17,7 +17,7 @@ function renderBootUp() {
 }
 
 function advanceTo(ms: number) {
-    act(() => vi.advanceTimersByTime(ms));
+    act(() => void vi.advanceTimersByTime(ms));
 }
 
 function connection(value: object | undefined) {

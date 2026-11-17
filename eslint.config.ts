@@ -21,6 +21,10 @@ export default tseslint.config(
             "@typescript-eslint/consistent-type-definitions": "off",
             "@typescript-eslint/no-confusing-void-expression": "off",
             "@typescript-eslint/no-non-null-assertion": "off",
+            "@typescript-eslint/no-misused-promises": [
+                "error",
+                { checksVoidReturn: { attributes: false } }
+            ],
             "@typescript-eslint/no-unused-vars": [
                 "error",
                 {
@@ -50,6 +54,7 @@ export default tseslint.config(
         rules: {
             ...vitest.configs.recommended.rules,
             "@typescript-eslint/no-unsafe-assignment": "off",
+            "@typescript-eslint/require-await": "off",
             "@typescript-eslint/unbound-method": "off"
         }
     },

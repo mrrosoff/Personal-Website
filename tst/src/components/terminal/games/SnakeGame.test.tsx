@@ -18,16 +18,16 @@ function foodAt(...cells: [number, number][]) {
 
 function tick(ms: number) {
     for (let elapsed = 0; elapsed < ms; elapsed += 150) {
-        act(() => vi.advanceTimersByTime(Math.min(150, ms - elapsed)));
+        act(() => void vi.advanceTimersByTime(Math.min(150, ms - elapsed)));
     }
-    act(() => vi.advanceTimersByTime(0));
+    act(() => void vi.advanceTimersByTime(0));
 }
 
 function countDown() {
     for (let second = 0; second < 3; second++) {
-        act(() => vi.advanceTimersByTime(1000));
+        act(() => void vi.advanceTimersByTime(1000));
     }
-    act(() => vi.advanceTimersByTime(0));
+    act(() => void vi.advanceTimersByTime(0));
 }
 
 function press(key: string) {
@@ -55,7 +55,7 @@ describe("SnakeGame", () => {
         renderWithApp(<SnakeGame />);
 
         expect(screen.getByText("3")).toBeInTheDocument();
-        act(() => vi.advanceTimersByTime(1000));
+        act(() => void vi.advanceTimersByTime(1000));
         expect(screen.getByText("2")).toBeInTheDocument();
     });
 

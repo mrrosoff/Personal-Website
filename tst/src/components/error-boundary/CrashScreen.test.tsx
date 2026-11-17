@@ -6,7 +6,7 @@ import { renderWithApp } from "../../../helpers/render";
 import CrashScreen from "../../../../src/components/error-boundary/CrashScreen";
 
 function advance(ms: number) {
-    act(() => vi.advanceTimersByTime(ms));
+    act(() => void vi.advanceTimersByTime(ms));
 }
 
 beforeEach(() => {

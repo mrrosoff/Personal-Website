@@ -46,7 +46,7 @@ describe("Page", () => {
         });
 
         expect(screen.getByText(/Released:/)).toBeInTheDocument();
-        act(() => vi.advanceTimersByTime(6400));
+        act(() => void vi.advanceTimersByTime(6400));
         expect(screen.getByText(/Welcome To Rosoff OS/)).toBeInTheDocument();
         vi.useRealTimers();
     });

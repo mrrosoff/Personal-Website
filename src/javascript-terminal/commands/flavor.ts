@@ -26,7 +26,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     }
 
     const flavorName = argv.join(" ");
-    axios.post(
+    void axios.post(
         `${API_ENDPOINT_URL}/friends/suggest-flavor`,
         { flavor: flavorName },
         { headers: { Authorization: `Bearer ${token}` } }

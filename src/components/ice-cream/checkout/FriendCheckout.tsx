@@ -41,7 +41,7 @@ const FriendCheckout = ({ priceIds, friendToken }: FriendCheckoutProps) => {
                 { email },
                 { headers: { Authorization: `Bearer ${friendToken}` } }
             );
-            navigate("/ice-cream/checkout/return");
+            await navigate("/ice-cream/checkout/return");
         } catch (err) {
             setMessage("Checkout Failed");
             setIsLoading(false);

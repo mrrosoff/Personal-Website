@@ -77,7 +77,7 @@ const Links = (props: { open: boolean; setOpen: Dispatch<SetStateAction<boolean>
 
     const handleCartClick = () => {
         const priceIdsParam = selectedPriceIds.join(",");
-        navigate(`/ice-cream/checkout?priceIds=${priceIdsParam}`);
+        void navigate(`/ice-cream/checkout?priceIds=${priceIdsParam}`);
     };
 
     return (

@@ -50,7 +50,7 @@ const SpotifyCallback = () => {
             return;
         }
         if (secondsLeft <= 0) {
-            navigate("/");
+            void navigate("/");
             return;
         }
         const timeout = setTimeout(() => setSecondsLeft((seconds) => seconds - 1), 1000);

@@ -96,7 +96,7 @@ describe("Polaroid", () => {
         await renderSignedIn();
         vi.spyOn(document, "hidden", "get").mockReturnValue(true);
 
-        act(() => document.dispatchEvent(new Event("visibilitychange")));
+        act(() => void document.dispatchEvent(new Event("visibilitychange")));
 
         expect(axiosGet).toHaveBeenCalledOnce();
     });

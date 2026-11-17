@@ -10,7 +10,7 @@ describe("useLoadingDots", () => {
 
         const seen = [result.current];
         for (let i = 0; i < 3; i++) {
-            act(() => vi.advanceTimersByTime(500));
+            act(() => void vi.advanceTimersByTime(500));
             seen.push(result.current);
         }
 

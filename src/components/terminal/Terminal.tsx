@@ -140,7 +140,7 @@ const Terminal = (
                 await authenticateWithPasskey(emulator, emulatorState);
                 setRenderedOutputs(calculateOutputs());
             };
-            authenticate();
+            void authenticate();
         }
     }, [emulatorState.getPasswordPromptState()]);
 
@@ -175,7 +175,7 @@ const Terminal = (
         bumpAdminConsole();
     };
 
-    const onKeyDown = async (e: KeyboardEvent<HTMLInputElement>) => {
+    const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
         const passwordPrompt = emulatorState.getPasswordPromptState();
         if (passwordPrompt) {
             return;
@@ -249,7 +249,7 @@ const Terminal = (
 
                 const target = latest?.output.find((result) => result.type === "navigate");
                 if (target) {
-                    navigate(target.output as string, { replace: true });
+                    void navigate(target.output as string, { replace: true });
                 }
                 break;
         }
@@ -311,7 +311,7 @@ const Terminal = (
                                             internalPath
                                                 ? (e) => {
                                                       e.preventDefault();
-                                                      navigate(internalPath);
+                                                      void navigate(internalPath);
                                                   }
                                                 : undefined
                                         }

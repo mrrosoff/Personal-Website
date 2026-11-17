@@ -43,7 +43,7 @@ describe("CommandInput", () => {
         renderInput();
         const cursor = document.getElementById("cursor")!;
 
-        act(() => vi.advanceTimersByTime(600));
+        act(() => void vi.advanceTimersByTime(600));
 
         expect(cursor).toHaveStyle({ visibility: "hidden" });
         vi.useRealTimers();

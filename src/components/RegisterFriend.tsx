@@ -91,7 +91,7 @@ const RegisterForm = (props: { token: string; friendName: string }) => {
                 authHeaders
             );
             const onlyPolaroid = devices.length === 1 && devices[0] === DeviceKind.POLAROID;
-            return navigate(onlyPolaroid ? "/polaroid" : "/");
+            return await navigate(onlyPolaroid ? "/polaroid" : "/");
         } catch (err: unknown) {
             console.error(err);
             setIsLoading(false);

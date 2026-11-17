@@ -26,7 +26,7 @@ describe("FormField", () => {
         vi.useFakeTimers();
         renderWithApp(<FormField label={"Email"} value={"nope"} problem={emailProblem} />);
 
-        act(() => vi.advanceTimersByTime(600));
+        act(() => void vi.advanceTimersByTime(600));
 
         expect(screen.getByText("Enter a valid email.")).toBeInTheDocument();
         vi.useRealTimers();

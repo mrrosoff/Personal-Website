@@ -269,7 +269,7 @@ describe("password prompt", () => {
         emulatorState.setPasswordPromptState({ loading: true });
         renderTerminal(emulatorState);
 
-        act(() => vi.advanceTimersByTime(600));
+        act(() => void vi.advanceTimersByTime(600));
         fireEvent.keyDown(input(), { key: "Enter" });
 
         expect(screen.getByText("Password:")).toBeInTheDocument();
@@ -285,7 +285,7 @@ describe("password prompt", () => {
         renderTerminal(emulatorState);
         const cursor = screen.getByText("Password:").nextElementSibling!;
 
-        act(() => vi.advanceTimersByTime(600));
+        act(() => void vi.advanceTimersByTime(600));
 
         expect(cursor).toHaveStyle({ visibility: "hidden" });
         vi.useRealTimers();

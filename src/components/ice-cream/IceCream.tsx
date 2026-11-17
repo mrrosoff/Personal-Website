@@ -97,7 +97,7 @@ const IceCream = () => {
 
     const handleCartClick = () => {
         const priceIdsParam = selectedPriceIds.join(",");
-        navigate(`/ice-cream/checkout?priceIds=${priceIdsParam}`);
+        void navigate(`/ice-cream/checkout?priceIds=${priceIdsParam}`);
     };
 
     const mailingList = (

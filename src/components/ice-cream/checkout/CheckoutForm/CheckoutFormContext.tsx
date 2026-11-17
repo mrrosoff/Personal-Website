@@ -148,7 +148,7 @@ export function CheckoutFormProvider({
                 isLoading,
                 paymentComplete,
                 setPaymentComplete,
-                onSubmit: state.type === "success" ? () => submit(state.checkout) : undefined
+                onSubmit: state.type === "success" ? () => void submit(state.checkout) : undefined
             }}
         >
             {children}
