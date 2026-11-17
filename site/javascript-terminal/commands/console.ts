@@ -1,6 +1,12 @@
 import axios, { isAxiosError } from "axios";
 
-import { API_ENDPOINT_URL, FLAVOR_TYPES, type FlavorType, UserType } from "../../../api/types";
+import {
+    API_ENDPOINT_URL,
+    FLAVOR_TYPES,
+    type FlavorType,
+    UserType,
+    type ErrorResponseBody
+} from "../../../api/types";
 import { decodeToken } from "../../auth";
 import EmulatorState, { AdminConsoleScreen, MainMenuOption } from "../emulator-state/EmulatorState";
 import { handleAddMailingListEntry } from "./console/mailingList/addMailingListEntry";
@@ -62,7 +68,7 @@ export async function postAsAdmin<T>(
 }
 
 export function errorMessageFrom(err: unknown, fallback: string): string {
-    if (isAxiosError<{ message?: string }>(err)) {
+    if (isAxiosError<ErrorResponseBody>(err)) {
         return err.response?.data.message ?? fallback;
     }
     return fallback;

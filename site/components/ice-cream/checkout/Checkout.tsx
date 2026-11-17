@@ -5,7 +5,7 @@ import axios, { isAxiosError } from "axios";
 import { type Appearance, loadStripe } from "@stripe/stripe-js";
 import { CheckoutProvider } from "@stripe/react-stripe-js/checkout";
 
-import { API_ENDPOINT_URL } from "../../../../api/types";
+import { API_ENDPOINT_URL, type ErrorResponseBody } from "../../../../api/types";
 import { useAppContext } from "../../AppContext";
 import CheckoutForm from "./CheckoutForm";
 import FriendCheckout from "./FriendCheckout";
@@ -34,9 +34,10 @@ const Checkout = () => {
                   );
             return result.data.client_secret;
         } catch (error) {
-            const message =
-                isAxiosError<{ message?: string }>(error) && error.response?.data?.message;
-            throw message ? new Error(message) : error;
+            if (isAxiosError<ErrorResponseBody>(error) && error.response?.data.message) {
+                throw new Error(error.response.data.message);
+            }
+            throw error;
         }
     }, [priceIdsString, isSubscription]);
 

@@ -5,7 +5,7 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import axios, { isAxiosError } from "axios";
 
-import { API_ENDPOINT_URL } from "../../api/types";
+import { API_ENDPOINT_URL, type ErrorResponseBody } from "../../api/types";
 
 const SPOTIFY_GREEN = "#1DB954";
 
@@ -77,11 +77,11 @@ const SpotifyCallback = () => {
                 await axios.post(`${API_ENDPOINT_URL}/spotify/exchange`, { code, state });
                 setStatus("success");
             } catch (err: unknown) {
-                let detail = "Could Not Connect Spotify, Please Try Again";
-                if (isAxiosError<{ message?: string }>(err) && err.response?.data?.message) {
-                    detail = err.response.data.message;
+                if (isAxiosError<ErrorResponseBody>(err) && err.response?.data.message) {
+                    setMessage(err.response.data.message);
+                } else {
+                    setMessage("Could Not Connect Spotify, Please Try Again");
                 }
-                setMessage(detail);
                 setStatus("error");
             }
         };

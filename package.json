@@ -7,7 +7,7 @@
         "check-format": "prettier --check \"api/**/*.ts*\" \"site/**/*.ts*\" \"tst/**/*.ts*\"",
         "format": "prettier --write \"api/**/*.ts*\" \"site/**/*.ts*\" \"tst/**/*.ts*\"",
         "types": "tsc --noEmit",
-        "lint": "eslint .",
+        "lint": "eslint",
         "start": "NODE_ENV=development vite",
         "start-email": "NODE_ENV=development email dev --dir site/emails/templates --port 4000",
         "create-jwt-keys": "ts-node scripts/createJWTKeys.ts",

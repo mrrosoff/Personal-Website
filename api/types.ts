@@ -1,3 +1,5 @@
+export type ErrorResponseBody = { message: string };
+
 export type DynamoDBScalar = number | string | boolean | undefined | null;
 export type DynamoDBFieldValue =
     DynamoDBScalar | DynamoDBScalar[] | { [key: string]: DynamoDBFieldValue };

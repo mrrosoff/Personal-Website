@@ -5,7 +5,11 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import axios, { isAxiosError } from "axios";
 import { validate } from "email-validator";
 
-import { API_ENDPOINT_URL, type MailingListRegistration } from "../../../api/types";
+import {
+    API_ENDPOINT_URL,
+    type MailingListRegistration,
+    type ErrorResponseBody
+} from "../../../api/types";
 import FormField, { emailProblem } from "../FormField";
 import IceCreamPage from "./IceCreamPage";
 
@@ -46,10 +50,11 @@ const MailingListForm = () => {
             await registerMailingListUser({ firstName, lastName, email });
             setSuccess(true);
         } catch (error: unknown) {
-            setRegisterError(
-                (isAxiosError<{ message?: string }>(error) && error.response?.data?.message) ||
-                    "Something Unexpected Happened..."
-            );
+            if (isAxiosError<ErrorResponseBody>(error) && error.response?.data.message) {
+                setRegisterError(error.response.data.message);
+            } else {
+                setRegisterError("Something Unexpected Happened...");
+            }
         }
         setLoading(false);
     };

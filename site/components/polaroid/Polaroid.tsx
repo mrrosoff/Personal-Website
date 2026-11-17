@@ -4,7 +4,7 @@ import { Box, Button, Typography, useMediaQuery } from "@mui/material";
 import axios, { isAxiosError } from "axios";
 
 import { MAX_PHOTOS } from "../../../api/common";
-import { API_ENDPOINT_URL, DeviceKind } from "../../../api/types";
+import { API_ENDPOINT_URL, DeviceKind, type ErrorResponseBody } from "../../../api/types";
 import { decodeToken, ownsDeviceKind } from "../../auth";
 import { signInWithPasskey } from "../../javascript-terminal/commands/sudo";
 import { TERMINAL_COLORS } from "../terminal/Terminal";
@@ -98,10 +98,11 @@ export default function Polaroid() {
                 });
                 await refresh();
             } catch (err) {
-                const message = isAxiosError<{ message?: string }>(err)
-                    ? err.response?.data.message
-                    : undefined;
-                setError(message ?? "That photo didn't go through. Try another?");
+                if (isAxiosError<ErrorResponseBody>(err) && err.response?.data.message) {
+                    setError(err.response.data.message);
+                } else {
+                    setError("That photo didn't go through. Try another?");
+                }
                 await refresh();
             } finally {
                 setBusy(false);

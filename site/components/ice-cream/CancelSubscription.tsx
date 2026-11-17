@@ -5,7 +5,7 @@ import axios, { isAxiosError } from "axios";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 
 import { decodeToken, unexpiredToken } from "../../auth";
-import { API_ENDPOINT_URL, UserType } from "../../../api/types";
+import { API_ENDPOINT_URL, UserType, type ErrorResponseBody } from "../../../api/types";
 import IceCreamPage from "./IceCreamPage";
 
 const CancelSubscription = () => {
@@ -31,10 +31,11 @@ const CancelSubscription = () => {
                 setCancelling(false);
                 return;
             }
-            setMessage(
-                (isAxiosError<{ message?: string }>(error) && error.response?.data.message) ||
-                    "That did not go through. Try again in a minute."
-            );
+            if (isAxiosError<ErrorResponseBody>(error) && error.response?.data.message) {
+                setMessage(error.response.data.message);
+            } else {
+                setMessage("That did not go through. Try again in a minute.");
+            }
             setResult("failed");
         }
         setCancelling(false);
