@@ -256,7 +256,7 @@ class WebsiteAPIStack extends Stack {
                         contentHandling: ContentHandling.CONVERT_TO_BINARY,
                         responseParameters: {
                             "method.response.header.Content-Type": "'image/png'",
-                            "method.response.header.Cache-Control": "'public, max-age=86400'"
+                            "method.response.header.Cache-Control": "'public, max-age=3600'"
                         }
                     }
                 ]
