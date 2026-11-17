@@ -10,6 +10,18 @@ export const LOCAL_ORIGIN = "http://localhost:3000";
 export const POLAROID_PHOTOS_BUCKET = "website-polaroid-photos";
 export const MAX_PHOTOS = 50;
 
+export const SHARE_TOKEN_MIN_HOURS = 1;
+export const SHARE_TOKEN_MAX_HOURS = 24 * 7;
+export const SHARE_TOKEN_DEFAULT_HOURS = 6;
+
+export function shareTokenDurationLabel(hours: number): string {
+    if (hours >= 24 && hours % 24 === 0) {
+        const days = hours / 24;
+        return `${days.toString()} ${days === 1 ? "Day" : "Days"}`;
+    }
+    return `${hours.toString()} ${hours === 1 ? "Hour" : "Hours"}`;
+}
+
 export enum HttpResponseStatus {
     OK = 200,
     SPOTIFY_NEEDS_AUTH = 246,

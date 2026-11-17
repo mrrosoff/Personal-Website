@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import EmulatorState, {
-    relativeToAbsolutePath,
-    shareTokenDurationLabel
+    relativeToAbsolutePath
 } from "../../../../src/javascript-terminal/emulator-state/EmulatorState";
 
 describe("EmulatorState", () => {
@@ -24,18 +23,6 @@ describe("EmulatorState", () => {
         const result = relativeToAbsolutePath(state, "projects");
 
         expect(result).toBe("/home/projects");
-    });
-});
-
-describe("shareTokenDurationLabel", () => {
-    it("should count hours", () => {
-        expect(shareTokenDurationLabel(1)).toBe("1 Hour");
-        expect(shareTokenDurationLabel(6)).toBe("6 Hours");
-    });
-
-    it("should count whole days", () => {
-        expect(shareTokenDurationLabel(24)).toBe("1 Day");
-        expect(shareTokenDurationLabel(168)).toBe("7 Days");
     });
 
     it("should swap in a new filesystem", () => {

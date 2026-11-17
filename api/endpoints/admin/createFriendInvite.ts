@@ -8,21 +8,13 @@ import { getEntireTable } from "../../aws/services/dynamodb";
 import { getParameter } from "../../aws/services/parameterStore";
 import {
     PASSKEYS_TABLE,
+    SHARE_TOKEN_DEFAULT_HOURS,
+    shareTokenDurationLabel,
     buildErrorResponse,
     buildResponse,
     HttpResponseStatus
 } from "../../common";
 import { RP_ORIGIN } from "./passkeyAuthOptions";
-
-const DEFAULT_HOURS = 6;
-
-const durationLabel = (hours: number): string => {
-    if (hours >= 24 && hours % 24 === 0) {
-        const days = hours / 24;
-        return `${days.toString()} ${days === 1 ? "Day" : "Days"}`;
-    }
-    return `${hours.toString()} ${hours === 1 ? "Hour" : "Hours"}`;
-};
 
 type CreateFriendInvitePayload = {
     friendName: string;
@@ -59,7 +51,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         );
     }
 
-    const expiresInHours = body.expiresInHours ?? DEFAULT_HOURS;
+    const expiresInHours = body.expiresInHours ?? SHARE_TOKEN_DEFAULT_HOURS;
     const email = body.email?.trim();
 
     const inviteToken = await generateToken(friendName, {
@@ -70,7 +62,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     const url = `${RP_ORIGIN}/register-friend?token=${encodeURIComponent(inviteToken)}`;
 
     if (email) {
-        await sendInviteEmail(email, friendName, url, durationLabel(expiresInHours));
+        await sendInviteEmail(email, friendName, url, shareTokenDurationLabel(expiresInHours));
     }
 
     return buildResponse(event, HttpResponseStatus.OK, { url, token: inviteToken });

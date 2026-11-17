@@ -2,7 +2,12 @@ import { describe, expect, it } from "vitest";
 
 import { mockEvent } from "../setup";
 
-import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../api/common";
+import {
+    buildErrorResponse,
+    buildResponse,
+    HttpResponseStatus,
+    shareTokenDurationLabel
+} from "../../api/common";
 
 describe("buildResponse", () => {
     it("should allow the site origin", () => {
@@ -29,5 +34,17 @@ describe("buildErrorResponse", () => {
         const result = buildErrorResponse(mockEvent(), HttpResponseStatus.BAD_REQUEST, "Nope");
 
         expect(result).toMatchObject({ statusCode: 400, body: '{"message":"Nope"}' });
+    });
+});
+
+describe("shareTokenDurationLabel", () => {
+    it("should count hours", () => {
+        expect(shareTokenDurationLabel(1)).toBe("1 Hour");
+        expect(shareTokenDurationLabel(6)).toBe("6 Hours");
+    });
+
+    it("should count whole days", () => {
+        expect(shareTokenDurationLabel(24)).toBe("1 Day");
+        expect(shareTokenDurationLabel(168)).toBe("7 Days");
     });
 });

@@ -4,10 +4,9 @@ import EmulatorState, {
     AdminConsoleScreen,
     type FriendInvite,
     type InviteDevice,
-    MainMenuOption,
-    SHARE_TOKEN_MAX_HOURS,
-    SHARE_TOKEN_MIN_HOURS
+    MainMenuOption
 } from "../../emulator-state/EmulatorState";
+import { SHARE_TOKEN_MAX_HOURS, SHARE_TOKEN_MIN_HOURS } from "../../../../api/common";
 import {
     arrowStep,
     editNumber,

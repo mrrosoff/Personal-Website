@@ -2,9 +2,9 @@ import EmulatorState, {
     type AdminConsoleState,
     AdminConsoleScreen,
     IceCreamInventoryMenuOption,
-    MainMenuOption,
-    SHARE_TOKEN_DEFAULT_HOURS
+    MainMenuOption
 } from "../../emulator-state/EmulatorState";
+import { SHARE_TOKEN_DEFAULT_HOURS } from "../../../../api/common";
 import { arrowStep, stepWithin } from "../console";
 
 const MAIN_MENU_OPTIONS = [

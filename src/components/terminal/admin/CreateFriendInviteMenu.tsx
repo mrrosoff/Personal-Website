@@ -7,9 +7,9 @@ import CheckIcon from "@mui/icons-material/Check";
 import {
     type AdminConsoleState,
     type FriendInvite,
-    type InviteDevice,
-    shareTokenDurationLabel
+    type InviteDevice
 } from "../../../javascript-terminal/emulator-state/EmulatorState";
+import { shareTokenDurationLabel } from "../../../../api/common";
 import { API_ENDPOINT_URL } from "../../../../api/types";
 import { useAppContext } from "../../AppContext";
 import type { TerminalTheme } from "../Terminal";
