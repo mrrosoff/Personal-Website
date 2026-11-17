@@ -62,10 +62,6 @@ const RegisterForm = (props: { token: string; friendName: string }) => {
     const isValidEmail = !emailProblem(email.trim());
 
     const handleRegister = async () => {
-        if (!isValidEmail) {
-            setError("Enter A Valid Email");
-            return;
-        }
         if (!browserSupportsWebAuthn()) {
             setError("This Browser / Device Doesn't Support Biometric Passkeys.");
             return;
@@ -153,12 +149,7 @@ const RegisterForm = (props: { token: string; friendName: string }) => {
 
 const RegisterFriend = () => {
     const [params] = useSearchParams();
-    const token = params.get("token");
-
-    if (!token) {
-        return <Navigate to={"/"} replace />;
-    }
-
+    const token = params.get("token") ?? "";
     const decodedToken = decodeToken(token);
     if (!decodedToken) {
         return <Navigate to={"/"} replace />;

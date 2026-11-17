@@ -187,7 +187,9 @@ export default function Polaroid() {
     );
 }
 
-function Unlock({ onUnlock }: { onUnlock: () => Promise<void> }) {
+type UnlockProps = { onUnlock: () => Promise<void> };
+
+function Unlock({ onUnlock }: UnlockProps) {
     const navigate = useNavigate();
     const [busy, setBusy] = useState(false);
 
@@ -325,13 +327,15 @@ function Unlock({ onUnlock }: { onUnlock: () => Promise<void> }) {
     );
 }
 
-function DropArea(props: {
+type DropAreaProps = {
     dragging: boolean;
     setDragging: (dragging: boolean) => void;
     onFiles: (files: File[]) => void;
     full: boolean;
     children: ReactNode;
-}) {
+};
+
+function DropArea(props: DropAreaProps) {
     const compact = useMediaQuery((theme) => theme.breakpoints.down("lg"));
     return (
         <Box
@@ -375,7 +379,9 @@ function DropArea(props: {
     );
 }
 
-function UploadControls(props: { onFiles: (files: File[]) => void; full: boolean }) {
+type UploadControlsProps = { onFiles: (files: File[]) => void; full: boolean };
+
+function UploadControls(props: UploadControlsProps) {
     return (
         <Button
             variant="contained"
@@ -402,9 +408,7 @@ function UploadControls(props: { onFiles: (files: File[]) => void; full: boolean
                 type="file"
                 accept={ACCEPT_ATTRIBUTE}
                 onChange={(event) => {
-                    if (event.target.files) {
-                        props.onFiles(Array.from(event.target.files));
-                    }
+                    props.onFiles(Array.from(event.target.files!));
                     // Without this, picking the same files again fires no change
                     // event and the picker looks broken.
                     event.target.value = "";
@@ -414,12 +418,14 @@ function UploadControls(props: { onFiles: (files: File[]) => void; full: boolean
     );
 }
 
-function Gallery(props: {
+type GalleryProps = {
     photos: Photo[];
     uploading: boolean;
     error: string | null;
     onRemove: (id: string) => void;
-}) {
+};
+
+function Gallery(props: GalleryProps) {
     return (
         <Box
             sx={{

@@ -33,13 +33,13 @@ const Page = (props: {
     return <TerminalEmbed ref={props.inputRef} scrollContainerRef={props.scrollContainerRef} />;
 };
 
-export const LinksAndMenu = (props: {}) => {
+export const LinksAndMenu = () => {
     const [open, setOpen] = useState(false);
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
     return (
         <Box sx={{ position: "relative" }}>
-            {!smallScreen && <Links open={open} setOpen={setOpen} {...props} />}
+            {!smallScreen && <Links open={open} setOpen={setOpen} />}
             <Box sx={{ position: "absolute", top: 65, right: 0, zIndex: 10 }}>
                 {open && (
                     <Paper sx={{ width: 270 }}>
@@ -69,7 +69,6 @@ export const LinksAndMenu = (props: {}) => {
 const Links = (props: { open: boolean; setOpen: Dispatch<SetStateAction<boolean>> }) => {
     const navigate = useNavigate();
     const theme = useTheme();
-    const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
     const isHome = useMatch("/");
     const isIceCream = useMatch("/ice-cream");
     const isCheckout = useMatch("/ice-cream/checkout/*");
@@ -112,7 +111,7 @@ const Links = (props: { open: boolean; setOpen: Dispatch<SetStateAction<boolean>
                     >
                         Cart ({selectedPriceIds.length})
                     </a>
-                    {!smallScreen && selectedPriceIds.length > 0 && (
+                    {selectedPriceIds.length > 0 && (
                         <Box
                             sx={{
                                 position: "absolute",

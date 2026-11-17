@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Box, Typography, keyframes } from "@mui/material";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
@@ -43,6 +43,7 @@ const SpotifyCallback = () => {
     const [message, setMessage] = useState("");
     const [secondsLeft, setSecondsLeft] = useState(REDIRECT_SECONDS);
     const navigate = useNavigate();
+    const [params] = useSearchParams();
 
     useEffect(() => {
         if (status === "loading") {
@@ -57,7 +58,6 @@ const SpotifyCallback = () => {
     }, [status, secondsLeft, navigate]);
 
     useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
         const error = params.get("error");
         const code = params.get("code");
         const state = params.get("state");

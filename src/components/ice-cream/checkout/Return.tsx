@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { Navigate, Link as RouterLink, useNavigate } from "react-router-dom";
+import { Navigate, Link as RouterLink, useNavigate, useSearchParams } from "react-router-dom";
 
 import { Box, Link, Typography, useMediaQuery, useTheme } from "@mui/material";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
@@ -13,15 +13,14 @@ import type Stripe from "stripe";
 
 const Return = () => {
     const navigate = useNavigate();
+    const [params] = useSearchParams();
     const { friendToken } = useAppContext();
     const [status, setStatus] = useState<Stripe.Checkout.Session.Status | null>(null);
     const [customerEmail, setCustomerEmail] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchSessionStatus = async () => {
-            const queryString = window.location.search;
-            const urlParams = new URLSearchParams(queryString);
-            const sessionId = urlParams.get("sessionId");
+            const sessionId = params.get("sessionId");
 
             if (friendToken) {
                 setStatus("complete");
@@ -82,9 +81,7 @@ const OrderConfirmation = (props: { customerEmail: string | null }) => {
                     >
                         Order Confirmed
                     </Typography>
-                    {!smallScreen && (
-                        <CheckCircleOutlineIcon sx={{ fontSize: smallScreen ? 36 : 48, ml: 2 }} />
-                    )}
+                    {!smallScreen && <CheckCircleOutlineIcon sx={{ fontSize: 48, ml: 2 }} />}
                 </Box>
 
                 <Typography

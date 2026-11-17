@@ -139,15 +139,13 @@ export default function PhotoGrid({ photos, uploading, onRemove }: PhotoGridProp
     );
 }
 
-function PhotoCell({
-    photo,
-    compact,
-    onEnlarge
-}: {
+type PhotoCellProps = {
     photo: Photo;
     compact: boolean;
     onEnlarge: () => void;
-}) {
+};
+
+function PhotoCell({ photo, compact, onEnlarge }: PhotoCellProps) {
     const [loaded, setLoaded] = useState(false);
 
     return (
@@ -189,7 +187,9 @@ function PhotoCell({
     );
 }
 
-function EmptySlot({ children }: { children?: ReactNode }) {
+type EmptySlotProps = { children?: ReactNode };
+
+function EmptySlot({ children }: EmptySlotProps) {
     return (
         <Box
             sx={{
