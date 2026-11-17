@@ -84,7 +84,7 @@ const IceCream = () => {
 
     useEffect(() => {
         void refreshFlavors();
-    }, []);
+    }, [refreshFlavors]);
 
     useEffect(() => {
         const flavorPriceId = params.get("flavor");
@@ -95,7 +95,7 @@ const IceCream = () => {
         return () => {
             toggleFlavor(flavorPriceId);
         };
-    }, [params]);
+    }, [params, toggleFlavor]);
 
     const handleCartClick = () => {
         const priceIdsParam = selectedPriceIds.join(",");

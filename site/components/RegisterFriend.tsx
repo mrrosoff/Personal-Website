@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 
 import { Box, Button, Typography } from "@mui/material";
@@ -49,7 +49,10 @@ const RegisterForm = (props: { token: string; friendName: string }) => {
     const [email, setEmail] = useState("");
     const [devices, setDevices] = useState<DeviceKind[]>([]);
 
-    const authHeaders = { headers: { Authorization: `Bearer ${props.token}` } };
+    const authHeaders = useMemo(
+        () => ({ headers: { Authorization: `Bearer ${props.token}` } }),
+        [props.token]
+    );
 
     useEffect(() => {
         const loadDevices = async () => {
@@ -62,7 +65,7 @@ const RegisterForm = (props: { token: string; friendName: string }) => {
             }
         };
         void loadDevices();
-    }, [props.token]);
+    }, [authHeaders]);
 
     const isValidEmail = !emailProblem(email.trim());
 

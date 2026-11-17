@@ -15,20 +15,19 @@ const Return = () => {
     const navigate = useNavigate();
     const [params] = useSearchParams();
     const { friendToken } = useAppContext();
-    const [status, setStatus] = useState<Stripe.Checkout.Session.Status | null>(null);
+    const [status, setStatus] = useState<Stripe.Checkout.Session.Status | null>(
+        friendToken ? "complete" : null
+    );
     const [customerEmail, setCustomerEmail] = useState<string | null>(null);
 
     useEffect(() => {
+        if (friendToken) {
+            return;
+        }
+
         const fetchSessionStatus = async () => {
-            const sessionId = params.get("sessionId");
-
-            if (friendToken) {
-                setStatus("complete");
-                return;
-            }
-
             try {
-                const body = { sessionId };
+                const body = { sessionId: params.get("sessionId") };
                 const result = await axios.post<Stripe.Checkout.Session>(
                     `${API_ENDPOINT_URL}/ice-cream/checkout-status`,
                     body
@@ -40,7 +39,7 @@ const Return = () => {
             }
         };
         void fetchSessionStatus();
-    }, []);
+    }, [friendToken, navigate, params]);
 
     if (status === "open") {
         return <Navigate to="/ice-cream" replace />;

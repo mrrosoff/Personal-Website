@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useRef, useState, type ReactNode } from "react";
 import axios from "axios";
 
 import { API_ENDPOINT_URL, type DatabaseFlavor } from "../../../api/types";
@@ -21,10 +21,13 @@ export const IceCreamCartProvider = ({ children }: { children: ReactNode }) => {
     const [isLoadingFlavors, setIsLoadingFlavors] = useState(false);
     const [flavorsError, setFlavorsError] = useState<string | null>(null);
 
-    const refreshFlavors = async () => {
-        if (isLoadingFlavors) return;
+    const loading = useRef(false);
+
+    const refreshFlavors = useCallback(async () => {
+        if (loading.current) return;
 
         try {
+            loading.current = true;
             setIsLoadingFlavors(true);
             setFlavorsError(null);
             const { data } = await axios.post<{ inventory: DatabaseFlavor[] }>(
@@ -35,22 +38,23 @@ export const IceCreamCartProvider = ({ children }: { children: ReactNode }) => {
             setFlavorsError("Failed to load flavors. Please try again later.");
             console.error("Error fetching inventory:", error);
         } finally {
+            loading.current = false;
             setIsLoadingFlavors(false);
         }
-    };
+    }, []);
 
-    const loadFlavors = async () => {
+    const loadFlavors = useCallback(async () => {
         if (flavors.length > 0) return;
         await refreshFlavors();
-    };
+    }, [flavors.length, refreshFlavors]);
 
-    const toggleFlavor = (priceId: string | undefined) => {
+    const toggleFlavor = useCallback((priceId: string | undefined) => {
         if (!priceId) return;
         setSelectedPriceIds((prev) => {
             const isAdding = !prev.includes(priceId);
             return isAdding ? [...prev, priceId] : prev.filter((id) => id !== priceId);
         });
-    };
+    }, []);
 
     return (
         <IceCreamCartContext.Provider

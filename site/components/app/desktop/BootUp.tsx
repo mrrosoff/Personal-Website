@@ -17,79 +17,40 @@ const getNetworkLabel = (): string | null => {
     return null;
 };
 
-const BootUp = (props: {
+const STEP_TIMES = [
+    300, 450, 650, 850, 1050, 1200, 1350, 1500, 1650, 1800, 1950, 2200, 2500, 3000, 3500, 3850,
+    4350, 4700, 5250
+];
+const FINISHED_AT = 6400;
+
+type BootUpProps = {
     setBootingUp: Dispatch<SetStateAction<boolean>>;
     creationDate: string;
-}) => {
+};
+
+const BootUp = ({ setBootingUp, creationDate }: BootUpProps) => {
     const [state, setState] = useState(0);
     const { setShouldBootUp } = useAppContext();
     const muiTheme = useTheme();
     const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
 
     useEffect(() => {
-        setTimeout(() => {
-            setState(1);
-        }, 300);
-        setTimeout(() => {
-            setState(2);
-        }, 450);
-        setTimeout(() => {
-            setState(3);
-        }, 650);
-        setTimeout(() => {
-            setState(4);
-        }, 850);
-        setTimeout(() => {
-            setState(5);
-        }, 1050);
-        setTimeout(() => {
-            setState(6);
-        }, 1200);
-        setTimeout(() => {
-            setState(7);
-        }, 1350);
-        setTimeout(() => {
-            setState(8);
-        }, 1500);
-        setTimeout(() => {
-            setState(9);
-        }, 1650);
-        setTimeout(() => {
-            setState(10);
-        }, 1800);
-        setTimeout(() => {
-            setState(11);
-        }, 1950);
-        setTimeout(() => {
-            setState(12);
-        }, 2200);
-        setTimeout(() => {
-            setState(13);
-        }, 2500);
-        setTimeout(() => {
-            setState(14);
-        }, 3000);
-        setTimeout(() => {
-            setState(15);
-        }, 3500);
-        setTimeout(() => {
-            setState(16);
-        }, 3850);
-        setTimeout(() => {
-            setState(17);
-        }, 4350);
-        setTimeout(() => {
-            setState(18);
-        }, 4700);
-        setTimeout(() => {
-            setState(19);
-        }, 5250);
-        setTimeout(() => {
-            sessionStorage.setItem(HAS_BOOTED_KEY, "true");
-            setShouldBootUp(false);
-            props.setBootingUp(false);
-        }, 6400);
-    }, []);
+        const timeouts = STEP_TIMES.map((ms, step) =>
+            setTimeout(() => {
+                setState(step + 1);
+            }, ms)
+        );
+        timeouts.push(
+            setTimeout(() => {
+                sessionStorage.setItem(HAS_BOOTED_KEY, "true");
+                setShouldBootUp(false);
+                setBootingUp(false);
+            }, FINISHED_AT)
+        );
+        return () => {
+            timeouts.forEach(clearTimeout);
+        };
+    }, [setBootingUp, setShouldBootUp]);
 
     return (
         <Grid container direction={"column"} spacing={4}>
@@ -97,7 +58,7 @@ const BootUp = (props: {
                 <Header />
             </Grid>
             <Grid>
-                <ReleaseData creationDate={props.creationDate} />
+                <ReleaseData creationDate={creationDate} />
             </Grid>
             {state >= 1 ? <Grid>AF6S7V89 - JUC84X</Grid> : null}
             {state >= 2 ? (

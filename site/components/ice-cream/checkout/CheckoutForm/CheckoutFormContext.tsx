@@ -105,7 +105,7 @@ export function CheckoutFormProvider({
 
     useEffect(() => {
         void loadFlavors();
-    }, []);
+    }, [loadFlavors]);
 
     async function pay(checkout: StripeCheckoutValue): Promise<void> {
         const emailResult = await checkout.updateEmail(email);

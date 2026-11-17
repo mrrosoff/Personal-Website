@@ -28,7 +28,7 @@ const FriendCheckout = ({ priceIds, friendToken }: FriendCheckoutProps) => {
 
     useEffect(() => {
         void loadFlavors();
-    }, []);
+    }, [loadFlavors]);
 
     const selectedFlavors = flavors.filter((flavor) => priceIds.includes(flavor.priceId));
 
