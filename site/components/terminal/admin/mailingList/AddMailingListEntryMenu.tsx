@@ -1,10 +1,10 @@
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 
-import type { AdminConsoleScreen } from "../../../../javascript-terminal/emulator-state/EmulatorState";
+import type { AdminConsoleScreen } from "../../../../javascript-terminal/emulatorState/EmulatorState";
 import type {
     MailingListEntry,
     AdminConsoleMode
-} from "../../../../javascript-terminal/emulator-state/EmulatorState";
+} from "../../../../javascript-terminal/emulatorState/EmulatorState";
 import { useAppContext } from "../../../AppContext";
 import type { TerminalTheme } from "../../Terminal";
 import MenuItem from "../common/MenuItem";

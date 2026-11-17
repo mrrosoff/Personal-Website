@@ -1,7 +1,7 @@
-import * as PathUtil from "../fs/util/path-util";
-import { getCommandNames, getCommandOptDef, isCommandSet } from "../emulator-state/CommandMapping";
-import type { CommandMapping } from "../emulator-state/CommandMapping";
-import { fsSearchAutoComplete } from "../fs/operations/base-operations";
+import * as PathUtil from "../fs/util/pathUtil";
+import { getCommandNames, getCommandOptDef, isCommandSet } from "../emulatorState/CommandMapping";
+import type { CommandMapping } from "../emulatorState/CommandMapping";
+import { fsSearchAutoComplete } from "../fs/operations/baseOperations";
 import type { FileSystem } from "../../FileSystem";
 
 export const suggestCommands = (cmdMapping: CommandMapping, partialStr: string) => {

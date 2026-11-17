@@ -5,8 +5,8 @@ import { mockSmallScreen, mockTerminalTheme, renderWithApp } from "../../../../.
 import { mockAdminState } from "../../../../../helpers/terminal";
 
 import ConfirmProvisionFlavorMenu from "../../../../../../site/components/terminal/admin/inventory/ConfirmProvisionFlavorMenu";
-import { AdminConsoleScreen } from "../../../../../../site/javascript-terminal/emulator-state/EmulatorState";
-import type { AdminConsoleMode } from "../../../../../../site/javascript-terminal/emulator-state/EmulatorState";
+import { AdminConsoleScreen } from "../../../../../../site/javascript-terminal/emulatorState/EmulatorState";
+import type { AdminConsoleMode } from "../../../../../../site/javascript-terminal/emulatorState/EmulatorState";
 
 const provisionForm = {
     flavorName: "Fig",

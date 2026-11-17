@@ -1,7 +1,7 @@
 import { parseOptions } from "../parser";
-import type EmulatorState from "../emulator-state/EmulatorState";
-import { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
-import { fsSearch } from "../fs/operations/base-operations";
+import type EmulatorState from "../emulatorState/EmulatorState";
+import { relativeToAbsolutePath } from "../emulatorState/EmulatorState";
+import { fsSearch } from "../fs/operations/baseOperations";
 import type { FileSystem } from "../../FileSystem";
 
 export const optDef = {

@@ -1,8 +1,8 @@
 import Emulator from "./emulator";
 
-import CommandMapping from "./emulator-state/CommandMapping";
-import EmulatorState from "./emulator-state/EmulatorState";
+import CommandMapping from "./emulatorState/CommandMapping";
+import EmulatorState from "./emulatorState/EmulatorState";
 
-import DefaultCommandMapping from "./commands.js";
+import DefaultCommandMapping from "./commands";
 
 export { Emulator, EmulatorState, CommandMapping, DefaultCommandMapping };

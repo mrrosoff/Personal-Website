@@ -6,7 +6,7 @@ import { useAppContext } from "../../../AppContext";
 import type {
     AdminConsoleMode,
     AdminConsoleScreen
-} from "../../../../javascript-terminal/emulator-state/EmulatorState";
+} from "../../../../javascript-terminal/emulatorState/EmulatorState";
 import type { TerminalTheme } from "../../Terminal";
 import MenuItem from "../common/MenuItem";
 import { ConsoleHeading, ConsoleHint } from "../common/ConsoleText";

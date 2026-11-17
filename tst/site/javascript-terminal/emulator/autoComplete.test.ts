@@ -7,7 +7,7 @@ import {
     suggestCommandOptions,
     suggestCommands,
     suggestFileSystemNames
-} from "../../../../site/javascript-terminal/emulator/auto-complete";
+} from "../../../../site/javascript-terminal/emulator/autoComplete";
 
 describe("suggestCommands", () => {
     it("should suggest commands with the prefix", () => {

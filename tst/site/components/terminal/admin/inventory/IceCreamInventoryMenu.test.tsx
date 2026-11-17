@@ -9,8 +9,8 @@ import IceCreamInventoryMenu from "../../../../../../site/components/terminal/ad
 import {
     AdminConsoleScreen,
     IceCreamInventoryMenuOption
-} from "../../../../../../site/javascript-terminal/emulator-state/EmulatorState";
-import type { AdminConsoleMode } from "../../../../../../site/javascript-terminal/emulator-state/EmulatorState";
+} from "../../../../../../site/javascript-terminal/emulatorState/EmulatorState";
+import type { AdminConsoleMode } from "../../../../../../site/javascript-terminal/emulatorState/EmulatorState";
 
 function renderMenu(mode: Partial<AdminConsoleMode<AdminConsoleScreen.IceCreamInventory>> = {}) {
     const onAction = vi.fn();

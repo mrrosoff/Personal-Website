@@ -1,8 +1,8 @@
-import type EmulatorState from "../../../emulator-state/EmulatorState";
+import type EmulatorState from "../../../emulatorState/EmulatorState";
 import {
     AdminConsoleScreen,
     IceCreamInventoryMenuOption
-} from "../../../emulator-state/EmulatorState";
+} from "../../../emulatorState/EmulatorState";
 import { postAsAdmin, setAdminConsoleError } from "../../console";
 
 export async function handleConfirmProvisionFlavor(

@@ -7,11 +7,11 @@ import { axiosGet } from "../../../../mocks/axios";
 
 import { DeviceKind } from "../../../../../api/types";
 import CreateFriendInviteMenu from "../../../../../site/components/terminal/admin/CreateFriendInviteMenu";
-import { AdminConsoleScreen } from "../../../../../site/javascript-terminal/emulator-state/EmulatorState";
+import { AdminConsoleScreen } from "../../../../../site/javascript-terminal/emulatorState/EmulatorState";
 import type {
     AdminConsoleMode,
     FriendInvite
-} from "../../../../../site/javascript-terminal/emulator-state/EmulatorState";
+} from "../../../../../site/javascript-terminal/emulatorState/EmulatorState";
 
 const blankInvite: FriendInvite = {
     friendName: "Zed",

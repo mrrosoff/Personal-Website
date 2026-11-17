@@ -2,9 +2,9 @@ import axios from "axios";
 import { startAuthentication } from "@simplewebauthn/browser";
 import type { PublicKeyCredentialRequestOptionsJSON } from "@simplewebauthn/browser";
 
-import type EmulatorState from "../emulator-state/EmulatorState";
+import type EmulatorState from "../emulatorState/EmulatorState";
 import { parseOptions } from "../parser";
-import * as CommandMappingUtil from "../emulator-state/CommandMapping";
+import * as CommandMappingUtil from "../emulatorState/CommandMapping";
 import type Emulator from "../emulator";
 import { API_ENDPOINT_URL } from "../../../api/types";
 import { AUTH_TOKEN_KEY } from "../../auth";

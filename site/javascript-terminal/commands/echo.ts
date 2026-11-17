@@ -1,4 +1,4 @@
-import type EmulatorState from "../emulator-state/EmulatorState";
+import type EmulatorState from "../emulatorState/EmulatorState";
 import { parseOptions } from "../parser";
 
 const VARIABLE_GROUP_REGEX = /\$(\w+)/g;

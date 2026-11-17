@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
 
 import { parseOptions } from "../parser";
-import type EmulatorState from "../emulator-state/EmulatorState";
+import type EmulatorState from "../emulatorState/EmulatorState";
 
 export const optDef = {
     "-u, --utc": ""

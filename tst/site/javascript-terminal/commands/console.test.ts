@@ -21,8 +21,8 @@ import {
 import EmulatorState, {
     AdminConsoleScreen,
     MainMenuOption
-} from "../../../../site/javascript-terminal/emulator-state/EmulatorState";
-import type { AdminConsoleMode } from "../../../../site/javascript-terminal/emulator-state/EmulatorState";
+} from "../../../../site/javascript-terminal/emulatorState/EmulatorState";
+import type { AdminConsoleMode } from "../../../../site/javascript-terminal/emulatorState/EmulatorState";
 
 describe("console", () => {
     it("should deny a signed out visitor", () => {

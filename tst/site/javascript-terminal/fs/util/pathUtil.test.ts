@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import * as PathUtil from "../../../../../site/javascript-terminal/fs/util/path-util";
+import * as PathUtil from "../../../../../site/javascript-terminal/fs/util/pathUtil";
 
-describe("path-util", () => {
+describe("pathUtil", () => {
     it("should split an absolute path", () =>
         expect(PathUtil.toPathParts("/home/max/")).toEqual(["/", "home", "max"]));
 

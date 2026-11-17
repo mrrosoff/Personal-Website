@@ -2,9 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import { mockFile, mockFileSystem } from "../../../../fixtures/fileSystem";
 
-import * as FileOp from "../../../../../site/javascript-terminal/fs/operations/file-operations";
+import * as FileOp from "../../../../../site/javascript-terminal/fs/operations/fileOperations";
 
-describe("file-operations", () => {
+describe("fileOperations", () => {
     it("should read a file", () => {
         const result = FileOp.read(mockFileSystem(), "/home/numbers.txt");
 

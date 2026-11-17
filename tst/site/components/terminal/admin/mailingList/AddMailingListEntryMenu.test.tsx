@@ -5,11 +5,11 @@ import { mockSmallScreen, mockTerminalTheme, renderWithApp } from "../../../../.
 import { mockAdminState } from "../../../../../helpers/terminal";
 
 import AddMailingListEntryMenu from "../../../../../../site/components/terminal/admin/mailingList/AddMailingListEntryMenu";
-import { AdminConsoleScreen } from "../../../../../../site/javascript-terminal/emulator-state/EmulatorState";
+import { AdminConsoleScreen } from "../../../../../../site/javascript-terminal/emulatorState/EmulatorState";
 import type {
     AdminConsoleMode,
     MailingListEntry
-} from "../../../../../../site/javascript-terminal/emulator-state/EmulatorState";
+} from "../../../../../../site/javascript-terminal/emulatorState/EmulatorState";
 
 const blankEntry: MailingListEntry = {
     firstName: "Ada",

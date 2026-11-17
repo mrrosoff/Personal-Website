@@ -1,10 +1,10 @@
 import { parseOptions } from "../parser";
-import type EmulatorState from "../emulator-state/EmulatorState";
-import { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
-import * as FileOp from "../fs/operations/file-operations";
-import { fsSearchParent } from "../fs/operations/base-operations";
-import { getLastPathPart } from "../fs/util/path-util";
-import { isDirectory } from "../fs/util/file-util";
+import type EmulatorState from "../emulatorState/EmulatorState";
+import { relativeToAbsolutePath } from "../emulatorState/EmulatorState";
+import * as FileOp from "../fs/operations/fileOperations";
+import { fsSearchParent } from "../fs/operations/baseOperations";
+import { getLastPathPart } from "../fs/util/pathUtil";
+import { isDirectory } from "../fs/util/fileUtil";
 
 export const optDef = {
     "-i, --ignore-case": "",

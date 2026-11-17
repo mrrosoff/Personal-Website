@@ -7,9 +7,9 @@ import {
     fsSearch,
     fsSearchParent,
     remove
-} from "../../../../../site/javascript-terminal/fs/operations/base-operations";
+} from "../../../../../site/javascript-terminal/fs/operations/baseOperations";
 
-describe("base-operations", () => {
+describe("baseOperations", () => {
     it("should find a directory", () => {
         const result = fsSearch(mockFileSystem(), "/home/projects");
 

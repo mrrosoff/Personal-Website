@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 
-import type { CommandMapping } from "./emulator-state/CommandMapping";
+import type { CommandMapping } from "./emulatorState/CommandMapping";
 import alias from "./commands/alias";
 import basename from "./commands/basename";
 import cat from "./commands/cat";

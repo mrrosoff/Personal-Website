@@ -1,8 +1,8 @@
 import { parseOptions } from "../parser";
-import type EmulatorState from "../emulator-state/EmulatorState";
-import { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
-import { makeEmptyFile } from "../fs/util/file-util";
-import * as FileOp from "../fs/operations/file-operations";
+import type EmulatorState from "../emulatorState/EmulatorState";
+import { relativeToAbsolutePath } from "../emulatorState/EmulatorState";
+import { makeEmptyFile } from "../fs/util/fileUtil";
+import * as FileOp from "../fs/operations/fileOperations";
 
 export const optDef = {};
 

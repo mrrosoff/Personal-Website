@@ -1,11 +1,11 @@
 import { parseOptions } from "../parser";
-import type EmulatorState from "../emulator-state/EmulatorState";
-import { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
-import { makeEmptyDirectory } from "../fs/util/file-util";
-import * as DirOp from "../fs/operations/directory-operations";
-import * as PathUtil from "../fs/util/path-util";
-import { fsSearchParent } from "../fs/operations/base-operations";
-import { getLastPathPart } from "../fs/util/path-util";
+import type EmulatorState from "../emulatorState/EmulatorState";
+import { relativeToAbsolutePath } from "../emulatorState/EmulatorState";
+import { makeEmptyDirectory } from "../fs/util/fileUtil";
+import * as DirOp from "../fs/operations/directoryOperations";
+import * as PathUtil from "../fs/util/pathUtil";
+import { fsSearchParent } from "../fs/operations/baseOperations";
+import { getLastPathPart } from "../fs/util/pathUtil";
 
 export const optDef = { "-p, --parents": "" };
 

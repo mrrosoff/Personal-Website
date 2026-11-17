@@ -1,9 +1,9 @@
 import type { DatabaseFlavor } from "../../../../../api/types";
-import type EmulatorState from "../../../emulator-state/EmulatorState";
+import type EmulatorState from "../../../emulatorState/EmulatorState";
 import {
     AdminConsoleScreen,
     IceCreamInventoryMenuOption
-} from "../../../emulator-state/EmulatorState";
+} from "../../../emulatorState/EmulatorState";
 import { errorMessageFrom, postAsAdmin } from "../../console";
 
 const ITEMS_PER_PAGE = 4;

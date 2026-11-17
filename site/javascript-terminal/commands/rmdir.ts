@@ -1,9 +1,9 @@
 import { parseOptions } from "../parser";
-import type EmulatorState from "../emulator-state/EmulatorState";
-import { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
-import * as DirOp from "../fs/operations/directory-operations";
-import * as PathUtil from "../fs/util/path-util";
-import { fsSearchParent } from "../fs/operations/base-operations";
+import type EmulatorState from "../emulatorState/EmulatorState";
+import { relativeToAbsolutePath } from "../emulatorState/EmulatorState";
+import * as DirOp from "../fs/operations/directoryOperations";
+import * as PathUtil from "../fs/util/pathUtil";
+import { fsSearchParent } from "../fs/operations/baseOperations";
 
 export const optDef = { "-p, --parents": "" };
 

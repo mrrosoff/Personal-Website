@@ -8,8 +8,8 @@ import MainMenu from "../../../../../site/components/terminal/admin/MainMenu";
 import {
     AdminConsoleScreen,
     MainMenuOption
-} from "../../../../../site/javascript-terminal/emulator-state/EmulatorState";
-import type { AdminConsoleMode } from "../../../../../site/javascript-terminal/emulator-state/EmulatorState";
+} from "../../../../../site/javascript-terminal/emulatorState/EmulatorState";
+import type { AdminConsoleMode } from "../../../../../site/javascript-terminal/emulatorState/EmulatorState";
 
 function renderMenu() {
     const onAction = vi.fn();

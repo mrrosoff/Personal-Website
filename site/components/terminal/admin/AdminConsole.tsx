@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material";
 
-import { AdminConsoleScreen } from "../../../javascript-terminal/emulator-state/EmulatorState";
+import { AdminConsoleScreen } from "../../../javascript-terminal/emulatorState/EmulatorState";
 import { useAppContext } from "../../AppContext";
 import type { TerminalTheme } from "../Terminal";
 import MainMenu from "./MainMenu";

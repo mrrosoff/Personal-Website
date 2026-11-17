@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import { UserType } from "../../../api/types";
 import { Emulator } from "../../javascript-terminal";
-import type EmulatorState from "../../javascript-terminal/emulator-state/EmulatorState";
+import type EmulatorState from "../../javascript-terminal/emulatorState/EmulatorState";
 import { handleAdminConsoleKeyPress } from "../../javascript-terminal/commands/console";
 import { authenticateWithPasskey } from "../../javascript-terminal/commands/sudo";
 import { decodeToken } from "../../auth";

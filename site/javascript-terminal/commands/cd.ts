@@ -1,8 +1,8 @@
 import { parseOptions } from "../parser";
-import type EmulatorState from "../emulator-state/EmulatorState";
-import { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
-import { fsSearchParent } from "../fs/operations/base-operations";
-import { getLastPathPart } from "../fs/util/path-util";
+import type EmulatorState from "../emulatorState/EmulatorState";
+import { relativeToAbsolutePath } from "../emulatorState/EmulatorState";
+import { fsSearchParent } from "../fs/operations/baseOperations";
+import { getLastPathPart } from "../fs/util/pathUtil";
 
 export const optDef = {};
 

@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 
 import type { CommandMapping, CommandResult } from "./CommandMapping";
-import * as FileUtil from "../fs/util/file-util";
-import * as PathUtil from "../fs/util/path-util";
+import * as FileUtil from "../fs/util/fileUtil";
+import * as PathUtil from "../fs/util/pathUtil";
 import type { FileSystem } from "../../FileSystem";
 import type {
     DatabaseDevice,

@@ -4,9 +4,9 @@ import {
     isDirectory,
     makeEmptyDirectory,
     makeEmptyFile
-} from "../../../../../site/javascript-terminal/fs/util/file-util";
+} from "../../../../../site/javascript-terminal/fs/util/fileUtil";
 
-describe("file-util", () => {
+describe("fileUtil", () => {
     it("should make an empty file", () =>
         expect(makeEmptyFile()).toEqual({ type: "-", permissions: "rwx------", contents: "" }));
 

@@ -8,8 +8,8 @@ import { handleIceCreamInventory } from "../../../../../../site/javascript-termi
 import {
     AdminConsoleScreen,
     IceCreamInventoryMenuOption
-} from "../../../../../../site/javascript-terminal/emulator-state/EmulatorState";
-import type { EditField } from "../../../../../../site/javascript-terminal/emulator-state/EmulatorState";
+} from "../../../../../../site/javascript-terminal/emulatorState/EmulatorState";
+import type { EditField } from "../../../../../../site/javascript-terminal/emulatorState/EmulatorState";
 
 function menuAt(selectedOption: IceCreamInventoryMenuOption) {
     return mockAdminState({ screen: AdminConsoleScreen.IceCreamInventory, selectedOption });

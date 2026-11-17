@@ -1,11 +1,11 @@
 import { parseCommands } from "../parser";
-import { suggestCommandOptions, suggestCommands, suggestFileSystemNames } from "./auto-complete";
-import * as CommandMappingUtil from "../emulator-state/CommandMapping";
-import { errorMessage } from "../emulator-state/CommandMapping";
-import * as PathUtil from "../fs/util/path-util";
-import { fsSearchParent } from "../fs/operations/base-operations";
-import type EmulatorState from "../emulator-state/EmulatorState";
-import type { CommandMapping, CommandResult } from "../emulator-state/CommandMapping";
+import { suggestCommandOptions, suggestCommands, suggestFileSystemNames } from "./autoComplete";
+import * as CommandMappingUtil from "../emulatorState/CommandMapping";
+import { errorMessage } from "../emulatorState/CommandMapping";
+import * as PathUtil from "../fs/util/pathUtil";
+import { fsSearchParent } from "../fs/operations/baseOperations";
+import type EmulatorState from "../emulatorState/EmulatorState";
+import type { CommandMapping, CommandResult } from "../emulatorState/CommandMapping";
 
 export default class Emulator {
     autocomplete(state: EmulatorState, partialStr: string) {

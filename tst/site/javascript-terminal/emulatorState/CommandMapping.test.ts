@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import CommandMapping, {
     errorMessage
-} from "../../../../site/javascript-terminal/emulator-state/CommandMapping";
+} from "../../../../site/javascript-terminal/emulatorState/CommandMapping";
 
 describe("CommandMapping", () => {
     it("should know which commands exist", () => {

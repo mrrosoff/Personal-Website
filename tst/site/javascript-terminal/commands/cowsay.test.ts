@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { mockShell } from "../../../helpers/terminal";
 import cowsayCommand from "../../../../site/javascript-terminal/commands/cowsay";
-import EmulatorState from "../../../../site/javascript-terminal/emulator-state/EmulatorState";
+import EmulatorState from "../../../../site/javascript-terminal/emulatorState/EmulatorState";
 
 describe("cowsay", () => {
     it("should moo by default", () => {

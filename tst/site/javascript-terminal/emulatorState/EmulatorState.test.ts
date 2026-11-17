@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import EmulatorState, {
     AdminConsoleScreen,
     relativeToAbsolutePath
-} from "../../../../site/javascript-terminal/emulator-state/EmulatorState";
+} from "../../../../site/javascript-terminal/emulatorState/EmulatorState";
 
 describe("EmulatorState", () => {
     it("should start at the root", () => {

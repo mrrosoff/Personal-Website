@@ -1,10 +1,10 @@
-import type EmulatorState from "../../emulator-state/EmulatorState";
+import type EmulatorState from "../../emulatorState/EmulatorState";
 import {
     AdminConsoleScreen,
     IceCreamInventoryMenuOption,
     MainMenuOption
-} from "../../emulator-state/EmulatorState";
-import type { AdminConsoleState } from "../../emulator-state/EmulatorState";
+} from "../../emulatorState/EmulatorState";
+import type { AdminConsoleState } from "../../emulatorState/EmulatorState";
 import { SHARE_TOKEN_DEFAULT_HOURS } from "../../../../api/common";
 import { arrowStep, stepWithin } from "../console";
 

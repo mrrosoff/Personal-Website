@@ -1,8 +1,8 @@
 import { Box, useMediaQuery, useTheme } from "@mui/material";
 
-import type { AdminConsoleScreen } from "../../../javascript-terminal/emulator-state/EmulatorState";
-import { MainMenuOption } from "../../../javascript-terminal/emulator-state/EmulatorState";
-import type { AdminConsoleMode } from "../../../javascript-terminal/emulator-state/EmulatorState";
+import type { AdminConsoleScreen } from "../../../javascript-terminal/emulatorState/EmulatorState";
+import { MainMenuOption } from "../../../javascript-terminal/emulatorState/EmulatorState";
+import type { AdminConsoleMode } from "../../../javascript-terminal/emulatorState/EmulatorState";
 import { useAppContext } from "../../AppContext";
 import type { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";

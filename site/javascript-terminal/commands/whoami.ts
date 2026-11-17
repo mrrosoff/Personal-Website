@@ -1,6 +1,6 @@
 import { UserType } from "../../../api/types";
 import { decodeToken } from "../../auth";
-import type EmulatorState from "../emulator-state/EmulatorState";
+import type EmulatorState from "../emulatorState/EmulatorState";
 
 export const optDef = {};
 

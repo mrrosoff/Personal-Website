@@ -1,6 +1,6 @@
-import * as BaseOp from "./base-operations";
-import { fsSearchParent } from "./base-operations";
-import { getLastPathPart } from "../util/path-util";
+import * as BaseOp from "./baseOperations";
+import { fsSearchParent } from "./baseOperations";
+import { getLastPathPart } from "../util/pathUtil";
 import type { File, FileSystem } from "../../../FileSystem";
 
 export const read = (fs: FileSystem, path: string): string => {

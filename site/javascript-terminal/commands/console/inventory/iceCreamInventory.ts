@@ -1,11 +1,11 @@
 import type { DatabaseFlavor } from "../../../../../api/types";
-import type EmulatorState from "../../../emulator-state/EmulatorState";
+import type EmulatorState from "../../../emulatorState/EmulatorState";
 import {
     AdminConsoleScreen,
     IceCreamInventoryMenuOption,
     MainMenuOption
-} from "../../../emulator-state/EmulatorState";
-import type { AdminConsoleState, EditField } from "../../../emulator-state/EmulatorState";
+} from "../../../emulatorState/EmulatorState";
+import type { AdminConsoleState, EditField } from "../../../emulatorState/EmulatorState";
 import {
     arrowStep,
     cycleFlavorType,

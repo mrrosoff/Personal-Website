@@ -4,7 +4,7 @@ import { mockAdminState } from "../../../../../helpers/terminal";
 import { axiosPost } from "../../../../../mocks/axios";
 
 import { handleConfirmProvisionFlavor } from "../../../../../../site/javascript-terminal/commands/console/inventory/confirmProvisionFlavor";
-import { AdminConsoleScreen } from "../../../../../../site/javascript-terminal/emulator-state/EmulatorState";
+import { AdminConsoleScreen } from "../../../../../../site/javascript-terminal/emulatorState/EmulatorState";
 
 const provisionForm = {
     flavorName: "Fig",

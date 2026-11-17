@@ -1,9 +1,9 @@
 import { parseOptions } from "../parser";
-import * as PathUtil from "../fs/util/path-util";
-import * as DirOp from "../fs/operations/directory-operations";
-import { fsSearch } from "../fs/operations/base-operations";
-import type EmulatorState from "../emulator-state/EmulatorState";
-import type { EnvironmentVariables } from "../emulator-state/EmulatorState";
+import * as PathUtil from "../fs/util/pathUtil";
+import * as DirOp from "../fs/operations/directoryOperations";
+import { fsSearch } from "../fs/operations/baseOperations";
+import type EmulatorState from "../emulatorState/EmulatorState";
+import type { EnvironmentVariables } from "../emulatorState/EmulatorState";
 import type { FileSystem } from "../../FileSystem";
 
 const IMPLIED_DIRECTORY_ENTRIES = [".", ".."];

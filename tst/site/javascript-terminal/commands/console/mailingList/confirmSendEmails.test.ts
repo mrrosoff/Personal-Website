@@ -4,7 +4,7 @@ import { mockAdminState } from "../../../../../helpers/terminal";
 import { axiosPost } from "../../../../../mocks/axios";
 
 import { handleConfirmSendEmails } from "../../../../../../site/javascript-terminal/commands/console/mailingList/confirmSendEmails";
-import { AdminConsoleScreen } from "../../../../../../site/javascript-terminal/emulator-state/EmulatorState";
+import { AdminConsoleScreen } from "../../../../../../site/javascript-terminal/emulatorState/EmulatorState";
 
 function prompt(selectedOption: "yes" | "no", message?: string) {
     return mockAdminState({

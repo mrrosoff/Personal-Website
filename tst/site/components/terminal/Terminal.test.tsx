@@ -11,7 +11,7 @@ import { UserType } from "../../../../api/types";
 import { useAppContext } from "../../../../site/components/AppContext";
 import Terminal from "../../../../site/components/terminal/Terminal";
 import { authenticateWithPasskey } from "../../../../site/javascript-terminal/commands/sudo";
-import type EmulatorState from "../../../../site/javascript-terminal/emulator-state/EmulatorState";
+import type EmulatorState from "../../../../site/javascript-terminal/emulatorState/EmulatorState";
 import type * as Sudo from "../../../../site/javascript-terminal/commands/sudo";
 import type * as ReactRouter from "react-router-dom";
 

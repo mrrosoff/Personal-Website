@@ -1,7 +1,7 @@
 import { parseOptions } from "../parser";
-import type EmulatorState from "../emulator-state/EmulatorState";
-import { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
-import * as DirOp from "../fs/operations/directory-operations";
+import type EmulatorState from "../emulatorState/EmulatorState";
+import { relativeToAbsolutePath } from "../emulatorState/EmulatorState";
+import * as DirOp from "../fs/operations/directoryOperations";
 
 export const optDef = { "-v, --verbose": "" };
 

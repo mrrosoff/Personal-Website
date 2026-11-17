@@ -1,5 +1,5 @@
 import { parseOptions } from "../parser";
-import type EmulatorState from "../emulator-state/EmulatorState";
+import type EmulatorState from "../emulatorState/EmulatorState";
 import { AUTH_TOKEN_KEY, unexpiredToken } from "../../auth";
 
 export const optDef = {};

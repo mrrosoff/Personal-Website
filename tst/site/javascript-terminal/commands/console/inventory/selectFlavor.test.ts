@@ -10,7 +10,7 @@ import {
     fetchInventoryData,
     sortInventory
 } from "../../../../../../site/javascript-terminal/commands/console/inventory/selectFlavor";
-import { AdminConsoleScreen } from "../../../../../../site/javascript-terminal/emulator-state/EmulatorState";
+import { AdminConsoleScreen } from "../../../../../../site/javascript-terminal/emulatorState/EmulatorState";
 
 function flavor(name: string, count: number, type: DatabaseFlavor["type"] = "currentFlavor") {
     return { ...mockFlavor, name, count, type };

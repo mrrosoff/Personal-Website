@@ -6,7 +6,7 @@ import { handleMainMenu } from "../../../../../site/javascript-terminal/commands
 import {
     AdminConsoleScreen,
     MainMenuOption
-} from "../../../../../site/javascript-terminal/emulator-state/EmulatorState";
+} from "../../../../../site/javascript-terminal/emulatorState/EmulatorState";
 
 function menuAt(selectedOption: MainMenuOption) {
     return mockAdminState({ screen: AdminConsoleScreen.Main, selectedOption });

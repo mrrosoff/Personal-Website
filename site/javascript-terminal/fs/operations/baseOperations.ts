@@ -1,4 +1,4 @@
-import { getLastPathPart, toPathParts } from "../util/path-util";
+import { getLastPathPart, toPathParts } from "../util/pathUtil";
 import type { File, FileSystem } from "../../../FileSystem";
 
 const descend = (entry: File): FileSystem => {

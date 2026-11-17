@@ -2,9 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import { mockDirectory, mockFileSystem } from "../../../../fixtures/fileSystem";
 
-import * as DirOp from "../../../../../site/javascript-terminal/fs/operations/directory-operations";
+import * as DirOp from "../../../../../site/javascript-terminal/fs/operations/directoryOperations";
 
-describe("directory-operations", () => {
+describe("directoryOperations", () => {
     it("should list a directory", () => {
         const result = DirOp.list(mockFileSystem(), "/media");
 

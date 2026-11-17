@@ -1,9 +1,9 @@
-import type EmulatorState from "../../../emulator-state/EmulatorState";
+import type EmulatorState from "../../../emulatorState/EmulatorState";
 import {
     AdminConsoleScreen,
     IceCreamInventoryMenuOption
-} from "../../../emulator-state/EmulatorState";
-import type { ProvisionFlavorForm } from "../../../emulator-state/EmulatorState";
+} from "../../../emulatorState/EmulatorState";
+import type { ProvisionFlavorForm } from "../../../emulatorState/EmulatorState";
 import { arrowStep, cycleFlavorType, editNumber, editText, stepAround } from "../../console";
 
 const FORM_FIELDS: ProvisionFlavorForm["currentField"][] = [

@@ -1,6 +1,6 @@
 import { parseOptions } from "../parser";
-import type EmulatorState from "../emulator-state/EmulatorState";
-import * as CommandMappingUtil from "../emulator-state/CommandMapping";
+import type EmulatorState from "../emulatorState/EmulatorState";
+import * as CommandMappingUtil from "../emulatorState/CommandMapping";
 
 export const optDef = {};
 

@@ -11,7 +11,7 @@ import { vi } from "vitest";
 import { AppContext } from "../../site/components/AppContext";
 import { TERMINAL_COLORS } from "../../site/components/terminal/Terminal";
 import type { TerminalTheme } from "../../site/components/terminal/Terminal";
-import type EmulatorState from "../../site/javascript-terminal/emulator-state/EmulatorState";
+import type EmulatorState from "../../site/javascript-terminal/emulatorState/EmulatorState";
 import { mockEmulatorState } from "./terminal";
 
 export const mockTerminalTheme: TerminalTheme = {
