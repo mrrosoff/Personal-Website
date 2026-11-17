@@ -16,7 +16,7 @@ const mockDeviceSecret = faker.string.alphanumeric(32);
 export const mockFlavor: DatabaseFlavor = {
     productId: `prod_${faker.string.alphanumeric(14)}`,
     priceId: `price_${faker.string.alphanumeric(14)}`,
-    name: faker.food.dish(),
+    name: "Brown Butter Pecan",
     color: faker.color.rgb(),
     count: 5,
     type: "currentFlavor"
