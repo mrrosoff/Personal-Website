@@ -1,8 +1,6 @@
 export type DynamoDBScalar = number | string | boolean | undefined | null;
 export type DynamoDBFieldValue =
-    | DynamoDBScalar
-    | DynamoDBScalar[]
-    | { [key: string]: DynamoDBFieldValue };
+    DynamoDBScalar | DynamoDBScalar[] | { [key: string]: DynamoDBFieldValue };
 
 export type PolaroidFramebufferKey = `framebuffer/${string}/${string}.bin`;
 export type PolaroidPreviewKey = `preview/${string}/${string}.png`;
