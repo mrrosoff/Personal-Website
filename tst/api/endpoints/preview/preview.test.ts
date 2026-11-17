@@ -115,7 +115,7 @@ describe("preview", () => {
         await handler({ queryStringParameters: { token } });
 
         expect(textOf(renderedCard())).toBe(
-            "Max RosoffBooting Rosoff OS . . . . . .\u00a0SUCCESS" +
+            "Max RosoffBooting OS . . . . . .\u00a0SUCCESS" +
                 `Checking Freezer Stash . . . . . .\u00a01 FLAVORS${mockFlavor.name}maxrosoff.com`
         );
     });

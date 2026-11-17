@@ -12,7 +12,18 @@ export async function fakePasskeys(page: Page) {
             getClientExtensionResults: () => ({})
         });
 
-        Object.defineProperty(CredentialsContainer.prototype, "get", {
+        if (!("PublicKeyCredential" in window)) {
+            Object.defineProperty(window, "PublicKeyCredential", { value: () => undefined });
+        }
+        if (!("credentials" in navigator)) {
+            Object.defineProperty(navigator, "credentials", { value: {} });
+        }
+        const credentials: object =
+            "CredentialsContainer" in window
+                ? CredentialsContainer.prototype
+                : (navigator as { credentials: object }).credentials;
+
+        Object.defineProperty(credentials, "get", {
             value: () =>
                 Promise.resolve(
                     credential({
@@ -23,7 +34,7 @@ export async function fakePasskeys(page: Page) {
                     })
                 )
         });
-        Object.defineProperty(CredentialsContainer.prototype, "create", {
+        Object.defineProperty(credentials, "create", {
             value: () =>
                 Promise.resolve(
                     credential({
