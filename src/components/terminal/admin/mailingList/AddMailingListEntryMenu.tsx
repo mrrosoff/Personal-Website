@@ -51,7 +51,13 @@ const AddMailingListEntryMenu = (props: {
                         return (
                             <Typography
                                 key={field}
-                                onClick={smallScreen ? () => selectField(field) : undefined}
+                                onClick={
+                                    smallScreen
+                                        ? () => {
+                                              selectField(field);
+                                          }
+                                        : undefined
+                                }
                                 sx={{
                                     color: active ? commandColor : outputColor,
                                     backgroundColor: active
@@ -79,7 +85,9 @@ const AddMailingListEntryMenu = (props: {
                             selected={false}
                             theme={props.theme}
                             disabled={!entry.email}
-                            onClick={() => props.onAction("Enter")}
+                            onClick={() => {
+                                props.onAction("Enter");
+                            }}
                         >
                             Add
                         </MenuItem>
@@ -87,7 +95,9 @@ const AddMailingListEntryMenu = (props: {
                     <MenuItem
                         selected={false}
                         theme={props.theme}
-                        onClick={() => props.onAction("Escape")}
+                        onClick={() => {
+                            props.onAction("Escape");
+                        }}
                     >
                         {entry.added ? "Back" : "Cancel"}
                     </MenuItem>

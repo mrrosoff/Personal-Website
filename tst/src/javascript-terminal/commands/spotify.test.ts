@@ -54,9 +54,9 @@ describe("spotify", () => {
 
         shell.run("spotify reconnect");
 
-        await vi.waitFor(() =>
-            expect(assign).toHaveBeenCalledWith("https://accounts.spotify.com/authorize")
-        );
+        await vi.waitFor(() => {
+            expect(assign).toHaveBeenCalledWith("https://accounts.spotify.com/authorize");
+        });
     });
 
     it("should log when spotify cannot be reached", async () => {
@@ -68,8 +68,8 @@ describe("spotify", () => {
 
         shell.run("spotify reconnect");
 
-        await vi.waitFor(() =>
-            expect(error).toHaveBeenCalledWith("Spotify Authentication Failed:", expect.any(Error))
-        );
+        await vi.waitFor(() => {
+            expect(error).toHaveBeenCalledWith("Spotify Authentication Failed:", expect.any(Error));
+        });
     });
 });

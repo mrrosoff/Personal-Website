@@ -92,7 +92,9 @@ const IceCream = () => {
             return;
         }
         toggleFlavor(flavorPriceId);
-        return () => toggleFlavor(flavorPriceId);
+        return () => {
+            toggleFlavor(flavorPriceId);
+        };
     }, [params]);
 
     const handleCartClick = () => {
@@ -298,7 +300,11 @@ function FlavorSection(props: FlavorSectionProps) {
                                   <Box
                                       display={"flex"}
                                       onClick={
-                                          cart ? () => cart.toggleFlavor(flavor.priceId) : undefined
+                                          cart
+                                              ? () => {
+                                                    cart.toggleFlavor(flavor.priceId);
+                                                }
+                                              : undefined
                                       }
                                       sx={{
                                           ...(cart

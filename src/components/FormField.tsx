@@ -18,8 +18,12 @@ const FormField = ({
     const [settledValue, setSettledValue] = useState(value);
 
     useEffect(() => {
-        const timeout = setTimeout(() => setSettledValue(value), 600);
-        return () => clearTimeout(timeout);
+        const timeout = setTimeout(() => {
+            setSettledValue(value);
+        }, 600);
+        return () => {
+            clearTimeout(timeout);
+        };
     }, [value]);
 
     const settledProblem = value && value === settledValue ? problem?.(value) : null;

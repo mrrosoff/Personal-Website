@@ -18,7 +18,9 @@ vi.mock("react-router-dom", async (importOriginal) => ({
 
 function InCart(props: { priceIds: string[] }) {
     const { toggleFlavor } = useIceCreamCart();
-    useEffect(() => props.priceIds.forEach(toggleFlavor), []);
+    useEffect(() => {
+        props.priceIds.forEach(toggleFlavor);
+    }, []);
     return null;
 }
 

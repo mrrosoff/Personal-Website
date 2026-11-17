@@ -47,7 +47,9 @@ const IceCreamInventoryMenu = (props: {
                                 key={field}
                                 onClick={
                                     smallScreen && !mode.loading
-                                        ? () => selectField(field)
+                                        ? () => {
+                                              selectField(field);
+                                          }
                                         : undefined
                                 }
                                 sx={{
@@ -69,7 +71,9 @@ const IceCreamInventoryMenu = (props: {
                                         value={value}
                                         width={field === "count" ? "4ch" : "13ch"}
                                         theme={props.theme}
-                                        onStep={(key) => props.onAction(key)}
+                                        onStep={(key) => {
+                                            props.onAction(key);
+                                        }}
                                     />
                                 ) : (
                                     <>
@@ -86,14 +90,18 @@ const IceCreamInventoryMenu = (props: {
                         <MenuItem
                             selected={false}
                             theme={props.theme}
-                            onClick={() => props.onAction("Enter")}
+                            onClick={() => {
+                                props.onAction("Enter");
+                            }}
                         >
                             Save
                         </MenuItem>
                         <MenuItem
                             selected={false}
                             theme={props.theme}
-                            onClick={() => props.onAction("Escape")}
+                            onClick={() => {
+                                props.onAction("Escape");
+                            }}
                         >
                             Cancel
                         </MenuItem>
@@ -118,7 +126,9 @@ const IceCreamInventoryMenu = (props: {
                 theme={props.theme}
                 onClick={
                     smallScreen
-                        ? () => selectOption(IceCreamInventoryMenuOption.ProvisionNewFlavor)
+                        ? () => {
+                              selectOption(IceCreamInventoryMenuOption.ProvisionNewFlavor);
+                          }
                         : undefined
                 }
             >
@@ -129,7 +139,9 @@ const IceCreamInventoryMenu = (props: {
                 theme={props.theme}
                 onClick={
                     smallScreen
-                        ? () => selectOption(IceCreamInventoryMenuOption.ModifyFlavorInventory)
+                        ? () => {
+                              selectOption(IceCreamInventoryMenuOption.ModifyFlavorInventory);
+                          }
                         : undefined
                 }
             >
@@ -139,7 +151,11 @@ const IceCreamInventoryMenu = (props: {
                 selected={mode.selectedOption === IceCreamInventoryMenuOption.GoBack}
                 theme={props.theme}
                 onClick={
-                    smallScreen ? () => selectOption(IceCreamInventoryMenuOption.GoBack) : undefined
+                    smallScreen
+                        ? () => {
+                              selectOption(IceCreamInventoryMenuOption.GoBack);
+                          }
+                        : undefined
                 }
             >
                 3. Go Back

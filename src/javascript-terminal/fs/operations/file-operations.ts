@@ -35,7 +35,7 @@ export const remove = (fs: FileSystem, path: string) => {
         throw Error("Not A File At Specified Path: " + path);
     }
 
-    return BaseOp.remove(fs, path);
+    BaseOp.remove(fs, path);
 };
 
 export const rename = (fs: FileSystem, currentPath: string, newPath: string) => {

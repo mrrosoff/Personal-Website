@@ -10,9 +10,7 @@ const credentials = { accessKeyId: "id", secretAccessKey: "secret" };
 
 async function sdkSettings() {
     vi.resetModules();
-    return (await import("../../../api/aws/common")).SDK_SETTINGS as {
-        credentials?: () => Promise<typeof credentials>;
-    };
+    return (await import("../../../api/aws/common")).SDK_SETTINGS;
 }
 
 describe("SDK_SETTINGS", () => {

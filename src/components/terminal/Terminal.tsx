@@ -124,7 +124,9 @@ const Terminal = (
         const interval = setInterval(() => {
             setLoadingDots((dots) => (dots + 1) % 4);
         }, 600);
-        return () => clearInterval(interval);
+        return () => {
+            clearInterval(interval);
+        };
     }, []);
 
     useEffect(() => {
@@ -412,7 +414,9 @@ const Terminal = (
                     <CommandInput
                         ref={ref}
                         value={input}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                            setInput(e.target.value);
+                        }}
                         onKeyDown={onKeyDown}
                         promptSymbol={promptSymbol}
                         theme={props.theme}

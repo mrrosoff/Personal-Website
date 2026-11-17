@@ -86,7 +86,9 @@ export default function PhotoGrid({ photos, uploading, onRemove }: PhotoGridProp
                                     key={slot.id}
                                     photo={slot}
                                     compact={compact}
-                                    onEnlarge={() => setEnlarged(slot)}
+                                    onEnlarge={() => {
+                                        setEnlarged(slot);
+                                    }}
                                 />
                             )
                         )}
@@ -95,7 +97,9 @@ export default function PhotoGrid({ photos, uploading, onRemove }: PhotoGridProp
             </Box>
             <Dialog
                 open={enlarged !== null}
-                onClose={() => setEnlarged(null)}
+                onClose={() => {
+                    setEnlarged(null);
+                }}
                 maxWidth={false}
                 slotProps={{
                     paper: {
@@ -173,7 +177,9 @@ function PhotoCell({ photo, compact, onEnlarge }: PhotoCellProps) {
                 component="img"
                 src={photo.previewUrl}
                 alt=""
-                onLoad={() => setLoaded(true)}
+                onLoad={() => {
+                    setLoaded(true);
+                }}
                 sx={{
                     height: "100%",
                     width: "100%",

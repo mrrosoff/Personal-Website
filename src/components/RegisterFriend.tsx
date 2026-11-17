@@ -91,7 +91,8 @@ const RegisterForm = (props: { token: string; friendName: string }) => {
                 authHeaders
             );
             const onlyPolaroid = devices.length === 1 && devices[0] === DeviceKind.POLAROID;
-            return await navigate(onlyPolaroid ? "/polaroid" : "/");
+            await navigate(onlyPolaroid ? "/polaroid" : "/");
+            return;
         } catch (err: unknown) {
             console.error(err);
             setIsLoading(false);
@@ -126,7 +127,9 @@ const RegisterForm = (props: { token: string; friendName: string }) => {
                 type={"email"}
                 label={"Email"}
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                    setEmail(e.target.value);
+                }}
                 problem={emailProblem}
                 placeholder={"karl@fog.sf"}
                 autoComplete="email"

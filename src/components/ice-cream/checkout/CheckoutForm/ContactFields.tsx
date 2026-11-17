@@ -12,7 +12,9 @@ const DeliveryAddressFields = () => {
                     label={"Street Address"}
                     autoComplete={"address-line1"}
                     value={address.line1}
-                    onChange={(e) => setAddress({ ...address, line1: e.target.value })}
+                    onChange={(e) => {
+                        setAddress({ ...address, line1: e.target.value });
+                    }}
                     problem={streetProblem}
                     placeholder={"1 Ferry Building"}
                 />
@@ -22,7 +24,9 @@ const DeliveryAddressFields = () => {
                     label={"Apt / Unit"}
                     autoComplete={"address-line2"}
                     value={address.line2}
-                    onChange={(e) => setAddress({ ...address, line2: e.target.value })}
+                    onChange={(e) => {
+                        setAddress({ ...address, line2: e.target.value });
+                    }}
                     placeholder={"Optional"}
                 />
             </Grid>
@@ -31,12 +35,12 @@ const DeliveryAddressFields = () => {
                     label={"ZIP"}
                     autoComplete={"postal-code"}
                     value={address.postalCode}
-                    onChange={(e) =>
+                    onChange={(e) => {
                         setAddress({
                             ...address,
                             postalCode: e.target.value.replace(/\D/g, "").slice(0, 5)
-                        })
-                    }
+                        });
+                    }}
                     problem={zipProblem}
                     placeholder={"94111"}
                     slotProps={{ htmlInput: { inputMode: "numeric" } }}
@@ -56,7 +60,9 @@ const ContactFields = () => {
             <FormField
                 label={"Email"}
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                    setEmail(e.target.value);
+                }}
                 problem={emailProblem}
                 placeholder={"karl@fog.sf"}
                 error={!!emailError}

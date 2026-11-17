@@ -27,25 +27,63 @@ const BootUp = (props: {
     const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
 
     useEffect(() => {
-        setTimeout(() => setState(1), 300);
-        setTimeout(() => setState(2), 450);
-        setTimeout(() => setState(3), 650);
-        setTimeout(() => setState(4), 850);
-        setTimeout(() => setState(5), 1050);
-        setTimeout(() => setState(6), 1200);
-        setTimeout(() => setState(7), 1350);
-        setTimeout(() => setState(8), 1500);
-        setTimeout(() => setState(9), 1650);
-        setTimeout(() => setState(10), 1800);
-        setTimeout(() => setState(11), 1950);
-        setTimeout(() => setState(12), 2200);
-        setTimeout(() => setState(13), 2500);
-        setTimeout(() => setState(14), 3000);
-        setTimeout(() => setState(15), 3500);
-        setTimeout(() => setState(16), 3850);
-        setTimeout(() => setState(17), 4350);
-        setTimeout(() => setState(18), 4700);
-        setTimeout(() => setState(19), 5250);
+        setTimeout(() => {
+            setState(1);
+        }, 300);
+        setTimeout(() => {
+            setState(2);
+        }, 450);
+        setTimeout(() => {
+            setState(3);
+        }, 650);
+        setTimeout(() => {
+            setState(4);
+        }, 850);
+        setTimeout(() => {
+            setState(5);
+        }, 1050);
+        setTimeout(() => {
+            setState(6);
+        }, 1200);
+        setTimeout(() => {
+            setState(7);
+        }, 1350);
+        setTimeout(() => {
+            setState(8);
+        }, 1500);
+        setTimeout(() => {
+            setState(9);
+        }, 1650);
+        setTimeout(() => {
+            setState(10);
+        }, 1800);
+        setTimeout(() => {
+            setState(11);
+        }, 1950);
+        setTimeout(() => {
+            setState(12);
+        }, 2200);
+        setTimeout(() => {
+            setState(13);
+        }, 2500);
+        setTimeout(() => {
+            setState(14);
+        }, 3000);
+        setTimeout(() => {
+            setState(15);
+        }, 3500);
+        setTimeout(() => {
+            setState(16);
+        }, 3850);
+        setTimeout(() => {
+            setState(17);
+        }, 4350);
+        setTimeout(() => {
+            setState(18);
+        }, 4700);
+        setTimeout(() => {
+            setState(19);
+        }, 5250);
         setTimeout(() => {
             sessionStorage.setItem(HAS_BOOTED_KEY, "true");
             setShouldBootUp(false);
@@ -272,7 +310,9 @@ const StartingComputer = () => {
         const interval = setInterval(() => {
             setDots((prev) => (prev.length >= 3 ? "." : prev + "."));
         }, 250);
-        return () => clearInterval(interval);
+        return () => {
+            clearInterval(interval);
+        };
     }, []);
     return <Grid>Starting Computer {dots}</Grid>;
 };

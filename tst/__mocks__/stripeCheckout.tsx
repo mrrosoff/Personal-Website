@@ -54,7 +54,13 @@ export function PaymentElement(props: PaymentElementProps) {
     return (
         <>
             <button onClick={props.onReady}>{"stripe ready"}</button>
-            <button onClick={() => props.onChange({ complete: true })}>{"card complete"}</button>
+            <button
+                onClick={() => {
+                    props.onChange({ complete: true });
+                }}
+            >
+                {"card complete"}
+            </button>
         </>
     );
 }

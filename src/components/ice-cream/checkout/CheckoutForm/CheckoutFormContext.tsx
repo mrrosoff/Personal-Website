@@ -110,14 +110,17 @@ export function CheckoutFormProvider({
     async function pay(checkout: StripeCheckoutValue): Promise<void> {
         const emailResult = await checkout.updateEmail(email);
         if (emailResult.type === "error") {
-            return setEmailError(emailResult.error.message);
+            setEmailError(emailResult.error.message);
+            return;
         }
         if (subscription && (await alreadySubscribed(email))) {
-            return setEmailError("This email already has a subscription.");
+            setEmailError("This email already has a subscription.");
+            return;
         }
         const addressResult = await checkout.updateBillingAddress(toStripeContact(address));
         if (addressResult.type === "error") {
-            return setMessage(addressResult.error.message);
+            setMessage(addressResult.error.message);
+            return;
         }
         const confirmResult = await checkout.confirm();
         if (confirmResult.type === "error") {

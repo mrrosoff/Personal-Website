@@ -53,12 +53,13 @@ export function handleSelectFlavor(key: string, state: EmulatorState): EmulatorS
     const startIndex = currentPage * ITEMS_PER_PAGE;
     const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, sortedInventory.length);
 
-    const turnToPage = (page: number) =>
+    const turnToPage = (page: number) => {
         state.setAdminConsoleMode({
             ...mode,
             currentPage: page,
             selectedOption: page * ITEMS_PER_PAGE
         });
+    };
 
     switch (key) {
         case "ArrowDown":

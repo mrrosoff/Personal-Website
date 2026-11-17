@@ -50,7 +50,9 @@ export const LinksAndMenu = () => {
             <Avatar
                 alt="Max Rosoff"
                 src="/images/small-profile.webp"
-                onClick={() => setOpen(!open)}
+                onClick={() => {
+                    setOpen(!open);
+                }}
                 sx={{
                     width: 55,
                     height: 55,
@@ -72,7 +74,7 @@ const Links = (props: { open: boolean; setOpen: Dispatch<SetStateAction<boolean>
     const isHome = useMatch("/");
     const isIceCream = useMatch("/ice-cream");
     const isCheckout = useMatch("/ice-cream/checkout/*");
-    const linkToIceCream = isHome || isCheckout;
+    const linkToIceCream = isHome ?? isCheckout;
     const { selectedPriceIds } = useIceCreamCart();
 
     const handleCartClick = () => {
@@ -140,7 +142,9 @@ const Links = (props: { open: boolean; setOpen: Dispatch<SetStateAction<boolean>
             )}
             <Button
                 disableRipple
-                onClick={() => props.setOpen(!props.open)}
+                onClick={() => {
+                    props.setOpen(!props.open);
+                }}
                 sx={{
                     color: "#FCFCFC",
                     fontSize: 22,

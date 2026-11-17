@@ -17,7 +17,7 @@ export const copy = (fs: FileSystem, srcPath: string, destPath: string) => {
 };
 
 export const remove = (fs: FileSystem, path: string) => {
-    return BaseOp.remove(fs, path);
+    BaseOp.remove(fs, path);
 };
 
 export const rename = (fs: FileSystem, currentPath: string, newPath: string) => {

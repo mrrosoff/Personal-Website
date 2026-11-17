@@ -55,7 +55,9 @@ const MailingListForm = () => {
                 <FormField
                     label="First Name"
                     value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
+                    onChange={(e) => {
+                        setFirstName(e.target.value);
+                    }}
                     placeholder={"Karl"}
                     sx={{ width: smallScreen ? 300 : 250 }}
                     autoComplete="given-name"
@@ -63,7 +65,9 @@ const MailingListForm = () => {
                 <FormField
                     label="Last Name"
                     value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
+                    onChange={(e) => {
+                        setLastName(e.target.value);
+                    }}
                     placeholder={"The Fog"}
                     sx={{
                         ml: smallScreen ? 0 : 4,
@@ -77,7 +81,9 @@ const MailingListForm = () => {
                 label="Email"
                 type={"email"}
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                    setEmail(e.target.value);
+                }}
                 problem={emailProblem}
                 placeholder={"karl@fog.sf"}
                 sx={{ mt: smallScreen ? 1.5 : 2, width: smallScreen ? 300 : 532 }}

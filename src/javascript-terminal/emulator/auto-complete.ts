@@ -22,7 +22,7 @@ export const suggestCommandOptions = (
         return [];
     }
 
-    const optDefSeq = Object.keys(getCommandOptDef(cmdMapping, commandName) || {}).flatMap((opts) =>
+    const optDefSeq = Object.keys(getCommandOptDef(cmdMapping, commandName) ?? {}).flatMap((opts) =>
         opts.split(",").map((opt) => opt.trim())
     );
     return optDefSeq.filter((option) => partialStr === option.substr(0, partialStr.length));

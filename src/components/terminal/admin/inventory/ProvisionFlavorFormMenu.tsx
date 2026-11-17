@@ -43,7 +43,13 @@ const ProvisionFlavorFormMenu = (props: {
                     return (
                         <Typography
                             key={field}
-                            onClick={smallScreen ? () => selectField(field) : undefined}
+                            onClick={
+                                smallScreen
+                                    ? () => {
+                                          selectField(field);
+                                      }
+                                    : undefined
+                            }
                             sx={{
                                 color: active ? props.theme.commandColor : props.theme.outputColor,
                                 backgroundColor: active ? "rgba(255,255,255,0.1)" : "transparent",
@@ -59,7 +65,9 @@ const ProvisionFlavorFormMenu = (props: {
                                     value={value}
                                     width={"13ch"}
                                     theme={props.theme}
-                                    onStep={(key) => props.onAction(key)}
+                                    onStep={(key) => {
+                                        props.onAction(key);
+                                    }}
                                 />
                             ) : (
                                 <>
@@ -77,14 +85,18 @@ const ProvisionFlavorFormMenu = (props: {
                     <MenuItem
                         selected={false}
                         theme={props.theme}
-                        onClick={() => props.onAction("Enter")}
+                        onClick={() => {
+                            props.onAction("Enter");
+                        }}
                     >
                         Continue
                     </MenuItem>
                     <MenuItem
                         selected={false}
                         theme={props.theme}
-                        onClick={() => props.onAction("Escape")}
+                        onClick={() => {
+                            props.onAction("Escape");
+                        }}
                     >
                         Cancel
                     </MenuItem>

@@ -28,7 +28,9 @@ const CommandInput = (
         const interval = setInterval(() => {
             setVisibleCursor((visible) => !visible);
         }, 600);
-        return () => clearInterval(interval);
+        return () => {
+            clearInterval(interval);
+        };
     }, []);
 
     return (

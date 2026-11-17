@@ -23,35 +23,65 @@ const MainMenu = (props: { theme: TerminalTheme; onAction: (key: string) => void
             <MenuItem
                 selected={mode.selectedOption === MainMenuOption.IceCreamInventory}
                 theme={props.theme}
-                onClick={smallScreen ? () => select(MainMenuOption.IceCreamInventory) : undefined}
+                onClick={
+                    smallScreen
+                        ? () => {
+                              select(MainMenuOption.IceCreamInventory);
+                          }
+                        : undefined
+                }
             >
                 1. Ice Cream Inventory
             </MenuItem>
             <MenuItem
                 selected={mode.selectedOption === MainMenuOption.SendMarketingEmails}
                 theme={props.theme}
-                onClick={smallScreen ? () => select(MainMenuOption.SendMarketingEmails) : undefined}
+                onClick={
+                    smallScreen
+                        ? () => {
+                              select(MainMenuOption.SendMarketingEmails);
+                          }
+                        : undefined
+                }
             >
                 2. Send Marketing Emails
             </MenuItem>
             <MenuItem
                 selected={mode.selectedOption === MainMenuOption.AddMailingListEntry}
                 theme={props.theme}
-                onClick={smallScreen ? () => select(MainMenuOption.AddMailingListEntry) : undefined}
+                onClick={
+                    smallScreen
+                        ? () => {
+                              select(MainMenuOption.AddMailingListEntry);
+                          }
+                        : undefined
+                }
             >
                 3. Add To Mailing List
             </MenuItem>
             <MenuItem
                 selected={mode.selectedOption === MainMenuOption.CreateFriendInvite}
                 theme={props.theme}
-                onClick={smallScreen ? () => select(MainMenuOption.CreateFriendInvite) : undefined}
+                onClick={
+                    smallScreen
+                        ? () => {
+                              select(MainMenuOption.CreateFriendInvite);
+                          }
+                        : undefined
+                }
             >
                 4. Create Friend Invite
             </MenuItem>
             <MenuItem
                 selected={mode.selectedOption === MainMenuOption.Exit}
                 theme={props.theme}
-                onClick={smallScreen ? () => select(MainMenuOption.Exit) : undefined}
+                onClick={
+                    smallScreen
+                        ? () => {
+                              select(MainMenuOption.Exit);
+                          }
+                        : undefined
+                }
             >
                 5. Exit
             </MenuItem>

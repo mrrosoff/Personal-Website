@@ -10,12 +10,13 @@ export async function handleConfirmSendEmails(
 ): Promise<EmulatorState> {
     const mode = state.getAdminConsoleMode()!;
     const message = mode.marketing?.message ?? "";
-    const returnToMainMenu = () =>
+    const returnToMainMenu = () => {
         state.setAdminConsoleMode({
             ...mode,
             screen: AdminConsoleScreen.Main,
             selectedOption: MainMenuOption.SendMarketingEmails
         });
+    };
 
     switch (key) {
         case "ArrowLeft":

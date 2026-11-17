@@ -104,7 +104,7 @@ const PASSWORD_PROMPT_KEY = "passwordPrompt";
 const BLOCKING_MODE_KEY = "blockingMode";
 
 type EmulatorStateType = {
-    [TAB_COUNT_KEY]?: number;
+    [TAB_COUNT_KEY]: number;
     [FS_KEY]: FileSystem;
     [ENVIRONMENT_VARIABLES_KEY]: Record<string, string | undefined>;
     [HISTORY_KEY]: string[];
@@ -149,7 +149,7 @@ export default class EmulatorState {
     }
 
     getTabCount(): number {
-        return this.state[TAB_COUNT_KEY] || 0;
+        return this.state[TAB_COUNT_KEY];
     }
 
     setTabCount(newTabCount: number) {

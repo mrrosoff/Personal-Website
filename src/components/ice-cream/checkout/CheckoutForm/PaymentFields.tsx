@@ -18,8 +18,12 @@ export const LoadingPaymentElement = (props: LoadingPaymentElementProps) => {
             {!ready && <PaymentSkeleton accordion={props.accordion} />}
             <Box sx={ready ? undefined : { height: 0, overflow: "hidden", visibility: "hidden" }}>
                 <PaymentElement
-                    onReady={() => setReady(true)}
-                    onChange={(event) => props.onComplete(event.complete)}
+                    onReady={() => {
+                        setReady(true);
+                    }}
+                    onChange={(event) => {
+                        props.onComplete(event.complete);
+                    }}
                     options={{
                         layout: {
                             type: props.accordion ? "accordion" : "tabs",

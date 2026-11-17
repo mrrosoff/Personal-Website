@@ -64,7 +64,13 @@ const ConfirmSendEmailsMenu = (props: {
                     selected={selectedOption === "yes"}
                     theme={props.theme}
                     disabled={mode.loading}
-                    onClick={smallScreen ? () => select("yes") : undefined}
+                    onClick={
+                        smallScreen
+                            ? () => {
+                                  select("yes");
+                              }
+                            : undefined
+                    }
                 >
                     Yes
                 </MenuItem>
@@ -72,7 +78,13 @@ const ConfirmSendEmailsMenu = (props: {
                     selected={selectedOption === "no"}
                     theme={props.theme}
                     disabled={mode.loading}
-                    onClick={smallScreen ? () => select("no") : undefined}
+                    onClick={
+                        smallScreen
+                            ? () => {
+                                  select("no");
+                              }
+                            : undefined
+                    }
                 >
                     No
                 </MenuItem>

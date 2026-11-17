@@ -41,9 +41,13 @@ describe("IceCreamCartContext", () => {
         const { result } = renderCart();
 
         act(() => void result.current.refreshFlavors());
-        await waitFor(() => expect(result.current.isLoadingFlavors).toBe(true));
+        await waitFor(() => {
+            expect(result.current.isLoadingFlavors).toBe(true);
+        });
         await act(() => result.current.refreshFlavors());
-        await act(async () => finish({ data: { inventory: [] } }));
+        await act(async () => {
+            finish({ data: { inventory: [] } });
+        });
 
         expect(axiosPost).toHaveBeenCalledOnce();
     });
@@ -51,10 +55,18 @@ describe("IceCreamCartContext", () => {
     it("should add and remove flavors from the cart", () => {
         const { result } = renderCart();
 
-        act(() => result.current.toggleFlavor("price_a"));
-        act(() => result.current.toggleFlavor("price_b"));
-        act(() => result.current.toggleFlavor("price_a"));
-        act(() => result.current.toggleFlavor(undefined));
+        act(() => {
+            result.current.toggleFlavor("price_a");
+        });
+        act(() => {
+            result.current.toggleFlavor("price_b");
+        });
+        act(() => {
+            result.current.toggleFlavor("price_a");
+        });
+        act(() => {
+            result.current.toggleFlavor(undefined);
+        });
 
         expect(result.current.selectedPriceIds).toEqual(["price_b"]);
     });
