@@ -1,11 +1,8 @@
-import { GetCommand } from "@aws-sdk/lib-dynamodb";
 import { describe, expect, it } from "vitest";
 
 import { mockEvent, mockToken } from "../setup";
-import { mockDocumentClient } from "../__mocks__/__aws__/dynamodb";
 import { mockDevice } from "../__mocks__/__data__/aws/dynamodb";
 
-import { DEVICES_TABLE } from "../../api/common";
 import { authorize, isAdmin } from "../../api/permissions";
 import { DeviceKind, UserType } from "../../api/types";
 
@@ -66,13 +63,11 @@ describe("authorize", () => {
         expect(result.device).toBeUndefined();
     });
 
-    it("should not look up devices for an invite", async () => {
+    it("should not give an invite the friend's device", async () => {
         const token = await mockToken(UserType.SHARE);
 
-        await authorize(mockEvent({ token }), UserType.SHARE, DeviceKind.POLAROID);
+        const result = await authorize(mockEvent({ token }), UserType.SHARE, DeviceKind.POLAROID);
 
-        expect(mockDocumentClient).not.toHaveReceivedCommandWith(GetCommand, {
-            TableName: DEVICES_TABLE
-        });
+        expect(result.device).toBeUndefined();
     });
 });

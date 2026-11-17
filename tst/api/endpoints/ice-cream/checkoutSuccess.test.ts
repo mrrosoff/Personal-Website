@@ -1,15 +1,19 @@
-import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { describe, expect, it } from "vitest";
 
 import { mockEvent } from "../../../setup";
-import { mockDocumentClient } from "../../../__mocks__/__aws__/dynamodb";
+import { mockDynamoDB } from "../../../__mocks__/__aws__/dynamodb";
 import { mockFlavor } from "../../../__mocks__/__data__/aws/dynamodb";
 import { mockResend } from "../../../__mocks__/resend";
 import { mockCheckoutSession, mockLineItem, mockStripe } from "../../../__mocks__/stripe";
 
+import { FLAVORS_TABLE } from "../../../../api/common";
 import { handler } from "../../../../api/endpoints/ice-cream/checkoutSuccess";
 
 const event = mockEvent({ body: "{}", headers: { "stripe-signature": "signature" } });
+
+function storedFlavor() {
+    return mockDynamoDB.get(FLAVORS_TABLE, mockFlavor.productId);
+}
 
 describe("checkoutSuccess", () => {
     it("should need a body", async () => {
@@ -42,10 +46,7 @@ describe("checkoutSuccess", () => {
     it("should take a pint out of the freezer", async () => {
         await handler(event);
 
-        expect(mockDocumentClient).toHaveReceivedCommandWith(UpdateCommand, {
-            Key: { productId: mockFlavor.productId },
-            ExpressionAttributeValues: { ":delta": -1 }
-        });
+        expect(storedFlavor()?.count).toBe(mockFlavor.count - 1);
     });
 
     it("should email the order", async () => {
@@ -78,24 +79,22 @@ describe("checkoutSuccess", () => {
 
         await handler(event);
 
-        expect(mockDocumentClient).not.toHaveReceivedCommand(UpdateCommand);
+        expect(storedFlavor()?.count).toBe(mockFlavor.count);
     });
 
     it("should refund and restock an oversold pint", async () => {
-        mockDocumentClient.on(UpdateCommand).resolves({ Attributes: { ...mockFlavor, count: -1 } });
+        mockDynamoDB.seed(FLAVORS_TABLE, { ...mockFlavor, count: 0 });
 
         await handler(event);
 
-        expect(mockDocumentClient).toHaveReceivedCommandWith(UpdateCommand, {
-            ExpressionAttributeValues: { ":delta": 1 }
-        });
+        expect(storedFlavor()?.count).toBe(0);
         expect(mockStripe.refunds.create).toHaveBeenCalledWith(
             expect.objectContaining({ amount: 600 })
         );
     });
 
     it("should not email an order where everything oversold", async () => {
-        mockDocumentClient.on(UpdateCommand).resolves({ Attributes: { ...mockFlavor, count: -1 } });
+        mockDynamoDB.seed(FLAVORS_TABLE, { ...mockFlavor, count: 0 });
 
         await handler(event);
 
@@ -103,16 +102,11 @@ describe("checkoutSuccess", () => {
     });
 
     it("should unlist a last batch flavor once it sells out", async () => {
-        mockDocumentClient
-            .on(UpdateCommand)
-            .resolves({ Attributes: { ...mockFlavor, count: 0, type: "lastBatch" } });
+        mockDynamoDB.seed(FLAVORS_TABLE, { ...mockFlavor, count: 1, type: "lastBatch" });
 
         await handler(event);
 
-        expect(mockDocumentClient).toHaveReceivedCommandWith(UpdateCommand, {
-            UpdateExpression: "SET #type = :0",
-            ExpressionAttributeValues: { ":0": null }
-        });
+        expect(storedFlavor()).toMatchObject({ count: 0, type: null });
     });
 
     it("should fulfill a paid subscription invoice", async () => {
@@ -135,7 +129,7 @@ describe("checkoutSuccess", () => {
         await handler(event);
 
         expect(mockResend.contacts.get).toHaveBeenCalled();
-        expect(mockDocumentClient).not.toHaveReceivedCommand(UpdateCommand);
+        expect(storedFlavor()?.count).toBe(mockFlavor.count);
     });
 
     it("should handle a guest who left no details", async () => {
@@ -175,7 +169,7 @@ describe("checkoutSuccess", () => {
     });
 
     it("should not refund an oversold pint that cost nothing", async () => {
-        mockDocumentClient.on(UpdateCommand).resolves({ Attributes: { ...mockFlavor, count: -1 } });
+        mockDynamoDB.seed(FLAVORS_TABLE, { ...mockFlavor, count: 0 });
         mockStripe.checkout.sessions.listLineItems.mockResolvedValue({
             data: [{ ...mockLineItem, amount_total: 0 }]
         });
@@ -186,7 +180,7 @@ describe("checkoutSuccess", () => {
     });
 
     it("should not refund without a payment", async () => {
-        mockDocumentClient.on(UpdateCommand).resolves({ Attributes: { ...mockFlavor, count: -1 } });
+        mockDynamoDB.seed(FLAVORS_TABLE, { ...mockFlavor, count: 0 });
         mockStripe.webhooks.constructEventAsync.mockResolvedValue({
             type: "checkout.session.completed",
             data: { object: { ...mockCheckoutSession, payment_intent: null } }

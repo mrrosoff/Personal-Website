@@ -3,7 +3,7 @@ import { ScanCommand } from "@aws-sdk/lib-dynamodb";
 import type { ReactElement, ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { mockDocumentClient } from "../../../__mocks__/__aws__/dynamodb";
+import { mockDocumentClient, mockDynamoDB } from "../../../__mocks__/__aws__/dynamodb";
 import { mockFlavor } from "../../../__mocks__/__data__/aws/dynamodb";
 
 import { FLAVORS_TABLE } from "../../../../api/common";
@@ -29,10 +29,6 @@ function textOf(node: ReactNode): string {
     return "";
 }
 
-function stockFreezer(...items: object[]) {
-    mockDocumentClient.on(ScanCommand, { TableName: FLAVORS_TABLE }).resolves({ Items: items });
-}
-
 describe("preview", () => {
     beforeEach(() => {
         vi.mocked(render).mockReturnValue({
@@ -54,7 +50,11 @@ describe("preview", () => {
     });
 
     it("should leave out flavors that are sold out or not for sale", async () => {
-        stockFreezer({ ...mockFlavor, count: 0 }, { ...mockFlavor, type: "upcoming" });
+        mockDynamoDB.seed(
+            FLAVORS_TABLE,
+            { ...mockFlavor, count: 0 },
+            { ...mockFlavor, productId: "prod_upcoming", type: "upcoming" }
+        );
 
         await handler();
 
@@ -62,7 +62,7 @@ describe("preview", () => {
     });
 
     it("should show a last batch flavor in white without a color", async () => {
-        stockFreezer({ ...mockFlavor, type: "lastBatch", color: "" });
+        mockDynamoDB.seed(FLAVORS_TABLE, { ...mockFlavor, type: "lastBatch", color: "" });
 
         await handler();
 

@@ -1,9 +1,8 @@
 import { verifyAuthenticationResponse } from "@simplewebauthn/server";
-import { DeleteCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
 import { describe, expect, it, vi } from "vitest";
 
 import { mockEvent, responseBody } from "../../../setup";
-import { mockDocumentClient } from "../../../__mocks__/__aws__/dynamodb";
+import { mockDynamoDB } from "../../../__mocks__/__aws__/dynamodb";
 import { mockChallenge, mockPasskey } from "../../../__mocks__/__data__/aws/dynamodb";
 
 import { decryptToken } from "../../../../api/auth";
@@ -23,28 +22,22 @@ describe("passkeyAuth", () => {
     });
 
     it("should reject an unknown challenge", async () => {
-        mockDocumentClient.on(GetCommand, { TableName: PASSKEY_CHALLENGES_TABLE }).resolves({});
-
-        const result = await handler(mockEvent({ body }));
+        const result = await handler(mockEvent({ body: { ...body, challenge: "unknown" } }));
 
         expect(responseBody(result).message).toBe("Invalid Expired Challenge");
     });
 
     it("should reject and clear an expired challenge", async () => {
-        mockDocumentClient
-            .on(GetCommand, { TableName: PASSKEY_CHALLENGES_TABLE })
-            .resolves({ Item: { ...mockChallenge, expiresAt: 0 } });
+        mockDynamoDB.seed(PASSKEY_CHALLENGES_TABLE, { ...mockChallenge, expiresAt: 0 });
 
         const result = await handler(mockEvent({ body }));
 
         expect(responseBody(result).message).toBe("Challenge Expired");
-        expect(mockDocumentClient).toHaveReceivedCommand(DeleteCommand);
+        expect(mockDynamoDB.get(PASSKEY_CHALLENGES_TABLE, mockChallenge.id)).toBeUndefined();
     });
 
     it("should reject an unknown passkey", async () => {
-        mockDocumentClient.on(GetCommand, { TableName: PASSKEYS_TABLE }).resolves({});
-
-        const result = await handler(mockEvent({ body }));
+        const result = await handler(mockEvent({ body: { ...body, response: { id: "unknown" } } }));
 
         expect(responseBody(result).message).toBe("Credential Not Recognized");
     });
@@ -81,9 +74,7 @@ describe("passkeyAuth", () => {
 
     it("should sign in the admin as admin", async () => {
         vi.mocked(verifyAuthenticationResponse).mockResolvedValue({ verified: true } as never);
-        mockDocumentClient
-            .on(GetCommand, { TableName: PASSKEYS_TABLE })
-            .resolves({ Item: { ...mockPasskey, userType: UserType.ADMIN } });
+        mockDynamoDB.seed(PASSKEYS_TABLE, { ...mockPasskey, userType: UserType.ADMIN });
 
         const result = await handler(mockEvent({ body }));
 
@@ -96,9 +87,6 @@ describe("passkeyAuth", () => {
 
         await handler(mockEvent({ body }));
 
-        expect(mockDocumentClient).toHaveReceivedCommandWith(DeleteCommand, {
-            TableName: PASSKEY_CHALLENGES_TABLE,
-            Key: { id: mockChallenge.id }
-        });
+        expect(mockDynamoDB.get(PASSKEY_CHALLENGES_TABLE, mockChallenge.id)).toBeUndefined();
     });
 });

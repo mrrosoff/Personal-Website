@@ -1,7 +1,6 @@
-import { ScanCommand } from "@aws-sdk/lib-dynamodb";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { mockDocumentClient } from "../../../__mocks__/__aws__/dynamodb";
+import { mockDynamoDB } from "../../../__mocks__/__aws__/dynamodb";
 import { mockDeviceParameters } from "../../../__mocks__/__aws__/parameterStore";
 import { mockDevice, mockPasskey } from "../../../__mocks__/__data__/aws/dynamodb";
 import { mockResend } from "../../../__mocks__/resend";
@@ -12,15 +11,14 @@ import { handler } from "../../../../api/jobs/spotify/reauthReminder";
 import { DeviceKind } from "../../../../api/types";
 
 const setAtParam = refreshTokenSetAtParam(mockDevice.deviceId);
+const spotifyDisplay = { ...mockDevice, kind: DeviceKind.SPOTIFY };
 
 function connectedDaysAgo(days: number) {
     mockDeviceParameters.set(setAtParam, String(Date.now() - days * 24 * 60 * 60 * 1000));
 }
 
 beforeEach(() => {
-    mockDocumentClient
-        .on(ScanCommand, { TableName: DEVICES_TABLE })
-        .resolves({ Items: [{ ...mockDevice, kind: DeviceKind.SPOTIFY }] });
+    mockDynamoDB.seed(DEVICES_TABLE, spotifyDisplay);
 });
 
 describe("reauthReminder", () => {
@@ -47,6 +45,7 @@ describe("reauthReminder", () => {
     });
 
     it("should email the owner as expiry nears", async () => {
+        mockDynamoDB.seed(DEVICES_TABLE, spotifyDisplay);
         connectedDaysAgo(175);
 
         await handler();
@@ -57,7 +56,7 @@ describe("reauthReminder", () => {
     });
 
     it("should email Max when nobody owns the display", async () => {
-        mockDocumentClient.on(ScanCommand, { TableName: PASSKEYS_TABLE }).resolves({ Items: [] });
+        mockDynamoDB.clear(PASSKEYS_TABLE);
         connectedDaysAgo(175);
 
         await handler();
@@ -68,9 +67,7 @@ describe("reauthReminder", () => {
     });
 
     it("should ignore polaroids", async () => {
-        mockDocumentClient
-            .on(ScanCommand, { TableName: DEVICES_TABLE })
-            .resolves({ Items: [mockDevice] });
+        mockDynamoDB.seed(DEVICES_TABLE, mockDevice);
         connectedDaysAgo(175);
 
         await handler();

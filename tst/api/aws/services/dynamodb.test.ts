@@ -1,14 +1,7 @@
-import {
-    DeleteCommand,
-    GetCommand,
-    PutCommand,
-    QueryCommand,
-    ScanCommand,
-    UpdateCommand
-} from "@aws-sdk/lib-dynamodb";
+import { QueryCommand, ScanCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { describe, expect, it } from "vitest";
 
-import { mockDocumentClient } from "../../../__mocks__/__aws__/dynamodb";
+import { mockDocumentClient, mockDynamoDB } from "../../../__mocks__/__aws__/dynamodb";
 import { mockFlavor, mockPasskey } from "../../../__mocks__/__data__/aws/dynamodb";
 
 import {
@@ -32,7 +25,15 @@ describe("dynamodb", () => {
         expect(result).toEqual([mockFlavor]);
     });
 
-    it("should return an empty array if a scan has no items", async () => {
+    it("should scan an empty table", async () => {
+        mockDynamoDB.clear(FLAVORS_TABLE);
+
+        const result = await getEntireTable(FLAVORS_TABLE);
+
+        expect(result).toHaveLength(0);
+    });
+
+    it("should treat a scan without an item list as empty", async () => {
         mockDocumentClient.on(ScanCommand).resolves({});
 
         const result = await getEntireTable(FLAVORS_TABLE);
@@ -41,29 +42,34 @@ describe("dynamodb", () => {
     });
 
     it("should get an item by its primary key", async () => {
-        await getItem(FLAVORS_TABLE, mockFlavor.productId);
+        const result = await getItem(FLAVORS_TABLE, mockFlavor.productId);
 
-        expect(mockDocumentClient).toHaveReceivedCommandWith(GetCommand, {
-            TableName: FLAVORS_TABLE,
-            Key: { productId: mockFlavor.productId }
-        });
+        expect(result).toEqual(mockFlavor);
     });
 
     it("should get an item by an index", async () => {
+        mockDynamoDB.seed(PASSKEYS_TABLE, mockPasskey);
+
         const result = await getItemByIndex(PASSKEYS_TABLE, "email", mockPasskey.email);
 
         expect(result).toEqual(mockPasskey);
     });
 
     it("should throw if an index lookup is not unique", async () => {
-        mockDocumentClient.on(QueryCommand).resolves({ Items: [mockPasskey, mockPasskey] });
+        mockDynamoDB.seed(PASSKEYS_TABLE, mockPasskey, { ...mockPasskey, credentialId: "other" });
 
         const result = getItemByIndex(PASSKEYS_TABLE, "email", mockPasskey.email);
 
         await expect(result).rejects.toThrow(`email ${mockPasskey.email} Is Not Unique`);
     });
 
-    it("should return an empty array if a query has no items", async () => {
+    it("should find nothing for an index value no item has", async () => {
+        const result = await getItemsByIndex(PASSKEYS_TABLE, "email", "nobody@example.com");
+
+        expect(result).toHaveLength(0);
+    });
+
+    it("should treat a query without an item list as empty", async () => {
         mockDocumentClient.on(QueryCommand).resolves({});
 
         const result = await getItemsByIndex(PASSKEYS_TABLE, "email", mockPasskey.email);
@@ -72,9 +78,11 @@ describe("dynamodb", () => {
     });
 
     it("should decrement a field", async () => {
-        const result = await decrementField(FLAVORS_TABLE, mockFlavor.productId, "count");
+        await decrementField(FLAVORS_TABLE, mockFlavor.productId, "count");
 
-        expect(result.count).toBe(mockFlavor.count - 1);
+        expect(mockDynamoDB.get(FLAVORS_TABLE, mockFlavor.productId)?.count).toBe(
+            mockFlavor.count - 1
+        );
     });
 
     it("should increment a field", async () => {
@@ -83,7 +91,7 @@ describe("dynamodb", () => {
         expect(result.count).toBe(mockFlavor.count + 1);
     });
 
-    it("should throw if adjusting a missing item", async () => {
+    it("should throw if an adjustment returns no item", async () => {
         mockDocumentClient.on(UpdateCommand).resolves({});
 
         const result = decrementField(FLAVORS_TABLE, mockFlavor.productId, "count");
@@ -95,7 +103,7 @@ describe("dynamodb", () => {
         const result = await putItem(FLAVORS_TABLE, mockFlavor);
 
         expect(result).toEqual(mockFlavor);
-        expect(mockDocumentClient).toHaveReceivedCommandWith(PutCommand, { Item: mockFlavor });
+        expect(mockDynamoDB.get(FLAVORS_TABLE, mockFlavor.productId)).toEqual(mockFlavor);
     });
 
     it("should update a single field", async () => {
@@ -110,12 +118,14 @@ describe("dynamodb", () => {
             color: undefined
         });
 
-        expect(mockDocumentClient).toHaveReceivedCommandWith(UpdateCommand, {
-            UpdateExpression: "SET #name = :0 REMOVE #color"
+        expect(mockDynamoDB.get(FLAVORS_TABLE, mockFlavor.productId)).toEqual({
+            ...mockFlavor,
+            name: "Fig",
+            color: undefined
         });
     });
 
-    it("should throw if updating a missing item", async () => {
+    it("should throw if an update returns no item", async () => {
         mockDocumentClient.on(UpdateCommand).resolves({});
 
         const result = updateItemFields(FLAVORS_TABLE, mockFlavor.productId, { name: "Fig" });
@@ -127,13 +137,11 @@ describe("dynamodb", () => {
         const result = await deleteItem(FLAVORS_TABLE, mockFlavor.productId);
 
         expect(result).toEqual(mockFlavor);
-        expect(mockDocumentClient).toHaveReceivedCommand(DeleteCommand);
+        expect(mockDynamoDB.items(FLAVORS_TABLE)).toHaveLength(0);
     });
 
     it("should throw if deleting a missing item", async () => {
-        mockDocumentClient.on(DeleteCommand).resolves({});
-
-        const result = deleteItem(FLAVORS_TABLE, mockFlavor.productId);
+        const result = deleteItem(FLAVORS_TABLE, "prod_missing");
 
         await expect(result).rejects.toThrow("Called DynamoDB Without Validating Item Exists");
     });

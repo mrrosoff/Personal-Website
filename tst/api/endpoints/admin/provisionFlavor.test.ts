@@ -1,11 +1,11 @@
-import { PutCommand } from "@aws-sdk/lib-dynamodb";
 import { describe, expect, it } from "vitest";
 
 import { mockEvent, mockToken, responseBody } from "../../../setup";
-import { mockDocumentClient } from "../../../__mocks__/__aws__/dynamodb";
+import { mockDynamoDB } from "../../../__mocks__/__aws__/dynamodb";
 import { mockFlavor } from "../../../__mocks__/__data__/aws/dynamodb";
 import { mockStripe } from "../../../__mocks__/stripe";
 
+import { FLAVORS_TABLE } from "../../../../api/common";
 import { handler } from "../../../../api/endpoints/admin/provisionFlavor";
 import { UserType } from "../../../../api/types";
 
@@ -55,8 +55,8 @@ describe("provisionFlavor", () => {
 
         await handler(mockEvent({ token, body }));
 
-        expect(mockDocumentClient).toHaveReceivedCommandWith(PutCommand, {
-            Item: {
+        expect(mockDynamoDB.items(FLAVORS_TABLE)).toEqual([
+            {
                 productId: mockFlavor.productId,
                 priceId: mockFlavor.priceId,
                 name: "Fig",
@@ -64,6 +64,6 @@ describe("provisionFlavor", () => {
                 count: 4,
                 type: "upcoming"
             }
-        });
+        ]);
     });
 });

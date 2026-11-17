@@ -1,8 +1,7 @@
-import { ScanCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { describe, expect, it } from "vitest";
 
 import { mockEvent, mockToken, responseBody } from "../../../setup";
-import { mockDocumentClient } from "../../../__mocks__/__aws__/dynamodb";
+import { mockDynamoDB } from "../../../__mocks__/__aws__/dynamodb";
 import { mockFlavor } from "../../../__mocks__/__data__/aws/dynamodb";
 import { mockResend } from "../../../__mocks__/resend";
 import { mockCheckoutSession, mockStripe } from "../../../__mocks__/stripe";
@@ -13,6 +12,10 @@ import { UserType } from "../../../../api/types";
 
 const query = { priceIds: mockFlavor.priceId };
 
+function pintsLeft() {
+    return mockDynamoDB.get(FLAVORS_TABLE, mockFlavor.productId)?.count;
+}
+
 describe("checkout", () => {
     it("should reject a bad token", async () => {
         const result = await handler(mockEvent({ token: "junk", query }));
@@ -21,9 +24,7 @@ describe("checkout", () => {
     });
 
     it("should refuse a flavor that is not for sale", async () => {
-        mockDocumentClient
-            .on(ScanCommand, { TableName: FLAVORS_TABLE })
-            .resolves({ Items: [{ ...mockFlavor, type: "upcoming" }] });
+        mockDynamoDB.seed(FLAVORS_TABLE, { ...mockFlavor, type: "upcoming" });
 
         const result = await handler(mockEvent({ query }));
 
@@ -37,9 +38,7 @@ describe("checkout", () => {
     });
 
     it("should refuse more pints than are left", async () => {
-        mockDocumentClient
-            .on(ScanCommand, { TableName: FLAVORS_TABLE })
-            .resolves({ Items: [{ ...mockFlavor, count: 1 }] });
+        mockDynamoDB.seed(FLAVORS_TABLE, { ...mockFlavor, count: 1 });
 
         const result = await handler(
             mockEvent({ query: { priceIds: `${mockFlavor.priceId},${mockFlavor.priceId}` } })
@@ -66,10 +65,7 @@ describe("checkout", () => {
         const result = await handler(mockEvent({ token, query, body: { email: "a@b.com" } }));
 
         expect(responseBody(result)).toEqual({ friendCheckout: true });
-        expect(mockDocumentClient).toHaveReceivedCommandWith(UpdateCommand, {
-            Key: { productId: mockFlavor.productId },
-            ExpressionAttributeValues: { ":delta": -1 }
-        });
+        expect(pintsLeft()).toBe(mockFlavor.count - 1);
         expect(mockResend.emails.send).toHaveBeenCalledTimes(2);
     });
 
@@ -78,7 +74,7 @@ describe("checkout", () => {
 
         await handler(mockEvent({ token, query, local: true }));
 
-        expect(mockDocumentClient).not.toHaveReceivedCommand(UpdateCommand);
+        expect(pintsLeft()).toBe(mockFlavor.count);
     });
 
     it("should refuse a checkout with no flavors", async () => {

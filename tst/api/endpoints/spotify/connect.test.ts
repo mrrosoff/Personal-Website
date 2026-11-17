@@ -1,8 +1,7 @@
-import { GetCommand } from "@aws-sdk/lib-dynamodb";
 import { describe, expect, it } from "vitest";
 
 import { mockEvent, mockToken, responseBody } from "../../../setup";
-import { mockDocumentClient } from "../../../__mocks__/__aws__/dynamodb";
+import { mockDynamoDB } from "../../../__mocks__/__aws__/dynamodb";
 import { mockParameters } from "../../../__mocks__/__aws__/parameterStore";
 import { mockDevice } from "../../../__mocks__/__data__/aws/dynamodb";
 
@@ -13,9 +12,7 @@ import { DeviceKind, UserType } from "../../../../api/types";
 const secret = mockParameters["/website/spotify/client-secret"];
 
 function ownSpotifyDisplay() {
-    mockDocumentClient
-        .on(GetCommand, { TableName: DEVICES_TABLE })
-        .resolves({ Item: { ...mockDevice, kind: DeviceKind.SPOTIFY } });
+    mockDynamoDB.seed(DEVICES_TABLE, { ...mockDevice, kind: DeviceKind.SPOTIFY });
 }
 
 async function authorizeUrl() {

@@ -51,7 +51,7 @@ export type ValuesOfType<T, TCondition> = {
 const dynamodbClient = new DynamoDBClient(SDK_SETTINGS);
 export const documentClient = DynamoDBDocument.from(dynamodbClient);
 
-const primaryKeys: Record<Table, string> = {
+export const primaryKeys: Record<Table, string> = {
     [FLAVORS_TABLE]: "productId",
     [PASSKEY_CHALLENGES_TABLE]: "id",
     [PASSKEYS_TABLE]: "credentialId",
@@ -62,10 +62,7 @@ export async function getEntireTable<T extends Table>(table: T): Promise<TableOb
     console.debug(`Getting all items from ${table}`);
     const scanItemsRequest = new ScanCommand({ TableName: table });
     const itemOutput = await documentClient.send(scanItemsRequest);
-    if (!itemOutput.Items) {
-        return [];
-    }
-    return itemOutput.Items as TableObject<T>[];
+    return (itemOutput.Items ?? []) as TableObject<T>[];
 }
 
 export async function getItem<T extends Table>(

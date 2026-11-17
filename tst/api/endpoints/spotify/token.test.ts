@@ -1,9 +1,8 @@
 import { PutParameterCommand } from "@aws-sdk/client-ssm";
-import { GetCommand } from "@aws-sdk/lib-dynamodb";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { mockEvent, responseBody } from "../../../setup";
-import { mockDocumentClient } from "../../../__mocks__/__aws__/dynamodb";
+import { mockDynamoDB } from "../../../__mocks__/__aws__/dynamodb";
 import { mockDeviceParameters, mockSSMClient } from "../../../__mocks__/__aws__/parameterStore";
 import { AxiosError, axiosPost } from "../../../__mocks__/axios";
 import { mockDevice, mockDeviceToken } from "../../../__mocks__/__data__/aws/dynamodb";
@@ -27,9 +26,7 @@ function spotifyError(status?: number, data?: object) {
 }
 
 beforeEach(() => {
-    mockDocumentClient
-        .on(GetCommand, { TableName: DEVICES_TABLE })
-        .resolves({ Item: { ...mockDevice, kind: DeviceKind.SPOTIFY } });
+    mockDynamoDB.seed(DEVICES_TABLE, { ...mockDevice, kind: DeviceKind.SPOTIFY });
     mockDeviceParameters.set(refreshParam, "refresh");
     axiosPost.mockResolvedValue({ data: { access_token: "access", expires_in: 3600 } });
 });

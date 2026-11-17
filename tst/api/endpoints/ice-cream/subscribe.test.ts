@@ -1,8 +1,7 @@
-import { ScanCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { describe, expect, it } from "vitest";
 
 import { mockEvent, responseBody } from "../../../setup";
-import { mockDocumentClient } from "../../../__mocks__/__aws__/dynamodb";
+import { mockDynamoDB } from "../../../__mocks__/__aws__/dynamodb";
 import { mockParameters } from "../../../__mocks__/__aws__/parameterStore";
 import { mockFlavor } from "../../../__mocks__/__data__/aws/dynamodb";
 import { mockResend } from "../../../__mocks__/resend";
@@ -52,9 +51,9 @@ describe("fulfillSubscriptionMonth", () => {
     it("should take the month's flavors out of the freezer", async () => {
         await fulfillSubscriptionMonth(mockStripe as never, invoice);
 
-        expect(mockDocumentClient).toHaveReceivedCommandWith(UpdateCommand, {
-            Key: { productId: mockFlavor.productId }
-        });
+        expect(mockDynamoDB.get(FLAVORS_TABLE, mockFlavor.productId)?.count).toBe(
+            mockFlavor.count - 1
+        );
     });
 
     it("should record the flavors on the invoice", async () => {
@@ -66,16 +65,13 @@ describe("fulfillSubscriptionMonth", () => {
     });
 
     it("should only send flavors that are current and in stock", async () => {
-        mockDocumentClient.on(ScanCommand, { TableName: FLAVORS_TABLE }).resolves({
-            Items: [
-                { ...mockFlavor, count: 0 },
-                { ...mockFlavor, type: "upcoming" }
-            ]
-        });
+        const soldOut = { ...mockFlavor, count: 0 };
+        const upcoming = { ...mockFlavor, productId: "prod_upcoming", type: "upcoming" as const };
+        mockDynamoDB.seed(FLAVORS_TABLE, soldOut, upcoming);
 
         await fulfillSubscriptionMonth(mockStripe as never, invoice);
 
-        expect(mockDocumentClient).not.toHaveReceivedCommand(UpdateCommand);
+        expect(mockDynamoDB.items(FLAVORS_TABLE)).toEqual([soldOut, upcoming]);
     });
 
     it("should never fulfill the same invoice twice", async () => {

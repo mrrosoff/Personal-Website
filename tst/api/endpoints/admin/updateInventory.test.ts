@@ -1,11 +1,11 @@
-import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { describe, expect, it } from "vitest";
 
 import { mockEvent, mockToken, responseBody } from "../../../setup";
-import { mockDocumentClient } from "../../../__mocks__/__aws__/dynamodb";
+import { mockDynamoDB } from "../../../__mocks__/__aws__/dynamodb";
 import { mockFlavor } from "../../../__mocks__/__data__/aws/dynamodb";
 import { mockStripe } from "../../../__mocks__/stripe";
 
+import { FLAVORS_TABLE } from "../../../../api/common";
 import { handler } from "../../../../api/endpoints/admin/updateInventory";
 import { UserType } from "../../../../api/types";
 
@@ -42,8 +42,9 @@ describe("updateInventory", () => {
         const result = await handler(mockEvent({ token, body }));
 
         expect(responseBody(result)).toMatchObject({ name: "Fig", count: 9 });
-        expect(mockDocumentClient).toHaveReceivedCommandWith(UpdateCommand, {
-            Key: { productId: mockFlavor.productId }
+        expect(mockDynamoDB.get(FLAVORS_TABLE, mockFlavor.productId)).toMatchObject({
+            name: "Fig",
+            count: 9
         });
     });
 });

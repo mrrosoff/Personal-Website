@@ -1,9 +1,8 @@
 import { verifyRegistrationResponse } from "@simplewebauthn/server";
-import { DeleteCommand, GetCommand, PutCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { describe, expect, it, vi } from "vitest";
 
 import { mockEvent, mockToken, responseBody } from "../../../setup";
-import { mockDocumentClient } from "../../../__mocks__/__aws__/dynamodb";
+import { mockDynamoDB } from "../../../__mocks__/__aws__/dynamodb";
 import { mockChallenge, mockDevice, mockPasskey } from "../../../__mocks__/__data__/aws/dynamodb";
 
 import { PASSKEY_CHALLENGES_TABLE, PASSKEYS_TABLE } from "../../../../api/common";
@@ -23,6 +22,10 @@ function verified() {
 
 function invite() {
     return mockToken(UserType.SHARE, { deviceIds: [mockDevice.deviceId] });
+}
+
+function savedPasskey() {
+    return mockDynamoDB.get(PASSKEYS_TABLE, "credential");
 }
 
 describe("passkeyRegister", () => {
@@ -47,34 +50,31 @@ describe("passkeyRegister", () => {
     });
 
     it("should refuse an email that is already registered", async () => {
+        mockDynamoDB.seed(PASSKEYS_TABLE, { ...mockPasskey, email: "new@example.com" });
+
         const result = await handler(mockEvent({ token: await invite(), body }));
 
         expect(responseBody(result).message).toBe("That Email Is Already Registered");
     });
 
     it("should refuse an unknown challenge", async () => {
-        mockDocumentClient.on(QueryCommand, { TableName: PASSKEYS_TABLE }).resolves({ Items: [] });
-        mockDocumentClient.on(GetCommand, { TableName: PASSKEY_CHALLENGES_TABLE }).resolves({});
-
-        const result = await handler(mockEvent({ token: await invite(), body }));
+        const result = await handler(
+            mockEvent({ token: await invite(), body: { ...body, challenge: "unknown" } })
+        );
 
         expect(responseBody(result).message).toBe("Invalid Or Expired Challenge");
     });
 
     it("should refuse and clear an expired challenge", async () => {
-        mockDocumentClient.on(QueryCommand, { TableName: PASSKEYS_TABLE }).resolves({ Items: [] });
-        mockDocumentClient
-            .on(GetCommand, { TableName: PASSKEY_CHALLENGES_TABLE })
-            .resolves({ Item: { ...mockChallenge, expiresAt: 0 } });
+        mockDynamoDB.seed(PASSKEY_CHALLENGES_TABLE, { ...mockChallenge, expiresAt: 0 });
 
         const result = await handler(mockEvent({ token: await invite(), body }));
 
         expect(responseBody(result).message).toBe("Challenge Expired");
-        expect(mockDocumentClient).toHaveReceivedCommand(DeleteCommand);
+        expect(mockDynamoDB.get(PASSKEY_CHALLENGES_TABLE, mockChallenge.id)).toBeUndefined();
     });
 
     it("should refuse a registration that fails to verify", async () => {
-        mockDocumentClient.on(QueryCommand, { TableName: PASSKEYS_TABLE }).resolves({ Items: [] });
         vi.mocked(verifyRegistrationResponse).mockRejectedValue(new Error("bad attestation"));
 
         const result = await handler(mockEvent({ token: await invite(), body }));
@@ -83,7 +83,6 @@ describe("passkeyRegister", () => {
     });
 
     it("should refuse an unverified registration", async () => {
-        mockDocumentClient.on(QueryCommand, { TableName: PASSKEYS_TABLE }).resolves({ Items: [] });
         vi.mocked(verifyRegistrationResponse).mockResolvedValue({ verified: false } as never);
 
         const result = await handler(mockEvent({ token: await invite(), body }));
@@ -92,43 +91,33 @@ describe("passkeyRegister", () => {
     });
 
     it("should save the friend's passkey with their invited devices", async () => {
-        mockDocumentClient.on(QueryCommand, { TableName: PASSKEYS_TABLE }).resolves({ Items: [] });
         verified();
 
         await handler(mockEvent({ token: await invite(), body }));
 
-        expect(mockDocumentClient).toHaveReceivedCommandWith(PutCommand, {
-            TableName: PASSKEYS_TABLE,
-            Item: {
-                credentialId: "credential",
-                publicKey: "AQID",
-                userType: UserType.FRIEND,
-                name: mockPasskey.name,
-                email: "new@example.com",
-                deviceIds: [mockDevice.deviceId]
-            }
+        expect(savedPasskey()).toEqual({
+            credentialId: "credential",
+            publicKey: "AQID",
+            userType: UserType.FRIEND,
+            name: mockPasskey.name,
+            email: "new@example.com",
+            deviceIds: [mockDevice.deviceId]
         });
     });
 
     it("should leave off devices when the invite has none", async () => {
-        mockDocumentClient.on(QueryCommand, { TableName: PASSKEYS_TABLE }).resolves({ Items: [] });
         verified();
 
         await handler(mockEvent({ token: await mockToken(UserType.SHARE), body }));
 
-        expect(
-            mockDocumentClient.commandCalls(PutCommand)[0].args[0].input.Item
-        ).not.toHaveProperty("deviceIds");
+        expect(savedPasskey()).not.toHaveProperty("deviceIds");
     });
 
     it("should let the admin register without granting devices", async () => {
-        mockDocumentClient.on(QueryCommand, { TableName: PASSKEYS_TABLE }).resolves({ Items: [] });
         verified();
 
         await handler(mockEvent({ token: await mockToken(UserType.ADMIN), body }));
 
-        expect(mockDocumentClient).toHaveReceivedCommandWith(PutCommand, {
-            Item: expect.objectContaining({ name: "admin" })
-        });
+        expect(savedPasskey()?.name).toBe("admin");
     });
 });
