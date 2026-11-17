@@ -74,7 +74,7 @@ const Links = (props: { open: boolean; setOpen: Dispatch<SetStateAction<boolean>
     const isHome = useMatch("/");
     const isIceCream = useMatch("/ice-cream");
     const isCheckout = useMatch("/ice-cream/checkout/*");
-    const linkToIceCream = isHome ?? isCheckout;
+    const linkToIceCream = isHome !== null || isCheckout !== null;
     const { selectedPriceIds } = useIceCreamCart();
 
     const handleCartClick = () => {
