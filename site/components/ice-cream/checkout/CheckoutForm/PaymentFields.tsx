@@ -79,7 +79,7 @@ const PaymentSkeleton = (props: PaymentSkeletonProps) => (
 
 export const PayButton = () => {
     const state = useCheckout();
-    const { address, email, isLoading, message, onSubmit, paymentComplete } = useCheckoutForm();
+    const { address, email, payment, onSubmit, paymentComplete } = useCheckoutForm();
     return (
         <>
             <Button
@@ -90,12 +90,12 @@ export const PayButton = () => {
                 type="submit"
                 disabled={
                     !onSubmit ||
-                    isLoading ||
+                    payment.state === "paying" ||
                     !paymentComplete ||
                     !validate(email) ||
                     !isDeliverable(address)
                 }
-                loading={isLoading || !onSubmit}
+                loading={payment.state === "paying" || !onSubmit}
                 onClick={onSubmit}
                 sx={{
                     mt: 4,
@@ -107,7 +107,7 @@ export const PayButton = () => {
             >
                 Pay {state.type === "success" ? state.checkout.total.total.amount : ""}
             </Button>
-            {message && <Typography>{message}</Typography>}
+            {payment.state === "failed" && <Typography>{payment.message}</Typography>}
         </>
     );
 };

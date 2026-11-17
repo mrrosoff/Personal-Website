@@ -20,6 +20,12 @@ export const registerMailingListUser = async (registration: MailingListRegistrat
     });
 };
 
+type SubmitStatus =
+    | { state: "idle" }
+    | { state: "sending" }
+    | { state: "sent" }
+    | { state: "failed"; message: string };
+
 const MailingList = () => (
     <IceCreamPage
         title={"Join The Mailing List"}
@@ -39,23 +45,20 @@ const MailingListForm = () => {
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
 
-    const [loading, setLoading] = useState(false);
-    const [registerError, setRegisterError] = useState("");
-    const [success, setSuccess] = useState(false);
+    const [status, setStatus] = useState<SubmitStatus>({ state: "idle" });
 
     const signUp = async () => {
+        setStatus({ state: "sending" });
         try {
-            setLoading(true);
             await registerMailingListUser({ firstName, lastName, email });
-            setSuccess(true);
+            setStatus({ state: "sent" });
         } catch (error: unknown) {
             if (isAxiosError<ErrorResponseBody>(error) && error.response?.data.message) {
-                setRegisterError(error.response.data.message);
+                setStatus({ state: "failed", message: error.response.data.message });
             } else {
-                setRegisterError("Something Unexpected Happened...");
+                setStatus({ state: "failed", message: "Something Unexpected Happened..." });
             }
         }
-        setLoading(false);
     };
 
     return (
@@ -112,15 +115,15 @@ const MailingListForm = () => {
                     color: "white",
                     ":hover": { backgroundColor: "#5F6272" }
                 }}
-                disabled={!firstName || !lastName || !validate(email) || success}
-                endIcon={success ? <ThumbUpIcon /> : undefined}
-                loading={loading}
+                disabled={!firstName || !lastName || !validate(email) || status.state === "sent"}
+                endIcon={status.state === "sent" ? <ThumbUpIcon /> : undefined}
+                loading={status.state === "sending"}
                 onClick={() => void signUp()}
             >
                 Sign Up
             </Button>
             <Typography mt={smallScreen ? 0.5 : 1} fontSize={16} color={"error"}>
-                {registerError}
+                {status.state === "failed" && status.message}
             </Typography>
         </Box>
     );

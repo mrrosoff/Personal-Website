@@ -10,6 +10,12 @@ import type { ErrorResponseBody } from "../../../api/types";
 import FormField, { emailProblem } from "../FormField";
 import IceCreamPage from "./IceCreamPage";
 
+type SubmitStatus =
+    | { state: "idle" }
+    | { state: "sending" }
+    | { state: "sent" }
+    | { state: "failed"; message: string };
+
 const Unsubscribe = () => (
     <IceCreamPage
         title={"Unsubscribe"}
@@ -25,23 +31,20 @@ const UnsubscribeForm = () => {
 
     const [email, setEmail] = useState("");
 
-    const [loading, setLoading] = useState(false);
-    const [registerError, setRegisterError] = useState("");
-    const [success, setSuccess] = useState(false);
+    const [status, setStatus] = useState<SubmitStatus>({ state: "idle" });
 
     const unsubscribe = async () => {
+        setStatus({ state: "sending" });
         try {
-            setLoading(true);
             await axios.post(`${API_ENDPOINT_URL}/email/unsubscribe`, { email });
-            setSuccess(true);
+            setStatus({ state: "sent" });
         } catch (error: unknown) {
             if (isAxiosError<ErrorResponseBody>(error) && error.response?.data.message) {
-                setRegisterError(error.response.data.message);
+                setStatus({ state: "failed", message: error.response.data.message });
             } else {
-                setRegisterError("Something Unexpected Happened...");
+                setStatus({ state: "failed", message: "Something Unexpected Happened..." });
             }
         }
-        setLoading(false);
     };
 
     return (
@@ -72,15 +75,15 @@ const UnsubscribeForm = () => {
                     color: "white",
                     ":hover": { backgroundColor: "#5F6272" }
                 }}
-                disabled={!validate(email) || success}
-                endIcon={success ? <ThumbUpIcon /> : undefined}
-                loading={loading}
+                disabled={!validate(email) || status.state === "sent"}
+                endIcon={status.state === "sent" ? <ThumbUpIcon /> : undefined}
+                loading={status.state === "sending"}
                 onClick={() => void unsubscribe()}
             >
                 Remove From Mailing List
             </Button>
             <Typography mt={smallScreen ? 0.5 : 1} fontSize={16} color={"error"}>
-                {registerError}
+                {status.state === "failed" && status.message}
             </Typography>
         </Box>
     );

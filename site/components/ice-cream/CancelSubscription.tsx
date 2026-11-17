@@ -9,6 +9,13 @@ import { API_ENDPOINT_URL, UserType } from "../../../api/types";
 import type { ErrorResponseBody } from "../../../api/types";
 import IceCreamPage from "./IceCreamPage";
 
+type CancelStatus =
+    | { state: "idle" }
+    | { state: "cancelling" }
+    | { state: "cancelled" }
+    | { state: "failed"; message: string }
+    | { state: "rejected" };
+
 const CancelSubscription = () => {
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -16,34 +23,29 @@ const CancelSubscription = () => {
     const navigate = useNavigate();
     const token = searchParams.get("token") ?? "";
 
-    const [cancelling, setCancelling] = useState(false);
-    const [result, setResult] = useState<"cancelled" | "failed" | null>(null);
-    const [invalidToken, setInvalidToken] = useState(false);
-    const [message, setMessage] = useState("");
+    const [status, setStatus] = useState<CancelStatus>({ state: "idle" });
 
     const onCancel = async () => {
-        setCancelling(true);
+        setStatus({ state: "cancelling" });
         try {
             await axios.post(`${API_ENDPOINT_URL}/ice-cream/cancel`, { token });
-            setResult("cancelled");
+            setStatus({ state: "cancelled" });
         } catch (error) {
             if (isAxiosError(error) && error.response?.status === 401) {
-                setInvalidToken(true);
-                setCancelling(false);
-                return;
-            }
-            if (isAxiosError<ErrorResponseBody>(error) && error.response?.data.message) {
-                setMessage(error.response.data.message);
+                setStatus({ state: "rejected" });
+            } else if (isAxiosError<ErrorResponseBody>(error) && error.response?.data.message) {
+                setStatus({ state: "failed", message: error.response.data.message });
             } else {
-                setMessage("That did not go through. Try again in a minute.");
+                setStatus({
+                    state: "failed",
+                    message: "That did not go through. Try again in a minute."
+                });
             }
-            setResult("failed");
         }
-        setCancelling(false);
     };
 
     const payload = unexpiredToken(token) ? decodeToken(token) : null;
-    if (payload?.userType !== UserType.SUBSCRIBER || invalidToken) {
+    if (payload?.userType !== UserType.SUBSCRIBER || status.state === "rejected") {
         return <Navigate to={"/"} replace />;
     }
 
@@ -51,10 +53,10 @@ const CancelSubscription = () => {
         <IceCreamPage
             title={"Manage Your Subscription"}
             subtitle={
-                result === "cancelled"
+                status.state === "cancelled"
                     ? "Your subscription is cancelled and you will not be charged again. The pints you have already paid for are still yours."
-                    : result === "failed"
-                      ? message
+                    : status.state === "failed"
+                      ? status.message
                       : "This stops the monthly charge right away. Anything you have already paid for is still yours."
             }
         >
@@ -65,7 +67,7 @@ const CancelSubscription = () => {
                 flexWrap={"wrap"}
                 justifyContent={smallScreen ? "center" : undefined}
             >
-                {result === "cancelled" ? (
+                {status.state === "cancelled" ? (
                     <Button
                         variant={"outlined"}
                         sx={{ fontSize: 18 }}
@@ -77,11 +79,10 @@ const CancelSubscription = () => {
                     <Button
                         variant={"outlined"}
                         sx={{ fontSize: 18 }}
-                        disabled={cancelling}
-                        loading={cancelling}
+                        loading={status.state === "cancelling"}
                         onClick={() => void onCancel()}
                     >
-                        {result === "failed" ? "Try Again" : "Cancel Subscription"}
+                        {status.state === "failed" ? "Try Again" : "Cancel Subscription"}
                     </Button>
                 )}
             </Box>

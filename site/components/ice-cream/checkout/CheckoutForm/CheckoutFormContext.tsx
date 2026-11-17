@@ -42,16 +42,17 @@ export function toStripeContact(address: DeliveryAddress): StripeCheckoutContact
     };
 }
 
+type PaymentStatus = { state: "idle" } | { state: "paying" } | { state: "failed"; message: string };
+
 type CheckoutFormState = {
     selectedFlavors: DatabaseFlavor[];
     subscription: boolean;
     email: string;
     setEmail: (email: string) => void;
     emailError: string | null;
-    message: string | null;
+    payment: PaymentStatus;
     address: DeliveryAddress;
     setAddress: Dispatch<SetStateAction<DeliveryAddress>>;
-    isLoading: boolean;
     paymentComplete: boolean;
     setPaymentComplete: (complete: boolean) => void;
     onSubmit?: () => void;
@@ -91,8 +92,7 @@ export function CheckoutFormProvider({
         line2: "",
         postalCode: ""
     });
-    const [message, setMessage] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const [payment, setPayment] = useState<PaymentStatus>({ state: "idle" });
     const [paymentComplete, setPaymentComplete] = useState(false);
 
     const state = useCheckout();
@@ -102,33 +102,31 @@ export function CheckoutFormProvider({
         void loadFlavors();
     }, [loadFlavors]);
 
-    async function pay(checkout: StripeCheckoutValue): Promise<void> {
+    async function pay(checkout: StripeCheckoutValue): Promise<string | null> {
         const emailResult = await checkout.updateEmail(email);
         if (emailResult.type === "error") {
             setEmailError(emailResult.error.message);
-            return;
+            return null;
         }
         if (subscription && (await alreadySubscribed(email))) {
             setEmailError("This email already has a subscription.");
-            return;
+            return null;
         }
         const addressResult = await checkout.updateBillingAddress(toStripeContact(address));
         if (addressResult.type === "error") {
-            setMessage(addressResult.error.message);
-            return;
+            return addressResult.error.message;
         }
         const confirmResult = await checkout.confirm();
-        if (confirmResult.type === "error") {
-            setMessage(confirmResult.error.message);
-        }
+        return confirmResult.type === "error" ? confirmResult.error.message : null;
     }
 
     async function submit(checkout: StripeCheckoutValue): Promise<void> {
-        setIsLoading(true);
+        setPayment({ state: "paying" });
+        let message: string | null = null;
         try {
-            await pay(checkout);
+            message = await pay(checkout);
         } finally {
-            setIsLoading(false);
+            setPayment(message ? { state: "failed", message } : { state: "idle" });
         }
     }
 
@@ -140,10 +138,9 @@ export function CheckoutFormProvider({
                 email,
                 setEmail,
                 emailError,
-                message,
                 address,
                 setAddress,
-                isLoading,
+                payment,
                 paymentComplete,
                 setPaymentComplete,
                 onSubmit: state.type === "success" ? () => void submit(state.checkout) : undefined
