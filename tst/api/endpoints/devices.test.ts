@@ -89,7 +89,7 @@ describe("devicesForIds", () => {
     it("should return nothing for no ids", async () => {
         const result = await devicesForIds();
 
-        expect(result).toBeEmpty();
+        expect(result).toHaveLength(0);
     });
 
     it("should look up each device", async () => {

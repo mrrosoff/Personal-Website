@@ -37,7 +37,7 @@ describe("dynamodb", () => {
 
         const result = await getEntireTable(FLAVORS_TABLE);
 
-        expect(result).toBeEmpty();
+        expect(result).toHaveLength(0);
     });
 
     it("should get an item by its primary key", async () => {
@@ -68,7 +68,7 @@ describe("dynamodb", () => {
 
         const result = await getItemsByIndex(PASSKEYS_TABLE, "email", mockPasskey.email);
 
-        expect(result).toBeEmpty();
+        expect(result).toHaveLength(0);
     });
 
     it("should decrement a field", async () => {

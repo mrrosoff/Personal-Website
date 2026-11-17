@@ -32,7 +32,7 @@ describe("IceCreamCartContext", () => {
         await act(() => result.current.refreshFlavors());
 
         expect(result.current.flavorsError).toBe("Failed to load flavors. Please try again later.");
-        expect(result.current.isLoadingFlavors).toBeFalse();
+        expect(result.current.isLoadingFlavors).toBe(false);
     });
 
     it("should not refresh twice at once", async () => {
@@ -41,7 +41,7 @@ describe("IceCreamCartContext", () => {
         const { result } = renderCart();
 
         act(() => void result.current.refreshFlavors());
-        await waitFor(() => expect(result.current.isLoadingFlavors).toBeTrue());
+        await waitFor(() => expect(result.current.isLoadingFlavors).toBe(true));
         await act(() => result.current.refreshFlavors());
         await act(async () => finish({ data: { inventory: [] } }));
 

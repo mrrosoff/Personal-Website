@@ -27,7 +27,7 @@ describe("suggestCommandOptions", () => {
     it("should suggest nothing for an unknown command", () => {
         const result = suggestCommandOptions(commands, "nope", "-");
 
-        expect(result).toBeEmpty();
+        expect(result).toHaveLength(0);
     });
 });
 
@@ -51,6 +51,6 @@ describe("suggestFileSystemNames", () => {
             "-"
         );
 
-        expect(result).toBeEmpty();
+        expect(result).toHaveLength(0);
     });
 });

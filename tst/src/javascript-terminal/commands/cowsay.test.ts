@@ -57,6 +57,6 @@ describe("cowsay", () => {
     it("should draw an empty bubble for blank words", () => {
         const result = cowsayCommand.functionDef(EmulatorState.create({}), ["", ""]);
 
-        expect(result.output).toStartWith(" __\n<  >");
+        expect(result.output).toMatch(/^ __\n< {2}>/);
     });
 });

@@ -15,7 +15,7 @@ describe("isAdmin", () => {
 
         const result = await isAdmin(mockEvent({ token }));
 
-        expect(result).toBeTrue();
+        expect(result).toBe(true);
     });
 
     it("should reject a friend", async () => {
@@ -23,7 +23,7 @@ describe("isAdmin", () => {
 
         const result = await isAdmin(mockEvent({ token }));
 
-        expect(result).toBeFalse();
+        expect(result).toBe(false);
     });
 });
 
@@ -47,7 +47,7 @@ describe("authorize", () => {
 
         const result = await authorize(mockEvent({ token }), UserType.FRIEND);
 
-        expect(result).toBeEmptyObject();
+        expect(result).toEqual({});
     });
 
     it("should find the friend's device", async () => {

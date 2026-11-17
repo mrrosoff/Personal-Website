@@ -15,11 +15,11 @@ import { mockSSMClient } from "../../__mocks__/__aws__/parameterStore";
 
 describe("isLocalTest", () => {
     it("should be true for local development", () => {
-        expect(isLocalTest(mockEvent({ local: true }))).toBeTrue();
+        expect(isLocalTest(mockEvent({ local: true }))).toBe(true);
     });
 
     it("should be false for the site", () => {
-        expect(isLocalTest(mockEvent())).toBeFalse();
+        expect(isLocalTest(mockEvent())).toBe(false);
     });
 });
 

@@ -9,16 +9,16 @@ import {
 
 describe("isDeliverable", () => {
     it("should accept a numbered street in the city", () => {
-        expect(
-            isDeliverable({ line1: "1 Ferry Building", line2: "", postalCode: "94111" })
-        ).toBeTrue();
+        expect(isDeliverable({ line1: "1 Ferry Building", line2: "", postalCode: "94111" })).toBe(
+            true
+        );
     });
 
     it("should refuse an address without a number or outside the city", () => {
-        expect(
-            isDeliverable({ line1: "Ferry Building", line2: "", postalCode: "94111" })
-        ).toBeFalse();
-        expect(isDeliverable({ line1: "1 Main St", line2: "", postalCode: "90210" })).toBeFalse();
+        expect(isDeliverable({ line1: "Ferry Building", line2: "", postalCode: "94111" })).toBe(
+            false
+        );
+        expect(isDeliverable({ line1: "1 Main St", line2: "", postalCode: "90210" })).toBe(false);
     });
 });
 

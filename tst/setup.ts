@@ -2,8 +2,8 @@ import "aws-sdk-client-mock-jest/vitest";
 import "@testing-library/jest-dom/vitest";
 import { cleanup } from "@testing-library/react";
 import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
-import * as additionalMatchers from "jest-extended";
-import { afterEach, expect, vi } from "vitest";
+import type { TestingLibraryMatchers } from "@testing-library/jest-dom/matchers";
+import { afterEach, vi } from "vitest";
 
 import { generateToken } from "../api/auth";
 import { LOCAL_ORIGIN } from "../api/common";
@@ -39,11 +39,8 @@ interface AwsSdkMockMatchers {
 }
 
 declare module "@vitest/expect" {
-    interface Assertion<T = any> extends CustomMatchers<T>, AwsSdkMockMatchers {}
-    interface AsymmetricMatchersContaining extends CustomMatchers<unknown> {}
+    interface Assertion<T = any> extends TestingLibraryMatchers<unknown, T>, AwsSdkMockMatchers {}
 }
-
-expect.extend(additionalMatchers);
 
 type MockEventOptions = {
     body?: unknown;

@@ -7,6 +7,6 @@ describe("haunt", () => {
     it("should wish a happy halloween", () => {
         const result = haunt.functionDef(EmulatorState.create({}), []);
 
-        expect(result.output).toStartWith("👻 HAPPY HALLOWEEN! 👻");
+        expect(result.output).toMatch(/^👻 HAPPY HALLOWEEN! 👻/);
     });
 });

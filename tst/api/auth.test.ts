@@ -58,7 +58,7 @@ describe("authenticateHTTPAccessToken", () => {
     it("should return nothing if the Authorization header is missing", async () => {
         const result = await authenticateHTTPAccessToken(mockEvent());
 
-        expect(result).toBeEmptyObject();
+        expect(result).toEqual({});
     });
 
     it("should return an error if the token is not specified", async () => {

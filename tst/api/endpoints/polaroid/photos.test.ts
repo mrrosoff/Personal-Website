@@ -71,6 +71,6 @@ describe("keys", () => {
 
         const result = await listPhotos(mockDevice.deviceId);
 
-        expect(result).toBeEmpty();
+        expect(result).toHaveLength(0);
     });
 });

@@ -23,7 +23,7 @@ describe("ownsDeviceKind", () => {
     it("should let the admin use every device", async () => {
         const payload = decodeToken(await mockToken(UserType.ADMIN));
 
-        expect(ownsDeviceKind(payload, DeviceKind.SPOTIFY)).toBeTrue();
+        expect(ownsDeviceKind(payload, DeviceKind.SPOTIFY)).toBe(true);
     });
 
     it("should let a friend use only their devices", async () => {
@@ -31,8 +31,8 @@ describe("ownsDeviceKind", () => {
             await mockToken(UserType.FRIEND, { deviceKinds: [DeviceKind.POLAROID] })
         );
 
-        expect(ownsDeviceKind(payload, DeviceKind.POLAROID)).toBeTrue();
-        expect(ownsDeviceKind(payload, DeviceKind.SPOTIFY)).toBeFalse();
+        expect(ownsDeviceKind(payload, DeviceKind.POLAROID)).toBe(true);
+        expect(ownsDeviceKind(payload, DeviceKind.SPOTIFY)).toBe(false);
     });
 });
 

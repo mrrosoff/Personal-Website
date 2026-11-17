@@ -9,6 +9,6 @@ describe("clear", () => {
 
         shell.run("clear");
 
-        expect(shell.state.getOutputs()).toBeEmpty();
+        expect(shell.state.getOutputs()).toHaveLength(0);
     });
 });

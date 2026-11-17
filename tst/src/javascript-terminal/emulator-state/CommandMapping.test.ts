@@ -14,7 +14,7 @@ describe("CommandMapping", () => {
     it("should know which commands exist", () => {
         const result = CommandMapping.isCommandSet(undefined, "ls");
 
-        expect(result).toBeTrue();
+        expect(result).toBe(true);
     });
 
     it("should return nothing for an unknown command", () => {

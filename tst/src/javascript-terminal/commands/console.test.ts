@@ -63,12 +63,12 @@ describe("console", () => {
 
 describe("isPrintableKey", () => {
     it("should accept a single character", () => {
-        expect(isPrintableKey("a")).toBeTrue();
-        expect(isPrintableKey("😀")).toBeTrue();
+        expect(isPrintableKey("a")).toBe(true);
+        expect(isPrintableKey("😀")).toBe(true);
     });
 
     it("should reject a named key", () => {
-        expect(isPrintableKey("Shift")).toBeFalse();
+        expect(isPrintableKey("Shift")).toBe(false);
     });
 });
 

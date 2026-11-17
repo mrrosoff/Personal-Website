@@ -63,7 +63,7 @@ describe("s3", () => {
     it("should report an object exists", async () => {
         const result = await objectExists(POLAROID_PHOTOS_BUCKET, key);
 
-        expect(result).toBeTrue();
+        expect(result).toBe(true);
     });
 
     it("should report a missing object", async () => {
@@ -71,7 +71,7 @@ describe("s3", () => {
 
         const result = await objectExists(POLAROID_PHOTOS_BUCKET, key);
 
-        expect(result).toBeFalse();
+        expect(result).toBe(false);
     });
 
     it("should delete an object", async () => {
@@ -91,6 +91,6 @@ describe("s3", () => {
 
         const result = await listObjects(POLAROID_PHOTOS_BUCKET, "framebuffer/");
 
-        expect(result).toBeEmpty();
+        expect(result).toHaveLength(0);
     });
 });

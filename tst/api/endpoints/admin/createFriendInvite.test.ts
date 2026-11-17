@@ -62,8 +62,8 @@ describe("createFriendInvite", () => {
             userType: UserType.SHARE,
             deviceIds: [mockDevice.deviceId]
         });
-        expect(responseBody(result).url).toStartWith(
-            "https://maxrosoff.com/register-friend?token="
+        expect(responseBody(result).url).toMatch(
+            /^https:\/\/maxrosoff\.com\/register-friend\?token=/
         );
     });
 
