@@ -11,7 +11,7 @@ import {
     UserType
 } from "../../../../api/types";
 
-export const mockDeviceSecret = faker.string.alphanumeric(32);
+const mockDeviceSecret = faker.string.alphanumeric(32);
 
 export const mockFlavor: DatabaseFlavor = {
     productId: `prod_${faker.string.alphanumeric(14)}`,

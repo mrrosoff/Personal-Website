@@ -1,4 +1,6 @@
 import "aws-sdk-client-mock-jest/vitest";
+import "@testing-library/jest-dom/vitest";
+import { cleanup } from "@testing-library/react";
 import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import * as additionalMatchers from "jest-extended";
 import { afterEach, expect, vi } from "vitest";
@@ -6,8 +8,6 @@ import { afterEach, expect, vi } from "vitest";
 import { generateToken } from "../api/auth";
 import { LOCAL_ORIGIN } from "../api/common";
 import { UserType } from "../api/types";
-import Emulator from "../src/javascript-terminal/emulator";
-import EmulatorState from "../src/javascript-terminal/emulator-state/EmulatorState";
 
 import "./__mocks__/__aws__/dynamodb";
 import "./__mocks__/__aws__/parameterStore";
@@ -15,12 +15,14 @@ import "./__mocks__/__aws__/s3";
 import "./__mocks__/resend";
 import "./__mocks__/stripe";
 import "./__mocks__/axios";
+import "./__mocks__/stripeCheckout";
 import { mockPasskey } from "./__mocks__/__data__/aws/dynamodb";
-import { mockFileSystem } from "./__mocks__/__data__/fileSystem";
 
 vi.mock("stripe", () => import("./__mocks__/stripe"));
 vi.mock("resend", () => import("./__mocks__/resend"));
 vi.mock("axios", () => import("./__mocks__/axios"));
+vi.mock("@stripe/react-stripe-js/checkout", () => import("./__mocks__/stripeCheckout"));
+vi.mock("@stripe/stripe-js", () => ({ loadStripe: vi.fn(() => Promise.resolve(null)) }));
 vi.mock("@aws-sdk/s3-request-presigner", () => import("./__mocks__/__aws__/s3"));
 vi.mock("../src/components/terminal/games/SnakeGame", () => ({ default: () => null }));
 
@@ -79,28 +81,8 @@ export function mockToken(
     return generateToken(id, { userType, email: mockPasskey.email, ...options });
 }
 
-export function mockShell(environmentVariables: Record<string, string> = {}) {
-    const emulator = new Emulator();
-    const state = EmulatorState.create({
-        fs: mockFileSystem(),
-        environmentVariables: { cwd: "/", ...environmentVariables }
-    });
-
-    function results(command: string) {
-        emulator.execute(state, command, "Command Not Found");
-        return state.getOutputs().at(-1)?.output ?? [];
-    }
-
-    function run(command: string): string {
-        return results(command)
-            .map((result) => result.output)
-            .join("\n");
-    }
-
-    return { emulator, state, results, run };
-}
-
 afterEach(() => {
+    cleanup();
     vi.clearAllMocks();
     vi.resetAllMocks();
 });

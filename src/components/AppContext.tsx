@@ -22,7 +22,7 @@ type AppContextType = {
     setEmulatorState: Dispatch<SetStateAction<EmulatorState>>;
 };
 
-const AppContext = createContext<AppContextType | undefined>(undefined);
+export const AppContext = createContext<AppContextType | undefined>(undefined);
 
 const initialEmulatorState = EmulatorState.create({
     fs: files,
