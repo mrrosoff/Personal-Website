@@ -12,12 +12,6 @@ describe("EmulatorState", () => {
         expect(result.getEnvVariables()).toEqual({ cwd: "/" });
     });
 
-    it("should refuse to be built directly", () => {
-        const result = () => new EmulatorState(undefined as never);
-
-        expect(result).toThrow("Do Not Use Constructor Directly. Use create Method");
-    });
-
     it("should resolve paths against the working directory", () => {
         const state = EmulatorState.create({ environmentVariables: { cwd: "/home" } });
 

@@ -19,7 +19,7 @@ import { RP_ID, RP_ORIGIN } from "../admin/passkeyAuthOptions";
 type Payload = {
     challenge: string;
     response: RegistrationResponseJSON;
-    email: string;
+    email?: string;
 };
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
@@ -78,7 +78,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Registration Failed");
     }
 
-    if (!verification.verified || !verification.registrationInfo) {
+    if (!verification.verified) {
         return buildErrorResponse(event, HttpResponseStatus.UNAUTHORIZED, "Registration Failed");
     }
 

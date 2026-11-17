@@ -19,15 +19,6 @@ export type CommandMapping = Record<
 
 export const errorMessage = (err: unknown) => (err instanceof Error ? err.message : String(err));
 
-export const create = (commandMapping: CommandMapping = commands): CommandMapping => {
-    for (const [commandName, command] of Object.entries(commandMapping)) {
-        if (!command.functionDef || !command.optDef) {
-            throw Error(`Failed To Initialize Terminal: Invalid Command (${commandName})`);
-        }
-    }
-    return commandMapping;
-};
-
 export const isCommandSet = (commandMapping: CommandMapping = commands, commandName: string) => {
     return commandName in commandMapping;
 };
@@ -54,7 +45,6 @@ export const getCommandNames = (commandMapping: CommandMapping = commands) => {
 };
 
 export default {
-    create,
     isCommandSet,
     getCommandFn,
     getCommandOptDef,

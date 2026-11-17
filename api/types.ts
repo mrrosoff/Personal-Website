@@ -36,7 +36,7 @@ export type DatabaseDevice = {
     deviceId: string;
     kind: DeviceKind;
     secretHash: string;
-    lastSeenAt: number;
+    lastSeenAt?: number;
 };
 
 export type DatabasePasskeyChallenge = {

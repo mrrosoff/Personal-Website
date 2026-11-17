@@ -8,7 +8,7 @@ import {
 } from "react";
 
 import { AUTH_TOKEN_KEY, unexpiredToken } from "../auth";
-import { CommandMapping, DefaultCommandMapping, EmulatorState } from "../javascript-terminal";
+import { DefaultCommandMapping, EmulatorState } from "../javascript-terminal";
 import files from "../FileSystem";
 
 export const HAS_BOOTED_KEY = "HAS_BOOTED_UP";
@@ -26,7 +26,7 @@ export const AppContext = createContext<AppContextType | undefined>(undefined);
 
 const initialEmulatorState = EmulatorState.create({
     fs: files,
-    commandMapping: CommandMapping.create({
+    commandMapping: {
         ...DefaultCommandMapping,
         exit: {
             functionDef: (state) => {
@@ -41,7 +41,7 @@ const initialEmulatorState = EmulatorState.create({
             },
             optDef: {}
         }
-    })
+    }
 });
 
 const persistedAuthToken = unexpiredToken(sessionStorage.getItem(AUTH_TOKEN_KEY));

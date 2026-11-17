@@ -53,16 +53,16 @@ async function createBroadcast(resend: Resend, message?: string): Promise<string
         subject: "New Ice Cream Flavor Drop!",
         react: MailingListEmail({ currentFlavors, lastBatch, upcoming, message })
     });
-    if (error || !data) {
-        throw Error(`Error Creating Broadcast: ${error?.message}`);
+    if (error) {
+        throw Error(`Error Creating Broadcast: ${error.message}`);
     }
     return data.id;
 }
 
 async function sendBroadcast(resend: Resend, broadcastId: string): Promise<string> {
     const { data, error } = await resend.broadcasts.send(broadcastId);
-    if (error || !data) {
-        throw Error(`Error Sending Broadcast: ${error?.message}`);
+    if (error) {
+        throw Error(`Error Sending Broadcast: ${error.message}`);
     }
     return data.id;
 }

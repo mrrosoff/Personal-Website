@@ -80,8 +80,8 @@ async function retrieveEmailData(
     email_id: string
 ): Promise<GetReceivingEmailResponseSuccess> {
     const { data, error } = await resend.emails.receiving.get(email_id);
-    if (error || !data) {
-        throw Error(`Error Fetching Email: ${error?.message}`);
+    if (error) {
+        throw Error(`Error Fetching Email: ${error.message}`);
     }
     return data;
 }
@@ -93,8 +93,8 @@ async function retrieveEmailAttachments(
     const { data: attachments, error } = await resend.emails.attachments.list({
         emailId
     });
-    if (error || !attachments) {
-        throw Error(`Error Retrieving Email Attachments: ${error?.message}`);
+    if (error) {
+        throw Error(`Error Retrieving Email Attachments: ${error.message}`);
     }
 
     const attachmentList = [];
@@ -111,14 +111,14 @@ async function forwardEmail(
     email: GetReceivingEmailResponseSuccess,
     attachments: { content: string }[]
 ): Promise<void> {
-    const { data, error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
         ...(email as CreateEmailOptions),
         from: "forwarding@ice-cream.maxrosoff.com",
         replyTo: email.from,
         to: ["me@maxrosoff.com"],
         attachments
     });
-    if (error || !data) {
-        throw Error(`Error Forwarding Email: ${error?.message}`);
+    if (error) {
+        throw Error(`Error Forwarding Email: ${error.message}`);
     }
 }

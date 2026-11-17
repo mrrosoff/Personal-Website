@@ -63,7 +63,7 @@ export async function decryptToken(token: string): Promise<AccessToken> {
 }
 
 function authorizationHeader(req: IncomingMessage | APIGatewayProxyEvent): string | undefined {
-    const header = req.headers?.authorization ?? req.headers?.Authorization;
+    const header = req.headers.authorization ?? req.headers.Authorization;
     return Array.isArray(header) ? undefined : (header ?? undefined);
 }
 

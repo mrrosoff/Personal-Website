@@ -140,8 +140,7 @@ type EmulatorStateType = {
 export default class EmulatorState {
     private state: EmulatorStateType;
 
-    constructor(state: EmulatorStateType) {
-        if (!state) throw Error("Do Not Use Constructor Directly. Use create Method");
+    private constructor(state: EmulatorStateType) {
         this.state = state;
     }
 

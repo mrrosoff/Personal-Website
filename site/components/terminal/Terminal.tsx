@@ -240,7 +240,7 @@ const Terminal = (
                 e.preventDefault();
                 const newState = emulator.execute(emulatorState, input, props.errorStr);
                 const outputs = newState.getOutputs();
-                const latest = outputs[outputs.length - 1];
+                const latest = outputs.at(-1);
                 if (latest) {
                     latest.promptSymbol = promptSymbol;
                     newState.setOutputs([...outputs]);

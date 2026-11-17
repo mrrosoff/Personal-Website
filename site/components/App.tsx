@@ -179,7 +179,7 @@ const Layout = (props: {
             onClick={() => {
                 const selection = window.getSelection();
                 if (selection && !selection.isCollapsed) return;
-                props.inputRef?.current?.focus();
+                props.inputRef.current?.focus();
             }}
         >
             {(!mdScreen || isHome) && <LinksAndMenu />}

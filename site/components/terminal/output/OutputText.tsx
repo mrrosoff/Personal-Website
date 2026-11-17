@@ -4,8 +4,7 @@ import type { TerminalTheme } from "../Terminal";
 const OutputText = (props: { theme: TerminalTheme; children: string }) => {
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
-    const text = props.children ?? "";
-    return text.split("\n").map((line: string, key: number) => (
+    return props.children.split("\n").map((line: string, key: number) => (
         <Typography
             key={key}
             style={{

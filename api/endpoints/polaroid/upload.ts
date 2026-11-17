@@ -430,7 +430,6 @@ function rgbToOklab(r: number, g: number, b: number): Lab {
 function ditherToPalette(linear: Float32Array, width: number, height: number): Uint8Array {
     const palette = preparePalette();
     const strength = DITHER_STRENGTH;
-    const serpentine = true;
     const errorClamp = DITHER_ERROR_CLAMP;
 
     // Working copy: the dither mutates as it goes and callers keep their input.
@@ -448,7 +447,7 @@ function ditherToPalette(linear: Float32Array, width: number, height: number): U
     };
 
     for (let y = 0; y < height; y++) {
-        const rightward = !serpentine || y % 2 === 0;
+        const rightward = y % 2 === 0;
         const start = rightward ? 0 : width - 1;
         const end = rightward ? width : -1;
         const step = rightward ? 1 : -1;

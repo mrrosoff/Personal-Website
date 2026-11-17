@@ -46,32 +46,32 @@ export default function CropDialog({ file, remaining, onCancel, onConfirm }: Cro
             return;
         }
 
-        let cancelled = false;
+        const controller = new AbortController();
         let url: string | null = null;
 
         void (async () => {
             setPreparing(true);
             try {
                 const displayable = await toDisplayable(file);
-                if (cancelled) {
+                if (controller.signal.aborted) {
                     return;
                 }
                 url = URL.createObjectURL(displayable);
                 setSource(displayable);
                 setSrc(url);
             } catch {
-                if (!cancelled) {
+                if (!controller.signal.aborted) {
                     setFailed(true);
                 }
             } finally {
-                if (!cancelled) {
+                if (!controller.signal.aborted) {
                     setPreparing(false);
                 }
             }
         })();
 
         return () => {
-            cancelled = true;
+            controller.abort();
             if (url) {
                 URL.revokeObjectURL(url);
             }

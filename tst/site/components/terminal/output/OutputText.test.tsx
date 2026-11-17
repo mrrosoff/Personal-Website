@@ -21,10 +21,4 @@ describe("OutputText", () => {
 
         expect(screen.getByText("wrapped")).toHaveStyle({ whiteSpace: "pre-wrap" });
     });
-
-    it("should render nothing for missing output", () => {
-        renderWithApp(<OutputText theme={mockTerminalTheme}>{undefined as never}</OutputText>);
-
-        expect(document.querySelectorAll("p")).toHaveLength(1);
-    });
 });

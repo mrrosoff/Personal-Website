@@ -21,11 +21,11 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
 };
 
 async function unsubscribeUser(resend: Resend, audienceId: string, email: string): Promise<void> {
-    const { data, error } = await resend.contacts.remove({
+    const { error } = await resend.contacts.remove({
         audienceId: audienceId,
         email
     });
-    if (error || !data) {
-        throw Error(`Error Unsubscribing Contact: ${error?.message}`);
+    if (error) {
+        throw Error(`Error Unsubscribing Contact: ${error.message}`);
     }
 }

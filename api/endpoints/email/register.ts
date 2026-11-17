@@ -36,8 +36,8 @@ async function findUserIfAlreadyRegistered(
     if (error?.name === "not_found") {
         return null;
     }
-    if (error || !data) {
-        throw Error(`Error Fetching User: ${error?.message}`);
+    if (error) {
+        throw Error(`Error Fetching User: ${error.message}`);
     }
     return data.id;
 }
@@ -54,8 +54,8 @@ async function registerNewUser(
         unsubscribed: false,
         segments: [{ id: audienceId }]
     });
-    if (error || !data) {
-        throw Error(`Error Creating Contact: ${error?.message}`);
+    if (error) {
+        throw Error(`Error Creating Contact: ${error.message}`);
     }
     return data.id;
 }
