@@ -10,6 +10,7 @@ import { mockToken } from "../../../setup";
 import { UserType } from "../../../../api/types";
 import { useAppContext } from "../../../../site/components/AppContext";
 import Terminal from "../../../../site/components/terminal/Terminal";
+import { authenticateWithPasskey } from "../../../../site/javascript-terminal/commands/sudo";
 import type EmulatorState from "../../../../site/javascript-terminal/emulatorState/EmulatorState";
 import type * as Sudo from "../../../../site/javascript-terminal/commands/sudo";
 import type * as ReactRouter from "react-router-dom";
@@ -237,6 +238,26 @@ describe("password prompt", () => {
         expect(
             await screen.findByText("Passkey Auth Unavailable In Local Environment")
         ).toBeInTheDocument();
+    });
+
+    it("should open the page a command asks for once signed in", async () => {
+        vi.mocked(authenticateWithPasskey).mockImplementationOnce((_emulator, state) => {
+            const outputs = state.getOutputs();
+            state.setOutputs(
+                outputs.map((content, index) =>
+                    index === outputs.length - 1
+                        ? { ...content, output: [{ output: "/polaroid", type: "navigate" }] }
+                        : content
+                )
+            );
+            state.setPasswordPromptState(undefined);
+            return Promise.resolve();
+        });
+        renderTerminal();
+
+        type("sudo polaroid");
+
+        await waitFor(() => expect(navigate).toHaveBeenCalledWith("/polaroid", { replace: true }));
     });
 
     it("should show dots while signing in and ignore keys", () => {

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import { UserType } from "../../../api/types";
 import { Emulator } from "../../javascript-terminal";
+import type EmulatorState from "../../javascript-terminal/emulatorState/EmulatorState";
 import { handleAdminConsoleKeyPress } from "../../javascript-terminal/commands/console";
 import { authenticateWithPasskey } from "../../javascript-terminal/commands/sudo";
 import { decodeToken } from "../../auth";
@@ -37,6 +38,14 @@ export type TerminalTheme = {
 };
 
 const emulator = new Emulator();
+
+function navigationTarget(state: EmulatorState): string | undefined {
+    const target = state
+        .getOutputs()
+        .at(-1)
+        ?.output.find((result) => result.type === "navigate");
+    return target?.output as string | undefined;
+}
 
 const Terminal = (
     props: {
@@ -71,10 +80,14 @@ const Terminal = (
             const authenticate = async () => {
                 await authenticateWithPasskey(emulator, emulatorState);
                 rerender();
+                const target = navigationTarget(emulatorState);
+                if (target) {
+                    void navigate(target, { replace: true });
+                }
             };
             void authenticate();
         }
-    }, [emulatorState, passwordPrompt]);
+    }, [emulatorState, passwordPrompt, navigate]);
 
     const authToken = emulatorState.getEnvVariables().AUTH_TOKEN;
     const authPayload = authToken ? decodeToken(authToken) : null;
@@ -178,9 +191,9 @@ const Terminal = (
                 rerender();
                 scrollToBottom();
 
-                const target = latest?.output.find((result) => result.type === "navigate");
+                const target = navigationTarget(newState);
                 if (target) {
-                    void navigate(target.output as string, { replace: true });
+                    void navigate(target, { replace: true });
                 }
                 break;
             }
