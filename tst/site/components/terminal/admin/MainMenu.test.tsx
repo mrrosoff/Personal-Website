@@ -1,7 +1,7 @@
 import { screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { mockSmallScreen, mockTerminalTheme, renderWithApp } from "../../../../helpers/render";
+import { mockScreenWidth, mockTerminalTheme, renderWithApp } from "../../../../helpers/render";
 import { mockAdminState } from "../../../../helpers/terminal";
 
 import MainMenu from "../../../../../site/components/terminal/admin/MainMenu";
@@ -49,7 +49,7 @@ describe("MainMenu", () => {
         ["4. Create Friend Invite", MainMenuOption.CreateFriendInvite],
         ["5. Exit", MainMenuOption.Exit]
     ])("should choose %s with a tap on a small screen", async (label, option) => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user, onAction, emulatorState } = renderMenu();
 
         await user.click(screen.getByText(label, { exact: false }));

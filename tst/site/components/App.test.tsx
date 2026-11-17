@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { mockSmallScreen } from "../../helpers/render";
+import { mockScreenWidth } from "../../helpers/render";
 
 vi.mock("../../../site/components/app/Page", () => ({
     default: (props: { inputRef: { current: HTMLInputElement | null } }) => (
@@ -92,7 +92,7 @@ describe("App", () => {
     });
 
     it("should hide the links away from home on a small screen", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
 
         visit("/ice-cream");
 
@@ -101,7 +101,7 @@ describe("App", () => {
     });
 
     it("should drop the bottom padding on a short small screen", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         visit("/");
         await screen.findByLabelText("terminal");
 
@@ -116,7 +116,7 @@ describe("App", () => {
     it("should follow the visual viewport when there is one", async () => {
         const viewport = Object.assign(new EventTarget(), { height: 900 });
         vi.stubGlobal("visualViewport", viewport);
-        mockSmallScreen();
+        mockScreenWidth(390);
         visit("/");
         await screen.findByLabelText("terminal");
 

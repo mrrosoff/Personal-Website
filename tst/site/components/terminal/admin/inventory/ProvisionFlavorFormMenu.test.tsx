@@ -1,7 +1,7 @@
 import { screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { mockSmallScreen, mockTerminalTheme, renderWithApp } from "../../../../../helpers/render";
+import { mockScreenWidth, mockTerminalTheme, renderWithApp } from "../../../../../helpers/render";
 import { mockAdminState } from "../../../../../helpers/terminal";
 
 import ProvisionFlavorFormMenu from "../../../../../../site/components/terminal/admin/inventory/ProvisionFlavorFormMenu";
@@ -61,7 +61,7 @@ describe("ProvisionFlavorFormMenu", () => {
     });
 
     it("should pick a field with a tap on a small screen", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user, onAction, emulatorState } = renderMenu();
 
         await user.click(screen.getByText(/Color:/));
@@ -72,7 +72,7 @@ describe("ProvisionFlavorFormMenu", () => {
     });
 
     it("should step the type with buttons on a small screen", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user, onAction } = renderMenu({ currentField: "type" });
 
         await user.click(screen.getByText(">"));
@@ -84,7 +84,7 @@ describe("ProvisionFlavorFormMenu", () => {
         ["Continue", "Enter"],
         ["Cancel", "Escape"]
     ])("should %s with a tap on a small screen", async (label, key) => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user, onAction } = renderMenu();
 
         await user.click(screen.getByText(new RegExp(label)));

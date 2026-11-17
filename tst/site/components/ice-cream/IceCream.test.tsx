@@ -1,7 +1,7 @@
 import { act, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { mockScreenWidth, mockSmallScreen, renderWithApp } from "../../../helpers/render";
+import { mockScreenWidth, renderWithApp } from "../../../helpers/render";
 import { axiosPost } from "../../../mocks/axios";
 import { mockFlavor } from "../../../mocks/aws/dynamodb";
 
@@ -78,14 +78,14 @@ describe("IceCream", () => {
     });
 
     it("should pick a flavor shared in the link", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         renderShop({ route: "/ice-cream?flavor=price_Fig" });
 
         expect(await screen.findByLabelText("Checkout, 1 in cart")).toBeInTheDocument();
     });
 
     it("should pick and unpick flavors and check out on a small screen", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user } = renderShop();
 
         await user.click(await screen.findByText("Fig"));
@@ -108,7 +108,7 @@ describe("IceCream", () => {
     });
 
     it("should not pick upcoming flavors", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user } = renderShop();
 
         await user.click(await screen.findByText("Yuzu"));
@@ -117,7 +117,7 @@ describe("IceCream", () => {
     });
 
     it("should let go of a shared flavor when leaving", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { unmount } = renderShop({ route: "/ice-cream?flavor=price_Fig" });
         await screen.findByLabelText("Checkout, 1 in cart");
 

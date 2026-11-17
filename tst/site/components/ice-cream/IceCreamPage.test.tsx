@@ -1,7 +1,7 @@
 import { screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { mockSmallScreen, renderWithApp } from "../../../helpers/render";
+import { mockScreenWidth, renderWithApp } from "../../../helpers/render";
 
 import IceCreamPage from "../../../../site/components/ice-cream/IceCreamPage";
 
@@ -24,7 +24,7 @@ describe("IceCreamPage", () => {
     });
 
     it("should center and shrink everything on a small screen", () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
 
         renderPage();
 

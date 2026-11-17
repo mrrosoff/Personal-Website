@@ -4,9 +4,9 @@ import EmulatorState from "../../site/javascript-terminal/emulatorState/Emulator
 import type { AdminConsoleState } from "../../site/javascript-terminal/emulatorState/EmulatorState";
 import { mockFileSystem } from "../mocks/fileSystem";
 
-export function mockEmulatorState(
-    environmentVariables: Record<string, string> = {}
-): EmulatorState {
+type Variables = Record<string, string>;
+
+export function mockEmulatorState(environmentVariables: Variables = {}): EmulatorState {
     return EmulatorState.create({
         fs: mockFileSystem(),
         commandMapping: commands,
@@ -16,14 +16,14 @@ export function mockEmulatorState(
 
 export function mockAdminState(
     mode: AdminConsoleState,
-    environmentVariables: Record<string, string> = { AUTH_TOKEN: "token" }
+    environmentVariables: Variables = { AUTH_TOKEN: "token" }
 ): EmulatorState {
     const state = mockEmulatorState(environmentVariables);
     state.setAdminConsoleMode(mode);
     return state;
 }
 
-export function mockShell(environmentVariables: Record<string, string> = {}) {
+export function mockShell(environmentVariables: Variables = {}) {
     const emulator = new Emulator();
     const state = mockEmulatorState(environmentVariables);
 

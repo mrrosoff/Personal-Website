@@ -2,7 +2,7 @@ import { act, fireEvent, screen, waitFor } from "@testing-library/react";
 import { Route, Routes } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { mockSmallScreen, renderWithApp } from "../../../helpers/render";
+import { mockScreenWidth, renderWithApp } from "../../../helpers/render";
 import { mockEmulatorState } from "../../../helpers/terminal";
 import { mockToken } from "../../../setup";
 import { AxiosError, axiosGet, axiosPost } from "../../../mocks/axios";
@@ -274,7 +274,7 @@ describe("Polaroid", () => {
     });
 
     it("should fold the extra line into the description on a phone", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
 
         await renderSignedIn();
 

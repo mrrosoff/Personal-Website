@@ -1,12 +1,13 @@
 import { screen } from "@testing-library/react";
+import type { UserEvent } from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
-import { mockSmallScreen, renderWithApp } from "../../../helpers/render";
+import { mockScreenWidth, renderWithApp } from "../../../helpers/render";
 import { AxiosError, axiosPost } from "../../../mocks/axios";
 
 import Unsubscribe from "../../../../site/components/ice-cream/Unsubscribe";
 
-async function unsubscribe(user: ReturnType<typeof renderWithApp>["user"]) {
+async function unsubscribe(user: UserEvent) {
     await user.type(screen.getByLabelText("Email"), "ada@example.com");
     await user.click(screen.getByRole("button", { name: "Remove From Mailing List" }));
 }
@@ -44,7 +45,7 @@ describe("Unsubscribe", () => {
 
     it("should fall back to a general failure", async () => {
         axiosPost.mockRejectedValue(new Error("offline"));
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user } = renderWithApp(<Unsubscribe />);
 
         await unsubscribe(user);

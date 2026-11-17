@@ -3,7 +3,7 @@ import { createRef } from "react";
 import type { ReactNode } from "react";
 import { describe, expect, it, vi } from "vitest";
 
-import { mockSmallScreen, mockTerminalTheme, renderWithApp } from "../../../helpers/render";
+import { mockScreenWidth, mockTerminalTheme, renderWithApp } from "../../../helpers/render";
 import { mockEmulatorState } from "../../../helpers/terminal";
 import { mockToken } from "../../../setup";
 
@@ -334,7 +334,7 @@ describe("admin console", () => {
     });
 
     it("should take taps from the menus", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user, emulatorState } = await openConsole();
 
         await user.click(screen.getByText(/5\. Exit/));

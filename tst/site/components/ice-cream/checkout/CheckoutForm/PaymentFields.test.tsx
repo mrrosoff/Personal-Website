@@ -1,7 +1,7 @@
 import { screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { mockSmallScreen, renderWithApp } from "../../../../../helpers/render";
+import { mockScreenWidth, renderWithApp } from "../../../../../helpers/render";
 
 import { LoadingPaymentElement } from "../../../../../../site/components/ice-cream/checkout/CheckoutForm/PaymentFields";
 
@@ -17,7 +17,7 @@ describe("LoadingPaymentElement", () => {
     });
 
     it("should show accordion skeletons on a small screen", () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
 
         renderWithApp(<LoadingPaymentElement accordion onComplete={vi.fn()} />);
 

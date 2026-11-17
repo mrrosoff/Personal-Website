@@ -1,7 +1,7 @@
 import { screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { mockSmallScreen, mockTerminalTheme, renderWithApp } from "../../../../../helpers/render";
+import { mockScreenWidth, mockTerminalTheme, renderWithApp } from "../../../../../helpers/render";
 import { mockAdminState } from "../../../../../helpers/terminal";
 
 import AddMailingListEntryMenu from "../../../../../../site/components/terminal/admin/mailingList/AddMailingListEntryMenu";
@@ -63,7 +63,7 @@ describe("AddMailingListEntryMenu", () => {
     });
 
     it("should pick a field with a tap on a small screen", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user, onAction, emulatorState } = renderMenu();
 
         await user.click(screen.getByText(/Email:/));
@@ -74,7 +74,7 @@ describe("AddMailingListEntryMenu", () => {
     });
 
     it("should not add without an email", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user, onAction } = renderMenu();
 
         await user.click(screen.getByText(/^(> )?Add$/));
@@ -83,7 +83,7 @@ describe("AddMailingListEntryMenu", () => {
     });
 
     it("should add with a tap once there is an email", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user, onAction } = renderMenu({ email: "ada@example.com" });
 
         await user.click(screen.getByText(/^(> )?Add$/));
@@ -92,7 +92,7 @@ describe("AddMailingListEntryMenu", () => {
     });
 
     it("should cancel with a tap", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user, onAction } = renderMenu();
 
         await user.click(screen.getByText(/Cancel/));
@@ -101,7 +101,7 @@ describe("AddMailingListEntryMenu", () => {
     });
 
     it("should go back with a tap once added", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user, onAction } = renderMenu({ added: true, email: "ada@example.com" });
 
         await user.click(screen.getByText(/^(> )?Back$/));

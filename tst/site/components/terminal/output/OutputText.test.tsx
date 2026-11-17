@@ -1,7 +1,7 @@
 import { screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { mockSmallScreen, mockTerminalTheme, renderWithApp } from "../../../../helpers/render";
+import { mockScreenWidth, mockTerminalTheme, renderWithApp } from "../../../../helpers/render";
 
 import OutputText from "../../../../../site/components/terminal/output/OutputText";
 
@@ -15,7 +15,7 @@ describe("OutputText", () => {
     });
 
     it("should wrap lines on a small screen", () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
 
         renderWithApp(<OutputText theme={mockTerminalTheme}>{"wrapped"}</OutputText>);
 

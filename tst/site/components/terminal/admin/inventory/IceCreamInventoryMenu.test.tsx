@@ -1,7 +1,7 @@
 import { screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { mockSmallScreen, mockTerminalTheme, renderWithApp } from "../../../../../helpers/render";
+import { mockScreenWidth, mockTerminalTheme, renderWithApp } from "../../../../../helpers/render";
 import { mockAdminState } from "../../../../../helpers/terminal";
 import { mockFlavor } from "../../../../../mocks/aws/dynamodb";
 
@@ -42,7 +42,7 @@ describe("IceCreamInventoryMenu", () => {
         ["2. Modify Flavor Inventory", IceCreamInventoryMenuOption.ModifyFlavorInventory],
         ["3. Go Back", IceCreamInventoryMenuOption.GoBack]
     ])("should choose %s with a tap on a small screen", async (label, option) => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user, onAction, emulatorState } = renderMenu();
 
         await user.click(screen.getByText(label, { exact: false }));
@@ -81,7 +81,7 @@ describe("editing a flavor", () => {
     });
 
     it("should pick a field with a tap on a small screen", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user, onAction, emulatorState } = renderMenu({ editingFlavor: mockFlavor });
 
         await user.click(screen.getByText(/Color:/));
@@ -92,7 +92,7 @@ describe("editing a flavor", () => {
     });
 
     it("should not pick fields while saving", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user, emulatorState } = renderMenu({ editingFlavor: mockFlavor, loading: true });
 
         await user.click(screen.getByText(/Color:/));
@@ -103,7 +103,7 @@ describe("editing a flavor", () => {
     it.each(["type", "count"] as const)(
         "should step the %s with buttons on a small screen",
         async (editingField) => {
-            mockSmallScreen();
+            mockScreenWidth(390);
             const { user, onAction } = renderMenu({ editingFlavor: mockFlavor, editingField });
 
             await user.click(screen.getByText("<"));
@@ -116,7 +116,7 @@ describe("editing a flavor", () => {
         ["Save", "Enter"],
         ["Cancel", "Escape"]
     ])("should %s with a tap on a small screen", async (label, key) => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user, onAction } = renderMenu({ editingFlavor: mockFlavor });
 
         await user.click(screen.getByText(new RegExp(`^(> )?${label}$`)));

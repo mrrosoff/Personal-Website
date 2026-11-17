@@ -1,7 +1,7 @@
 import { act, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { mockSmallScreen, mockTerminalTheme, renderWithApp } from "../../../../helpers/render";
+import { mockScreenWidth, mockTerminalTheme, renderWithApp } from "../../../../helpers/render";
 import { mockAdminState } from "../../../../helpers/terminal";
 import { axiosGet } from "../../../../mocks/axios";
 
@@ -161,7 +161,7 @@ describe("CreateFriendInviteMenu", () => {
     });
 
     it("should pick a field with a tap on a small screen", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user, onAction, emulatorState } = renderMenu();
 
         await user.click(screen.getByText(/Email:/));
@@ -172,7 +172,7 @@ describe("CreateFriendInviteMenu", () => {
     });
 
     it("should step the duration with buttons on a small screen", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user, onAction } = renderMenu({ currentField: "durationHours" });
 
         await user.click(screen.getByText(">"));
@@ -181,7 +181,7 @@ describe("CreateFriendInviteMenu", () => {
     });
 
     it("should toggle a device with a tap on a small screen", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user, onAction, emulatorState } = renderMenu({ currentField: "devices" });
 
         await user.click(screen.getByText(/Unclaimed Spotify Display/));
@@ -192,7 +192,7 @@ describe("CreateFriendInviteMenu", () => {
     });
 
     it("should not create without a name", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user, onAction } = renderMenu({ friendName: "" });
 
         await user.click(screen.getByText(/^(> )?Create$/));
@@ -201,7 +201,7 @@ describe("CreateFriendInviteMenu", () => {
     });
 
     it("should create and cancel with taps", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user, onAction } = renderMenu();
 
         await user.click(screen.getByText(/^(> )?Create$/));
@@ -211,7 +211,7 @@ describe("CreateFriendInviteMenu", () => {
     });
 
     it("should go back with a tap once the link is made", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user, onAction } = renderMenu({ url: "u" });
 
         await user.click(screen.getByText(/^(> )?Back$/));

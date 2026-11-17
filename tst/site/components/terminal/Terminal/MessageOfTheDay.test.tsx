@@ -1,7 +1,7 @@
 import { screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { mockSmallScreen, mockTerminalTheme, renderWithApp } from "../../../../helpers/render";
+import { mockScreenWidth, mockTerminalTheme, renderWithApp } from "../../../../helpers/render";
 
 import MessageOfTheDay from "../../../../../site/components/terminal/Terminal/MessageOfTheDay";
 
@@ -22,7 +22,7 @@ describe("MessageOfTheDay", () => {
     });
 
     it("should link the shop and shorten links on a small screen", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user } = renderWithApp(<MessageOfTheDay theme={mockTerminalTheme} />);
 
         await user.click(screen.getByText("maxrosoff.com"));

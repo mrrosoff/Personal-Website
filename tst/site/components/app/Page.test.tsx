@@ -2,7 +2,7 @@ import { act, screen } from "@testing-library/react";
 import { createRef, useEffect } from "react";
 import { describe, expect, it, vi } from "vitest";
 
-import { mockSmallScreen, renderWithApp } from "../../../helpers/render";
+import { mockScreenWidth, renderWithApp } from "../../../helpers/render";
 
 import Page, { LinksAndMenu } from "../../../../site/components/app/Page";
 import {
@@ -96,7 +96,7 @@ describe("LinksAndMenu", () => {
     });
 
     it("should hide the text links on a small screen", () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
 
         renderLinks("/");
 

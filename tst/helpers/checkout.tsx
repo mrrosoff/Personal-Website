@@ -1,12 +1,14 @@
-import { screen } from "@testing-library/react";
 import { Route, Routes } from "react-router-dom";
 
+import { screen } from "@testing-library/react";
+import type { UserEvent } from "@testing-library/user-event";
+
+import { mockFlavor } from "../mocks/aws/dynamodb";
 import { axiosPost } from "../mocks/axios";
 import { renderWithApp } from "./render";
 
 import Checkout from "../../site/components/ice-cream/checkout/Checkout";
 import { IceCreamCartProvider } from "../../site/components/ice-cream/IceCreamCartContext";
-import { mockFlavor } from "../mocks/aws/dynamodb";
 
 export const mockCheckoutFlavors = ["Fig", "Plum", "Yuzu", "Mint", "Kiwi"].map((name) => ({
     ...mockFlavor,
@@ -17,13 +19,12 @@ export const mockCheckoutFlavors = ["Fig", "Plum", "Yuzu", "Mint", "Kiwi"].map((
 }));
 
 export function mockCheckoutApi() {
-    axiosPost.mockImplementation((url: string) =>
-        Promise.resolve(
-            url.endsWith("/ice-cream/inventory")
-                ? { data: { inventory: mockCheckoutFlavors } }
-                : { data: { client_secret: "secret", subscribed: false } }
-        )
-    );
+    axiosPost.mockImplementation((url: string) => {
+        const data = url.endsWith("/ice-cream/inventory")
+            ? { inventory: mockCheckoutFlavors }
+            : { client_secret: "secret", subscribed: false };
+        return Promise.resolve({ data });
+    });
 }
 
 export function renderCheckout(search: string, friendToken?: string) {
@@ -38,10 +39,7 @@ export function renderCheckout(search: string, friendToken?: string) {
     );
 }
 
-export async function fillInCheckout(
-    user: ReturnType<typeof renderWithApp>["user"],
-    email = "ada@example.com"
-) {
+export async function fillInCheckout(user: UserEvent, email = "ada@example.com") {
     await user.type(screen.getByLabelText("Email"), email);
     await user.type(screen.getByLabelText("Street Address"), "1 Ferry Building");
     await user.type(screen.getByLabelText("ZIP"), "94111");

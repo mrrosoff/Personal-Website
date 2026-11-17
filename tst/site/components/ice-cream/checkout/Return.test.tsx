@@ -2,7 +2,7 @@ import { screen, waitFor } from "@testing-library/react";
 import { Route, Routes } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 
-import { mockSmallScreen, renderWithApp } from "../../../../helpers/render";
+import { mockScreenWidth, renderWithApp } from "../../../../helpers/render";
 import { mockToken } from "../../../../setup";
 import { axiosPost } from "../../../../mocks/axios";
 
@@ -52,7 +52,7 @@ describe("Return", () => {
     });
 
     it("should thank a friend by name without asking stripe", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const token = await mockToken(UserType.FRIEND);
 
         renderReturn(token);

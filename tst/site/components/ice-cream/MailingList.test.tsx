@@ -1,14 +1,15 @@
 import { screen } from "@testing-library/react";
+import type { UserEvent } from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
-import { mockSmallScreen, renderWithApp } from "../../../helpers/render";
+import { mockScreenWidth, renderWithApp } from "../../../helpers/render";
 import { AxiosError, axiosPost } from "../../../mocks/axios";
 
 import MailingList, {
     registerMailingListUser
 } from "../../../../site/components/ice-cream/MailingList";
 
-async function signUp(user: ReturnType<typeof renderWithApp>["user"]) {
+async function signUp(user: UserEvent) {
     await user.type(screen.getByLabelText("First Name"), "Ada");
     await user.type(screen.getByLabelText("Last Name"), "Lovelace");
     await user.type(screen.getByLabelText("Email"), "ada@example.com");
@@ -65,7 +66,7 @@ describe("MailingList", () => {
 
     it("should fall back to a general failure", async () => {
         axiosPost.mockRejectedValue(new Error("offline"));
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user } = renderWithApp(<MailingList />);
 
         await signUp(user);

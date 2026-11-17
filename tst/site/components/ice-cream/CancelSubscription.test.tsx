@@ -2,7 +2,7 @@ import { screen, waitFor } from "@testing-library/react";
 import { Route, Routes } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 
-import { mockSmallScreen, renderWithApp } from "../../../helpers/render";
+import { mockScreenWidth, renderWithApp } from "../../../helpers/render";
 import { mockToken } from "../../../setup";
 import { AxiosError, axiosPost } from "../../../mocks/axios";
 
@@ -78,7 +78,7 @@ describe("CancelSubscription", () => {
 
     it("should fall back to a general failure", async () => {
         axiosPost.mockRejectedValue(new Error("offline"));
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user } = await renderCancel();
 
         await user.click(screen.getByRole("button", { name: "Cancel Subscription" }));

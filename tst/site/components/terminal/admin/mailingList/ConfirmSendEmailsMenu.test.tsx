@@ -1,7 +1,7 @@
 import { screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { mockSmallScreen, mockTerminalTheme, renderWithApp } from "../../../../../helpers/render";
+import { mockScreenWidth, mockTerminalTheme, renderWithApp } from "../../../../../helpers/render";
 import { mockAdminState } from "../../../../../helpers/terminal";
 
 import ConfirmSendEmailsMenu from "../../../../../../site/components/terminal/admin/mailingList/ConfirmSendEmailsMenu";
@@ -44,7 +44,7 @@ describe("ConfirmSendEmailsMenu", () => {
     });
 
     it.each(["yes", "no"])("should choose %s with a tap on a small screen", async (option) => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user, onAction, emulatorState } = renderMenu({ selectedOption: "no" });
 
         await user.click(screen.getByText(option === "yes" ? /^(> )?Yes$/ : /^(> )?No$/));

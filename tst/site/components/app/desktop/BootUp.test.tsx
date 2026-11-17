@@ -1,7 +1,7 @@
 import { act, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { mockSmallScreen, renderWithApp } from "../../../../helpers/render";
+import { mockScreenWidth, renderWithApp } from "../../../../helpers/render";
 
 import BootUp from "../../../../../site/components/app/desktop/BootUp";
 
@@ -83,7 +83,7 @@ describe("BootUp", () => {
     });
 
     it("should shorten the boot on a small screen", () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         renderBootUp();
 
         advanceTo(4700);

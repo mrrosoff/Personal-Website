@@ -1,7 +1,7 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { mockSmallScreen, renderWithApp } from "../../../helpers/render";
+import { mockScreenWidth, renderWithApp } from "../../../helpers/render";
 
 import PhotoGrid from "../../../../site/components/polaroid/PhotoGrid";
 import type { Photo } from "../../../../site/components/polaroid/PhotoGrid";
@@ -51,7 +51,7 @@ describe("PhotoGrid", () => {
     });
 
     it("should enlarge a photo and delete it from there", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const onRemove = vi.fn();
         const { user } = renderWithApp(
             <PhotoGrid photos={photos} uploading={false} onRemove={onRemove} />

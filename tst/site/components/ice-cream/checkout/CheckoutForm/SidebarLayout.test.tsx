@@ -6,7 +6,7 @@ import {
     mockCheckoutFlavors,
     renderCheckout
 } from "../../../../../helpers/checkout";
-import { mockSmallScreen } from "../../../../../helpers/render";
+import { mockScreenWidth } from "../../../../../helpers/render";
 import { mockCheckoutSession } from "../../../../../mocks/stripeCheckout";
 
 const bigOrder = `?priceIds=${mockCheckoutFlavors.map((f) => f.priceId).join(",")}`;
@@ -24,7 +24,7 @@ describe("SidebarLayout", () => {
     });
 
     it("should stack on a smaller screen", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         mockCheckoutSession();
 
         renderCheckout(bigOrder);

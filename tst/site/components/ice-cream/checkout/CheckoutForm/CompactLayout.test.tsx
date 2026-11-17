@@ -2,7 +2,7 @@ import { fireEvent, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { mockCheckoutApi, renderCheckout } from "../../../../../helpers/checkout";
-import { mockSmallScreen } from "../../../../../helpers/render";
+import { mockScreenWidth } from "../../../../../helpers/render";
 import { axiosPost } from "../../../../../mocks/axios";
 import { mockCheckoutSession } from "../../../../../mocks/stripeCheckout";
 
@@ -21,7 +21,7 @@ describe("CompactLayout", () => {
     });
 
     it("should list the plan and how it renews", () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         mockCheckoutSession();
 
         renderCheckout("?subscription=true");

@@ -1,7 +1,7 @@
 import { screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { mockSmallScreen, mockTerminalTheme, renderWithApp } from "../../../../../helpers/render";
+import { mockScreenWidth, mockTerminalTheme, renderWithApp } from "../../../../../helpers/render";
 import { mockAdminState } from "../../../../../helpers/terminal";
 import { mockFlavor } from "../../../../../mocks/aws/dynamodb";
 
@@ -62,7 +62,7 @@ describe("SelectFlavorMenu", () => {
     });
 
     it("should pick a flavor with a tap on a small screen", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user, onAction, emulatorState } = renderMenu();
 
         await user.click(screen.getByText(/3\. c/));
@@ -73,7 +73,7 @@ describe("SelectFlavorMenu", () => {
     });
 
     it("should turn to the next page with a tap", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user, emulatorState } = renderMenu();
 
         await user.click(screen.getByText(/Next/));
@@ -85,7 +85,7 @@ describe("SelectFlavorMenu", () => {
     });
 
     it("should turn back a page with a tap", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user, emulatorState } = renderMenu({ currentPage: 1, selectedOption: 4 });
 
         await user.click(screen.getByText(/Prev/));
@@ -97,14 +97,14 @@ describe("SelectFlavorMenu", () => {
     });
 
     it("should hide paging for a single page", () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         renderMenu({ inventoryData: inventory.slice(0, 2) });
 
         expect(screen.queryByText(/Next/)).not.toBeInTheDocument();
     });
 
     it("should go back with a tap", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const { user, onAction } = renderMenu();
 
         await user.click(screen.getByText(/Go Back/));

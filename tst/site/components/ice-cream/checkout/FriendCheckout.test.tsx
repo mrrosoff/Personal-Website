@@ -2,7 +2,7 @@ import { screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { mockCheckoutApi, renderCheckout } from "../../../../helpers/checkout";
-import { mockSmallScreen } from "../../../../helpers/render";
+import { mockScreenWidth } from "../../../../helpers/render";
 import { mockToken } from "../../../../setup";
 import { axiosPost } from "../../../../mocks/axios";
 
@@ -12,7 +12,7 @@ beforeEach(mockCheckoutApi);
 
 describe("FriendCheckout", () => {
     it("should give a friend their order for free", async () => {
-        mockSmallScreen();
+        mockScreenWidth(390);
         const token = await mockToken(UserType.FRIEND);
         const { user } = renderCheckout("?priceIds=price_Fig,price_Plum", token);
 
