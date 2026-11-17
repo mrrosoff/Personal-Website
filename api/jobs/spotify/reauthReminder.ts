@@ -2,7 +2,7 @@ import { DateTime, Duration } from "luxon";
 import { Resend } from "resend";
 import { DEVICES_TABLE, PASSKEYS_TABLE } from "../../common";
 
-import SpotifyReauthEmail from "../../../src/emails/templates/SpotifyReauthEmail";
+import SpotifyReauthEmail from "../../../site/emails/templates/SpotifyReauthEmail";
 import { getEntireTable } from "../../aws/services/dynamodb";
 import { getParameter } from "../../aws/services/parameterStore";
 import { type DatabasePasskey, DeviceKind } from "../../types";

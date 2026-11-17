@@ -24,7 +24,7 @@ vi.mock("axios", () => import("./__mocks__/axios"));
 vi.mock("@stripe/react-stripe-js/checkout", () => import("./__mocks__/stripeCheckout"));
 vi.mock("@stripe/stripe-js", () => ({ loadStripe: vi.fn(() => Promise.resolve(null)) }));
 vi.mock("@aws-sdk/s3-request-presigner", () => import("./__mocks__/__aws__/s3"));
-vi.mock("../src/components/terminal/games/SnakeGame", () => ({ default: () => null }));
+vi.mock("../site/components/terminal/games/SnakeGame", () => ({ default: () => null }));
 
 type AwsCommand = new (input: never) => unknown;
 

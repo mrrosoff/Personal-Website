@@ -2,7 +2,7 @@ import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import Stripe from "stripe";
 import { Resend } from "resend";
 
-import CancelSubscriptionEmail from "../../../src/emails/templates/CancelSubscriptionEmail";
+import CancelSubscriptionEmail from "../../../site/emails/templates/CancelSubscriptionEmail";
 import { generateToken, UserType } from "../../auth";
 import { getParameters } from "../../aws/services/parameterStore";
 import { HttpResponseStatus, buildErrorResponse, buildResponse } from "../../common";

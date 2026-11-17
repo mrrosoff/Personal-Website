@@ -31,7 +31,7 @@ export default defineConfig(
         }
     },
     {
-        files: ["src/**/*.tsx"],
+        files: ["site/**/*.tsx"],
         ...reactHooks.configs.flat["recommended-latest"]
     },
     {

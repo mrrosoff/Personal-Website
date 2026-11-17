@@ -2,7 +2,7 @@ import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import { Duration } from "luxon";
 import { Resend } from "resend";
 
-import FriendInviteEmail from "../../../src/emails/templates/FriendInviteEmail";
+import FriendInviteEmail from "../../../site/emails/templates/FriendInviteEmail";
 import { generateToken, UserType } from "../../auth";
 import { isAdmin } from "../../permissions";
 import { getEntireTable } from "../../aws/services/dynamodb";

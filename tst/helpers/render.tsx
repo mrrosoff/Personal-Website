@@ -7,9 +7,9 @@ import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
-import { AppContext } from "../../src/components/AppContext";
-import { TERMINAL_COLORS, type TerminalTheme } from "../../src/components/terminal/Terminal";
-import type EmulatorState from "../../src/javascript-terminal/emulator-state/EmulatorState";
+import { AppContext } from "../../site/components/AppContext";
+import { TERMINAL_COLORS, type TerminalTheme } from "../../site/components/terminal/Terminal";
+import type EmulatorState from "../../site/javascript-terminal/emulator-state/EmulatorState";
 import { mockEmulatorState } from "./terminal";
 
 export const mockTerminalTheme: TerminalTheme = {

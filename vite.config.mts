@@ -54,8 +54,8 @@ export default defineConfig({
             {
                 extends: true,
                 test: {
-                    name: "src",
-                    include: ["tst/src/**/*.test.{ts,tsx}"],
+                    name: "site",
+                    include: ["tst/site/**/*.test.{ts,tsx}"],
                     environment: "jsdom"
                 }
             }
@@ -63,7 +63,7 @@ export default defineConfig({
         coverage: {
             enabled: true,
             provider: "v8",
-            include: ["api/**", "src/**"],
+            include: ["api/**", "site/**"],
             thresholds: { statements: 100, branches: 100, functions: 100, lines: 100 }
         }
     }

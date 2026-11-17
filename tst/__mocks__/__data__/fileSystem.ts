@@ -1,4 +1,4 @@
-import type { Directory, FileSystem, RegularFile } from "../../../src/FileSystem";
+import type { Directory, FileSystem, RegularFile } from "../../../site/FileSystem";
 
 export function mockFile(contents: string): RegularFile {
     return { type: "-", permissions: "rwx------", contents };

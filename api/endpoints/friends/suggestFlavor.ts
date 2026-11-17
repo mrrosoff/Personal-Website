@@ -5,7 +5,7 @@ import { getParameter } from "../../aws/services/parameterStore";
 import { UserType } from "../../auth";
 import { authorize } from "../../permissions";
 import { buildErrorResponse, buildResponse, HttpResponseStatus } from "../../common";
-import FlavorSuggestionEmail from "../../../src/emails/templates/FlavorSuggestionEmail";
+import FlavorSuggestionEmail from "../../../site/emails/templates/FlavorSuggestionEmail";
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
     const { token, error: authError } = await authorize(event, UserType.FRIEND);

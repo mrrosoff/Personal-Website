@@ -5,8 +5,8 @@ import { axiosPost } from "../__mocks__/axios";
 import { mockCheckoutFlavors } from "../__mocks__/__data__/checkout";
 import { renderWithApp } from "./render";
 
-import Checkout from "../../src/components/ice-cream/checkout/Checkout";
-import { IceCreamCartProvider } from "../../src/components/ice-cream/IceCreamCartContext";
+import Checkout from "../../site/components/ice-cream/checkout/Checkout";
+import { IceCreamCartProvider } from "../../site/components/ice-cream/IceCreamCartContext";
 
 export function mockCheckoutApi() {
     axiosPost.mockImplementation((url: string) =>
