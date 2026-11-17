@@ -14,9 +14,12 @@ import {
 
 const ICE_CREAM_PINK = "#E8709A";
 
-const CancelSubscriptionEmail = (props: { cancelUrl?: string; minutesValid?: number }) => {
-    const cancelUrl = props.cancelUrl ?? "https://maxrosoff.com/ice-cream/cancel";
-    const minutesValid = props.minutesValid ?? 30;
+type CancelSubscriptionEmailProps = {
+    cancelUrl: string;
+    minutesValid: number;
+};
+
+const CancelSubscriptionEmail = ({ cancelUrl, minutesValid }: CancelSubscriptionEmailProps) => {
     return (
         <Html>
             <Head />

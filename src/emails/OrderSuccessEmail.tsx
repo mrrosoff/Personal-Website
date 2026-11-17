@@ -49,15 +49,14 @@ const OrderSuccessEmail = (props: {
     customerName?: string;
     customerEmail?: string;
     shippingAddress?: Stripe.Address;
-    items?: OrderItem[];
+    items: OrderItem[];
     forCustomer?: boolean;
 }) => {
-    const items = props.items ?? [];
     const forCustomer = props.forCustomer ?? false;
     const pool = forCustomer ? customerSubtitles : subtitles;
     const subtitle = pool[Math.floor(Math.random() * pool.length)];
     const heading = orderHeading(forCustomer, props.customerName);
-    const pints = `${items.length} ${items.length === 1 ? "pint" : "pints"}`;
+    const pints = `${props.items.length} ${props.items.length === 1 ? "pint" : "pints"}`;
     const preview = forCustomer
         ? `Your ice cream order for ${pints}`
         : `New order from ${props.customerName || props.customerEmail || "a customer"} for ${pints}`;
@@ -106,7 +105,7 @@ const OrderSuccessEmail = (props: {
                         </Text>
                     </Section>
                     <Section style={{ marginTop: 16, marginBottom: 16 }}>
-                        {items.map((item, index) => (
+                        {props.items.map((item, index) => (
                             <Section key={index} style={{ marginBottom: 8 }}>
                                 <Row>
                                     <Column style={{ verticalAlign: "baseline", width: 35 }}>

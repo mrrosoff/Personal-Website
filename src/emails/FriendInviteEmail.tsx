@@ -14,14 +14,13 @@ import {
 
 const TERMINAL_GREY = "#52535F";
 
-const FriendInviteEmail = (props: {
-    friendName?: string;
-    inviteUrl?: string;
-    validFor?: string;
-}) => {
-    const friendName = props.friendName ?? "friend";
-    const inviteUrl = props.inviteUrl ?? "https://maxrosoff.com/register-friend";
-    const validFor = props.validFor ?? "6 Hours";
+type FriendInviteEmailProps = {
+    friendName: string;
+    inviteUrl: string;
+    validFor: string;
+};
+
+const FriendInviteEmail = ({ friendName, inviteUrl, validFor }: FriendInviteEmailProps) => {
     return (
         <Html>
             <Head />

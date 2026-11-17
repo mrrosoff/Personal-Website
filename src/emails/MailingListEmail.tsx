@@ -17,9 +17,9 @@ import {
 import type { DatabaseFlavor } from "../../api/types";
 
 const MailingListEmail = (props: {
-    currentFlavors?: DatabaseFlavor[];
-    lastBatch?: DatabaseFlavor[];
-    upcoming?: DatabaseFlavor[];
+    currentFlavors: DatabaseFlavor[];
+    lastBatch: DatabaseFlavor[];
+    upcoming: DatabaseFlavor[];
     message?: string;
 }) => {
     return (
@@ -104,8 +104,8 @@ const MailingListEmail = (props: {
     );
 };
 
-const FlavorsList = (props: { title: string; description: string; flavors?: DatabaseFlavor[] }) => {
-    if (!props.flavors?.length) {
+const FlavorsList = (props: { title: string; description: string; flavors: DatabaseFlavor[] }) => {
+    if (!props.flavors.length) {
         return null;
     }
 

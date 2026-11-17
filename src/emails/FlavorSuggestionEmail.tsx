@@ -14,9 +14,12 @@ import {
     Text
 } from "@react-email/components";
 
-const FlavorSuggestionEmail = (props: { friendName?: string; flavor?: string }) => {
-    const friendName = props.friendName ?? "Someone";
-    const flavor = props.flavor ?? "Unknown Flavor";
+type FlavorSuggestionEmailProps = {
+    friendName: string;
+    flavor: string;
+};
+
+const FlavorSuggestionEmail = ({ friendName, flavor }: FlavorSuggestionEmailProps) => {
     return (
         <Html>
             <Head />

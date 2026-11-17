@@ -14,9 +14,13 @@ import {
 
 const SPOTIFY_GREEN = "#1ED760";
 
-const SpotifyReauthEmail = (props: { name?: string; daysLeft?: number; reconnectUrl?: string }) => {
-    const daysLeft = props.daysLeft ?? 7;
-    const reconnectUrl = props.reconnectUrl ?? "https://maxrosoff.com";
+type SpotifyReauthEmailProps = {
+    name?: string;
+    daysLeft: number;
+    reconnectUrl: string;
+};
+
+const SpotifyReauthEmail = (props: SpotifyReauthEmailProps) => {
     const greeting = props.name ? `Hi ${props.name},` : "Hi,";
     const userName = props.name ?? "your name";
     const codeStyle = {
@@ -36,8 +40,8 @@ const SpotifyReauthEmail = (props: { name?: string; daysLeft?: number; reconnect
                 }}
             >
                 <Preview>
-                    Reconnect Spotify in the next {daysLeft.toString()} days to keep the display
-                    running
+                    Reconnect Spotify in the next {props.daysLeft.toString()} days to keep the
+                    display running
                 </Preview>
                 <Container
                     style={{
@@ -68,7 +72,7 @@ const SpotifyReauthEmail = (props: { name?: string; daysLeft?: number; reconnect
                         <Text style={{ fontSize: 16, color: "rgb(17,24,39)" }}>
                             The Spotify connection that powers the display is set to expire in about{" "}
                             <strong>
-                                {daysLeft} {daysLeft === 1 ? "day" : "days"}
+                                {props.daysLeft} {props.daysLeft === 1 ? "day" : "days"}
                             </strong>
                             . Once it lapses, the panel stops showing what's playing until it's
                             reconnected. You can refresh it now in under a minute. No need to wait.
@@ -78,7 +82,7 @@ const SpotifyReauthEmail = (props: { name?: string; daysLeft?: number; reconnect
                         </Text>
                         <Text style={{ fontSize: 16, color: "rgb(17,24,39)" }}>
                             <strong>1. Open the terminal.</strong> Go to{" "}
-                            <Link href={reconnectUrl} style={{ color: SPOTIFY_GREEN }}>
+                            <Link href={props.reconnectUrl} style={{ color: SPOTIFY_GREEN }}>
                                 maxrosoff.com
                             </Link>{" "}
                             on a computer. The terminal is the panel on the home page. Click it once
@@ -102,7 +106,7 @@ const SpotifyReauthEmail = (props: { name?: string; daysLeft?: number; reconnect
                     </Section>
                     <Section style={{ marginTop: 8, marginBottom: 24 }}>
                         <Button
-                            href={reconnectUrl}
+                            href={props.reconnectUrl}
                             style={{
                                 backgroundColor: SPOTIFY_GREEN,
                                 color: "#FFFFFF",
