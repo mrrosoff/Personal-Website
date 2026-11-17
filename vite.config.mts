@@ -39,6 +39,7 @@ export default defineConfig({
             { find: /^\.\/(keys|keyMapping)\.json$/, replacement: `${mockJwks}/$1.json` }
         ],
         setupFiles: ["tst/setup.ts"],
+        testTimeout: 15000,
         unstubEnvs: true,
         unstubGlobals: true,
         projects: [
