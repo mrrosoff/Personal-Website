@@ -19,7 +19,7 @@ const stripeLoader = loadStripe(stripePublishableApiKey);
 const Checkout = () => {
     const [searchParams] = useSearchParams();
     const { friendToken } = useAppContext();
-    const priceIdsString = searchParams.get("priceIds") || "";
+    const priceIdsString = searchParams.get("priceIds") ?? "";
     const priceIdsArray = priceIdsString.split(",").filter(Boolean);
     const isSubscription = searchParams.get("subscription") === "true";
     const fetchClientSecret = useMemo(async () => {

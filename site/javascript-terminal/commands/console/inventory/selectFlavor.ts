@@ -23,10 +23,10 @@ export async function fetchInventoryData(state: EmulatorState): Promise<void> {
             "/ice-cream/inventory"
         );
         const inventoryData = inventory.map((item) => ({
-            productId: item.productId || "",
-            priceId: item.priceId || "",
-            name: item.name || "Unknown Flavor",
-            color: item.color || "#000000",
+            productId: item.productId ?? "",
+            priceId: item.priceId ?? "",
+            name: item.name ?? "Unknown Flavor",
+            color: item.color ?? "#000000",
             count: typeof item.count === "number" ? item.count : 0,
             type: item.type ?? null
         }));

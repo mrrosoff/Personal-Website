@@ -46,7 +46,7 @@ const OrderSuccessEmail = (props: {
     const pints = `${props.items.length.toString()} ${props.items.length === 1 ? "pint" : "pints"}`;
     const preview = forCustomer
         ? `Your ice cream order for ${pints}`
-        : `New order from ${props.customerName || props.customerEmail || "a customer"} for ${pints}`;
+        : `New order from ${props.customerName ?? props.customerEmail ?? "a customer"} for ${pints}`;
     return (
         <EmailLayout preview={preview}>
             <Section>

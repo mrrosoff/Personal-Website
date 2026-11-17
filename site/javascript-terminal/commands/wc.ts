@@ -26,7 +26,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const wordCount = words.length;
     const charCount = chars;
 
-    const hasSpecificFlag = options.lines || options.words || options.chars;
+    const hasSpecificFlag = [options.lines, options.words, options.chars].some(Boolean);
 
     if (hasSpecificFlag) {
         const counts: string[] = [];

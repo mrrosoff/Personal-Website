@@ -13,7 +13,7 @@ const CancelSubscription = () => {
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const token = searchParams.get("token") || "";
+    const token = searchParams.get("token") ?? "";
 
     const [cancelling, setCancelling] = useState(false);
     const [result, setResult] = useState<"cancelled" | "failed" | null>(null);

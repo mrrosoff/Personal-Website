@@ -10,7 +10,7 @@ const substituteEnvVariables = (
 ) => {
     return inputStr.replace(
         VARIABLE_GROUP_REGEX,
-        (_match, varName: string) => environmentVariables[varName] || ""
+        (_match, varName: string) => environmentVariables[varName] ?? ""
     );
 };
 

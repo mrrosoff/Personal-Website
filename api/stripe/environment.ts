@@ -8,7 +8,7 @@ const LIVE_API_KEY = "/website/stripe/api-key";
 const TEST_API_KEY = "/website/stripe/test/api-key";
 
 export function isLocalTest(event: APIGatewayEvent): boolean {
-    const origin = event.headers.Origin || event.headers.origin;
+    const origin = event.headers.Origin ?? event.headers.origin;
     return origin === LOCAL_ORIGIN;
 }
 

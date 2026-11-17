@@ -13,7 +13,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     let newCwdPath: string;
 
     if (argv[0] === "-") {
-        const previousDir = envVars.OLDPWD || "/";
+        const previousDir = envVars.OLDPWD ?? "/";
         newCwdPath = previousDir;
     } else {
         newCwdPath = argv[0] ? relativeToAbsolutePath(state, argv[0]) : "/";

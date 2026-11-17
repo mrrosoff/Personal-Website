@@ -23,7 +23,7 @@ const PromptSymbol = (props: { theme: TerminalTheme; cwd?: string; children: str
             </Grid>
             <Grid>
                 <Typography style={{ color: props.theme.promptSymbolColor }}>
-                    {props.cwd ? props.cwd : emulatorState.getEnvVariables().cwd}
+                    {props.cwd ?? emulatorState.getEnvVariables().cwd}
                 </Typography>
             </Grid>
         </Grid>

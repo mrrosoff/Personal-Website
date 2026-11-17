@@ -43,9 +43,9 @@ const IceCreamInventoryMenu = (props: IceCreamInventoryMenuProps) => {
                 <ConsoleHeading theme={props.theme} title={"Modify Flavor Inventory"} />
                 <Box sx={{ opacity: props.mode.loading ? 0.4 : 1 }}>
                     {(["name", "color", "type", "count"] as const).map((field) => {
-                        const active = (props.mode.editingField || "name") === field;
+                        const active = (props.mode.editingField ?? "name") === field;
                         let value: string;
-                        if (field === "type") value = flavor.type || "Not Listed";
+                        if (field === "type") value = flavor.type ?? "Not Listed";
                         else if (field === "count") value = String(flavor.count);
                         else value = flavor[field] || "_";
                         const stepper = field === "type" || field === "count";

@@ -36,7 +36,7 @@ const ProvisionFlavorFormMenu = (props: ProvisionFlavorFormMenuProps) => {
         { field: "flavorName", label: "Flavor Name", value: form.flavorName || "_" },
         { field: "initialQuantity", label: "Initial Quantity", value: form.initialQuantity },
         { field: "color", label: "Color", value: form.color || "_" },
-        { field: "type", label: "Type", value: form.type || "Not Listed" }
+        { field: "type", label: "Type", value: form.type ?? "Not Listed" }
     ];
 
     return (

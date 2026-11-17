@@ -65,7 +65,6 @@ const ContactFields = () => {
                 }}
                 problem={emailProblem}
                 placeholder={"karl@fog.sf"}
-                error={!!emailError}
                 helperText={emailError}
             />
             <DeliveryAddressFields />

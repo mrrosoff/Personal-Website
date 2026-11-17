@@ -14,9 +14,11 @@ import FormField, { emailProblem } from "../FormField";
 import IceCreamPage from "./IceCreamPage";
 
 export const registerMailingListUser = async (registration: MailingListRegistration) => {
+    const firstName = registration.firstName?.trim();
+    const lastName = registration.lastName?.trim();
     await axios.post(`${API_ENDPOINT_URL}/email/register`, {
-        firstName: registration.firstName?.trim() || undefined,
-        lastName: registration.lastName?.trim() || undefined,
+        ...(firstName && { firstName }),
+        ...(lastName && { lastName }),
         email: registration.email.trim()
     });
 };

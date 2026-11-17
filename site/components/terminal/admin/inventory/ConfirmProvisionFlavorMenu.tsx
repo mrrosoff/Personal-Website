@@ -52,7 +52,7 @@ const ConfirmProvisionFlavorMenu = (props: ConfirmProvisionFlavorMenuProps) => {
                     Color: {form.color}
                 </Typography>
                 <Typography sx={{ color: props.theme.outputColor, fontSize: "0.9em" }}>
-                    Type: {form.type || "Not Listed"}
+                    Type: {form.type ?? "Not Listed"}
                 </Typography>
             </Box>
             <Typography

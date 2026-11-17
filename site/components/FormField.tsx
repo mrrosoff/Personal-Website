@@ -8,7 +8,6 @@ export const emailProblem = (email: string) => (validate(email) ? null : "Enter 
 const FormField = ({
     label,
     problem,
-    error,
     helperText,
     sx,
     ...props
@@ -27,6 +26,7 @@ const FormField = ({
     }, [value]);
 
     const settledProblem = value && value === settledValue ? problem?.(value) : null;
+    const message = helperText ?? settledProblem;
     return (
         <Box sx={sx}>
             <Typography
@@ -39,8 +39,8 @@ const FormField = ({
             <TextField
                 {...props}
                 id={id}
-                error={error || !!settledProblem}
-                helperText={helperText || settledProblem}
+                error={Boolean(message)}
+                helperText={message}
                 fullWidth
                 sx={{
                     "& .MuiOutlinedInput-root": {

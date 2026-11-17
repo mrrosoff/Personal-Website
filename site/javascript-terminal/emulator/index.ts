@@ -95,7 +95,7 @@ export default class Emulator {
 
             if (output instanceof Array) {
                 output.forEach((outputItem) => {
-                    const lastCwd = oldCwdPath ? oldCwdPath : "/";
+                    const lastCwd = oldCwdPath ?? "/";
                     commandResults.push({
                         state,
                         output: { output: outputItem, type, oldCwdPath },
@@ -103,7 +103,7 @@ export default class Emulator {
                     });
                 });
             } else if (output || output === "") {
-                const lastCwd = oldCwdPath ? oldCwdPath : "/";
+                const lastCwd = oldCwdPath ?? "/";
                 commandResults.push({
                     state,
                     output: { output, type, oldCwdPath },
