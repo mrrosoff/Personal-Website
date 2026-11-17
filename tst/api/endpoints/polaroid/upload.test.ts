@@ -59,7 +59,7 @@ describe("upload", () => {
     it("should refuse something that is not a photo", async () => {
         const result = await upload(Buffer.from("not a photo").toString("base64"));
 
-        expect(result.statusCode).toBe(400);
+        expect(responseBody(result).message).toBe("That Photo Couldn't Be Read");
     });
 
     it("should render a landscape photo into a framebuffer", async () => {

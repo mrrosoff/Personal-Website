@@ -143,7 +143,11 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         rendered = renderPhoto(source);
     } catch (err) {
         console.info(err);
-        return buildErrorResponse(event, HttpResponseStatus.BAD_REQUEST, (err as Error).message);
+        return buildErrorResponse(
+            event,
+            HttpResponseStatus.BAD_REQUEST,
+            "That Photo Couldn't Be Read"
+        );
     }
 
     const photoId = randomUUID().replace(/-/g, "").slice(0, 12);
