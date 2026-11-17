@@ -1,11 +1,24 @@
 /// <reference types="vitest/config" />
+import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 import { defineConfig } from "vite";
+import type { Plugin } from "vite";
 
 import react from "@vitejs/plugin-react";
 
 const mockJwks = resolve("tst/mocks/jwks");
+
+function base64Assets(): Plugin {
+    return {
+        name: "base64-assets",
+        enforce: "pre",
+        load: (id) =>
+            /\.(ttf|jpg|png)$/.test(id)
+                ? `export default ${JSON.stringify(readFileSync(id).toString("base64"))};`
+                : undefined
+    };
+}
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -45,9 +58,10 @@ export default defineConfig({
         projects: [
             {
                 extends: true,
+                plugins: [base64Assets()],
                 test: {
                     name: "api",
-                    include: ["tst/api/**/*.test.ts", "tst/infrastructure/**/*.test.ts"],
+                    include: ["tst/api/**/*.test.{ts,tsx}", "tst/infrastructure/**/*.test.ts"],
                     environment: "node"
                 }
             },
