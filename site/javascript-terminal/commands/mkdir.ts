@@ -21,14 +21,13 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         const pathParts = PathUtil.toPathParts(newFolderPath);
         let currentPath = "";
 
-        for (let i = 0; i < pathParts.length; i++) {
-            if (pathParts[i] === "/") {
+        for (const pathPart of pathParts) {
+            if (pathPart === "/") {
                 currentPath = "/";
                 continue;
             }
 
-            currentPath =
-                currentPath === "/" ? `/${pathParts[i]}` : `${currentPath}/${pathParts[i]}`;
+            currentPath = currentPath === "/" ? `/${pathPart}` : `${currentPath}/${pathPart}`;
 
             const parent = fsSearchParent(state.getFileSystem(), currentPath);
             const dirName = getLastPathPart(currentPath);

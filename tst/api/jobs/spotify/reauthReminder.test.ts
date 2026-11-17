@@ -1,8 +1,8 @@
 import { ScanCommand } from "@aws-sdk/lib-dynamodb";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import { mockDocumentClient } from "../../../__mocks__/__aws__/dynamodb";
-import { mockParameters } from "../../../__mocks__/__aws__/parameterStore";
+import { mockDeviceParameters } from "../../../__mocks__/__aws__/parameterStore";
 import { mockDevice, mockPasskey } from "../../../__mocks__/__data__/aws/dynamodb";
 import { mockResend } from "../../../__mocks__/resend";
 
@@ -14,17 +14,13 @@ import { DeviceKind } from "../../../../api/types";
 const setAtParam = refreshTokenSetAtParam(mockDevice.deviceId);
 
 function connectedDaysAgo(days: number) {
-    mockParameters[setAtParam] = String(Date.now() - days * 24 * 60 * 60 * 1000);
+    mockDeviceParameters.set(setAtParam, String(Date.now() - days * 24 * 60 * 60 * 1000));
 }
 
 beforeEach(() => {
     mockDocumentClient
         .on(ScanCommand, { TableName: DEVICES_TABLE })
         .resolves({ Items: [{ ...mockDevice, kind: DeviceKind.SPOTIFY }] });
-});
-
-afterEach(() => {
-    delete mockParameters[setAtParam];
 });
 
 describe("reauthReminder", () => {

@@ -5,15 +5,15 @@ import { validate } from "email-validator";
 
 export const emailProblem = (email: string) => (validate(email) ? null : "Enter a valid email.");
 
-const FormField = ({
-    label,
-    problem,
-    helperText,
-    sx,
-    ...props
-}: TextFieldProps & { label: string; problem?: (value: string) => string | null }) => {
+type FormFieldProps = TextFieldProps & {
+    label: string;
+    value?: string;
+    problem?: (value: string) => string | null;
+};
+
+const FormField = ({ label, problem, helperText, sx, ...props }: FormFieldProps) => {
     const id = useId();
-    const value = String(props.value ?? "");
+    const value = props.value ?? "";
     const [settledValue, setSettledValue] = useState(value);
 
     useEffect(() => {

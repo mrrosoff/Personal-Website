@@ -22,7 +22,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
 
         return {
             output: Object.entries(aliases)
-                .map(([name, command]) => `alias ${name}='${command}'`)
+                .map(([name, command]) => `alias ${name}='${String(command)}'`)
                 .join("\n")
         };
     }

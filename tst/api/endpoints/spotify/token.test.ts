@@ -1,10 +1,10 @@
 import { PutParameterCommand } from "@aws-sdk/client-ssm";
 import { GetCommand } from "@aws-sdk/lib-dynamodb";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import { mockEvent, responseBody } from "../../../setup";
 import { mockDocumentClient } from "../../../__mocks__/__aws__/dynamodb";
-import { mockParameters, mockSSMClient } from "../../../__mocks__/__aws__/parameterStore";
+import { mockDeviceParameters, mockSSMClient } from "../../../__mocks__/__aws__/parameterStore";
 import { AxiosError, axiosPost } from "../../../__mocks__/axios";
 import { mockDevice, mockDeviceToken } from "../../../__mocks__/__data__/aws/dynamodb";
 
@@ -30,12 +30,8 @@ beforeEach(() => {
     mockDocumentClient
         .on(GetCommand, { TableName: DEVICES_TABLE })
         .resolves({ Item: { ...mockDevice, kind: DeviceKind.SPOTIFY } });
-    mockParameters[refreshParam] = "refresh";
+    mockDeviceParameters.set(refreshParam, "refresh");
     axiosPost.mockResolvedValue({ data: { access_token: "access", expires_in: 3600 } });
-});
-
-afterEach(() => {
-    delete mockParameters[refreshParam];
 });
 
 describe("token", () => {
@@ -46,7 +42,7 @@ describe("token", () => {
     });
 
     it("should ask to connect a display that never has", async () => {
-        delete mockParameters[refreshParam];
+        mockDeviceParameters.delete(refreshParam);
 
         const result = await handler(event);
 

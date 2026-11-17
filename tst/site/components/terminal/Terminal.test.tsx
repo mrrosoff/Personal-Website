@@ -147,8 +147,9 @@ describe("Terminal", () => {
         );
 
         type("pwd");
-
         await act(() => new Promise((resolve) => setTimeout(resolve, 0)));
+
+        expect(screen.getByText("pwd")).toBeInTheDocument();
         unmount();
     });
 

@@ -58,5 +58,6 @@ export const add = (fs: FileSystem, pathToAdd: string, fsElementToAdd: File) => 
 };
 
 export const remove = (fs: FileSystem, pathToRemove: string) => {
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete fsSearchParent(fs, pathToRemove)[getLastPathPart(pathToRemove)];
 };

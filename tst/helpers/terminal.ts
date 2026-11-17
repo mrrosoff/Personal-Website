@@ -35,7 +35,7 @@ export function mockShell(environmentVariables: Record<string, string> = {}) {
 
     function run(command: string): string {
         return results(command)
-            .map((result) => result.output)
+            .map((result) => (typeof result.output === "string" ? result.output : ""))
             .join("\n");
     }
 

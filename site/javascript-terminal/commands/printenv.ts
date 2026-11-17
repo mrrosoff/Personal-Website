@@ -10,7 +10,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     if (argv.length === 0) {
         return {
             output: Object.entries(envVariables)
-                .map((entry) => entry[0] + "=" + entry[1])
+                .map(([name, value]) => `${name}=${String(value)}`)
                 .join("\n")
         };
     }

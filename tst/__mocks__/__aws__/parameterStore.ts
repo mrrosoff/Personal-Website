@@ -25,13 +25,19 @@ export const mockParameters: Record<string, string> = {
     "/website/spotify/client-secret": faker.string.alphanumeric(32)
 };
 
+export const mockDeviceParameters = new Map<string, string>();
+
+function parameterValue(name: string): string | undefined {
+    return mockDeviceParameters.get(name) ?? mockParameters[name];
+}
+
 beforeEach(() => {
     mockSSMClient
         .on(GetParametersCommand)
         .callsFake(({ Names = [] }: GetParametersCommandInput) => ({
-            Parameters: Names.filter((Name) => Name in mockParameters).map((Name) => ({
+            Parameters: Names.filter((Name) => parameterValue(Name) !== undefined).map((Name) => ({
                 Name,
-                Value: mockParameters[Name]
+                Value: parameterValue(Name)
             }))
         }));
     mockSSMClient.on(PutParameterCommand).resolves({});
@@ -39,4 +45,5 @@ beforeEach(() => {
 
 afterEach(() => {
     mockSSMClient.reset();
+    mockDeviceParameters.clear();
 });

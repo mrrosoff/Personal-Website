@@ -160,7 +160,7 @@ export async function handleIceCreamInventory(
                 ...mode,
                 selectedOption: stepWithin(
                     ICE_CREAM_INVENTORY_MENU_OPTIONS,
-                    mode.selectedOption as IceCreamInventoryMenuOption,
+                    mode.selectedOption,
                     arrowStep(key)
                 )
             });

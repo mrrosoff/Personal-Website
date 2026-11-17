@@ -38,8 +38,9 @@ export function editNumber(value: number, key: string, max: number): number {
     return /^[0-9]$/.test(key) ? Math.min(value * 10 + Number(key), max) : value;
 }
 
-export function stepWithin<T>(options: T[], current: T, step: number): T {
-    const index = Math.min(Math.max(options.indexOf(current) + step, 0), options.length - 1);
+export function stepWithin<T>(options: T[], current: unknown, step: number): T {
+    const currentIndex = options.findIndex((option) => option === current);
+    const index = Math.min(Math.max(currentIndex + step, 0), options.length - 1);
     return options[index];
 }
 
@@ -62,7 +63,7 @@ export async function postAsAdmin<T>(
     body: object = {}
 ): Promise<T> {
     const { data } = await axios.post<T>(`${API_ENDPOINT_URL}${path}`, body, {
-        headers: { Authorization: `Bearer ${state.getEnvVariables().AUTH_TOKEN}` }
+        headers: { Authorization: `Bearer ${String(state.getEnvVariables().AUTH_TOKEN)}` }
     });
     return data;
 }

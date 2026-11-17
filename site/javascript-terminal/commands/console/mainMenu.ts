@@ -66,11 +66,7 @@ export function handleMainMenu(key: string, state: EmulatorState): EmulatorState
         case "ArrowUp":
             state.setAdminConsoleMode({
                 ...mode,
-                selectedOption: stepWithin(
-                    MAIN_MENU_OPTIONS,
-                    mode.selectedOption as MainMenuOption,
-                    arrowStep(key)
-                )
+                selectedOption: stepWithin(MAIN_MENU_OPTIONS, mode.selectedOption, arrowStep(key))
             });
             break;
         case "Enter":

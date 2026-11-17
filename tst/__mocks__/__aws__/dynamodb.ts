@@ -42,16 +42,23 @@ function updatedItem(input: UpdateCommandInput): UpdateCommandOutput {
         const adjust = /^(#\w+) = \1 \+ (:\w+)$/.exec(assignment);
         const set = /^(#\w+) = (:\w+)$/.exec(assignment);
         if (adjust) {
-            item[names[adjust[1]]] = (item[names[adjust[1]]] as number) + values[adjust[2]];
+            item[names[adjust[1]]] =
+                (item[names[adjust[1]]] as number) + (values[adjust[2]] as number);
         } else if (set) {
             item[names[set[1]]] = values[set[2]];
         }
     }
-    for (const name of removePart.split(/,\s*/).filter(Boolean)) {
-        delete item[names[name]];
-    }
+    const removed = removePart
+        .split(/,\s*/)
+        .filter(Boolean)
+        .map((name) => names[name]);
 
-    return { Attributes: item, $metadata: {} };
+    return {
+        Attributes: Object.fromEntries(
+            Object.entries(item).filter(([attribute]) => !removed.includes(attribute))
+        ),
+        $metadata: {}
+    };
 }
 
 beforeEach(() => {

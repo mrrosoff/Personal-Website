@@ -115,21 +115,23 @@ describe("BootUp", () => {
 
     it("should reveal each line one step at a time", () => {
         renderBootUp();
-        const steps: [number, string, string?][] = [
+        const steps: [number, string, string][] = [
             [450, "AF6S7V89 - JUC84X", "User:"],
             [200, "User:", "Device Name:"],
             [200, "Device Name:", "Memory Test:"],
-            [1100, "Memory Test:", "Detecting Primary Drive"],
-            [250, "Detecting Primary Drive"],
-            [300, "Detecting Secondary Drive"],
-            [1850, "Initializing OS"]
+            [1100, "Memory Test:", "Detecting Primary Drive"]
         ];
 
         for (const [ms, shown, hidden] of steps) {
             advanceTo(ms);
             expect(screen.getByText(new RegExp(shown))).toBeInTheDocument();
-            if (hidden) expect(screen.queryByText(new RegExp(hidden))).not.toBeInTheDocument();
+            expect(screen.queryByText(new RegExp(hidden))).not.toBeInTheDocument();
         }
+        advanceTo(250);
+        expect(screen.getByText(/Detecting Primary Drive/)).toBeInTheDocument();
+        advanceTo(300);
+        expect(screen.getByText(/Detecting Secondary Drive/)).toBeInTheDocument();
+        advanceTo(1850);
 
         expect(screen.getByText(/Detecting Primary Drive/)).toHaveTextContent("SUCCESS");
         expect(screen.getByText(/Detecting Secondary Drive/)).toHaveTextContent("SUCCESS");
