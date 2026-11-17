@@ -1,4 +1,4 @@
-import { act, renderHook, waitFor } from "@testing-library/react";
+import { act, renderHook } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { axiosPost } from "../../../__mocks__/axios";
@@ -33,22 +33,6 @@ describe("IceCreamCartContext", () => {
 
         expect(result.current.flavorsError).toBe("Failed to load flavors. Please try again later.");
         expect(result.current.isLoadingFlavors).toBe(false);
-    });
-
-    it("should not refresh twice at once", async () => {
-        let finish: (value: unknown) => void = () => undefined;
-        axiosPost.mockReturnValue(new Promise((resolve) => (finish = resolve)));
-        const { result } = renderCart();
-
-        act(() => void result.current.refreshFlavors());
-        await waitFor(() => {
-            expect(result.current.isLoadingFlavors).toBe(true);
-        });
-        await act(() => result.current.refreshFlavors());
-        finish({ data: { inventory: [] } });
-        await act(() => Promise.resolve());
-
-        expect(axiosPost).toHaveBeenCalledOnce();
     });
 
     it("should add and remove flavors from the cart", () => {
