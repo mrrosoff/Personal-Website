@@ -45,7 +45,14 @@ describe("ContactFields", () => {
         await user.click(screen.getByRole("button", { name: /Pay/ }));
 
         expect(checkout.updateBillingAddress).toHaveBeenCalledWith({
-            address: expect.objectContaining({ line2: "4" })
+            address: {
+                line1: "1 Ferry Building",
+                line2: "4",
+                city: "San Francisco",
+                state: "CA",
+                postal_code: "94111",
+                country: "US"
+            }
         });
     });
 });

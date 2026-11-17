@@ -15,7 +15,7 @@ async function sdkSettings() {
 
 describe("SDK_SETTINGS", () => {
     it("should use the website profile when running locally", async () => {
-        vi.mocked(fromIni).mockReturnValue(async () => credentials);
+        vi.mocked(fromIni).mockReturnValue(() => Promise.resolve(credentials));
         const settings = await sdkSettings();
 
         const result = await settings.credentials!();
@@ -25,10 +25,8 @@ describe("SDK_SETTINGS", () => {
     });
 
     it("should fall back to the default credentials without that profile", async () => {
-        vi.mocked(fromIni).mockReturnValue(async () => {
-            throw new Error("no profile");
-        });
-        vi.mocked(fromNodeProviderChain).mockReturnValue(async () => credentials);
+        vi.mocked(fromIni).mockReturnValue(() => Promise.reject(new Error("no profile")));
+        vi.mocked(fromNodeProviderChain).mockReturnValue(() => Promise.resolve(credentials));
         const settings = await sdkSettings();
 
         const result = await settings.credentials!();

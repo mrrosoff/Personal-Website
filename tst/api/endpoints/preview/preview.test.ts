@@ -36,7 +36,7 @@ function stockFreezer(...items: object[]) {
 describe("preview", () => {
     beforeEach(() => {
         vi.mocked(render).mockReturnValue({
-            asPng: async () => ({ image: new Uint8Array([1, 2, 3]) })
+            asPng: () => Promise.resolve({ image: new Uint8Array([1, 2, 3]) })
         } as never);
     });
 

@@ -85,10 +85,11 @@ describe("CompactLayout", () => {
 
     it("should say when the cancel link could not be sent", async () => {
         mockCheckoutSession();
-        axiosPost.mockImplementation(async (url: string) => {
-            if (url.endsWith("/ice-cream/unsubscribe")) throw new Error("offline");
-            return { data: { inventory: [] } };
-        });
+        axiosPost.mockImplementation((url: string) =>
+            url.endsWith("/ice-cream/unsubscribe")
+                ? Promise.reject(new Error("offline"))
+                : Promise.resolve({ data: { inventory: [] } })
+        );
         const { user } = renderCheckout("?subscription=true");
         await user.type(screen.getByLabelText("Email"), "ada@example.com");
 

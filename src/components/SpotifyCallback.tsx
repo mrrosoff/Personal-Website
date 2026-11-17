@@ -27,7 +27,7 @@ const ConnectingAnimation = () => (
                         backgroundColor: SPOTIFY_GREEN,
                         transformOrigin: "bottom",
                         animation: `${bounce} 1s ease-in-out infinite`,
-                        animationDelay: `${index * 0.15}s`
+                        animationDelay: `${String(index * 0.15)}s`
                     }}
                 />
             ))}

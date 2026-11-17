@@ -56,7 +56,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
 
         if (matches) {
             if (options.lineNumber) {
-                matchingLines.push(`${index + 1}:${line}`);
+                matchingLines.push(`${String(index + 1)}:${line}`);
             } else {
                 matchingLines.push(line);
             }

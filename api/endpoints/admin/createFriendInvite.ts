@@ -1,4 +1,5 @@
 import type { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
+import { Duration } from "luxon";
 import { Resend } from "resend";
 
 import FriendInviteEmail from "../../../src/emails/templates/FriendInviteEmail";
@@ -57,7 +58,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     const inviteToken = await generateToken(friendName, {
         userType: UserType.SHARE,
         deviceIds: body.deviceIds,
-        expiresIn: `${expiresInHours}h`
+        expiresIn: Duration.fromObject({ hours: expiresInHours }).as("seconds")
     });
     const url = `${RP_ORIGIN}/register-friend?token=${encodeURIComponent(inviteToken)}`;
 

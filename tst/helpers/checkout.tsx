@@ -9,10 +9,12 @@ import Checkout from "../../src/components/ice-cream/checkout/Checkout";
 import { IceCreamCartProvider } from "../../src/components/ice-cream/IceCreamCartContext";
 
 export function mockCheckoutApi() {
-    axiosPost.mockImplementation(async (url: string) =>
-        url.endsWith("/ice-cream/inventory")
-            ? { data: { inventory: mockCheckoutFlavors } }
-            : { data: { client_secret: "secret", subscribed: false } }
+    axiosPost.mockImplementation((url: string) =>
+        Promise.resolve(
+            url.endsWith("/ice-cream/inventory")
+                ? { data: { inventory: mockCheckoutFlavors } }
+                : { data: { client_secret: "secret", subscribed: false } }
+        )
     );
 }
 

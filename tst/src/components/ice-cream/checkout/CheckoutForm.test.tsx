@@ -41,7 +41,9 @@ describe("CheckoutForm", () => {
 
     it("should show stripe's complaint about the email", async () => {
         mockCheckoutSession({
-            updateEmail: vi.fn(async () => ({ type: "error", error: { message: "Bad email" } }))
+            updateEmail: vi.fn(() =>
+                Promise.resolve({ type: "error", error: { message: "Bad email" } })
+            )
         });
         const { user } = renderCheckout("?priceIds=price_Fig");
         await fillInCheckout(user);
@@ -53,10 +55,12 @@ describe("CheckoutForm", () => {
 
     it("should show stripe's complaint about the address", async () => {
         mockCheckoutSession({
-            updateBillingAddress: vi.fn(async () => ({
-                type: "error",
-                error: { message: "Bad address" }
-            }))
+            updateBillingAddress: vi.fn(() =>
+                Promise.resolve({
+                    type: "error",
+                    error: { message: "Bad address" }
+                })
+            )
         });
         const { user } = renderCheckout("?priceIds=price_Fig");
         await fillInCheckout(user);
@@ -68,7 +72,9 @@ describe("CheckoutForm", () => {
 
     it("should show why the payment failed", async () => {
         mockCheckoutSession({
-            confirm: vi.fn(async () => ({ type: "error", error: { message: "Card declined" } }))
+            confirm: vi.fn(() =>
+                Promise.resolve({ type: "error", error: { message: "Card declined" } })
+            )
         });
         const { user } = renderCheckout("?priceIds=price_Fig");
         await fillInCheckout(user);
@@ -80,10 +86,12 @@ describe("CheckoutForm", () => {
 
     it("should refuse an email that already subscribes", async () => {
         const checkout = mockCheckoutSession();
-        axiosPost.mockImplementation(async (url: string) =>
-            url.endsWith("/subscription-status")
-                ? { data: { subscribed: true } }
-                : { data: { inventory: [] } }
+        axiosPost.mockImplementation((url: string) =>
+            Promise.resolve(
+                url.endsWith("/subscription-status")
+                    ? { data: { subscribed: true } }
+                    : { data: { inventory: [] } }
+            )
         );
         const { user } = renderCheckout("?subscription=true");
         await fillInCheckout(user);
@@ -96,10 +104,11 @@ describe("CheckoutForm", () => {
 
     it("should carry on if the subscription check fails", async () => {
         const checkout = mockCheckoutSession();
-        axiosPost.mockImplementation(async (url: string) => {
-            if (url.endsWith("/subscription-status")) throw new Error("offline");
-            return { data: { inventory: [] } };
-        });
+        axiosPost.mockImplementation((url: string) =>
+            url.endsWith("/subscription-status")
+                ? Promise.reject(new Error("offline"))
+                : Promise.resolve({ data: { inventory: [] } })
+        );
         const { user } = renderCheckout("?subscription=true");
         await fillInCheckout(user);
 

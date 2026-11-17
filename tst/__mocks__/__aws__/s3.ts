@@ -31,7 +31,9 @@ beforeEach(() => {
         ]
     });
     mockS3Client.on(GetObjectCommand).resolves({
-        Body: { transformToByteArray: async () => new Uint8Array(mockFramebuffer) } as never
+        Body: {
+            transformToByteArray: () => Promise.resolve(new Uint8Array(mockFramebuffer))
+        } as never
     });
     mockS3Client.on(HeadObjectCommand).resolves({});
     mockS3Client.on(PutObjectCommand).resolves({});

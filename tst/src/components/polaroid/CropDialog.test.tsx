@@ -42,7 +42,10 @@ vi.mock("react-easy-crop", () => ({
     )
 }));
 
-Blob.prototype.arrayBuffer ??= function (this: Blob) {
+const createObjectURL = vi.fn<(blob: Blob) => string>();
+const revokeObjectURL = vi.fn<(url: string) => void>();
+
+Blob.prototype.arrayBuffer = function (this: Blob) {
     return new Promise<ArrayBuffer>((resolve) => {
         const reader = new FileReader();
         reader.onload = () => {
@@ -91,7 +94,7 @@ function renderDialog(file: File | null, remaining = 0) {
 beforeEach(() => {
     vi.stubGlobal(
         "createImageBitmap",
-        vi.fn(async () => bitmap)
+        vi.fn(() => Promise.resolve(bitmap))
     );
     vi.stubGlobal(
         "ImageData",
@@ -103,8 +106,9 @@ beforeEach(() => {
             ) {}
         }
     );
-    URL.createObjectURL = vi.fn(() => "blob:photo");
-    URL.revokeObjectURL = vi.fn();
+    createObjectURL.mockReturnValue("blob:photo");
+    URL.createObjectURL = createObjectURL;
+    URL.revokeObjectURL = revokeObjectURL;
     canvas();
 });
 
@@ -242,7 +246,7 @@ describe("CropDialog", () => {
 
         rerender(<CropDialog file={null} remaining={0} onCancel={vi.fn()} onConfirm={vi.fn()} />);
 
-        expect(URL.revokeObjectURL).toHaveBeenCalledWith("blob:photo");
+        expect(revokeObjectURL).toHaveBeenCalledWith("blob:photo");
     });
 
     it("should drop a photo that was swapped out mid-open", async () => {
@@ -254,11 +258,10 @@ describe("CropDialog", () => {
         });
 
         rerender(<CropDialog file={null} remaining={0} onCancel={vi.fn()} onConfirm={vi.fn()} />);
-        await act(async () => {
-            finish({ width: 2, height: 3, data: new Uint8Array(24) });
-        });
+        finish({ width: 2, height: 3, data: new Uint8Array(24) });
+        await act(() => Promise.resolve());
 
-        expect(URL.createObjectURL).not.toHaveBeenCalled();
+        expect(createObjectURL).not.toHaveBeenCalled();
     });
 
     it("should drop a failure for a photo that was swapped out", async () => {
@@ -270,9 +273,8 @@ describe("CropDialog", () => {
         });
 
         rerender(<CropDialog file={null} remaining={0} onCancel={vi.fn()} onConfirm={vi.fn()} />);
-        await act(async () => {
-            fail(new Error("corrupt"));
-        });
+        fail(new Error("corrupt"));
+        await act(() => Promise.resolve());
 
         expect(screen.queryByText("Couldn't read that one.")).not.toBeInTheDocument();
     });

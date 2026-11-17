@@ -81,7 +81,7 @@ describe("Return", () => {
         );
     });
 
-    it("should show nothing for an expired session", async () => {
+    it("should show nothing for an expired session", () => {
         axiosPost.mockResolvedValue({ data: { status: "expired" } });
 
         renderReturn();

@@ -24,7 +24,7 @@ vi.mock("../../../../src/components/polaroid/CropDialog", () => ({
     }) =>
         props.file && (
             <div>
-                <p>{`cropping ${props.file.name}, ${props.remaining} more`}</p>
+                <p>{`cropping ${props.file.name}, ${String(props.remaining)} more`}</p>
                 <button
                     onClick={() => {
                         props.onConfirm(new Blob(["jpeg"]));
@@ -54,9 +54,10 @@ function renderPolaroid(environmentVariables: Record<string, string> = {}) {
 }
 
 async function renderSignedIn() {
-    const result = renderPolaroid({ AUTH_TOKEN: await polaroidToken() });
+    const token = await polaroidToken();
+    const result = renderPolaroid({ AUTH_TOKEN: token });
     await screen.findByText("Polaroid");
-    return result;
+    return { ...result, token };
 }
 
 function photo(name: string, type = "image/jpeg") {
@@ -79,13 +80,13 @@ describe("Polaroid", () => {
     });
 
     it("should load the frame's photos", async () => {
-        await renderSignedIn();
+        const { token } = await renderSignedIn();
 
         await waitFor(() => {
             expect(document.querySelectorAll("img")).toHaveLength(1);
         });
         expect(axiosGet).toHaveBeenCalledWith("https://api.maxrosoff.com/polaroid/photos", {
-            headers: { Authorization: expect.stringMatching(/^Bearer /) }
+            headers: { Authorization: `Bearer ${token}` }
         });
         expect(screen.getByText(/Can't wait\?/)).toBeInTheDocument();
     });
@@ -118,7 +119,7 @@ describe("Polaroid", () => {
     });
 
     it("should crop and upload chosen photos one at a time", async () => {
-        const { user } = await renderSignedIn();
+        const { user, token } = await renderSignedIn();
 
         choose(photo("a.jpg"), photo("b.heic", ""));
         expect(screen.getByText("cropping a.jpg, 1 more")).toBeInTheDocument();
@@ -128,7 +129,7 @@ describe("Polaroid", () => {
             "https://api.maxrosoff.com/polaroid/upload",
             expect.any(Blob),
             {
-                headers: { Authorization: expect.any(String), "Content-Type": "image/jpeg" }
+                headers: { Authorization: `Bearer ${token}`, "Content-Type": "image/jpeg" }
             }
         );
         expect(screen.getByText("cropping b.heic, 0 more")).toBeInTheDocument();
@@ -197,7 +198,12 @@ describe("Polaroid", () => {
 
     it("should only take as many photos as the frame has room for", async () => {
         axiosGet.mockResolvedValue({
-            data: { photos: Array.from({ length: 49 }, (_, i) => ({ ...photos[0], id: `p${i}` })) }
+            data: {
+                photos: Array.from({ length: 49 }, (_, i) => ({
+                    ...photos[0],
+                    id: `p${String(i)}`
+                }))
+            }
         });
         await renderSignedIn();
         await waitFor(() => {
@@ -213,7 +219,12 @@ describe("Polaroid", () => {
 
     it("should refuse drops and choices once the frame is full", async () => {
         axiosGet.mockResolvedValue({
-            data: { photos: Array.from({ length: 50 }, (_, i) => ({ ...photos[0], id: `p${i}` })) }
+            data: {
+                photos: Array.from({ length: 50 }, (_, i) => ({
+                    ...photos[0],
+                    id: `p${String(i)}`
+                }))
+            }
         });
         await renderSignedIn();
         const dropArea = (await screen.findByText("Frame Full")).closest("label")!.parentElement!;
@@ -237,7 +248,7 @@ describe("Polaroid", () => {
     });
 
     it("should remove a photo", async () => {
-        const { user } = await renderSignedIn();
+        const { user, token } = await renderSignedIn();
         await waitFor(() => {
             expect(document.querySelectorAll("img")).toHaveLength(1);
         });
@@ -248,7 +259,7 @@ describe("Polaroid", () => {
         expect(axiosPost).toHaveBeenCalledWith(
             "https://api.maxrosoff.com/polaroid/remove",
             { id: "p1" },
-            { headers: { Authorization: expect.any(String) } }
+            { headers: { Authorization: `Bearer ${token}` } }
         );
     });
 

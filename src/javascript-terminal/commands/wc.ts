@@ -36,7 +36,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         return { output: `${counts.join(" ")} ${argv[0]}` };
     }
 
-    return { output: `${lineCount} ${wordCount} ${charCount} ${argv[0]}` };
+    return { output: `${String(lineCount)} ${String(wordCount)} ${String(charCount)} ${argv[0]}` };
 };
 
 export const manPage = `NAME

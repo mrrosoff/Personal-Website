@@ -51,7 +51,7 @@ describe("IceCream", () => {
         expect(screen.queryByText("Sold Out")).not.toBeInTheDocument();
     });
 
-    it("should show prices to everyone else", async () => {
+    it("should show prices to everyone else", () => {
         renderShop();
 
         expect(screen.getByText("$10 for two every month")).toHaveAttribute(

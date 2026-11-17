@@ -116,9 +116,9 @@ describe("passkeyRegister", () => {
 
         await handler(mockEvent({ token: await mockToken(UserType.SHARE), body }));
 
-        expect(mockDocumentClient).toHaveReceivedCommandWith(PutCommand, {
-            Item: expect.not.objectContaining({ deviceIds: expect.anything() })
-        });
+        expect(
+            mockDocumentClient.commandCalls(PutCommand)[0].args[0].input.Item
+        ).not.toHaveProperty("deviceIds");
     });
 
     it("should let the admin register without granting devices", async () => {

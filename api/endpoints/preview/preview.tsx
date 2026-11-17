@@ -37,7 +37,8 @@ export const handler = async (): Promise<string> => {
                     <span>
                         Checking Freezer Stash . . . . . .
                         <span style={{ color: freezer.length > 0 ? GREEN : RED }}>
-                            &nbsp;{freezer.length > 0 ? `${freezer.length} FLAVORS` : "EMPTY"}
+                            &nbsp;
+                            {freezer.length > 0 ? `${String(freezer.length)} FLAVORS` : "EMPTY"}
                         </span>
                     </span>
                 </div>

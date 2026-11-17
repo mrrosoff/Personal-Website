@@ -132,7 +132,7 @@ async function adjustField<T extends Table>(
     delta: number
 ): Promise<TableObject<T>> {
     console.debug(
-        `Adjusting ${String(fieldName)} by ${delta} for item in ${table} with id ${JSON.stringify(key)}`
+        `Adjusting ${String(fieldName)} by ${String(delta)} for item in ${table} with id ${JSON.stringify(key)}`
     );
 
     const updateItemRequest = new UpdateCommand({
@@ -192,8 +192,8 @@ export async function updateItemFields<T extends Table>(
         if (value === undefined) {
             removeExpressions.push(`#${key}`);
         } else {
-            dynamoAttributeValues[`:${i}`] = value;
-            setExpressions.push(`#${key} = :${i}`);
+            dynamoAttributeValues[`:${String(i)}`] = value;
+            setExpressions.push(`#${key} = :${String(i)}`);
         }
     });
     const expressionParts = [

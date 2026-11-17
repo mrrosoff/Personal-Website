@@ -180,8 +180,8 @@ const SnakeGame = () => {
                 <Box
                     sx={{
                         display: "grid",
-                        gridTemplateColumns: `repeat(${GRID_WIDTH}, ${CELL_SIZE}px)`,
-                        gridTemplateRows: `repeat(${GRID_HEIGHT}, ${CELL_SIZE}px)`,
+                        gridTemplateColumns: `repeat(${String(GRID_WIDTH)}, ${String(CELL_SIZE)}px)`,
+                        gridTemplateRows: `repeat(${String(GRID_HEIGHT)}, ${String(CELL_SIZE)}px)`,
                         gap: 0,
                         border: "2px solid #2BC903",
                         width: "fit-content"

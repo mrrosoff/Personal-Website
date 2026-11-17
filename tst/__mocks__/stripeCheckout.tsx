@@ -32,9 +32,9 @@ export function mockCheckoutSession(overrides: Record<string, unknown> = {}) {
             }
         ],
         total: { total: { amount: "$16.00" } },
-        updateEmail: vi.fn(async () => ({ type: "success" })),
-        updateBillingAddress: vi.fn(async () => ({ type: "success" })),
-        confirm: vi.fn(async () => ({ type: "success" })),
+        updateEmail: vi.fn(() => Promise.resolve({ type: "success" })),
+        updateBillingAddress: vi.fn(() => Promise.resolve({ type: "success" })),
+        confirm: vi.fn(() => Promise.resolve({ type: "success" })),
         ...overrides
     };
     mockStripeCheckout.state = { type: "success", checkout };

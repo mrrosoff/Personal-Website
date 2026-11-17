@@ -43,7 +43,7 @@ const OrderSuccessEmail = (props: {
     const pool = forCustomer ? customerSubtitles : subtitles;
     const subtitle = pool[Math.floor(Math.random() * pool.length)];
     const heading = orderHeading(forCustomer, props.customerName);
-    const pints = `${props.items.length} ${props.items.length === 1 ? "pint" : "pints"}`;
+    const pints = `${String(props.items.length)} ${props.items.length === 1 ? "pint" : "pints"}`;
     const preview = forCustomer
         ? `Your ice cream order for ${pints}`
         : `New order from ${props.customerName || props.customerEmail || "a customer"} for ${pints}`;

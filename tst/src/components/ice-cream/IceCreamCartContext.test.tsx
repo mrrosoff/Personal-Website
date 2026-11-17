@@ -45,9 +45,8 @@ describe("IceCreamCartContext", () => {
             expect(result.current.isLoadingFlavors).toBe(true);
         });
         await act(() => result.current.refreshFlavors());
-        await act(async () => {
-            finish({ data: { inventory: [] } });
-        });
+        finish({ data: { inventory: [] } });
+        await act(() => Promise.resolve());
 
         expect(axiosPost).toHaveBeenCalledOnce();
     });

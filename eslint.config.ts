@@ -20,16 +20,6 @@ export default defineConfig(
         },
         rules: {
             "@typescript-eslint/consistent-type-definitions": ["error", "type"],
-            "@typescript-eslint/restrict-template-expressions": [
-                "error",
-                {
-                    allowAny: false,
-                    allowBoolean: false,
-                    allowNever: false,
-                    allowNullish: false,
-                    allowRegExp: false
-                }
-            ],
             "@typescript-eslint/no-unused-vars": [
                 "error",
                 {
@@ -48,9 +38,6 @@ export default defineConfig(
         files: ["tst/**"],
         extends: [vitest.configs.recommended],
         rules: {
-            "@typescript-eslint/no-unsafe-assignment": "off",
-            "@typescript-eslint/require-await": "off",
-            "@typescript-eslint/unbound-method": "off",
             "vitest/no-mocks-import": "off"
         }
     }

@@ -196,7 +196,7 @@ const IceCream = () => {
                     in={true}
                     timeout={theme.transitions.duration.enteringScreen}
                     style={{
-                        transitionDelay: `${theme.transitions.duration.leavingScreen}ms`
+                        transitionDelay: `${String(theme.transitions.duration.leavingScreen)}ms`
                     }}
                     unmountOnExit
                 >
@@ -223,7 +223,7 @@ const IceCream = () => {
                         }}
                     >
                         <Fab
-                            aria-label={`Checkout, ${selectedPriceIds.length} in cart`}
+                            aria-label={`Checkout, ${String(selectedPriceIds.length)} in cart`}
                             onClick={handleCartClick}
                             sx={{
                                 backgroundColor: "#52535F",

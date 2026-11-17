@@ -96,10 +96,12 @@ describe("authenticateWithPasskey", () => {
 
     function signInSucceeds(token: string) {
         vi.stubEnv("DEV", false);
-        vi.stubGlobal("sessionStorage", { setItem: vi.fn(), removeItem: vi.fn() });
+        const removeItem = vi.fn();
+        vi.stubGlobal("sessionStorage", { setItem: vi.fn(), removeItem });
         axiosPost
             .mockResolvedValueOnce({ data: { challenge: "challenge" } })
             .mockResolvedValueOnce({ data: { token } });
+        return removeItem;
     }
 
     it("should do nothing without a prompt", async () => {
@@ -149,13 +151,13 @@ describe("authenticateWithPasskey", () => {
     });
 
     it("should sign back out when su fails", async () => {
-        signInSucceeds(await mockToken(UserType.FRIEND));
+        const removeItem = signInSucceeds(await mockToken(UserType.FRIEND));
         const shell = promptFor("su", ["somebody"]);
 
         await authenticateWithPasskey(shell.emulator, shell.state);
 
         expect(shell.state.getEnvVariables().AUTH_TOKEN).toBeUndefined();
-        expect(sessionStorage.removeItem).toHaveBeenCalledWith("AUTH_TOKEN");
+        expect(removeItem).toHaveBeenCalledWith("AUTH_TOKEN");
     });
 
     it("should keep the sign in when su succeeds", async () => {

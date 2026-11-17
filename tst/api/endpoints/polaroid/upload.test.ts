@@ -45,14 +45,14 @@ describe("upload", () => {
     it("should refuse a photo when the frame is full", async () => {
         mockS3Client.on(ListObjectsV2Command).resolves({
             Contents: Array.from({ length: MAX_PHOTOS }, (_, i) => ({
-                Key: `framebuffer/d/${i}.bin`
+                Key: `framebuffer/d/${String(i)}.bin`
             }))
         });
 
         const result = await upload(mockJpeg(8, 8));
 
         expect(responseBody(result).message).toBe(
-            `The Frame Holds ${MAX_PHOTOS} Photos. Remove One First`
+            `The Frame Holds ${String(MAX_PHOTOS)} Photos. Remove One First`
         );
     });
 
