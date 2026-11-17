@@ -16,7 +16,7 @@ import "./mocks/resend";
 import "./mocks/stripe";
 import "./mocks/axios";
 import "./mocks/stripeCheckout";
-import { mockPasskey } from "./fixtures/aws/dynamodb";
+import { mockPasskey } from "./mocks/aws/dynamodb";
 
 vi.mock("stripe", () => import("./mocks/stripe"));
 vi.mock("resend", () => import("./mocks/resend"));

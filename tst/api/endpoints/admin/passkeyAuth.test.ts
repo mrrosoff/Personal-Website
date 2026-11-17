@@ -2,8 +2,7 @@ import { verifyAuthenticationResponse } from "@simplewebauthn/server";
 import { describe, expect, it, vi } from "vitest";
 
 import { mockEvent, responseBody } from "../../../setup";
-import { mockDynamoDB } from "../../../mocks/aws/dynamodb";
-import { mockChallenge, mockPasskey } from "../../../fixtures/aws/dynamodb";
+import { mockChallenge, mockDynamoDB, mockPasskey } from "../../../mocks/aws/dynamodb";
 
 import { decryptToken } from "../../../../api/auth";
 import { PASSKEY_CHALLENGES_TABLE, PASSKEYS_TABLE } from "../../../../api/common";

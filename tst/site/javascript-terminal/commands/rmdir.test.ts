@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { mockFileSystem } from "../../../fixtures/fileSystem";
+import { mockFileSystem } from "../../../mocks/fileSystem";
 import { mockShell } from "../../../helpers/terminal";
 import { functionDef } from "../../../../site/javascript-terminal/commands/rmdir";
 import EmulatorState from "../../../../site/javascript-terminal/emulatorState/EmulatorState";

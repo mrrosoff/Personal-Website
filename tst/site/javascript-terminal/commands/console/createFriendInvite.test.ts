@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { mockAdminState } from "../../../../helpers/terminal";
 import { axiosPost } from "../../../../mocks/axios";
-import { mockDevice } from "../../../../fixtures/aws/dynamodb";
+import { mockDevice } from "../../../../mocks/aws/dynamodb";
 
 import { DeviceKind } from "../../../../../api/types";
 import { handleCreateFriendInvite } from "../../../../../site/javascript-terminal/commands/console/createFriendInvite";

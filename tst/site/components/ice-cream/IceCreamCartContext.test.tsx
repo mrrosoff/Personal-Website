@@ -2,7 +2,7 @@ import { act, renderHook } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { axiosPost } from "../../../mocks/axios";
-import { mockFlavor } from "../../../fixtures/aws/dynamodb";
+import { mockFlavor } from "../../../mocks/aws/dynamodb";
 
 import {
     IceCreamCartProvider,

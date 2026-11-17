@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { mockAdminState } from "../../../../../helpers/terminal";
 import { axiosPost } from "../../../../../mocks/axios";
-import { mockFlavor } from "../../../../../fixtures/aws/dynamodb";
+import { mockFlavor } from "../../../../../mocks/aws/dynamodb";
 
 import { handleIceCreamInventory } from "../../../../../../site/javascript-terminal/commands/console/inventory/iceCreamInventory";
 import {

@@ -1,8 +1,12 @@
 import { QueryCommand, ScanCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { describe, expect, it } from "vitest";
 
-import { mockDocumentClient, mockDynamoDB } from "../../../mocks/aws/dynamodb";
-import { mockFlavor, mockPasskey } from "../../../fixtures/aws/dynamodb";
+import {
+    mockDocumentClient,
+    mockDynamoDB,
+    mockFlavor,
+    mockPasskey
+} from "../../../mocks/aws/dynamodb";
 
 import {
     decrementField,

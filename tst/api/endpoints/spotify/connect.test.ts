@@ -1,9 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import { mockEvent, mockToken, responseBody } from "../../../setup";
-import { mockDynamoDB } from "../../../mocks/aws/dynamodb";
+import { mockDevice, mockDynamoDB } from "../../../mocks/aws/dynamodb";
 import { mockParameters } from "../../../mocks/aws/parameterStore";
-import { mockDevice } from "../../../fixtures/aws/dynamodb";
 
 import { DEVICES_TABLE } from "../../../../api/common";
 import { REDIRECT_URI, handler, stateHmac } from "../../../../api/endpoints/spotify/connect";

@@ -2,11 +2,19 @@ import { screen } from "@testing-library/react";
 import { Route, Routes } from "react-router-dom";
 
 import { axiosPost } from "../mocks/axios";
-import { mockCheckoutFlavors } from "../fixtures/checkout";
 import { renderWithApp } from "./render";
 
 import Checkout from "../../site/components/ice-cream/checkout/Checkout";
 import { IceCreamCartProvider } from "../../site/components/ice-cream/IceCreamCartContext";
+import { mockFlavor } from "../mocks/aws/dynamodb";
+
+export const mockCheckoutFlavors = ["Fig", "Plum", "Yuzu", "Mint", "Kiwi"].map((name) => ({
+    ...mockFlavor,
+    productId: name,
+    priceId: `price_${name}`,
+    name,
+    color: name === "Plum" ? "" : "pink"
+}));
 
 export function mockCheckoutApi() {
     axiosPost.mockImplementation((url: string) =>

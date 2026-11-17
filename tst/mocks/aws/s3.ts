@@ -19,7 +19,7 @@ import { mockClient } from "aws-sdk-client-mock";
 import { afterEach, beforeEach, vi } from "vitest";
 
 import type { PolaroidFramebufferKey } from "../../../api/types";
-import { mockDevice } from "../../fixtures/aws/dynamodb";
+import { mockDevice } from "../../mocks/aws/dynamodb";
 
 type StoredObject = { body: Buffer; lastModified: Date };
 

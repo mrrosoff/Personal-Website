@@ -1,8 +1,11 @@
 import { screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { mockCheckoutFlavors } from "../../../../../fixtures/checkout";
-import { mockCheckoutApi, renderCheckout } from "../../../../../helpers/checkout";
+import {
+    mockCheckoutApi,
+    mockCheckoutFlavors,
+    renderCheckout
+} from "../../../../../helpers/checkout";
 import { mockSmallScreen } from "../../../../../helpers/render";
 import { mockCheckoutSession } from "../../../../../mocks/stripeCheckout";
 

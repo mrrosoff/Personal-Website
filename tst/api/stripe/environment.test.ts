@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { mockEvent } from "../../setup";
 import { mockStripe } from "../../mocks/stripe";
-import { mockFlavor } from "../../fixtures/aws/dynamodb";
+import { mockFlavor } from "../../mocks/aws/dynamodb";
 
 import {
     checkoutLineItem,

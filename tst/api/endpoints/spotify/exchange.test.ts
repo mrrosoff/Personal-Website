@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { mockEvent, responseBody } from "../../../setup";
 import { mockParameterStore, mockParameters } from "../../../mocks/aws/parameterStore";
 import { axiosPost } from "../../../mocks/axios";
-import { mockDevice } from "../../../fixtures/aws/dynamodb";
+import { mockDevice } from "../../../mocks/aws/dynamodb";
 
 import { stateHmac } from "../../../../api/endpoints/spotify/connect";
 import {

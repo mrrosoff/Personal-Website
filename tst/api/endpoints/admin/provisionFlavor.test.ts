@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { mockEvent, mockToken, responseBody } from "../../../setup";
-import { mockDynamoDB } from "../../../mocks/aws/dynamodb";
-import { mockFlavor } from "../../../fixtures/aws/dynamodb";
+import { mockDynamoDB, mockFlavor } from "../../../mocks/aws/dynamodb";
 import { mockStripe } from "../../../mocks/stripe";
 
 import { FLAVORS_TABLE } from "../../../../api/common";

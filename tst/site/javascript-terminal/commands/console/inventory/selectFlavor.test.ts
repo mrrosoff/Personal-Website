@@ -2,12 +2,12 @@ import { describe, expect, it } from "vitest";
 
 import { mockAdminState } from "../../../../../helpers/terminal";
 import { axiosPost } from "../../../../../mocks/axios";
-import { mockFlavor } from "../../../../../fixtures/aws/dynamodb";
+import { mockFlavor } from "../../../../../mocks/aws/dynamodb";
 
 import type { DatabaseFlavor } from "../../../../../../api/types";
-import { handleSelectFlavor } from "../../../../../../site/javascript-terminal/commands/console/inventory/selectFlavor";
 import {
     fetchInventoryData,
+    handleSelectFlavor,
     sortInventory
 } from "../../../../../../site/javascript-terminal/commands/console/inventory/selectFlavor";
 import { AdminConsoleScreen } from "../../../../../../site/javascript-terminal/emulatorState/EmulatorState";

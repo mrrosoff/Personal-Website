@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { mockEvent, responseBody } from "../../../setup";
 import { mockFramebuffer, mockPhotoId } from "../../../mocks/aws/s3";
-import { mockDeviceToken } from "../../../fixtures/aws/dynamodb";
+import { mockDeviceToken } from "../../../mocks/aws/dynamodb";
 
 import { handler } from "../../../../api/endpoints/polaroid/photo";
 

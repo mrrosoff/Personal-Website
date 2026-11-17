@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { mockEvent, mockToken, responseBody } from "../../../setup";
-import { mockDynamoDB } from "../../../mocks/aws/dynamodb";
-import { mockDevice, mockPasskey } from "../../../fixtures/aws/dynamodb";
+import { mockDevice, mockDynamoDB, mockPasskey } from "../../../mocks/aws/dynamodb";
 
 import { DEVICES_TABLE, PASSKEYS_TABLE } from "../../../../api/common";
 import { handler } from "../../../../api/endpoints/admin/devices";

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { mockEvent, mockToken, responseBody } from "../../../setup";
-import { mockPasskey } from "../../../fixtures/aws/dynamodb";
+import { mockPasskey } from "../../../mocks/aws/dynamodb";
 import { mockInbox, mockResend } from "../../../mocks/resend";
 
 import { handler } from "../../../../api/endpoints/friends/suggestFlavor";

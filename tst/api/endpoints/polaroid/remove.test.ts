@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { mockEvent, mockToken, responseBody } from "../../../setup";
 import { mockPhotoId, mockS3 } from "../../../mocks/aws/s3";
-import { mockDevice } from "../../../fixtures/aws/dynamodb";
+import { mockDevice } from "../../../mocks/aws/dynamodb";
 
 import { handler } from "../../../../api/endpoints/polaroid/remove";
 import { UserType } from "../../../../api/types";

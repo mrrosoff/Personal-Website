@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import { mockSmallScreen, renderWithApp } from "../../../helpers/render";
 import { axiosPost } from "../../../mocks/axios";
-import { mockFlavor } from "../../../fixtures/aws/dynamodb";
+import { mockFlavor } from "../../../mocks/aws/dynamodb";
 
 import IceCream from "../../../../site/components/ice-cream/IceCream";
 import { IceCreamCartProvider } from "../../../../site/components/ice-cream/IceCreamCartContext";

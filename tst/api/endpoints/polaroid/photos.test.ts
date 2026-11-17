@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import { mockEvent, mockToken, responseBody } from "../../../setup";
 import { mockPhotoId, mockPresignedUrl, mockS3Client } from "../../../mocks/aws/s3";
-import { mockDevice, mockDeviceToken } from "../../../fixtures/aws/dynamodb";
+import { mockDevice, mockDeviceToken } from "../../../mocks/aws/dynamodb";
 
 import {
     framebufferKey,

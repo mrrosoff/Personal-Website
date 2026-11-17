@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { mockEvent, mockToken } from "../setup";
-import { mockDevice } from "../fixtures/aws/dynamodb";
+import { mockDevice } from "../mocks/aws/dynamodb";
 
 import { authorize, isAdmin } from "../../api/permissions";
 import { DeviceKind, UserType } from "../../api/types";

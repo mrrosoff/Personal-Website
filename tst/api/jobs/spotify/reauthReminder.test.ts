@@ -1,8 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { mockDynamoDB } from "../../../mocks/aws/dynamodb";
+import { mockDevice, mockDynamoDB, mockPasskey } from "../../../mocks/aws/dynamodb";
 import { mockParameterStore } from "../../../mocks/aws/parameterStore";
-import { mockDevice, mockPasskey } from "../../../fixtures/aws/dynamodb";
 import { mockInbox, mockResend } from "../../../mocks/resend";
 
 import { DEVICES_TABLE, PASSKEYS_TABLE } from "../../../../api/common";

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { mockFileSystem } from "../../../fixtures/fileSystem";
+import { mockFileSystem } from "../../../mocks/fileSystem";
 
 import commands from "../../../../site/javascript-terminal/commands";
 import {

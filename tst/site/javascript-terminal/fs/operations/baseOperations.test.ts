@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { mockFile, mockFileSystem } from "../../../../fixtures/fileSystem";
+import { mockFile, mockFileSystem } from "../../../../mocks/fileSystem";
 
 import {
     add,
