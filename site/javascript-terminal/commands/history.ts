@@ -2,7 +2,7 @@ import type EmulatorState from "../emulatorState/EmulatorState";
 
 export const optDef = {};
 
-const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
     return { output: state.getHistory().join("\n") };
 };
 
@@ -14,5 +14,3 @@ SYNOPSIS
 
 DESCRIPTION
      Display the command history list with line numbers.`;
-
-export default { optDef, functionDef, manPage };

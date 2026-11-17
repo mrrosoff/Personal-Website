@@ -4,7 +4,7 @@ import type EmulatorState from "../emulatorState/EmulatorState";
 
 export const optDef = {};
 
-const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
     const environmentVariables = state.getEnvVariables();
     const token = environmentVariables.AUTH_TOKEN;
     if (!token) {
@@ -27,5 +27,3 @@ SYNOPSIS
 DESCRIPTION
      Navigates to the polaroid page where you can upload images
      if you have a compatible device.`;
-
-export default { optDef, functionDef, manPage };

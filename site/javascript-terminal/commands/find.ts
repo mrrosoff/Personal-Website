@@ -44,7 +44,7 @@ const findInDirectory = (
     return results;
 };
 
-const functionDef = (state: EmulatorState, commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(
         commandOptions.map((option) => (option === "-name" ? "--name" : option)),
         optDef
@@ -73,5 +73,3 @@ OPTIONS
      -name pattern    Search for files matching the pattern. Supports wildcards:
                       * matches any sequence of characters
                       ? matches any single character`;
-
-export default { optDef, functionDef, manPage };

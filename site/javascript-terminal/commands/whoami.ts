@@ -4,7 +4,7 @@ import type EmulatorState from "../emulatorState/EmulatorState";
 
 export const optDef = {};
 
-const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
     const token = state.getEnvVariables().AUTH_TOKEN;
     const payload = token ? decodeToken(token) : null;
     const user = payload?.userType === UserType.ADMIN ? "admin" : (payload?.id ?? "dev");
@@ -19,5 +19,3 @@ SYNOPSIS
 
 DESCRIPTION
      The whoami utility displays your effective user name.`;
-
-export default { optDef, functionDef, manPage };

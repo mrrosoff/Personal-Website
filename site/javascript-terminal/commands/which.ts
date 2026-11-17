@@ -4,7 +4,7 @@ import * as CommandMappingUtil from "../emulatorState/CommandMapping";
 
 export const optDef = {};
 
-const functionDef = (
+export const functionDef = (
     state: EmulatorState,
     commandOptions: string[]
 ): { output: string; type?: string } => {
@@ -33,5 +33,3 @@ SYNOPSIS
 DESCRIPTION
      The which utility locates a command and displays its path. This is useful
      for checking if a command exists and where it is located in the system.`;
-
-export default { optDef, functionDef, manPage };

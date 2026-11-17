@@ -28,7 +28,7 @@ const fileToImageOutput = (fs: FileSystem, filePath: string) => {
 
 export const optDef = {};
 
-const functionDef = (state: EmulatorState, commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length === 0) {
@@ -54,5 +54,3 @@ SYNOPSIS
 
 DESCRIPTION
      Views files sequentially, writing them to the standard output.`;
-
-export default { optDef, functionDef, manPage };

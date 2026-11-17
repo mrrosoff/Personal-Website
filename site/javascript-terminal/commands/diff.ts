@@ -5,7 +5,7 @@ import * as FileOp from "../fs/operations/fileOperations";
 
 export const optDef = {};
 
-const functionDef = (state: EmulatorState, commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length < 2) {
@@ -61,5 +61,3 @@ DESCRIPTION
      The diff utility compares two files and displays the differences between
      them. Lines from file1 are prefixed with '<' and lines from file2 are
      prefixed with '>'.`;
-
-export default { optDef, functionDef, manPage };

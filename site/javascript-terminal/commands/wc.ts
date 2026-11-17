@@ -9,7 +9,7 @@ export const optDef = {
     "-c, --chars": ""
 };
 
-const functionDef = (state: EmulatorState, commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length === 0) {
@@ -56,5 +56,3 @@ OPTIONS
      -l, --lines    Display only the line count
      -w, --words    Display only the word count
      -c, --chars    Display only the character count`;
-
-export default { optDef, functionDef, manPage };

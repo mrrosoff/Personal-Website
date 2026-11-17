@@ -7,7 +7,7 @@ export const optDef = {
     "-n, --number": ""
 };
 
-const functionDef = (state: EmulatorState, commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length === 0) {
@@ -45,5 +45,3 @@ DESCRIPTION
 
 OPTIONS
      -n, --number    Number all output lines`;
-
-export default { optDef, functionDef, manPage };

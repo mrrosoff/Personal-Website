@@ -6,7 +6,7 @@ import * as FileOp from "../fs/operations/fileOperations";
 
 export const optDef = {};
 
-const functionDef = (state: EmulatorState, commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length === 0) {
@@ -26,5 +26,3 @@ SYNOPSIS
 
 DESCRIPTION
      The touch utility creates an empty file if it does not exist.`;
-
-export default { optDef, functionDef, manPage };

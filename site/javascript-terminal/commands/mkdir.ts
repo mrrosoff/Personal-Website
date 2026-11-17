@@ -9,7 +9,7 @@ import { getLastPathPart } from "../fs/util/pathUtil";
 
 export const optDef = { "-p, --parents": "" };
 
-const functionDef = (state: EmulatorState, commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length === 0) {
@@ -56,5 +56,3 @@ DESCRIPTION
 OPTIONS
      -p, --parents    Create intermediate directories as required. If this
                       option is not specified, the full path must already exist.`;
-
-export default { optDef, functionDef, manPage };

@@ -9,7 +9,7 @@ export const optDef = {
     "-v, --verbose": ""
 };
 
-const functionDef = (state: EmulatorState, commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length < 2) {
@@ -48,5 +48,3 @@ DESCRIPTION
 OPTIONS
      -r, --recursive    Copy directories recursively
      -v, --verbose      Explain what is being done`;
-
-export default { optDef, functionDef, manPage };

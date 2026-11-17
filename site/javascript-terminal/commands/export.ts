@@ -4,7 +4,7 @@ import { AUTH_TOKEN_KEY, unexpiredToken } from "../../auth";
 
 export const optDef = {};
 
-const functionDef = (state: EmulatorState, commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length === 0) {
@@ -44,5 +44,3 @@ DESCRIPTION
      The export utility sets environment variables. If no arguments are given,
      it displays all current environment variables. When setting a variable,
      use the syntax NAME=value (e.g., export USER=john).`;
-
-export default { optDef, functionDef, manPage };

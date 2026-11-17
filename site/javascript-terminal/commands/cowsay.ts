@@ -52,7 +52,7 @@ const cow = `
                 ||----w |
                 ||     ||`;
 
-const functionDef = (_state: EmulatorState, commandOptions: string[]) => {
+export const functionDef = (_state: EmulatorState, commandOptions: string[]) => {
     const { argv } = parseOptions(commandOptions, optDef);
 
     const message = argv.join(" ") || "moo";
@@ -75,5 +75,3 @@ DESCRIPTION
 EXAMPLES
      cowsay Hello World
      cowsay "I love terminal interfaces!"`;
-
-export default { optDef, functionDef, manPage };

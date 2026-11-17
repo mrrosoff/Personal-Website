@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { mockFileSystem } from "../../../fixtures/fileSystem";
 import { mockShell } from "../../../helpers/terminal";
-import rmdirCommand from "../../../../site/javascript-terminal/commands/rmdir";
+import { functionDef } from "../../../../site/javascript-terminal/commands/rmdir";
 import EmulatorState from "../../../../site/javascript-terminal/emulatorState/EmulatorState";
 
 describe("rmdir", () => {
@@ -52,7 +52,7 @@ describe("rmdir", () => {
                 throw new Error("broken state");
             });
 
-        const result = rmdirCommand.functionDef(state, ["-p", "/home/projects"]);
+        const result = functionDef(state, ["-p", "/home/projects"]);
 
         expect(result).toEqual({ output: "" });
     });

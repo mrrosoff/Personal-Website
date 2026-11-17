@@ -3,7 +3,7 @@ import type EmulatorState from "../emulatorState/EmulatorState";
 
 export const optDef = {};
 
-const functionDef = (_state: EmulatorState, commandOptions: string[]) => {
+export const functionDef = (_state: EmulatorState, commandOptions: string[]) => {
     const { argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length === 0) {
@@ -39,5 +39,3 @@ DESCRIPTION
        basename /path/to/file.txt        → file.txt
        basename /path/to/file.txt .txt   → file
        basename /path/to/dir/            → dir`;
-
-export default { optDef, functionDef, manPage };

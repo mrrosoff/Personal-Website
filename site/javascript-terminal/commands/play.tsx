@@ -20,7 +20,7 @@ const fileToAudioOutput = (fs: FileSystem, filePath: string) => {
 
 export const optDef = {};
 
-const functionDef = (state: EmulatorState, commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length === 0) {
@@ -51,5 +51,3 @@ SYNOPSIS
 DESCRIPTION
      Plays audio and video files. Supported formats: mp3, wav, ogg, flac,
      aac, mov, mp4, mkv, avi.`;
-
-export default { optDef, functionDef, manPage };

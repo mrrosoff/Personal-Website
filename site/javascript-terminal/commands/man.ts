@@ -12,7 +12,7 @@ SYNOPSIS
 DESCRIPTION
      The man utility displays the manual page for the specified command.`;
 
-const functionDef = (state: EmulatorState, commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length !== 1) {
@@ -21,5 +21,3 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
 
     return { output: state.getCommandMapping()[argv[0]]?.manPage ?? "" };
 };
-
-export default { optDef, functionDef, manPage };

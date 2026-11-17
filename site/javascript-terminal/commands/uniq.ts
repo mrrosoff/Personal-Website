@@ -7,7 +7,7 @@ export const optDef = {
     "-c, --count": ""
 };
 
-const functionDef = (state: EmulatorState, commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length === 0) {
@@ -63,5 +63,3 @@ DESCRIPTION
 
 OPTIONS
      -c, --count    Precede each output line with the count of occurrences`;
-
-export default { optDef, functionDef, manPage };

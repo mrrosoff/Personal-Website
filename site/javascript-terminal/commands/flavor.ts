@@ -7,7 +7,7 @@ import { parseOptions } from "../parser";
 
 export const optDef = {};
 
-const functionDef = (state: EmulatorState, commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length === 0) {
@@ -42,5 +42,3 @@ SYNOPSIS
 
 DESCRIPTION
      Suggest a new ice cream flavor. Must be authenticated as a friend via sudo.`;
-
-export default { optDef, functionDef, manPage };

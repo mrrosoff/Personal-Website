@@ -2,7 +2,7 @@ import type EmulatorState from "../emulatorState/EmulatorState";
 
 export const optDef = {};
 
-const functionDef = (_state: EmulatorState, _commandOptions: string[]) => {
+export const functionDef = (_state: EmulatorState, _commandOptions: string[]) => {
     return { output: "/ice-cream", type: "navigate" };
 };
 
@@ -15,5 +15,3 @@ SYNOPSIS
 DESCRIPTION
      Navigates to the ice cream shop page where you can browse and purchase
      ice cream flavors.`;
-
-export default { optDef, functionDef, manPage };

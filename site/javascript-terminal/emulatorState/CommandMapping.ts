@@ -39,10 +39,3 @@ export const getCommandOptDef = (
 export const getCommandNames = (commandMapping: CommandMapping = commands) => {
     return Object.keys(commandMapping);
 };
-
-export default {
-    isCommandSet,
-    getCommandFn,
-    getCommandOptDef,
-    getCommandNames
-};

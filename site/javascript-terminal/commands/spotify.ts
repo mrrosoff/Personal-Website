@@ -20,7 +20,7 @@ async function openAuthorization(token: string) {
     }
 }
 
-const functionDef = (state: EmulatorState, commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { argv } = parseOptions(commandOptions, optDef);
 
     if (argv[0] !== "reconnect") {
@@ -49,5 +49,3 @@ SYNOPSIS
 DESCRIPTION
      Starts the Spotify authorization flow and opens the consent page so the
      display owner can grant a fresh refresh token. Must be invoked via sudo.`;
-
-export default { optDef, functionDef, manPage };

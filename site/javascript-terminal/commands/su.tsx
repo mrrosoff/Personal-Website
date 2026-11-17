@@ -5,7 +5,7 @@ import { parseOptions } from "../parser";
 
 export const optDef = {};
 
-const functionDef = (state: EmulatorState, commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length === 0) {
@@ -44,5 +44,3 @@ SYNOPSIS
 
 DESCRIPTION
      Switch to the specified user. Must be invoked via sudo.`;
-
-export default { optDef, functionDef, manPage };

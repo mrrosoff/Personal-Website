@@ -8,7 +8,7 @@ export const optDef = {
     "-n, --numeric-sort": ""
 };
 
-const functionDef = (state: EmulatorState, commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length === 0) {
@@ -50,5 +50,3 @@ DESCRIPTION
 OPTIONS
      -r, --reverse        Reverse the sort order
      -n, --numeric-sort   Sort numerically instead of alphabetically`;
-
-export default { optDef, functionDef, manPage };

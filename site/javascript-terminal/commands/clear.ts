@@ -2,7 +2,7 @@ import type EmulatorState from "../emulatorState/EmulatorState";
 
 export const optDef = {};
 
-const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
     state.setOutputs([]);
     return {};
 };
@@ -15,5 +15,3 @@ SYNOPSIS
 
 DESCRIPTION
      Clears your screen if it is possible, including its scrollback buffer.`;
-
-export default { optDef, functionDef, manPage };

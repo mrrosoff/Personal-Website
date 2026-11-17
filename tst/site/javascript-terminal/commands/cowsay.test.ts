@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { mockShell } from "../../../helpers/terminal";
-import cowsayCommand from "../../../../site/javascript-terminal/commands/cowsay";
+import { functionDef } from "../../../../site/javascript-terminal/commands/cowsay";
 import EmulatorState from "../../../../site/javascript-terminal/emulatorState/EmulatorState";
 
 describe("cowsay", () => {
@@ -55,7 +55,7 @@ describe("cowsay", () => {
     });
 
     it("should draw an empty bubble for blank words", () => {
-        const result = cowsayCommand.functionDef(EmulatorState.create({}), ["", ""]);
+        const result = functionDef(EmulatorState.create({}), ["", ""]);
 
         expect(result.output).toMatch(/^ __\n< {2}>/);
     });

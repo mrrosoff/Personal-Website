@@ -24,7 +24,7 @@ const bat = `
    \\ " " /
     ^^^^^`;
 
-const functionDef = (_state: EmulatorState, _commandOptions: string[]) => {
+export const functionDef = (_state: EmulatorState, _commandOptions: string[]) => {
     const decorations = [ghost, skeleton, bat];
     const chosen = decorations[Math.floor(Math.random() * decorations.length)];
 
@@ -45,5 +45,3 @@ DESCRIPTION
 
 EXAMPLES
      haunt`;
-
-export default { optDef, functionDef, manPage };

@@ -35,7 +35,7 @@ const makeLongFormatReturn = (fs: FileSystem, dirPath: string, listing: string[]
 
 export const optDef = { "-a, --all": "", "-A, --almost-all": "", "-l, --long": "" };
 
-const functionDef = (state: EmulatorState, commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
 
     const dirPath = resolveDirectoryToList(state.getEnvVariables(), argv);
@@ -75,5 +75,3 @@ OPTIONS
      -A, --almost-all  Include directory entries whose names begin with a dot (.)
                        except for . and ..
      -l, --long        List in long format, showing type, permissions, and name`;
-
-export default { optDef, functionDef, manPage };

@@ -7,7 +7,7 @@ export const optDef = {
     "-u, --utc": ""
 };
 
-const functionDef = (_state: EmulatorState, commandOptions: string[]) => {
+export const functionDef = (_state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
 
     const now = options.utc ? DateTime.utc() : DateTime.now();
@@ -66,5 +66,3 @@ DESCRIPTION
 
 OPTIONS
      -u, --utc    Display time in UTC instead of local time`;
-
-export default { optDef, functionDef, manPage };

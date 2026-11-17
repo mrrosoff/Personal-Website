@@ -5,7 +5,7 @@ import * as FileOp from "../fs/operations/fileOperations";
 
 export const optDef = { "-n, --lines": "<count>" };
 
-const functionDef = (state: EmulatorState, commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length === 0) {
@@ -33,5 +33,3 @@ SYNOPSIS
 DESCRIPTION
      This filter displays the last count lines of each of the specified files.
      If count is omitted it defaults to 10.`;
-
-export default { optDef, functionDef, manPage };

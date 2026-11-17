@@ -3,7 +3,7 @@ import { parseOptions } from "../parser";
 
 export const optDef = {};
 
-const functionDef = (state: EmulatorState, commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { argv } = parseOptions(commandOptions, optDef);
     const envVariables = state.getEnvVariables();
 
@@ -33,5 +33,3 @@ SYNOPSIS
 DESCRIPTION
      Print the values of the specified environment variable(s). If no variable
      is specified, print name and value pairs for them all.`;
-
-export default { optDef, functionDef, manPage };

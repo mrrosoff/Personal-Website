@@ -11,7 +11,7 @@ import { AUTH_TOKEN_KEY } from "../../auth";
 
 export const optDef = {};
 
-const functionDef = (state: EmulatorState, commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length === 0) {
@@ -132,5 +132,3 @@ DESCRIPTION
      The sudo utility allows a permitted user to execute a command with
      elevated privileges. You will be prompted for a password before the
      command is executed.`;
-
-export default { optDef, functionDef, manPage };

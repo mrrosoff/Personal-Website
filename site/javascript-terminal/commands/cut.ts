@@ -8,7 +8,7 @@ export const optDef = {
     "-f, --fields": "<list>"
 };
 
-const functionDef = (state: EmulatorState, commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length === 0) {
@@ -67,5 +67,3 @@ DESCRIPTION
        -f 1-3      Extract fields 1 through 3
 
      Example: cut -d ',' -f 1,2 data.csv`;
-
-export default { optDef, functionDef, manPage };

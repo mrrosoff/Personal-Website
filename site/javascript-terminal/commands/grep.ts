@@ -12,7 +12,7 @@ export const optDef = {
     "-v, --invert-match": ""
 };
 
-const functionDef = (state: EmulatorState, commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length < 1) {
@@ -81,5 +81,3 @@ OPTIONS
      -i, --ignore-case    Perform case-insensitive matching
      -n, --line-number    Prefix each line with its line number
      -v, --invert-match   Select non-matching lines`;
-
-export default { optDef, functionDef, manPage };

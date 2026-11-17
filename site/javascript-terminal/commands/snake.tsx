@@ -3,7 +3,7 @@ import Snake from "../../components/terminal/games/SnakeGame";
 
 export const optDef = {};
 
-const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
     state.setBlockingMode({});
     return {
         output: <Snake />,
@@ -27,5 +27,3 @@ CONTROLS
 
 EXAMPLES
      snake`;
-
-export default { optDef, functionDef, manPage };

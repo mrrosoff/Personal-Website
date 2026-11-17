@@ -1,8 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import CommandMapping, {
-    errorMessage
-} from "../../../../site/javascript-terminal/emulatorState/CommandMapping";
+import * as CommandMapping from "../../../../site/javascript-terminal/emulatorState/CommandMapping";
 
 describe("CommandMapping", () => {
     it("should know which commands exist", () => {
@@ -24,7 +22,9 @@ describe("CommandMapping", () => {
 });
 
 describe("errorMessage", () => {
-    it("should read an error's message", () => expect(errorMessage(new Error("bad"))).toBe("bad"));
+    it("should read an error's message", () =>
+        expect(CommandMapping.errorMessage(new Error("bad"))).toBe("bad"));
 
-    it("should stringify anything else", () => expect(errorMessage("bad")).toBe("bad"));
+    it("should stringify anything else", () =>
+        expect(CommandMapping.errorMessage("bad")).toBe("bad"));
 });

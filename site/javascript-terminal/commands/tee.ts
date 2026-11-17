@@ -5,7 +5,7 @@ import * as FileOp from "../fs/operations/fileOperations";
 
 export const optDef = {};
 
-const functionDef = (state: EmulatorState, commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length === 0) {
@@ -38,5 +38,3 @@ DESCRIPTION
      The tee utility writes the given text to the specified file(s) and also
      displays it to standard output. This allows you to both save and view
      output simultaneously.`;
-
-export default { optDef, functionDef, manPage };

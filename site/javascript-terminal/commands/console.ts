@@ -118,7 +118,7 @@ export async function handleAdminConsoleKeyPress(
 
 export const optDef = {};
 
-const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
     if (state.getAdminConsoleMode()?.screen) {
         return { output: "", type: "text" };
     }
@@ -145,5 +145,3 @@ DESCRIPTION
      Opens the administrative console for managing ice cream inventory,
      sending marketing emails, and managing the mailing list. Requires
      authentication via password prompt.`;
-
-export default { optDef, functionDef, manPage };

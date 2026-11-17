@@ -11,7 +11,7 @@ export const optDef = {
     "-v, --verbose": ""
 };
 
-const functionDef = (state: EmulatorState, commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length === 0) {
@@ -52,5 +52,3 @@ OPTIONS
      -r, --recursive    Remove directories and their contents recursively
      -f, --force        Ignore nonexistent files and arguments, never prompt
      -v, --verbose      Explain what is being done`;
-
-export default { optDef, functionDef, manPage };

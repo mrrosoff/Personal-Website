@@ -18,7 +18,7 @@ export const optDef = {
     "-n": ""
 };
 
-const functionDef = (state: EmulatorState, commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { argv } = parseOptions(commandOptions, optDef);
 
     const input = argv.join(" ");
@@ -44,5 +44,3 @@ DESCRIPTION
 
 OPTIONS
      -n    Do not output the trailing newline`;
-
-export default { optDef, functionDef, manPage };

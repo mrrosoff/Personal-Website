@@ -3,7 +3,7 @@ import type EmulatorState from "../emulatorState/EmulatorState";
 
 export const optDef = {};
 
-const functionDef = (state: EmulatorState, commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { argv } = parseOptions(commandOptions, optDef);
 
     const envVariables = state.getEnvVariables();
@@ -60,5 +60,3 @@ DESCRIPTION
 
      Note: Aliases are stored in environment variables and persist for the
      session.`;
-
-export default { optDef, functionDef, manPage };

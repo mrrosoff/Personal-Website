@@ -5,7 +5,7 @@ import * as DirOp from "../fs/operations/directoryOperations";
 
 export const optDef = { "-v, --verbose": "" };
 
-const functionDef = (state: EmulatorState, commandOptions: string[]) => {
+export const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length < 2) {
@@ -39,5 +39,3 @@ DESCRIPTION
 
 OPTIONS
      -v, --verbose    Explain what is being done`;
-
-export default { optDef, functionDef, manPage };
