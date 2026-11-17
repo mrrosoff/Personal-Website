@@ -1,6 +1,6 @@
 import type { JSX } from "react";
-import commands from "../commands.js";
-import EmulatorState from "./EmulatorState.js";
+import commands from "../commands";
+import type EmulatorState from "./EmulatorState";
 
 export type CommandResult = {
     output?: JSX.Element | JSX.Element[] | string;

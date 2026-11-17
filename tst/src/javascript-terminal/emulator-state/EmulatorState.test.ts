@@ -37,4 +37,13 @@ describe("shareTokenDurationLabel", () => {
         expect(shareTokenDurationLabel(24)).toBe("1 Day");
         expect(shareTokenDurationLabel(168)).toBe("7 Days");
     });
+
+    it("should swap in a new filesystem", () => {
+        const state = EmulatorState.create({});
+        const fs = { "/": { type: "d" as const, permissions: "", contents: {} } };
+
+        state.setFileSystem(fs);
+
+        expect(state.getFileSystem()).toBe(fs);
+    });
 });

@@ -1,10 +1,6 @@
 import type { ReactNode } from "react";
 
-import {
-    type CommandMapping,
-    type CommandResult,
-    create as createCommandMapping
-} from "./CommandMapping";
+import type { CommandMapping, CommandResult } from "./CommandMapping";
 import * as FileUtil from "../fs/util/file-util";
 import * as PathUtil from "../fs/util/path-util";
 import type { FileSystem } from "../../FileSystem";
@@ -150,7 +146,7 @@ export default class EmulatorState {
         environmentVariables = { cwd: "/" },
         history = [],
         outputs = [],
-        commandMapping = createCommandMapping()
+        commandMapping = {}
     }: Partial<EmulatorStateType>) {
         const stateMap = {
             [TAB_COUNT_KEY]: tabCount,

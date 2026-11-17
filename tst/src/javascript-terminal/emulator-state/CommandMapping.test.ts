@@ -37,4 +37,15 @@ describe("errorMessage", () => {
     it("should stringify anything else", () => {
         expect(errorMessage("bad")).toBe("bad");
     });
+
+    it("should reject a command without options", () => {
+        const result = () =>
+            CommandMapping.create({ broken: { functionDef: () => ({}) } as never });
+
+        expect(result).toThrow("Failed To Initialize Terminal: Invalid Command (broken)");
+    });
+
+    it("should accept every built in command", () => {
+        expect(CommandMapping.create()).toHaveProperty("ls");
+    });
 });
