@@ -288,7 +288,7 @@ const Terminal = (
                 setHistoryIndex((prevState) => {
                     const nextIndexValue =
                         prevState < historyUp.length - 1 ? prevState + 1 : prevState;
-                    setInput(historyUp[historyUp.length - nextIndexValue - 1]);
+                    setInput(historyUp[historyUp.length - nextIndexValue - 1] ?? "");
                     return nextIndexValue;
                 });
                 scrollToBottom();
@@ -299,8 +299,7 @@ const Terminal = (
                 const historyDown = emulatorState.getHistory();
                 setHistoryIndex((prevState) => {
                     const nextIndexValue = prevState > -1 ? prevState - 1 : prevState;
-                    const nextInputValue = historyDown[historyDown.length - nextIndexValue - 1];
-                    setInput(nextInputValue ? nextInputValue : "");
+                    setInput(historyDown[historyDown.length - nextIndexValue - 1] ?? "");
                     return nextIndexValue;
                 });
                 scrollToBottom();
