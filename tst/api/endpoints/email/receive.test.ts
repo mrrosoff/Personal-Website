@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { mockEvent, responseBody } from "../../../setup";
-import { mockResend } from "../../../mocks/resend";
+import { mockInbox, mockResend } from "../../../mocks/resend";
 
 import { handler } from "../../../../api/endpoints/email/receive";
 
@@ -29,7 +29,7 @@ describe("receive", () => {
         const result = await handler(event);
 
         expect(responseBody(result)).toEqual(data);
-        expect(mockResend.emails.send).toHaveBeenCalledWith(
+        expect(mockInbox).toContainEqual(
             expect.objectContaining({ to: ["me@maxrosoff.com"], attachments: [] })
         );
     });
@@ -43,7 +43,7 @@ describe("receive", () => {
 
         await handler(event);
 
-        expect(mockResend.emails.send).toHaveBeenCalledWith(
+        expect(mockInbox).toContainEqual(
             expect.objectContaining({
                 attachments: [
                     expect.objectContaining({ content: Buffer.from("file").toString("base64") })

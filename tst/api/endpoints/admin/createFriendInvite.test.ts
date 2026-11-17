@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { mockEvent, mockToken, responseBody } from "../../../setup";
 import { mockDevice, mockPasskey } from "../../../fixtures/aws/dynamodb";
-import { mockResend } from "../../../mocks/resend";
+import { mockInbox, mockResend } from "../../../mocks/resend";
 
 import { decryptToken } from "../../../../api/auth";
 import { handler } from "../../../../api/endpoints/admin/createFriendInvite";
@@ -77,7 +77,7 @@ describe("createFriendInvite", () => {
             })
         );
 
-        expect(mockResend.emails.send).toHaveBeenCalledWith(
+        expect(mockInbox).toContainEqual(
             expect.objectContaining({ to: "zed@example.com", subject: "You're Invited, Zed" })
         );
     });

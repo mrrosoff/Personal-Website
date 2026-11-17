@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { mockEvent, mockToken, responseBody } from "../../../setup";
-import { mockBroadcastId, mockResend } from "../../../mocks/resend";
+import { mockBroadcastId, mockInbox, mockResend } from "../../../mocks/resend";
 
 import { handler, sendOrderSuccessEmails } from "../../../../api/endpoints/email/sendEmail";
 import { UserType } from "../../../../api/types";
@@ -55,17 +55,16 @@ describe("sendOrderSuccessEmails", () => {
     it("should only email Max by default", async () => {
         await sendOrderSuccessEmails(order);
 
-        expect(mockResend.emails.send).toHaveBeenCalledExactlyOnceWith(
-            expect.objectContaining({ to: "me@maxrosoff.com" })
-        );
+        expect(mockInbox.map(({ to }) => to)).toEqual(["me@maxrosoff.com"]);
     });
 
     it("should email the customer when asked", async () => {
         await sendOrderSuccessEmails({ ...order, notifyCustomer: true });
 
-        expect(mockResend.emails.send).toHaveBeenLastCalledWith(
-            expect.objectContaining({ to: "a@b.com", subject: "Your Ice Cream Order" })
-        );
+        expect(mockInbox.map(({ to, subject }) => [to, subject])).toEqual([
+            ["me@maxrosoff.com", "Ice Cream Order"],
+            ["a@b.com", "Your Ice Cream Order"]
+        ]);
     });
 
     it("should throw if Max's email fails", async () => {

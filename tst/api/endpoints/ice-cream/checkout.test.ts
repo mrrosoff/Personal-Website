@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { mockEvent, mockToken, responseBody } from "../../../setup";
 import { mockDynamoDB } from "../../../mocks/aws/dynamodb";
 import { mockFlavor } from "../../../fixtures/aws/dynamodb";
-import { mockResend } from "../../../mocks/resend";
+import { mockInbox } from "../../../mocks/resend";
 import { mockCheckoutSession, mockStripe } from "../../../mocks/stripe";
 
 import { FLAVORS_TABLE } from "../../../../api/common";
@@ -66,7 +66,7 @@ describe("checkout", () => {
 
         expect(responseBody(result)).toEqual({ friendCheckout: true });
         expect(pintsLeft()).toBe(mockFlavor.count - 1);
-        expect(mockResend.emails.send).toHaveBeenCalledTimes(2);
+        expect(mockInbox).toHaveLength(2);
     });
 
     it("should not touch the freezer for a friend testing locally", async () => {
@@ -88,6 +88,6 @@ describe("checkout", () => {
 
         await handler(mockEvent({ token, query }));
 
-        expect(mockResend.emails.send).toHaveBeenCalledOnce();
+        expect(mockInbox).toHaveLength(1);
     });
 });

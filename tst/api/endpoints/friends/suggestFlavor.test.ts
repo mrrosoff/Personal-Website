@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { mockEvent, mockToken, responseBody } from "../../../setup";
 import { mockPasskey } from "../../../fixtures/aws/dynamodb";
-import { mockResend } from "../../../mocks/resend";
+import { mockInbox, mockResend } from "../../../mocks/resend";
 
 import { handler } from "../../../../api/endpoints/friends/suggestFlavor";
 import { UserType } from "../../../../api/types";
@@ -37,7 +37,7 @@ describe("suggestFlavor", () => {
 
         await handler(mockEvent({ token, body: { flavor: "Fig" } }));
 
-        expect(mockResend.emails.send).toHaveBeenCalledWith(
+        expect(mockInbox).toContainEqual(
             expect.objectContaining({ subject: `Flavor Suggestion From ${mockPasskey.name}` })
         );
     });

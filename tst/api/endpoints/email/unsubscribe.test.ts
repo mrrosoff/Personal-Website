@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { mockEvent } from "../../../setup";
-import { mockParameters } from "../../../mocks/aws/parameterStore";
-import { mockResend } from "../../../mocks/resend";
+import { mockContacts, mockResend } from "../../../mocks/resend";
 
 import { handler } from "../../../../api/endpoints/email/unsubscribe";
 
@@ -14,12 +13,11 @@ describe("unsubscribe", () => {
     });
 
     it("should remove the contact from the audience", async () => {
+        mockContacts.set("a@b.com", { id: "contact", email: "a@b.com" });
+
         await handler(mockEvent({ body: { email: "a@b.com" } }));
 
-        expect(mockResend.contacts.remove).toHaveBeenCalledWith({
-            audienceId: mockParameters["/website/resend/audience"],
-            email: "a@b.com"
-        });
+        expect(mockContacts.has("a@b.com")).toBe(false);
     });
 
     it("should throw if removing the contact fails", async () => {

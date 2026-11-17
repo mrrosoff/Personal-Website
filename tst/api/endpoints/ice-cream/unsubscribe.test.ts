@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { mockEvent, responseBody } from "../../../setup";
-import { mockResend } from "../../../mocks/resend";
+import { mockInbox, mockResend } from "../../../mocks/resend";
 import { mockStripe } from "../../../mocks/stripe";
 
 import { handler } from "../../../../api/endpoints/ice-cream/unsubscribe";
@@ -22,7 +22,7 @@ describe("unsubscribe", () => {
     it("should email a cancel link to a subscriber", async () => {
         await handler(mockEvent({ body: { email: "a@b.com" } }));
 
-        expect(mockResend.emails.send).toHaveBeenCalledWith(
+        expect(mockInbox).toContainEqual(
             expect.objectContaining({
                 to: "a@b.com",
                 subject: "Cancel Your Ice Cream Subscription"
@@ -36,7 +36,7 @@ describe("unsubscribe", () => {
         const result = await handler(mockEvent({ body: { email: "a@b.com" } }));
 
         expect(responseBody(result)).toEqual({ sent: true });
-        expect(mockResend.emails.send).not.toHaveBeenCalled();
+        expect(mockInbox).toHaveLength(0);
     });
 
     it("should throw if the email fails to send", async () => {

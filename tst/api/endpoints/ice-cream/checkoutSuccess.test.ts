@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { mockEvent } from "../../../setup";
 import { mockDynamoDB } from "../../../mocks/aws/dynamodb";
 import { mockFlavor } from "../../../fixtures/aws/dynamodb";
-import { mockResend } from "../../../mocks/resend";
+import { mockContacts, mockInbox } from "../../../mocks/resend";
 import { mockCheckoutSession, mockLineItem, mockStripe } from "../../../mocks/stripe";
 
 import { FLAVORS_TABLE } from "../../../../api/common";
@@ -52,17 +52,13 @@ describe("checkoutSuccess", () => {
     it("should email the order", async () => {
         await handler(event);
 
-        expect(mockResend.emails.send).toHaveBeenCalledWith(
-            expect.objectContaining({ subject: "Ice Cream Order" })
-        );
+        expect(mockInbox).toContainEqual(expect.objectContaining({ subject: "Ice Cream Order" }));
     });
 
     it("should add the customer to the mailing list", async () => {
         await handler(event);
 
-        expect(mockResend.contacts.get).toHaveBeenCalledWith(
-            expect.objectContaining({ email: mockCheckoutSession.customer_details.email })
-        );
+        expect(mockContacts.has(mockCheckoutSession.customer_details.email)).toBe(true);
     });
 
     it("should mark the payment fulfilled", async () => {
@@ -98,7 +94,7 @@ describe("checkoutSuccess", () => {
 
         await handler(event);
 
-        expect(mockResend.emails.send).not.toHaveBeenCalled();
+        expect(mockInbox).toHaveLength(0);
     });
 
     it("should unlist a last batch flavor once it sells out", async () => {
@@ -128,7 +124,7 @@ describe("checkoutSuccess", () => {
 
         await handler(event);
 
-        expect(mockResend.contacts.get).toHaveBeenCalled();
+        expect(mockContacts.has(mockCheckoutSession.customer_details.email)).toBe(true);
         expect(storedFlavor()?.count).toBe(mockFlavor.count);
     });
 
@@ -143,10 +139,8 @@ describe("checkoutSuccess", () => {
 
         await handler(event);
 
-        expect(mockResend.contacts.get).not.toHaveBeenCalled();
-        expect(mockResend.emails.send).toHaveBeenCalledWith(
-            expect.objectContaining({ subject: "Ice Cream Order" })
-        );
+        expect(mockContacts.size).toBe(0);
+        expect(mockInbox).toContainEqual(expect.objectContaining({ subject: "Ice Cream Order" }));
     });
 
     it("should fall back to the session email", async () => {
@@ -163,9 +157,7 @@ describe("checkoutSuccess", () => {
 
         await handler(event);
 
-        expect(mockResend.contacts.get).toHaveBeenCalledWith(
-            expect.objectContaining({ email: "a@b.com" })
-        );
+        expect(mockContacts.has("a@b.com")).toBe(true);
     });
 
     it("should not refund an oversold pint that cost nothing", async () => {

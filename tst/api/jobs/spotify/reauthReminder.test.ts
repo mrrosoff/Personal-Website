@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { mockDynamoDB } from "../../../mocks/aws/dynamodb";
 import { mockParameterStore } from "../../../mocks/aws/parameterStore";
 import { mockDevice, mockPasskey } from "../../../fixtures/aws/dynamodb";
-import { mockResend } from "../../../mocks/resend";
+import { mockInbox, mockResend } from "../../../mocks/resend";
 
 import { DEVICES_TABLE, PASSKEYS_TABLE } from "../../../../api/common";
 import { refreshTokenSetAtParam } from "../../../../api/endpoints/spotify/exchange";
@@ -25,7 +25,7 @@ describe("reauthReminder", () => {
     it("should skip a display that never connected", async () => {
         await handler();
 
-        expect(mockResend.emails.send).not.toHaveBeenCalled();
+        expect(mockInbox).toHaveLength(0);
     });
 
     it("should stay quiet early in the token's life", async () => {
@@ -33,7 +33,7 @@ describe("reauthReminder", () => {
 
         await handler();
 
-        expect(mockResend.emails.send).not.toHaveBeenCalled();
+        expect(mockInbox).toHaveLength(0);
     });
 
     it("should stay quiet once the token has already expired", async () => {
@@ -41,7 +41,7 @@ describe("reauthReminder", () => {
 
         await handler();
 
-        expect(mockResend.emails.send).not.toHaveBeenCalled();
+        expect(mockInbox).toHaveLength(0);
     });
 
     it("should email the owner as expiry nears", async () => {
@@ -50,9 +50,7 @@ describe("reauthReminder", () => {
 
         await handler();
 
-        expect(mockResend.emails.send).toHaveBeenCalledWith(
-            expect.objectContaining({ to: mockPasskey.email })
-        );
+        expect(mockInbox).toContainEqual(expect.objectContaining({ to: mockPasskey.email }));
     });
 
     it("should email Max when nobody owns the display", async () => {
@@ -61,9 +59,7 @@ describe("reauthReminder", () => {
 
         await handler();
 
-        expect(mockResend.emails.send).toHaveBeenCalledWith(
-            expect.objectContaining({ to: "me@maxrosoff.com" })
-        );
+        expect(mockInbox).toContainEqual(expect.objectContaining({ to: "me@maxrosoff.com" }));
     });
 
     it("should ignore polaroids", async () => {
@@ -72,7 +68,7 @@ describe("reauthReminder", () => {
 
         await handler();
 
-        expect(mockResend.emails.send).not.toHaveBeenCalled();
+        expect(mockInbox).toHaveLength(0);
     });
 
     it("should throw if a reminder fails to send", async () => {

@@ -4,7 +4,7 @@ import { mockEvent, responseBody } from "../../../setup";
 import { mockDynamoDB } from "../../../mocks/aws/dynamodb";
 import { mockParameters } from "../../../mocks/aws/parameterStore";
 import { mockFlavor } from "../../../fixtures/aws/dynamodb";
-import { mockResend } from "../../../mocks/resend";
+import { mockContacts } from "../../../mocks/resend";
 import { mockCheckoutSession, mockStripe } from "../../../mocks/stripe";
 
 import { FLAVORS_TABLE } from "../../../../api/common";
@@ -37,13 +37,13 @@ describe("registerSubscriberOnMailingList", () => {
     it("should add the subscriber", async () => {
         await registerSubscriberOnMailingList(mockCheckoutSession as never);
 
-        expect(mockResend.contacts.get).toHaveBeenCalled();
+        expect(mockContacts.has(mockCheckoutSession.customer_details.email)).toBe(true);
     });
 
     it("should skip a session without an email", async () => {
         await registerSubscriberOnMailingList({} as never);
 
-        expect(mockResend.contacts.get).not.toHaveBeenCalled();
+        expect(mockContacts.size).toBe(0);
     });
 });
 
