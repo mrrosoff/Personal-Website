@@ -4,21 +4,18 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { renderWithApp } from "../../../../helpers/render";
 import { mockEmulatorState } from "../../../../helpers/terminal";
 
-import SnakeGame from "../../../../../site/components/terminal/games/SnakeGame";
+import SnakeGame, { BOARD, TICK_MS } from "../../../../../site/components/terminal/games/SnakeGame";
 
 vi.unmock("../../../../../site/components/terminal/games/SnakeGame");
 
-const GRID_WIDTH = 25;
-const GRID_HEIGHT = 12;
-
 function foodAt(...cells: [number, number][]) {
-    const values = cells.flatMap(([x, y]) => [(x + 0.5) / GRID_WIDTH, (y + 0.5) / GRID_HEIGHT]);
+    const values = cells.flatMap(([x, y]) => [(x + 0.5) / BOARD.width, (y + 0.5) / BOARD.height]);
     vi.spyOn(Math, "random").mockImplementation(() => values.shift() ?? 0);
 }
 
 function tick(ms: number) {
-    for (let elapsed = 0; elapsed < ms; elapsed += 150) {
-        act(() => void vi.advanceTimersByTime(Math.min(150, ms - elapsed)));
+    for (let elapsed = 0; elapsed < ms; elapsed += TICK_MS) {
+        act(() => void vi.advanceTimersByTime(Math.min(TICK_MS, ms - elapsed)));
     }
     act(() => void vi.advanceTimersByTime(0));
 }
@@ -64,7 +61,7 @@ describe("SnakeGame", () => {
 
         press("ArrowUp");
         countDown();
-        tick(150);
+        tick(TICK_MS);
 
         expect(screen.getByText("• •")).toBeInTheDocument();
     });
@@ -73,7 +70,7 @@ describe("SnakeGame", () => {
         foodAt([2, 2]);
         startGame();
 
-        tick(150 * 6);
+        tick(TICK_MS * 6);
 
         expect(screen.getByText("SNAKE - Score: 10")).toBeInTheDocument();
     });
@@ -82,7 +79,7 @@ describe("SnakeGame", () => {
         const emulatorState = startGame();
 
         press("ArrowUp");
-        tick(150 * 7);
+        tick(TICK_MS * 7);
 
         expect(screen.getByText("GAME OVER")).toBeInTheDocument();
         press("ArrowDown");
@@ -94,7 +91,7 @@ describe("SnakeGame", () => {
         startGame();
 
         press("a");
-        tick(150 * 13);
+        tick(TICK_MS * 13);
 
         expect(screen.getByText("GAME OVER")).toBeInTheDocument();
     });
@@ -107,7 +104,7 @@ describe("SnakeGame", () => {
         press("ArrowUp");
         press("ArrowRight");
         press("ArrowLeft");
-        tick(150);
+        tick(TICK_MS);
 
         expect(screen.queryByText("GAME OVER")).not.toBeInTheDocument();
     });
@@ -116,13 +113,13 @@ describe("SnakeGame", () => {
         foodAt([18, 6], [19, 6], [20, 6], [21, 6], [0, 0]);
         startGame();
 
-        tick(150 * 9);
+        tick(TICK_MS * 9);
         press("ArrowDown");
-        tick(150);
+        tick(TICK_MS);
         press("ArrowLeft");
-        tick(150);
+        tick(TICK_MS);
         press("ArrowUp");
-        tick(150);
+        tick(TICK_MS);
 
         expect(screen.getByText("GAME OVER")).toBeInTheDocument();
         expect(screen.getByText("Final Score: 40")).toBeInTheDocument();
@@ -131,7 +128,7 @@ describe("SnakeGame", () => {
     it("should end the game at the left, top and bottom walls", () => {
         startGame();
         press("ArrowDown");
-        tick(150 * GRID_HEIGHT);
+        tick(TICK_MS * BOARD.height);
 
         expect(screen.getByText("GAME OVER")).toBeInTheDocument();
     });
@@ -139,9 +136,9 @@ describe("SnakeGame", () => {
     it("should end the game at the left wall", () => {
         startGame();
         press("ArrowUp");
-        tick(150);
+        tick(TICK_MS);
         press("ArrowLeft");
-        tick(150 * GRID_WIDTH);
+        tick(TICK_MS * BOARD.width);
 
         expect(screen.getByText("GAME OVER")).toBeInTheDocument();
     });

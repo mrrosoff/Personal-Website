@@ -5,12 +5,10 @@ import { useAppContext } from "../../AppContext";
 
 type Position = { x: number; y: number };
 
-const GRID_WIDTH = 25;
-const GRID_HEIGHT = 12;
-const CELL_SIZE = 20;
-const INITIAL_SNAKE: Position[] = [{ x: 12, y: 6 }];
-const INITIAL_DIRECTION: Position = { x: 1, y: 0 };
-const GAME_SPEED = 150;
+export const BOARD = { width: 25, height: 12, cell: 20 };
+export const TICK_MS = 150;
+
+const FRAME = { width: BOARD.width * BOARD.cell + 4, height: BOARD.height * BOARD.cell + 4 };
 
 type Game = {
     snake: Position[];
@@ -21,8 +19,8 @@ type Game = {
 };
 
 const INITIAL_GAME: Game = {
-    snake: INITIAL_SNAKE,
-    direction: INITIAL_DIRECTION,
+    snake: [{ x: 12, y: 6 }],
+    direction: { x: 1, y: 0 },
     food: { x: 18, y: 6 },
     score: 0,
     over: false
@@ -39,8 +37,8 @@ function randomFood(snake: Position[]): Position {
     let food: Position;
     do {
         food = {
-            x: Math.floor(Math.random() * GRID_WIDTH),
-            y: Math.floor(Math.random() * GRID_HEIGHT)
+            x: Math.floor(Math.random() * BOARD.width),
+            y: Math.floor(Math.random() * BOARD.height)
         };
     } while (snake.some((segment) => segment.x === food.x && segment.y === food.y));
     return food;
@@ -54,7 +52,7 @@ function turn(game: Game, direction: Position): Game {
 function tick(game: Game): Game {
     const head = game.snake[0];
     const next = { x: head.x + game.direction.x, y: head.y + game.direction.y };
-    const offBoard = next.x < 0 || next.x >= GRID_WIDTH || next.y < 0 || next.y >= GRID_HEIGHT;
+    const offBoard = next.x < 0 || next.x >= BOARD.width || next.y < 0 || next.y >= BOARD.height;
     const intoItself = game.snake.some((segment) => segment.x === next.x && segment.y === next.y);
     if (offBoard || intoItself) {
         return { ...game, over: true };
@@ -98,7 +96,7 @@ const SnakeGame = () => {
                 setGame((current) => turn(current, direction));
             }
         };
-        const gameLoop = setInterval(() => setGame(tick), GAME_SPEED);
+        const gameLoop = setInterval(() => setGame(tick), TICK_MS);
 
         window.addEventListener("keydown", handleKeyPress);
         return () => {
@@ -118,8 +116,7 @@ const SnakeGame = () => {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        width: GRID_WIDTH * CELL_SIZE + 4,
-                        height: GRID_HEIGHT * CELL_SIZE + 4,
+                        ...FRAME,
                         border: "2px solid #2BC903"
                     }}
                 >
@@ -134,8 +131,7 @@ const SnakeGame = () => {
                         flexDirection: "column",
                         alignItems: "center",
                         justifyContent: "center",
-                        width: GRID_WIDTH * CELL_SIZE + 4,
-                        height: GRID_HEIGHT * CELL_SIZE + 4,
+                        ...FRAME,
                         border: "2px solid #ff0606",
                         gap: 2
                     }}
@@ -151,16 +147,16 @@ const SnakeGame = () => {
                 <Box
                     sx={{
                         display: "grid",
-                        gridTemplateColumns: `repeat(${GRID_WIDTH.toString()}, ${CELL_SIZE.toString()}px)`,
-                        gridTemplateRows: `repeat(${GRID_HEIGHT.toString()}, ${CELL_SIZE.toString()}px)`,
+                        gridTemplateColumns: `repeat(${BOARD.width.toString()}, ${BOARD.cell.toString()}px)`,
+                        gridTemplateRows: `repeat(${BOARD.height.toString()}, ${BOARD.cell.toString()}px)`,
                         gap: 0,
                         border: "2px solid #2BC903",
                         width: "fit-content"
                     }}
                 >
-                    {Array.from({ length: GRID_WIDTH * GRID_HEIGHT }).map((_, index) => {
-                        const x = index % GRID_WIDTH;
-                        const y = Math.floor(index / GRID_WIDTH);
+                    {Array.from({ length: BOARD.width * BOARD.height }).map((_, index) => {
+                        const x = index % BOARD.width;
+                        const y = Math.floor(index / BOARD.width);
                         const snakeIndex = game.snake.findIndex(
                             (segment) => segment.x === x && segment.y === y
                         );
@@ -172,8 +168,8 @@ const SnakeGame = () => {
                             <Box
                                 key={index}
                                 sx={{
-                                    width: CELL_SIZE,
-                                    height: CELL_SIZE,
+                                    width: BOARD.cell,
+                                    height: BOARD.cell,
                                     backgroundColor: isSnake
                                         ? "#2BC903"
                                         : isFood
