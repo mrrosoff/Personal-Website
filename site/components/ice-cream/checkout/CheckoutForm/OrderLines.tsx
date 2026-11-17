@@ -1,5 +1,5 @@
 import { Box, Divider, Skeleton, type SxProps, type Theme, Typography } from "@mui/material";
-import type { SystemStyleObject } from "@mui/system";
+import type { CSSObject } from "@mui/material/styles";
 import { useCheckout } from "@stripe/react-stripe-js/checkout";
 
 import type { DatabaseFlavor } from "../../../../../api/types";
@@ -16,7 +16,7 @@ type OrderLinesProps = {
     flavors: DatabaseFlavor[];
     smallScreen: boolean;
     nameSx?: SxProps<Theme>;
-    priceSx?: SystemStyleObject<Theme>;
+    priceSx?: CSSObject;
 };
 
 const OrderLines = (props: OrderLinesProps) => {
