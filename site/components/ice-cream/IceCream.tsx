@@ -1,24 +1,13 @@
-import { Link as RouterLink, useNavigate, useSearchParams } from "react-router-dom";
+import { Link as RouterLink, useSearchParams } from "react-router-dom";
 
-import {
-    Badge,
-    Box,
-    Fab,
-    Grid,
-    Link,
-    Skeleton,
-    Typography,
-    useMediaQuery,
-    useTheme,
-    Zoom
-} from "@mui/material";
-import LaunchIcon from "@mui/icons-material/Launch";
-import IcecreamOutlinedIcon from "@mui/icons-material/IcecreamOutlined";
+import { Box, Link, Typography, useMediaQuery, useTheme } from "@mui/material";
 
 import { useIceCreamCart } from "./IceCreamCartContext";
+import CartButton from "./IceCream/CartButton";
+import FlavorSection from "./IceCream/FlavorSection";
+import MailingListLink from "./IceCream/MailingListLink";
 import { useAppContext } from "../AppContext";
-import { useEffect, useState } from "react";
-import type { DatabaseFlavor } from "../../../api/types";
+import { useEffect } from "react";
 import { TERMINAL_COLORS } from "../terminal/Terminal";
 
 export const rainbowTextSx = {
@@ -36,38 +25,7 @@ export const rainbowTextSx = {
     }
 } as const;
 
-function getFlavorStyles(color: string, isSelected: boolean, isSmallScreen: boolean) {
-    return {
-        cursor: "pointer",
-        border: 1,
-        borderColor: isSelected ? color : "rgba(255, 255, 255, 0.5)",
-        backgroundColor: isSelected
-            ? `color-mix(in srgb, ${color} 8%, transparent)`
-            : "transparent",
-        padding: 2.5,
-        borderRadius: 1,
-        transition: "all 0.2s ease",
-        ...(!isSmallScreen && {
-            "&:hover": {
-                borderColor: color,
-                backgroundColor: `color-mix(in srgb, ${color} 5%, transparent)`
-            }
-        })
-    };
-}
-
-function getUpcomingFlavorStyles() {
-    return {
-        border: 1,
-        borderColor: "rgba(255, 255, 255, 0.5)",
-        backgroundColor: "transparent",
-        padding: 2.5,
-        borderRadius: 1
-    };
-}
-
 const IceCream = () => {
-    const navigate = useNavigate();
     const [params] = useSearchParams();
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -94,35 +52,6 @@ const IceCream = () => {
         toggleFlavor(flavorPriceId);
         return () => toggleFlavor(flavorPriceId);
     }, [params, toggleFlavor]);
-
-    const handleCartClick = () => {
-        const priceIdsParam = selectedPriceIds.join(",");
-        void navigate(`/ice-cream/checkout?priceIds=${priceIdsParam}`);
-    };
-
-    const mailingList = (
-        <Typography mt={smallScreen ? 4 : -1}>
-            Want to stay updated?{" "}
-            <Link
-                component={RouterLink}
-                to="/ice-cream/mailing-list"
-                underline="hover"
-                sx={{
-                    cursor: "pointer",
-                    color: "inherit",
-                    verticalAlign: "baseline",
-                    position: "relative",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 0.3
-                }}
-            >
-                Join our mailing list
-                <LaunchIcon sx={{ fontSize: 10, position: "relative", top: -4 }} />
-            </Link>{" "}
-            for new flavor announcements.
-        </Typography>
-    );
 
     return (
         <Box display={"flex"} flexDirection={"column"} pb={4}>
@@ -156,7 +85,7 @@ const IceCream = () => {
             <Typography mt={smallScreen ? 2 : -1}>
                 In SF? Come stop by! Outside SF? Don't buy anything you can't carry home.
             </Typography>
-            {!smallScreen && mailingList}
+            {!smallScreen && <MailingListLink />}
             {flavorsError && (
                 <Typography mt={3}>
                     Checking Freezer Stash . . . . . .
@@ -188,141 +117,10 @@ const IceCream = () => {
                 isLoading={showSkeletons}
                 skeletons={4}
             />
-            {smallScreen && mailingList}
-            {smallScreen && selectedPriceIds.length > 0 && (
-                <Zoom
-                    in={true}
-                    timeout={theme.transitions.duration.enteringScreen}
-                    style={{
-                        transitionDelay: `${theme.transitions.duration.leavingScreen.toString()}ms`
-                    }}
-                    unmountOnExit
-                >
-                    <Badge
-                        badgeContent={selectedPriceIds.length}
-                        overlap={"circular"}
-                        sx={{
-                            position: "fixed",
-                            bottom: "calc(24px + env(safe-area-inset-bottom))",
-                            right: 24,
-                            "& .MuiBadge-badge": {
-                                top: 6,
-                                right: 6,
-                                minWidth: 24,
-                                height: 24,
-                                borderRadius: 12,
-                                fontSize: 15,
-                                fontWeight: 600,
-                                backgroundColor: "#F9F9F9",
-                                color: "#121212",
-                                border: "2px solid #121212",
-                                zIndex: theme.zIndex.fab + 1
-                            }
-                        }}
-                    >
-                        <Fab
-                            aria-label={`Checkout, ${selectedPriceIds.length.toString()} in cart`}
-                            onClick={handleCartClick}
-                            sx={{
-                                backgroundColor: "#52535F",
-                                color: "white",
-                                border: "1px solid rgba(255,255,255,0.5)",
-                                boxShadow: "0 6px 20px rgba(0, 0, 0, 0.5)",
-                                ":hover": { backgroundColor: "#5F6272" }
-                            }}
-                        >
-                            <IcecreamOutlinedIcon />
-                        </Fab>
-                    </Badge>
-                </Zoom>
-            )}
+            {smallScreen && <MailingListLink />}
+            {smallScreen && selectedPriceIds.length > 0 && <CartButton />}
         </Box>
     );
 };
-
-type Cart = {
-    selectedPriceIds: string[];
-    toggleFlavor: (priceId: string | undefined) => void;
-};
-
-type FlavorSectionProps = {
-    title: string;
-    description: string;
-    flavors: DatabaseFlavor[];
-    isLoading: boolean;
-    skeletons: number;
-    cart?: Cart;
-};
-
-function FlavorSection(props: FlavorSectionProps) {
-    const theme = useTheme();
-    const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-    const { cart } = props;
-    const shown = cart ? props.flavors.filter((flavor) => flavor.count > 0) : props.flavors;
-    const [skeletonWidths] = useState(() =>
-        Array.from({ length: props.skeletons }, () => 200 + Math.random() * 100)
-    );
-
-    return (
-        <Box display={"flex"} flexDirection={"column"} sx={{ paddingTop: smallScreen ? 4 : 2.5 }}>
-            <Typography variant="h2">{props.title}</Typography>
-            <Typography>{props.description}</Typography>
-            <Grid
-                container
-                spacing={3}
-                direction={smallScreen ? "column" : undefined}
-                sx={{ paddingTop: smallScreen ? 4 : 2 }}
-            >
-                {props.isLoading
-                    ? skeletonWidths.map((width, i) => (
-                          <Grid
-                              key={i}
-                              display={"flex"}
-                              justifyContent={"center"}
-                              sx={{ width: smallScreen ? "100%" : undefined }}
-                          >
-                              <Skeleton
-                                  variant="rounded"
-                                  width={smallScreen ? "100%" : width}
-                                  height={75}
-                                  sx={{ borderRadius: 1 }}
-                              />
-                          </Grid>
-                      ))
-                    : shown.map((flavor) => {
-                          const color = flavor.color || "white";
-                          return (
-                              <Grid
-                                  key={flavor.productId}
-                                  display={"flex"}
-                                  justifyContent={"center"}
-                                  sx={{ width: smallScreen ? "100%" : undefined }}
-                              >
-                                  <Box
-                                      display={"flex"}
-                                      onClick={
-                                          cart ? () => cart.toggleFlavor(flavor.priceId) : undefined
-                                      }
-                                      sx={{
-                                          ...(cart
-                                              ? getFlavorStyles(
-                                                    color,
-                                                    cart.selectedPriceIds.includes(flavor.priceId),
-                                                    smallScreen
-                                                )
-                                              : getUpcomingFlavorStyles()),
-                                          width: smallScreen ? "100%" : undefined,
-                                          justifyContent: smallScreen ? "flex-start" : "center"
-                                      }}
-                                  >
-                                      <Typography color={color}>{flavor.name}</Typography>
-                                  </Box>
-                              </Grid>
-                          );
-                      })}
-            </Grid>
-        </Box>
-    );
-}
 
 export default IceCream;
