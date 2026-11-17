@@ -9,7 +9,7 @@ import {
     type DatabasePasskeyChallenge,
     DeviceKind,
     UserType
-} from "../../../../api/types";
+} from "../../../api/types";
 
 const mockDeviceSecret = faker.string.alphanumeric(32);
 

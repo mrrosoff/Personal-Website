@@ -3,8 +3,8 @@ import { ScanCommand } from "@aws-sdk/lib-dynamodb";
 import type { ReactElement, ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { mockDocumentClient, mockDynamoDB } from "../../../__mocks__/__aws__/dynamodb";
-import { mockFlavor } from "../../../__mocks__/__data__/aws/dynamodb";
+import { mockDocumentClient, mockDynamoDB } from "../../../mocks/aws/dynamodb";
+import { mockFlavor } from "../../../fixtures/aws/dynamodb";
 
 import { FLAVORS_TABLE } from "../../../../api/common";
 import { handler } from "../../../../api/endpoints/preview/preview";

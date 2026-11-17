@@ -20,6 +20,10 @@ export default defineConfig(
         },
         rules: {
             "@typescript-eslint/consistent-type-definitions": ["error", "type"],
+            "@typescript-eslint/consistent-type-imports": [
+                "error",
+                { fixStyle: "separate-type-imports" }
+            ],
             "@typescript-eslint/no-confusing-void-expression": [
                 "error",
                 { ignoreArrowShorthand: true }
@@ -40,9 +44,6 @@ export default defineConfig(
     },
     {
         files: ["tst/**"],
-        extends: [vitest.configs.recommended],
-        rules: {
-            "vitest/no-mocks-import": "off"
-        }
+        extends: [vitest.configs.recommended]
     }
 );

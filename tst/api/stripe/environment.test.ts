@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import { mockEvent } from "../../setup";
-import { mockStripe } from "../../__mocks__/stripe";
-import { mockFlavor } from "../../__mocks__/__data__/aws/dynamodb";
+import { mockStripe } from "../../mocks/stripe";
+import { mockFlavor } from "../../fixtures/aws/dynamodb";
 
 import {
     checkoutLineItem,
@@ -11,7 +11,7 @@ import {
     stripeForEvent
 } from "../../../api/stripe/environment";
 import { GetParametersCommand } from "@aws-sdk/client-ssm";
-import { mockSSMClient } from "../../__mocks__/__aws__/parameterStore";
+import { mockSSMClient } from "../../mocks/aws/parameterStore";
 
 describe("isLocalTest", () => {
     it("should be true for local development", () =>

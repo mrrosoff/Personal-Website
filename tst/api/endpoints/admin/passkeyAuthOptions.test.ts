@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { mockEvent, responseBody } from "../../../setup";
-import { mockDynamoDB } from "../../../__mocks__/__aws__/dynamodb";
+import { mockDynamoDB } from "../../../mocks/aws/dynamodb";
 
 import { PASSKEY_CHALLENGES_TABLE } from "../../../../api/common";
 import { handler } from "../../../../api/endpoints/admin/passkeyAuthOptions";

@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import { mockAdminState } from "../../../../helpers/terminal";
-import { axiosPost } from "../../../../__mocks__/axios";
-import { mockDevice } from "../../../../__mocks__/__data__/aws/dynamodb";
+import { axiosPost } from "../../../../mocks/axios";
+import { mockDevice } from "../../../../fixtures/aws/dynamodb";
 
 import { DeviceKind } from "../../../../../api/types";
 import { handleCreateFriendInvite } from "../../../../../site/javascript-terminal/commands/console/createFriendInvite";

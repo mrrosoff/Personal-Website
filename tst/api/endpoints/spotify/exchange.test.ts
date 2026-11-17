@@ -2,9 +2,9 @@ import { PutParameterCommand } from "@aws-sdk/client-ssm";
 import { describe, expect, it } from "vitest";
 
 import { mockEvent, responseBody } from "../../../setup";
-import { mockParameters, mockSSMClient } from "../../../__mocks__/__aws__/parameterStore";
-import { axiosPost } from "../../../__mocks__/axios";
-import { mockDevice } from "../../../__mocks__/__data__/aws/dynamodb";
+import { mockParameters, mockSSMClient } from "../../../mocks/aws/parameterStore";
+import { axiosPost } from "../../../mocks/axios";
+import { mockDevice } from "../../../fixtures/aws/dynamodb";
 
 import { stateHmac } from "../../../../api/endpoints/spotify/connect";
 import {

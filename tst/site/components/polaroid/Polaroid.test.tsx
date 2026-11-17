@@ -5,16 +5,15 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mockSmallScreen, renderWithApp } from "../../../helpers/render";
 import { mockEmulatorState } from "../../../helpers/terminal";
 import { mockToken } from "../../../setup";
-import { AxiosError, axiosGet, axiosPost } from "../../../__mocks__/axios";
+import { AxiosError, axiosGet, axiosPost } from "../../../mocks/axios";
 
 import { DeviceKind, UserType } from "../../../../api/types";
 import Polaroid from "../../../../site/components/polaroid/Polaroid";
 import { signInWithPasskey } from "../../../../site/javascript-terminal/commands/sudo";
+import type * as Sudo from "../../../../site/javascript-terminal/commands/sudo";
 
 vi.mock("../../../../site/javascript-terminal/commands/sudo", async (importOriginal) => ({
-    ...(await importOriginal<
-        typeof import("../../../../site/javascript-terminal/commands/sudo")
-    >()),
+    ...(await importOriginal<typeof Sudo>()),
     signInWithPasskey: vi.fn()
 }));
 vi.mock("../../../../site/components/polaroid/CropDialog", () => ({

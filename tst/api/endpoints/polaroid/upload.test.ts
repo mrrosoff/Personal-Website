@@ -3,8 +3,8 @@ import { encode as encodeJpeg } from "jpeg-js";
 import { describe, expect, it } from "vitest";
 
 import { mockEvent, mockToken, responseBody } from "../../../setup";
-import { mockPresignedUrl, mockS3, mockS3Client } from "../../../__mocks__/__aws__/s3";
-import { mockDevice } from "../../../__mocks__/__data__/aws/dynamodb";
+import { mockPresignedUrl, mockS3, mockS3Client } from "../../../mocks/aws/s3";
+import { mockDevice } from "../../../fixtures/aws/dynamodb";
 
 import { MAX_PHOTOS } from "../../../../api/common";
 import { framebufferKey } from "../../../../api/endpoints/polaroid/photos";

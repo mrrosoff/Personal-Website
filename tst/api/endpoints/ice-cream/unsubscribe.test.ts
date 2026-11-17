@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import { mockEvent, responseBody } from "../../../setup";
-import { mockResend } from "../../../__mocks__/resend";
-import { mockStripe } from "../../../__mocks__/stripe";
+import { mockResend } from "../../../mocks/resend";
+import { mockStripe } from "../../../mocks/stripe";
 
 import { handler } from "../../../../api/endpoints/ice-cream/unsubscribe";
 

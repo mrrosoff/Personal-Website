@@ -3,8 +3,8 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 import { mockCheckoutApi, renderCheckout } from "../../../../../helpers/checkout";
 import { mockSmallScreen } from "../../../../../helpers/render";
-import { axiosPost } from "../../../../../__mocks__/axios";
-import { mockCheckoutSession } from "../../../../../__mocks__/stripeCheckout";
+import { axiosPost } from "../../../../../mocks/axios";
+import { mockCheckoutSession } from "../../../../../mocks/stripeCheckout";
 
 beforeEach(mockCheckoutApi);
 

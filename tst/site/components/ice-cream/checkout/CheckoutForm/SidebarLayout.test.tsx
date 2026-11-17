@@ -1,10 +1,10 @@
 import { screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { mockCheckoutFlavors } from "../../../../../__mocks__/__data__/checkout";
+import { mockCheckoutFlavors } from "../../../../../fixtures/checkout";
 import { mockCheckoutApi, renderCheckout } from "../../../../../helpers/checkout";
 import { mockSmallScreen } from "../../../../../helpers/render";
-import { mockCheckoutSession } from "../../../../../__mocks__/stripeCheckout";
+import { mockCheckoutSession } from "../../../../../mocks/stripeCheckout";
 
 const bigOrder = `?priceIds=${mockCheckoutFlavors.map((f) => f.priceId).join(",")}`;
 

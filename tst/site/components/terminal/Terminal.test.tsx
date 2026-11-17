@@ -11,15 +11,16 @@ import { useAppContext } from "../../../../site/components/AppContext";
 import Terminal from "../../../../site/components/terminal/Terminal";
 import { authenticateWithPasskey } from "../../../../site/javascript-terminal/commands/sudo";
 import type EmulatorState from "../../../../site/javascript-terminal/emulator-state/EmulatorState";
+import type * as Sudo from "../../../../site/javascript-terminal/commands/sudo";
+import type * as ReactRouter from "react-router-dom";
 
 const navigate = vi.hoisted(() => vi.fn());
 vi.mock("../../../../site/javascript-terminal/commands/sudo", async (importOriginal) => {
-    const actual =
-        await importOriginal<typeof import("../../../../site/javascript-terminal/commands/sudo")>();
+    const actual = await importOriginal<typeof Sudo>();
     return { ...actual, authenticateWithPasskey: vi.fn(actual.authenticateWithPasskey) };
 });
 vi.mock("react-router-dom", async (importOriginal) => ({
-    ...(await importOriginal<typeof import("react-router-dom")>()),
+    ...(await importOriginal<typeof ReactRouter>()),
     useNavigate: () => navigate
 }));
 

@@ -5,13 +5,14 @@ import { describe, expect, it, vi } from "vitest";
 
 import { renderWithApp } from "../../helpers/render";
 import { mockToken } from "../../setup";
-import { axiosGet, axiosPost } from "../../__mocks__/axios";
+import { axiosGet, axiosPost } from "../../mocks/axios";
 
 import { DeviceKind, UserType } from "../../../api/types";
 import RegisterFriend from "../../../site/components/RegisterFriend";
+import type * as SimpleWebAuthn from "@simplewebauthn/browser";
 
 vi.mock("@simplewebauthn/browser", async (importOriginal) => ({
-    ...(await importOriginal<typeof import("@simplewebauthn/browser")>()),
+    ...(await importOriginal<typeof SimpleWebAuthn>()),
     browserSupportsWebAuthn: vi.fn(() => true),
     startRegistration: vi.fn()
 }));

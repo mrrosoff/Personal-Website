@@ -3,8 +3,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { mockCheckoutApi, renderCheckout } from "../../../../helpers/checkout";
 import { mockToken } from "../../../../setup";
-import { AxiosError, axiosPost } from "../../../../__mocks__/axios";
-import { mockStripeCheckout } from "../../../../__mocks__/stripeCheckout";
+import { AxiosError, axiosPost } from "../../../../mocks/axios";
+import { mockStripeCheckout } from "../../../../mocks/stripeCheckout";
 
 import { UserType } from "../../../../../api/types";
 

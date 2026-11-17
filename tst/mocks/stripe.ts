@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { beforeEach, vi } from "vitest";
 
-import { mockFlavor } from "./__data__/aws/dynamodb";
+import { mockFlavor } from "../fixtures/aws/dynamodb";
 
 export const mockCheckoutSession = {
     id: `cs_${faker.string.alphanumeric(24)}`,

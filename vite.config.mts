@@ -5,7 +5,7 @@ import { defineConfig } from "vite";
 
 import react from "@vitejs/plugin-react";
 
-const mockJwks = resolve("tst/__mocks__/__data__/jwks");
+const mockJwks = resolve("tst/fixtures/jwks");
 
 // https://vitejs.dev/config/
 export default defineConfig({

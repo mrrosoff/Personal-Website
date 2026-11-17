@@ -9,10 +9,11 @@ import {
     IceCreamCartProvider,
     useIceCreamCart
 } from "../../../../site/components/ice-cream/IceCreamCartContext";
+import type * as ReactRouter from "react-router-dom";
 
 const navigate = vi.hoisted(() => vi.fn());
 vi.mock("react-router-dom", async (importOriginal) => ({
-    ...(await importOriginal<typeof import("react-router-dom")>()),
+    ...(await importOriginal<typeof ReactRouter>()),
     useNavigate: () => navigate
 }));
 

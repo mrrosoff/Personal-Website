@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { mockDynamoDB } from "../../../__mocks__/__aws__/dynamodb";
-import { mockDeviceParameters } from "../../../__mocks__/__aws__/parameterStore";
-import { mockDevice, mockPasskey } from "../../../__mocks__/__data__/aws/dynamodb";
-import { mockResend } from "../../../__mocks__/resend";
+import { mockDynamoDB } from "../../../mocks/aws/dynamodb";
+import { mockDeviceParameters } from "../../../mocks/aws/parameterStore";
+import { mockDevice, mockPasskey } from "../../../fixtures/aws/dynamodb";
+import { mockResend } from "../../../mocks/resend";
 
 import { DEVICES_TABLE, PASSKEYS_TABLE } from "../../../../api/common";
 import { refreshTokenSetAtParam } from "../../../../api/endpoints/spotify/exchange";

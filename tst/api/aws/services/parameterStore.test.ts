@@ -1,7 +1,7 @@
 import { GetParametersCommand, PutParameterCommand } from "@aws-sdk/client-ssm";
 import { describe, expect, it } from "vitest";
 
-import { mockParameters, mockSSMClient } from "../../../__mocks__/__aws__/parameterStore";
+import { mockParameters, mockSSMClient } from "../../../mocks/aws/parameterStore";
 
 import {
     getParameter,

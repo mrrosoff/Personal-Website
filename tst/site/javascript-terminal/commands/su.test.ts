@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { mockToken } from "../../../setup";
 import { mockShell } from "../../../helpers/terminal";
 import { UserType } from "../../../../api/types";
-import { mockPasskey } from "../../../__mocks__/__data__/aws/dynamodb";
+import { mockPasskey } from "../../../fixtures/aws/dynamodb";
 
 describe("su", () => {
     it("should need a user", async () => {

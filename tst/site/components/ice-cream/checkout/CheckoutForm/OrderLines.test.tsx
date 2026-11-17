@@ -1,9 +1,9 @@
 import { screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { mockCheckoutFlavors } from "../../../../../__mocks__/__data__/checkout";
+import { mockCheckoutFlavors } from "../../../../../fixtures/checkout";
 import { renderWithApp } from "../../../../../helpers/render";
-import { mockCheckoutSession } from "../../../../../__mocks__/stripeCheckout";
+import { mockCheckoutSession } from "../../../../../mocks/stripeCheckout";
 
 import OrderLines from "../../../../../../site/components/ice-cream/checkout/CheckoutForm/OrderLines";
 

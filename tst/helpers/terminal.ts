@@ -3,7 +3,7 @@ import Emulator from "../../site/javascript-terminal/emulator";
 import EmulatorState, {
     type AdminConsoleState
 } from "../../site/javascript-terminal/emulator-state/EmulatorState";
-import { mockFileSystem } from "../__mocks__/__data__/fileSystem";
+import { mockFileSystem } from "../fixtures/fileSystem";
 
 export function mockEmulatorState(
     environmentVariables: Record<string, string> = {}

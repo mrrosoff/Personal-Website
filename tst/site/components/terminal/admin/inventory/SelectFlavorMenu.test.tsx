@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { mockSmallScreen, mockTerminalTheme, renderWithApp } from "../../../../../helpers/render";
 import { mockAdminState } from "../../../../../helpers/terminal";
-import { mockFlavor } from "../../../../../__mocks__/__data__/aws/dynamodb";
+import { mockFlavor } from "../../../../../fixtures/aws/dynamodb";
 
 import SelectFlavorMenu from "../../../../../../site/components/terminal/admin/inventory/SelectFlavorMenu";
 import {

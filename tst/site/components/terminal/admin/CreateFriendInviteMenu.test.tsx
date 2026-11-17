@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { mockSmallScreen, mockTerminalTheme, renderWithApp } from "../../../../helpers/render";
 import { mockAdminState } from "../../../../helpers/terminal";
-import { axiosGet } from "../../../../__mocks__/axios";
+import { axiosGet } from "../../../../mocks/axios";
 
 import { DeviceKind } from "../../../../../api/types";
 import CreateFriendInviteMenu from "../../../../../site/components/terminal/admin/CreateFriendInviteMenu";

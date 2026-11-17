@@ -2,8 +2,8 @@ import { verifyRegistrationResponse } from "@simplewebauthn/server";
 import { describe, expect, it, vi } from "vitest";
 
 import { mockEvent, mockToken, responseBody } from "../../../setup";
-import { mockDynamoDB } from "../../../__mocks__/__aws__/dynamodb";
-import { mockChallenge, mockDevice, mockPasskey } from "../../../__mocks__/__data__/aws/dynamodb";
+import { mockDynamoDB } from "../../../mocks/aws/dynamodb";
+import { mockChallenge, mockDevice, mockPasskey } from "../../../fixtures/aws/dynamodb";
 
 import { PASSKEY_CHALLENGES_TABLE, PASSKEYS_TABLE } from "../../../../api/common";
 import { handler } from "../../../../api/endpoints/friends/passkeyRegister";

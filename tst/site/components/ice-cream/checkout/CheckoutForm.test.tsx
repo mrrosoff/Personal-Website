@@ -1,10 +1,10 @@
 import { screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { mockCheckoutFlavors } from "../../../../__mocks__/__data__/checkout";
+import { mockCheckoutFlavors } from "../../../../fixtures/checkout";
 import { fillInCheckout, mockCheckoutApi, renderCheckout } from "../../../../helpers/checkout";
-import { axiosPost } from "../../../../__mocks__/axios";
-import { mockCheckoutSession, mockStripeCheckout } from "../../../../__mocks__/stripeCheckout";
+import { axiosPost } from "../../../../mocks/axios";
+import { mockCheckoutSession, mockStripeCheckout } from "../../../../mocks/stripeCheckout";
 
 beforeEach(mockCheckoutApi);
 

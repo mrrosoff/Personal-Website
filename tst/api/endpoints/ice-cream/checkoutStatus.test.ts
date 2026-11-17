@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { mockEvent, responseBody } from "../../../setup";
-import { mockCheckoutSession, mockStripe } from "../../../__mocks__/stripe";
+import { mockCheckoutSession, mockStripe } from "../../../mocks/stripe";
 
 import { handler } from "../../../../api/endpoints/ice-cream/checkoutStatus";
 

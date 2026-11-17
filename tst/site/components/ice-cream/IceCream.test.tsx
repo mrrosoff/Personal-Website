@@ -2,8 +2,8 @@ import { act, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { mockSmallScreen, renderWithApp } from "../../../helpers/render";
-import { axiosPost } from "../../../__mocks__/axios";
-import { mockFlavor } from "../../../__mocks__/__data__/aws/dynamodb";
+import { axiosPost } from "../../../mocks/axios";
+import { mockFlavor } from "../../../fixtures/aws/dynamodb";
 
 import IceCream from "../../../../site/components/ice-cream/IceCream";
 import { IceCreamCartProvider } from "../../../../site/components/ice-cream/IceCreamCartContext";

@@ -1,8 +1,8 @@
 import { screen } from "@testing-library/react";
 import { Route, Routes } from "react-router-dom";
 
-import { axiosPost } from "../__mocks__/axios";
-import { mockCheckoutFlavors } from "../__mocks__/__data__/checkout";
+import { axiosPost } from "../mocks/axios";
+import { mockCheckoutFlavors } from "../fixtures/checkout";
 import { renderWithApp } from "./render";
 
 import Checkout from "../../site/components/ice-cream/checkout/Checkout";

@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 
 import { mockSmallScreen, renderWithApp } from "../../../../helpers/render";
 import { mockToken } from "../../../../setup";
-import { axiosPost } from "../../../../__mocks__/axios";
+import { axiosPost } from "../../../../mocks/axios";
 
 import { UserType } from "../../../../../api/types";
 import Return from "../../../../../site/components/ice-cream/checkout/Return";

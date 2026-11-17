@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { mockEvent, responseBody } from "../../../setup";
-import { mockResend } from "../../../__mocks__/resend";
+import { mockResend } from "../../../mocks/resend";
 
 import { handler } from "../../../../api/endpoints/email/receive";
 

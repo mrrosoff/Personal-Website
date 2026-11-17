@@ -1,6 +1,7 @@
 import { beforeEach, vi } from "vitest";
+import type * as Axios from "axios";
 
-const actual = await vi.importActual<typeof import("axios")>("axios");
+const actual = await vi.importActual<typeof Axios>("axios");
 
 export const axiosGet = vi.fn();
 export const axiosPost = vi.fn();

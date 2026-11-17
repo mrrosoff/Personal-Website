@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { mockToken } from "../../../setup";
 import { mockShell } from "../../../helpers/terminal";
 import { DeviceKind, UserType } from "../../../../api/types";
-import { axiosPost } from "../../../__mocks__/axios";
+import { axiosPost } from "../../../mocks/axios";
 
 describe("spotify", () => {
     it("should show help without reconnect", () => {

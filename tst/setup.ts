@@ -9,21 +9,21 @@ import { generateToken } from "../api/auth";
 import { LOCAL_ORIGIN } from "../api/common";
 import { UserType } from "../api/types";
 
-import "./__mocks__/__aws__/dynamodb";
-import "./__mocks__/__aws__/parameterStore";
-import "./__mocks__/__aws__/s3";
-import "./__mocks__/resend";
-import "./__mocks__/stripe";
-import "./__mocks__/axios";
-import "./__mocks__/stripeCheckout";
-import { mockPasskey } from "./__mocks__/__data__/aws/dynamodb";
+import "./mocks/aws/dynamodb";
+import "./mocks/aws/parameterStore";
+import "./mocks/aws/s3";
+import "./mocks/resend";
+import "./mocks/stripe";
+import "./mocks/axios";
+import "./mocks/stripeCheckout";
+import { mockPasskey } from "./fixtures/aws/dynamodb";
 
-vi.mock("stripe", () => import("./__mocks__/stripe"));
-vi.mock("resend", () => import("./__mocks__/resend"));
-vi.mock("axios", () => import("./__mocks__/axios"));
-vi.mock("@stripe/react-stripe-js/checkout", () => import("./__mocks__/stripeCheckout"));
+vi.mock("stripe", () => import("./mocks/stripe"));
+vi.mock("resend", () => import("./mocks/resend"));
+vi.mock("axios", () => import("./mocks/axios"));
+vi.mock("@stripe/react-stripe-js/checkout", () => import("./mocks/stripeCheckout"));
 vi.mock("@stripe/stripe-js", () => ({ loadStripe: vi.fn(() => Promise.resolve(null)) }));
-vi.mock("@aws-sdk/s3-request-presigner", () => import("./__mocks__/__aws__/s3"));
+vi.mock("@aws-sdk/s3-request-presigner", () => import("./mocks/aws/s3"));
 vi.mock("../site/components/terminal/games/SnakeGame", () => ({ default: () => null }));
 
 type AwsCommand = new (input: never) => unknown;

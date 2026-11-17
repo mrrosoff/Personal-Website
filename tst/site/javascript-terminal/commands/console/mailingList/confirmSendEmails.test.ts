@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { mockAdminState } from "../../../../../helpers/terminal";
-import { axiosPost } from "../../../../../__mocks__/axios";
+import { axiosPost } from "../../../../../mocks/axios";
 
 import { handleConfirmSendEmails } from "../../../../../../site/javascript-terminal/commands/console/mailingList/confirmSendEmails";
 import { AdminConsoleScreen } from "../../../../../../site/javascript-terminal/emulator-state/EmulatorState";

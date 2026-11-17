@@ -2,8 +2,8 @@ import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { describe, expect, it } from "vitest";
 
 import { mockEvent } from "../../setup";
-import { mockDocumentClient, mockDynamoDB } from "../../__mocks__/__aws__/dynamodb";
-import { mockDevice, mockDeviceToken, mockPasskey } from "../../__mocks__/__data__/aws/dynamodb";
+import { mockDocumentClient, mockDynamoDB } from "../../mocks/aws/dynamodb";
+import { mockDevice, mockDeviceToken, mockPasskey } from "../../fixtures/aws/dynamodb";
 
 import { DEVICES_TABLE } from "../../../api/common";
 import { deviceForOwner, devicesForIds, resolveDevice } from "../../../api/endpoints/devices";

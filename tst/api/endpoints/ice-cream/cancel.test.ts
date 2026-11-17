@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { mockEvent, mockToken, responseBody } from "../../../setup";
-import { mockStripe, mockSubscription } from "../../../__mocks__/stripe";
+import { mockStripe, mockSubscription } from "../../../mocks/stripe";
 
 import { handler } from "../../../../api/endpoints/ice-cream/cancel";
 import { UserType } from "../../../../api/types";

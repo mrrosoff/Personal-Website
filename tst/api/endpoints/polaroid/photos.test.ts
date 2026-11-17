@@ -2,8 +2,8 @@ import { ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { describe, expect, it } from "vitest";
 
 import { mockEvent, mockToken, responseBody } from "../../../setup";
-import { mockPhotoId, mockPresignedUrl, mockS3Client } from "../../../__mocks__/__aws__/s3";
-import { mockDevice, mockDeviceToken } from "../../../__mocks__/__data__/aws/dynamodb";
+import { mockPhotoId, mockPresignedUrl, mockS3Client } from "../../../mocks/aws/s3";
+import { mockDevice, mockDeviceToken } from "../../../fixtures/aws/dynamodb";
 
 import {
     framebufferKey,

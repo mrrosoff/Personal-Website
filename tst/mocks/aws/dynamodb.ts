@@ -23,7 +23,7 @@ import {
     PASSKEY_CHALLENGES_TABLE,
     PASSKEYS_TABLE
 } from "../../../api/common";
-import { mockChallenge, mockDevice, mockFlavor, mockPasskey } from "../__data__/aws/dynamodb";
+import { mockChallenge, mockDevice, mockFlavor, mockPasskey } from "../../fixtures/aws/dynamodb";
 
 type Item = Record<string, unknown>;
 

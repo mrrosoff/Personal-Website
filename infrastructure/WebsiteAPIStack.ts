@@ -32,7 +32,7 @@ import {
 import { LogGroup, RetentionDays } from "aws-cdk-lib/aws-logs";
 import { Topic } from "aws-cdk-lib/aws-sns";
 
-import { Construct } from "constructs";
+import type { Construct } from "constructs";
 
 import { EmailSubscription } from "aws-cdk-lib/aws-sns-subscriptions";
 import { AttributeType, BillingMode, ProjectionType, Table } from "aws-cdk-lib/aws-dynamodb";

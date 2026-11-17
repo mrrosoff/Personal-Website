@@ -2,7 +2,7 @@ import { act, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { fillInCheckout, mockCheckoutApi, renderCheckout } from "../../../../../helpers/checkout";
-import { mockCheckoutSession } from "../../../../../__mocks__/stripeCheckout";
+import { mockCheckoutSession } from "../../../../../mocks/stripeCheckout";
 
 beforeEach(mockCheckoutApi);
 

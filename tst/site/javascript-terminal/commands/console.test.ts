@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { mockToken } from "../../../setup";
 import { mockAdminState, mockShell } from "../../../helpers/terminal";
-import { AxiosError, axiosPost } from "../../../__mocks__/axios";
+import { AxiosError, axiosPost } from "../../../mocks/axios";
 
 import { UserType } from "../../../../api/types";
 import {

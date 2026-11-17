@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { mockDirectory, mockFileSystem } from "../../../../__mocks__/__data__/fileSystem";
+import { mockDirectory, mockFileSystem } from "../../../../fixtures/fileSystem";
 
 import * as DirOp from "../../../../../site/javascript-terminal/fs/operations/directory-operations";
 

@@ -2,7 +2,7 @@ import { act, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { renderWithApp } from "../../helpers/render";
-import { AxiosError, axiosPost } from "../../__mocks__/axios";
+import { AxiosError, axiosPost } from "../../mocks/axios";
 
 import SpotifyCallback from "../../../site/components/SpotifyCallback";
 

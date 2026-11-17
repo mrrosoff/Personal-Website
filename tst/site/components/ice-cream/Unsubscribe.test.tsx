@@ -2,7 +2,7 @@ import { screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { mockSmallScreen, renderWithApp } from "../../../helpers/render";
-import { AxiosError, axiosPost } from "../../../__mocks__/axios";
+import { AxiosError, axiosPost } from "../../../mocks/axios";
 
 import Unsubscribe from "../../../../site/components/ice-cream/Unsubscribe";
 

@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { mockEvent, mockToken, responseBody } from "../../../setup";
-import { mockDevice, mockPasskey } from "../../../__mocks__/__data__/aws/dynamodb";
-import { mockResend } from "../../../__mocks__/resend";
+import { mockDevice, mockPasskey } from "../../../fixtures/aws/dynamodb";
+import { mockResend } from "../../../mocks/resend";
 
 import { decryptToken } from "../../../../api/auth";
 import { handler } from "../../../../api/endpoints/admin/createFriendInvite";

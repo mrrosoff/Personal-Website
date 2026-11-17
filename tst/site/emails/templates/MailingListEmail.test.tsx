@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { renderEmail } from "../../../helpers/render";
 
-import { mockFlavor } from "../../../__mocks__/__data__/aws/dynamodb";
+import { mockFlavor } from "../../../fixtures/aws/dynamodb";
 
 import MailingListEmail from "../../../../site/emails/templates/MailingListEmail";
 

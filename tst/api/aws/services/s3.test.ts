@@ -7,7 +7,7 @@ import {
     mockPresignedUrl,
     mockS3,
     mockS3Client
-} from "../../../__mocks__/__aws__/s3";
+} from "../../../mocks/aws/s3";
 
 import {
     deleteObject,

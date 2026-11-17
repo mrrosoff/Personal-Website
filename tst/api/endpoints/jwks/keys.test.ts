@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { mockEvent, responseBody } from "../../../setup";
-import keyMapping from "../../../__mocks__/__data__/jwks/keyMapping.json";
+import keyMapping from "../../../fixtures/jwks/keyMapping.json";
 
 import { handler } from "../../../../api/endpoints/jwks/keys";
 

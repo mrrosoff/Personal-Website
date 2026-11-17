@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { mockEvent, mockToken, responseBody } from "../../../setup";
-import { mockBroadcastId, mockResend } from "../../../__mocks__/resend";
+import { mockBroadcastId, mockResend } from "../../../mocks/resend";
 
 import { handler, sendOrderSuccessEmails } from "../../../../api/endpoints/email/sendEmail";
 import { UserType } from "../../../../api/types";

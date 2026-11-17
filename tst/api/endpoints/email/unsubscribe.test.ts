@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import { mockEvent } from "../../../setup";
-import { mockParameters } from "../../../__mocks__/__aws__/parameterStore";
-import { mockResend } from "../../../__mocks__/resend";
+import { mockParameters } from "../../../mocks/aws/parameterStore";
+import { mockResend } from "../../../mocks/resend";
 
 import { handler } from "../../../../api/endpoints/email/unsubscribe";
 
