@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import PathUtil from "../../../../../src/javascript-terminal/fs/util/path-util";
+import * as PathUtil from "../../../../../src/javascript-terminal/fs/util/path-util";
 
 describe("path-util", () => {
     it("should split an absolute path", () => {
@@ -31,11 +31,5 @@ describe("path-util", () => {
 
     it("should find the last part of a path", () => {
         expect(PathUtil.getLastPathPart("/home/max/file")).toBe("file");
-    });
-
-    it("should tell trailing, absolute and relative paths apart", () => {
-        expect(PathUtil.isTrailingPath("/home/")).toBeTrue();
-        expect(PathUtil.isTrailingPath("/")).toBeFalse();
-        expect(PathUtil.isRelativePath("home")).toBeTrue();
     });
 });

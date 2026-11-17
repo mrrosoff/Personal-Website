@@ -6,7 +6,6 @@ export type PolaroidFramebufferKey = `framebuffer/${string}/${string}.bin`;
 export type PolaroidPreviewKey = `preview/${string}/${string}.png`;
 export type PolaroidObjectKey = PolaroidFramebufferKey | PolaroidPreviewKey;
 export const API_ENDPOINT_URL = "https://api.maxrosoff.com";
-export const JWKS_URI = `${API_ENDPOINT_URL}/jwks/keys`;
 
 export type MailingListRegistration = {
     firstName?: string;
