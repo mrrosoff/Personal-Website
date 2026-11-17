@@ -60,16 +60,18 @@ function LocationProbe() {
 
 export function renderWithApp(ui: ReactElement, options: AppOptions = {}) {
     const user = userEvent.setup();
-    const result = render(
-        <ThemeProvider theme={createTheme({ palette: { mode: "dark" } })}>
-            <MemoryRouter initialEntries={[options.route ?? "/"]}>
-                <MockAppProvider {...options}>
-                    {ui}
-                    <LocationProbe />
-                </MockAppProvider>
-            </MemoryRouter>
-        </ThemeProvider>
-    );
+    const result = render(ui, {
+        wrapper: ({ children }) => (
+            <ThemeProvider theme={createTheme({ palette: { mode: "dark" } })}>
+                <MemoryRouter initialEntries={[options.route ?? "/"]}>
+                    <MockAppProvider {...options}>
+                        {children}
+                        <LocationProbe />
+                    </MockAppProvider>
+                </MemoryRouter>
+            </ThemeProvider>
+        )
+    });
     return { ...result, user };
 }
 

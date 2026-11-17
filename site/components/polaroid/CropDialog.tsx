@@ -34,16 +34,20 @@ export default function CropDialog({ file, remaining, onCancel, onConfirm }: Cro
     const [src, setSrc] = useState<string | null>(null);
     const [preparing, setPreparing] = useState(false);
     const [failed, setFailed] = useState(false);
+    const [shownFile, setShownFile] = useState(file);
 
-    useEffect(() => {
+    if (file !== shownFile) {
+        setShownFile(file);
         setCrop({ x: 0, y: 0 });
         setZoom(1);
         setArea(null);
         setFailed(false);
+        setSource(null);
+        setSrc(null);
+    }
 
+    useEffect(() => {
         if (!file) {
-            setSource(null);
-            setSrc(null);
             return;
         }
 
