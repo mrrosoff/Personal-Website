@@ -1,25 +1,19 @@
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo } from "react";
 
-import { sortInventory } from "../../../javascript-terminal/commands/console";
-import type { AdminConsoleState } from "../../../javascript-terminal/emulator-state/EmulatorState";
-import { useAppContext } from "../../AppContext";
-import type { TerminalTheme } from "../Terminal";
-import MenuItem from "./common/MenuItem";
+import { sortInventory } from "../../../../javascript-terminal/commands/console/inventory/selectFlavor";
+import type { AdminConsoleState } from "../../../../javascript-terminal/emulator-state/EmulatorState";
+import { useAppContext } from "../../../AppContext";
+import type { TerminalTheme } from "../../Terminal";
+import MenuItem from "../common/MenuItem";
+import useLoadingDots from "../common/useLoadingDots";
 
-const SelectFlavorMenu = (props: { theme?: TerminalTheme; onAction: (key: string) => void }) => {
+const SelectFlavorMenu = (props: { theme: TerminalTheme; onAction: (key: string) => void }) => {
     const { emulatorState } = useAppContext();
     const muiTheme = useTheme();
     const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
     const mode = emulatorState.getAdminConsoleMode() as AdminConsoleState;
-    const [dots, setDots] = useState(".");
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setDots((prev) => (prev.length >= 3 ? "." : prev + "."));
-        }, 500);
-        return () => clearInterval(interval);
-    }, []);
+    const dots = useLoadingDots();
 
     const ITEMS_PER_PAGE = 4;
     const selectedIndex = mode.selectedOption as number;
@@ -55,7 +49,7 @@ const SelectFlavorMenu = (props: { theme?: TerminalTheme; onAction: (key: string
             <Box sx={{ paddingTop: 1 }}>
                 <Typography
                     sx={{
-                        color: props.theme?.outputColor || "#FCFCFC",
+                        color: props.theme.outputColor,
                         fontWeight: "bold",
                         mb: 1.25
                     }}
@@ -64,7 +58,7 @@ const SelectFlavorMenu = (props: { theme?: TerminalTheme; onAction: (key: string
                 </Typography>
                 <Typography
                     sx={{
-                        color: props.theme?.outputColor || "#FCFCFC",
+                        color: props.theme.outputColor,
                         fontSize: "0.9em",
                         opacity: 0.7
                     }}
@@ -80,14 +74,14 @@ const SelectFlavorMenu = (props: { theme?: TerminalTheme; onAction: (key: string
             <Box sx={{ paddingTop: 1 }}>
                 <Typography
                     sx={{
-                        color: props.theme?.outputColor || "#FCFCFC",
+                        color: props.theme.outputColor,
                         fontWeight: "bold",
                         mb: 1.25
                     }}
                 >
                     === Admin Console (Select Flavor) ===
                 </Typography>
-                <Typography sx={{ color: props.theme?.outputColor || "#FCFCFC", mb: 2 }}>
+                <Typography sx={{ color: props.theme.outputColor, mb: 2 }}>
                     No flavors available
                 </Typography>
             </Box>
@@ -98,7 +92,7 @@ const SelectFlavorMenu = (props: { theme?: TerminalTheme; onAction: (key: string
         <Box sx={{ paddingTop: 1 }}>
             <Typography
                 sx={{
-                    color: props.theme?.outputColor || "#FCFCFC",
+                    color: props.theme.outputColor,
                     fontWeight: "bold",
                     mb: 1.25
                 }}
@@ -152,7 +146,7 @@ const SelectFlavorMenu = (props: { theme?: TerminalTheme; onAction: (key: string
             )}
             <Typography
                 sx={{
-                    color: props.theme?.outputColor || "#FCFCFC",
+                    color: props.theme.outputColor,
                     mt: 1,
                     fontSize: "0.9em",
                     opacity: 0.7

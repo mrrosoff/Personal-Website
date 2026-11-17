@@ -5,7 +5,7 @@ import type { TerminalTheme } from "../../Terminal";
 const Stepper = (props: {
     value: string | number;
     width: string;
-    theme?: TerminalTheme;
+    theme: TerminalTheme;
     onStep: (key: "ArrowLeft" | "ArrowRight") => void;
 }) => {
     const arrowStyles = {
@@ -22,7 +22,7 @@ const Stepper = (props: {
                 display: "inline-flex",
                 alignItems: "center",
                 userSelect: "none",
-                color: props.theme?.commandColor || "#FFFFFF"
+                color: props.theme.commandColor
             }}
         >
             <Box

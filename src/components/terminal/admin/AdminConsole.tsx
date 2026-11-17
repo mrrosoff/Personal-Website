@@ -4,15 +4,15 @@ import { AdminConsoleScreen } from "../../../javascript-terminal/emulator-state/
 import { useAppContext } from "../../AppContext";
 import type { TerminalTheme } from "../Terminal";
 import MainMenu from "./MainMenu";
-import IceCreamInventoryMenu from "./IceCreamInventoryMenu";
-import SelectFlavorMenu from "./SelectFlavorMenu";
-import ConfirmSendEmailsMenu from "./ConfirmSendEmailsMenu";
-import ProvisionFlavorFormMenu from "./ProvisionFlavorFormMenu";
-import ConfirmProvisionFlavorMenu from "./ConfirmProvisionFlavorMenu";
+import IceCreamInventoryMenu from "./inventory/IceCreamInventoryMenu";
+import SelectFlavorMenu from "./inventory/SelectFlavorMenu";
+import ConfirmSendEmailsMenu from "./mailingList/ConfirmSendEmailsMenu";
+import ProvisionFlavorFormMenu from "./inventory/ProvisionFlavorFormMenu";
+import ConfirmProvisionFlavorMenu from "./inventory/ConfirmProvisionFlavorMenu";
 import CreateFriendInviteMenu from "./CreateFriendInviteMenu";
-import AddMailingListEntryMenu from "./AddMailingListEntryMenu";
+import AddMailingListEntryMenu from "./mailingList/AddMailingListEntryMenu";
 
-const AdminConsole = (props: { theme?: TerminalTheme; onAction: (key: string) => void }) => {
+const AdminConsole = (props: { theme: TerminalTheme; onAction: (key: string) => void }) => {
     const { emulatorState } = useAppContext();
     const mode = emulatorState.getAdminConsoleMode();
     if (!mode || !mode.screen) return null;
@@ -42,9 +42,7 @@ const AdminConsole = (props: { theme?: TerminalTheme; onAction: (key: string) =>
         <>
             {renderScreen()}
             {mode.error && (
-                <Typography sx={{ color: props.theme?.errorColor || "#ff0606", mt: 1 }}>
-                    {mode.error}
-                </Typography>
+                <Typography sx={{ color: props.theme.errorColor, mt: 1 }}>{mode.error}</Typography>
             )}
         </>
     );

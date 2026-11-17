@@ -14,26 +14,20 @@ import { API_ENDPOINT_URL } from "../../../../api/types";
 import { useAppContext } from "../../AppContext";
 import type { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
+import useLoadingDots from "./common/useLoadingDots";
 import Stepper from "./common/Stepper";
 
 const CreateFriendInviteMenu = (props: {
-    theme?: TerminalTheme;
+    theme: TerminalTheme;
     onAction: (key: string) => void;
 }) => {
     const { emulatorState } = useAppContext();
     const muiTheme = useTheme();
     const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
     const mode = emulatorState.getAdminConsoleMode() as AdminConsoleState;
-    const invite = mode.friendInvite;
+    const invite = mode.friendInvite!;
     const [copied, setCopied] = useState(false);
-    const [dots, setDots] = useState(".");
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setDots((prev) => (prev.length >= 3 ? "." : prev + "."));
-        }, 500);
-        return () => clearInterval(interval);
-    }, []);
+    const dots = useLoadingDots();
 
     const devices = mode.inviteDevices;
     const authToken = emulatorState.getEnvVariables()["AUTH_TOKEN"];
@@ -58,18 +52,16 @@ const CreateFriendInviteMenu = (props: {
         })();
     }, [devices, authToken, emulatorState, props]);
 
-    const outputColor = props.theme?.outputColor || "#FCFCFC";
-    const commandColor = props.theme?.commandColor || "#FFFFFF";
+    const outputColor = props.theme.outputColor;
+    const commandColor = props.theme.commandColor;
 
     const onCopy = async () => {
-        if (!invite?.url) return;
-        await navigator.clipboard.writeText(invite.url);
+        await navigator.clipboard.writeText(invite.url!);
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
     };
 
     const toggleDevice = (index: number) => {
-        if (!invite) return;
         emulatorState.setAdminConsoleMode({
             ...mode,
             friendInvite: { ...invite, deviceIndex: index }
@@ -78,7 +70,6 @@ const CreateFriendInviteMenu = (props: {
     };
 
     const selectField = (field: FriendInvite["currentField"]) => {
-        if (!invite) return;
         emulatorState.setAdminConsoleMode({
             ...mode,
             friendInvite: { ...invite, currentField: field }
@@ -87,12 +78,12 @@ const CreateFriendInviteMenu = (props: {
     };
 
     const fields: Array<{ field: FriendInvite["currentField"]; label: string; value: string }> = [
-        { field: "friendName", label: "Friend Name", value: invite?.friendName ?? "" },
-        { field: "email", label: "Email", value: invite?.email ?? "" },
+        { field: "friendName", label: "Friend Name", value: invite.friendName },
+        { field: "email", label: "Email", value: invite.email },
         {
             field: "durationHours",
             label: "Link Lasts",
-            value: invite ? shareTokenDurationLabel(invite.durationHours) : ""
+            value: shareTokenDurationLabel(invite.durationHours)
         },
         { field: "devices", label: "Devices", value: chosenDevices(invite, devices) }
     ];
@@ -103,7 +94,7 @@ const CreateFriendInviteMenu = (props: {
                 === Admin Console (Create Friend Invite) ===
             </Typography>
 
-            {invite?.url ? (
+            {invite.url ? (
                 <Box sx={{ mb: 1, px: 1 }}>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                         <Typography
@@ -140,7 +131,7 @@ const CreateFriendInviteMenu = (props: {
             ) : (
                 <Box sx={{ mb: 1 }}>
                     {fields.map(({ field, label, value }) => {
-                        const active = invite?.currentField === field;
+                        const active = invite.currentField === field;
                         return (
                             <Box key={field}>
                                 <Typography
@@ -187,19 +178,19 @@ const CreateFriendInviteMenu = (props: {
                                               }
                                               sx={{
                                                   color:
-                                                      invite?.deviceIndex === index
+                                                      invite.deviceIndex === index
                                                           ? commandColor
                                                           : outputColor,
-                                                  opacity: invite?.deviceIndex === index ? 1 : 0.7,
+                                                  opacity: invite.deviceIndex === index ? 1 : 0.7,
                                                   pl: 4,
                                                   cursor: smallScreen ? "pointer" : undefined
                                               }}
                                           >
-                                              {invite?.deviceIndex === index && !smallScreen
+                                              {invite.deviceIndex === index && !smallScreen
                                                   ? "› "
                                                   : "  "}
                                               [
-                                              {invite?.deviceIds.includes(device.deviceId)
+                                              {invite.deviceIds.includes(device.deviceId)
                                                   ? "x"
                                                   : " "}
                                               ] {device.name}
@@ -214,11 +205,11 @@ const CreateFriendInviteMenu = (props: {
 
             {smallScreen && !mode.loading && (
                 <Box sx={{ display: "flex", gap: 2, mb: 1 }}>
-                    {!invite?.url && (
+                    {!invite.url && (
                         <MenuItem
                             selected={false}
                             theme={props.theme}
-                            disabled={!invite?.friendName}
+                            disabled={!invite.friendName}
                             onClick={() => props.onAction("Enter")}
                         >
                             Create
@@ -229,7 +220,7 @@ const CreateFriendInviteMenu = (props: {
                         theme={props.theme}
                         onClick={() => props.onAction("Escape")}
                     >
-                        {invite?.url ? "Back" : "Cancel"}
+                        {invite.url ? "Back" : "Cancel"}
                     </MenuItem>
                 </Box>
             )}
@@ -243,7 +234,7 @@ const CreateFriendInviteMenu = (props: {
             >
                 {mode.loading
                     ? `Loading${dots}`
-                    : invite?.url
+                    : invite.url
                       ? smallScreen
                           ? "tap copy for full url"
                           : "click copy for full url | escape: back"
@@ -255,13 +246,10 @@ const CreateFriendInviteMenu = (props: {
     );
 };
 
-function chosenDevices(
-    invite: FriendInvite | undefined,
-    devices: InviteDevice[] | undefined
-): string {
+function chosenDevices(invite: FriendInvite, devices: InviteDevice[] | undefined): string {
     if (!devices) return "Loading";
     if (!devices.length) return "None Registered";
-    const chosen = devices.filter((device) => invite?.deviceIds.includes(device.deviceId));
+    const chosen = devices.filter((device) => invite.deviceIds.includes(device.deviceId));
     return chosen.length ? chosen.map((device) => device.name).join(", ") : "None";
 }
 

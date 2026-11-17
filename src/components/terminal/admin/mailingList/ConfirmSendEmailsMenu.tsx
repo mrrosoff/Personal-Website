@@ -1,9 +1,9 @@
 import { Box, Typography, keyframes, useMediaQuery, useTheme } from "@mui/material";
 
-import type { AdminConsoleState } from "../../../javascript-terminal/emulator-state/EmulatorState";
-import { useAppContext } from "../../AppContext";
-import type { TerminalTheme } from "../Terminal";
-import MenuItem from "./common/MenuItem";
+import type { AdminConsoleState } from "../../../../javascript-terminal/emulator-state/EmulatorState";
+import { useAppContext } from "../../../AppContext";
+import type { TerminalTheme } from "../../Terminal";
+import MenuItem from "../common/MenuItem";
 
 const blink = keyframes`
     0%, 50% { visibility: visible; }
@@ -11,7 +11,7 @@ const blink = keyframes`
 `;
 
 const ConfirmSendEmailsMenu = (props: {
-    theme?: TerminalTheme;
+    theme: TerminalTheme;
     onAction: (key: string) => void;
 }) => {
     const { emulatorState } = useAppContext();
@@ -29,7 +29,7 @@ const ConfirmSendEmailsMenu = (props: {
         <Box sx={{ paddingTop: 1 }}>
             <Typography
                 sx={{
-                    color: props.theme?.outputColor || "#FCFCFC",
+                    color: props.theme.outputColor,
                     fontWeight: "bold",
                     mb: 1.25
                 }}
@@ -38,7 +38,7 @@ const ConfirmSendEmailsMenu = (props: {
             </Typography>
             <Typography
                 sx={{
-                    color: props.theme?.outputColor || "#FCFCFC",
+                    color: props.theme.outputColor,
                     mb: 1
                 }}
             >
@@ -46,7 +46,7 @@ const ConfirmSendEmailsMenu = (props: {
             </Typography>
             <Typography
                 sx={{
-                    color: props.theme?.outputColor || "#FCFCFC",
+                    color: props.theme.outputColor,
                     mb: 1,
                     minHeight: "4.5em",
                     whiteSpace: "pre-wrap",
@@ -62,7 +62,7 @@ const ConfirmSendEmailsMenu = (props: {
                         width: "8px",
                         height: "18px",
                         verticalAlign: "middle",
-                        backgroundColor: props.theme?.outputColor || "#FCFCFC",
+                        backgroundColor: props.theme.outputColor,
                         animation: `${blink} 1.2s step-end infinite`
                     }}
                 />
@@ -87,7 +87,7 @@ const ConfirmSendEmailsMenu = (props: {
             </Box>
             <Typography
                 sx={{
-                    color: props.theme?.outputColor || "#FCFCFC",
+                    color: props.theme.outputColor,
                     fontSize: "0.9em",
                     opacity: 0.7
                 }}

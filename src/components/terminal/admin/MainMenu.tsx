@@ -8,7 +8,7 @@ import { useAppContext } from "../../AppContext";
 import type { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
 
-const MainMenu = (props: { theme?: TerminalTheme; onAction: (key: string) => void }) => {
+const MainMenu = (props: { theme: TerminalTheme; onAction: (key: string) => void }) => {
     const { emulatorState } = useAppContext();
     const muiTheme = useTheme();
     const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
@@ -23,7 +23,7 @@ const MainMenu = (props: { theme?: TerminalTheme; onAction: (key: string) => voi
         <Box sx={{ paddingTop: 1 }}>
             <Typography
                 sx={{
-                    color: props.theme?.outputColor || "#FCFCFC",
+                    color: props.theme.outputColor,
                     fontWeight: "bold",
                     mb: 1.25
                 }}
@@ -67,7 +67,7 @@ const MainMenu = (props: { theme?: TerminalTheme; onAction: (key: string) => voi
             </MenuItem>
             <Typography
                 sx={{
-                    color: props.theme?.outputColor || "#FCFCFC",
+                    color: props.theme.outputColor,
                     mt: 1,
                     fontSize: "0.9em",
                     opacity: 0.7

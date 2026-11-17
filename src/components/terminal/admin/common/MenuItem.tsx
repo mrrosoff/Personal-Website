@@ -4,7 +4,7 @@ import type { TerminalTheme } from "../../Terminal";
 
 const MenuItem = (props: {
     selected: boolean;
-    theme?: TerminalTheme;
+    theme: TerminalTheme;
     children: React.ReactNode;
     disabled?: boolean;
     onClick?: () => void;
@@ -21,9 +21,7 @@ const MenuItem = (props: {
                     : undefined
             }
             style={{
-                color: props.selected
-                    ? props.theme?.commandColor || "#FFFFFF"
-                    : props.theme?.outputColor || "#FCFCFC",
+                color: props.selected ? props.theme.commandColor : props.theme.outputColor,
                 backgroundColor: props.selected ? "rgba(255,255,255,0.1)" : "transparent",
                 padding: "4px 8px",
                 marginBottom: 4,

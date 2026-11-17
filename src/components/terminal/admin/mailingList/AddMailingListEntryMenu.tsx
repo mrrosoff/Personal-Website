@@ -1,38 +1,29 @@
-import { useEffect, useState } from "react";
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 
 import type {
     AdminConsoleState,
     MailingListEntry
-} from "../../../javascript-terminal/emulator-state/EmulatorState";
-import { useAppContext } from "../../AppContext";
-import type { TerminalTheme } from "../Terminal";
-import MenuItem from "./common/MenuItem";
+} from "../../../../javascript-terminal/emulator-state/EmulatorState";
+import { useAppContext } from "../../../AppContext";
+import type { TerminalTheme } from "../../Terminal";
+import MenuItem from "../common/MenuItem";
+import useLoadingDots from "../common/useLoadingDots";
 
 type FormField = MailingListEntry["currentField"];
 
 const AddMailingListEntryMenu = (props: {
-    theme?: TerminalTheme;
+    theme: TerminalTheme;
     onAction: (key: string) => void;
 }) => {
     const { emulatorState } = useAppContext();
     const muiTheme = useTheme();
     const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
     const mode = emulatorState.getAdminConsoleMode() as AdminConsoleState;
-    const entry = mode.mailingListEntry;
-    const [dots, setDots] = useState(".");
+    const entry = mode.mailingListEntry!;
+    const dots = useLoadingDots();
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setDots((prev) => (prev.length >= 3 ? "." : prev + "."));
-        }, 500);
-        return () => clearInterval(interval);
-    }, []);
-
-    if (!entry) return null;
-
-    const outputColor = props.theme?.outputColor || "#FCFCFC";
-    const commandColor = props.theme?.commandColor || "#FFFFFF";
+    const outputColor = props.theme.outputColor;
+    const commandColor = props.theme.commandColor;
 
     const selectField = (field: FormField) => {
         emulatorState.setAdminConsoleMode({

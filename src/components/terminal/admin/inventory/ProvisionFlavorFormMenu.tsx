@@ -1,23 +1,22 @@
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 
-import type { AdminConsoleState } from "../../../javascript-terminal/emulator-state/EmulatorState";
-import { useAppContext } from "../../AppContext";
-import type { TerminalTheme } from "../Terminal";
-import MenuItem from "./common/MenuItem";
-import Stepper from "./common/Stepper";
+import type { AdminConsoleState } from "../../../../javascript-terminal/emulator-state/EmulatorState";
+import { useAppContext } from "../../../AppContext";
+import type { TerminalTheme } from "../../Terminal";
+import MenuItem from "../common/MenuItem";
+import Stepper from "../common/Stepper";
 
 type FormField = "flavorName" | "initialQuantity" | "color" | "type";
 
 const ProvisionFlavorFormMenu = (props: {
-    theme?: TerminalTheme;
+    theme: TerminalTheme;
     onAction: (key: string) => void;
 }) => {
     const { emulatorState } = useAppContext();
     const muiTheme = useTheme();
     const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
     const mode = emulatorState.getAdminConsoleMode() as AdminConsoleState;
-    const form = mode.provisionForm;
-    if (!form) return null;
+    const form = mode.provisionForm!;
 
     const selectField = (field: FormField) => {
         emulatorState.setAdminConsoleMode({
@@ -38,7 +37,7 @@ const ProvisionFlavorFormMenu = (props: {
         <Box sx={{ paddingTop: 1 }}>
             <Typography
                 sx={{
-                    color: props.theme?.outputColor || "#FCFCFC",
+                    color: props.theme.outputColor,
                     fontWeight: "bold",
                     mb: 1.25
                 }}
@@ -54,9 +53,7 @@ const ProvisionFlavorFormMenu = (props: {
                             key={field}
                             onClick={smallScreen ? () => selectField(field) : undefined}
                             sx={{
-                                color: active
-                                    ? props.theme?.commandColor || "#FFFFFF"
-                                    : props.theme?.outputColor || "#FCFCFC",
+                                color: active ? props.theme.commandColor : props.theme.outputColor,
                                 backgroundColor: active ? "rgba(255,255,255,0.1)" : "transparent",
                                 padding: "4px 8px",
                                 mb: 1,
@@ -104,7 +101,7 @@ const ProvisionFlavorFormMenu = (props: {
 
             <Typography
                 sx={{
-                    color: props.theme?.outputColor || "#FCFCFC",
+                    color: props.theme.outputColor,
                     fontSize: "0.9em",
                     opacity: 0.7
                 }}

@@ -1,33 +1,26 @@
-import { useState, useEffect } from "react";
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 
 import {
     type AdminConsoleState,
     IceCreamInventoryMenuOption
-} from "../../../javascript-terminal/emulator-state/EmulatorState";
-import { useAppContext } from "../../AppContext";
-import type { TerminalTheme } from "../Terminal";
-import MenuItem from "./common/MenuItem";
-import Stepper from "./common/Stepper";
+} from "../../../../javascript-terminal/emulator-state/EmulatorState";
+import { useAppContext } from "../../../AppContext";
+import type { TerminalTheme } from "../../Terminal";
+import MenuItem from "../common/MenuItem";
+import useLoadingDots from "../common/useLoadingDots";
+import Stepper from "../common/Stepper";
 
 type EditField = "name" | "color" | "type" | "count";
 
 const IceCreamInventoryMenu = (props: {
-    theme?: TerminalTheme;
+    theme: TerminalTheme;
     onAction: (key: string) => void;
 }) => {
     const { emulatorState } = useAppContext();
     const muiTheme = useTheme();
     const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
     const mode = emulatorState.getAdminConsoleMode() as AdminConsoleState;
-    const [dots, setDots] = useState(".");
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setDots((prev) => (prev.length >= 3 ? "." : prev + "."));
-        }, 500);
-        return () => clearInterval(interval);
-    }, []);
+    const dots = useLoadingDots();
 
     const selectOption = (option: IceCreamInventoryMenuOption) => {
         emulatorState.setAdminConsoleMode({ ...mode, selectedOption: option });
@@ -44,7 +37,7 @@ const IceCreamInventoryMenu = (props: {
             <Box sx={{ paddingTop: 1 }}>
                 <Typography
                     sx={{
-                        color: props.theme?.outputColor || "#FCFCFC",
+                        color: props.theme.outputColor,
                         fontWeight: "bold",
                         mb: 1.25
                     }}
@@ -69,8 +62,8 @@ const IceCreamInventoryMenu = (props: {
                                 }
                                 sx={{
                                     color: active
-                                        ? props.theme?.commandColor || "#FFFFFF"
-                                        : props.theme?.outputColor || "#FCFCFC",
+                                        ? props.theme.commandColor
+                                        : props.theme.outputColor,
                                     backgroundColor: active
                                         ? "rgba(255,255,255,0.1)"
                                         : "transparent",
@@ -118,7 +111,7 @@ const IceCreamInventoryMenu = (props: {
                 )}
                 <Typography
                     sx={{
-                        color: props.theme?.outputColor || "#FCFCFC",
+                        color: props.theme.outputColor,
                         fontSize: "0.9em",
                         opacity: 0.7
                     }}
@@ -137,7 +130,7 @@ const IceCreamInventoryMenu = (props: {
         <Box sx={{ paddingTop: 1 }}>
             <Typography
                 sx={{
-                    color: props.theme?.outputColor || "#FCFCFC",
+                    color: props.theme.outputColor,
                     fontWeight: "bold",
                     mb: 1.25
                 }}
@@ -177,7 +170,7 @@ const IceCreamInventoryMenu = (props: {
             </MenuItem>
             <Typography
                 sx={{
-                    color: props.theme?.outputColor || "#FCFCFC",
+                    color: props.theme.outputColor,
                     mt: 1,
                     fontSize: "0.9em",
                     opacity: 0.7
