@@ -2,7 +2,6 @@ import { parseOptions } from "../parser";
 import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import * as DirOp from "../fs/operations/directory-operations";
 import * as FileOp from "../fs/operations/file-operations";
-import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = {
     "--no-preserve-root, --noPreserveRoot": "",
@@ -18,26 +17,20 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         return { output: "", type: "text" };
     }
 
-    try {
-        const deletionPath = relativeToAbsolutePath(state, argv[0]);
-        const fs = state.getFileSystem();
+    const deletionPath = relativeToAbsolutePath(state, argv[0]);
+    const fs = state.getFileSystem();
 
-        if (deletionPath === "/" && options.noPreserveRoot !== true) {
-            return { output: "", type: "text" };
-        }
-
-        options.recursive === true
-            ? DirOp.remove(fs, deletionPath)
-            : FileOp.remove(fs, deletionPath);
-
-        if (options.verbose) {
-            return { output: `removed '${argv[0]}'` };
-        }
-
-        return { output: "" };
-    } catch (err: unknown) {
-        return { output: errorMessage(err), type: "error" };
+    if (deletionPath === "/" && options.noPreserveRoot !== true) {
+        return { output: "", type: "text" };
     }
+
+    options.recursive === true ? DirOp.remove(fs, deletionPath) : FileOp.remove(fs, deletionPath);
+
+    if (options.verbose) {
+        return { output: `removed '${argv[0]}'` };
+    }
+
+    return { output: "" };
 };
 
 export const manPage = `NAME
@@ -55,4 +48,4 @@ OPTIONS
      -f, --force        Ignore nonexistent files and arguments, never prompt
      -v, --verbose      Explain what is being done`;
 
-export default { optDef, functionDef };
+export default { optDef, functionDef, manPage };

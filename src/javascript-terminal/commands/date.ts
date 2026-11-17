@@ -2,7 +2,6 @@ import { DateTime } from "luxon";
 
 import { parseOptions } from "../parser";
 import EmulatorState from "../emulator-state/EmulatorState";
-import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = {
     "-u, --utc": ""
@@ -11,39 +10,35 @@ export const optDef = {
 const functionDef = (_state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
 
-    try {
-        const now = options.utc ? DateTime.utc() : DateTime.now();
+    const now = options.utc ? DateTime.utc() : DateTime.now();
 
-        if (argv.length > 0 && argv[0].startsWith("+")) {
-            const format = argv[0].slice(1);
-            let output = format;
+    if (argv.length > 0 && argv[0].startsWith("+")) {
+        const format = argv[0].slice(1);
+        let output = format;
 
-            const replacements: Record<string, string> = {
-                "%Y": now.toFormat("yyyy"),
-                "%y": now.toFormat("yy"),
-                "%m": now.toFormat("MM"),
-                "%d": now.toFormat("dd"),
-                "%H": now.toFormat("HH"),
-                "%M": now.toFormat("mm"),
-                "%S": now.toFormat("ss"),
-                "%A": now.toFormat("EEEE"),
-                "%a": now.toFormat("EEE"),
-                "%B": now.toFormat("MMMM"),
-                "%b": now.toFormat("MMM")
-            };
+        const replacements: Record<string, string> = {
+            "%Y": now.toFormat("yyyy"),
+            "%y": now.toFormat("yy"),
+            "%m": now.toFormat("MM"),
+            "%d": now.toFormat("dd"),
+            "%H": now.toFormat("HH"),
+            "%M": now.toFormat("mm"),
+            "%S": now.toFormat("ss"),
+            "%A": now.toFormat("EEEE"),
+            "%a": now.toFormat("EEE"),
+            "%B": now.toFormat("MMMM"),
+            "%b": now.toFormat("MMM")
+        };
 
-            Object.entries(replacements).forEach(([key, value]) => {
-                output = output.replace(new RegExp(key, "g"), value);
-            });
+        Object.entries(replacements).forEach(([key, value]) => {
+            output = output.replace(new RegExp(key, "g"), value);
+        });
 
-            return { output };
-        }
-
-        const defaultFormat = options.utc ? now.toHTTP() : now.toFormat("EEE MMM dd yyyy HH:mm:ss");
-        return { output: defaultFormat };
-    } catch (err: unknown) {
-        return { output: errorMessage(err), type: "error" };
+        return { output };
     }
+
+    const defaultFormat = options.utc ? now.toHTTP() : now.toFormat("EEE MMM dd yyyy HH:mm:ss");
+    return { output: defaultFormat };
 };
 
 export const manPage = `NAME
@@ -72,4 +67,4 @@ DESCRIPTION
 OPTIONS
      -u, --utc    Display time in UTC instead of local time`;
 
-export default { optDef, functionDef };
+export default { optDef, functionDef, manPage };

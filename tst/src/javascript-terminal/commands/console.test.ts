@@ -1,11 +1,11 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import { mockToken } from "../../../setup";
 import { mockAdminState, mockShell } from "../../../helpers/terminal";
 import { AxiosError, axiosPost } from "../../../__mocks__/axios";
 
 import { UserType } from "../../../../api/types";
-import consoleCommand, {
+import {
     handleAdminConsoleKeyPress,
     arrowStep,
     cycleFlavorType,
@@ -58,17 +58,6 @@ describe("console", () => {
         shell.run("console");
 
         expect(shell.state.getAdminConsoleMode()?.screen).toBe("select-flavor");
-    });
-
-    it("should report an unexpected failure", () => {
-        const state = EmulatorState.create({});
-        vi.spyOn(state, "getEnvVariables").mockImplementation(() => {
-            throw new Error("broken state");
-        });
-
-        const result = consoleCommand.functionDef(state, []);
-
-        expect(result).toEqual({ output: "broken state", type: "error" });
     });
 });
 

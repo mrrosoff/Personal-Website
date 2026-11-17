@@ -49,7 +49,7 @@ describe("execute", () => {
 
         const result = shell.run("boom");
 
-        expect(result).toBe("An Unknown Command Error Occurred");
+        expect(result).toBe("boom");
     });
 });
 

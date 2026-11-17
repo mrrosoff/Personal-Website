@@ -2,7 +2,6 @@ import { parseOptions } from "../parser";
 import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import { fsSearch } from "../fs/operations/base-operations";
 import type { FileSystem } from "../../FileSystem";
-import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = {
     "--name": "<pattern>"
@@ -52,16 +51,12 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         optDef
     );
 
-    try {
-        const searchPath =
-            argv.length > 0 ? relativeToAbsolutePath(state, argv[0]) : state.getEnvVariables().cwd!;
-        const namePattern = options.name as string | undefined;
-        const results = findInDirectory(state.getFileSystem(), searchPath, namePattern);
+    const searchPath =
+        argv.length > 0 ? relativeToAbsolutePath(state, argv[0]) : state.getEnvVariables().cwd!;
+    const namePattern = options.name as string | undefined;
+    const results = findInDirectory(state.getFileSystem(), searchPath, namePattern);
 
-        return { output: results.join("\n") };
-    } catch (err: unknown) {
-        return { output: errorMessage(err), type: "error" };
-    }
+    return { output: results.join("\n") };
 };
 
 export const manPage = `NAME
@@ -80,4 +75,4 @@ OPTIONS
                       * matches any sequence of characters
                       ? matches any single character`;
 
-export default { optDef, functionDef };
+export default { optDef, functionDef, manPage };

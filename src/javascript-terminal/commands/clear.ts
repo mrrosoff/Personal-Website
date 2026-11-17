@@ -1,15 +1,10 @@
 import EmulatorState from "../emulator-state/EmulatorState";
-import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = {};
 
 const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
-    try {
-        state.setOutputs([]);
-        return {};
-    } catch (err: unknown) {
-        return { output: errorMessage(err), type: "error" };
-    }
+    state.setOutputs([]);
+    return {};
 };
 
 export const manPage = `NAME
@@ -21,4 +16,4 @@ SYNOPSIS
 DESCRIPTION
      Clears your screen if it is possible, including its scrollback buffer.`;
 
-export default { optDef, functionDef };
+export default { optDef, functionDef, manPage };

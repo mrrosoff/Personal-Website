@@ -1,8 +1,6 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import { mockShell } from "../../../helpers/terminal";
-import findCommand from "../../../../src/javascript-terminal/commands/find";
-import EmulatorState from "../../../../src/javascript-terminal/emulator-state/EmulatorState";
 
 describe("find", () => {
     it("should list everything below a path", () => {
@@ -44,16 +42,5 @@ describe("find", () => {
         const result = shell.run("find /home/fruit.txt");
 
         expect(result).toBe("");
-    });
-
-    it("should report an unexpected failure", () => {
-        const state = EmulatorState.create({});
-        vi.spyOn(state, "getFileSystem").mockImplementation(() => {
-            throw new Error("broken state");
-        });
-
-        const result = findCommand.functionDef(state, ["/"]);
-
-        expect(result).toEqual({ output: "broken state", type: "error" });
     });
 });

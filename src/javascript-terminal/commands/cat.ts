@@ -1,7 +1,6 @@
 import { parseOptions } from "../parser";
 import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import * as FileOp from "../fs/operations/file-operations";
-import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = {
     "-n, --number": ""
@@ -14,27 +13,23 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         return { output: "usage: cat [-n] [file ...]", type: "error" };
     }
 
-    try {
-        const filePaths = argv.map((pathArg) => relativeToAbsolutePath(state, pathArg));
-        const contents = filePaths.map((path) => FileOp.read(state.getFileSystem(), path));
+    const filePaths = argv.map((pathArg) => relativeToAbsolutePath(state, pathArg));
+    const contents = filePaths.map((path) => FileOp.read(state.getFileSystem(), path));
 
-        if (options.number) {
-            const numberedContents = contents.map((content) => {
-                const lines = content.split("\n");
-                return lines
-                    .map(
-                        (line: string, index: number) =>
-                            `${String(index + 1).padStart(6, " ")}\t${line}`
-                    )
-                    .join("\n");
-            });
-            return { output: numberedContents.join("\n") };
-        }
-
-        return { output: contents.join("\n") };
-    } catch (err: unknown) {
-        return { output: errorMessage(err), type: "error" };
+    if (options.number) {
+        const numberedContents = contents.map((content) => {
+            const lines = content.split("\n");
+            return lines
+                .map(
+                    (line: string, index: number) =>
+                        `${String(index + 1).padStart(6, " ")}\t${line}`
+                )
+                .join("\n");
+        });
+        return { output: numberedContents.join("\n") };
     }
+
+    return { output: contents.join("\n") };
 };
 
 export const manPage = `NAME
@@ -50,4 +45,4 @@ DESCRIPTION
 OPTIONS
      -n, --number    Number all output lines`;
 
-export default { optDef, functionDef };
+export default { optDef, functionDef, manPage };

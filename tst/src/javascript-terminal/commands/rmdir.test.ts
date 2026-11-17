@@ -56,15 +56,4 @@ describe("rmdir", () => {
 
         expect(result).toEqual({ output: "" });
     });
-
-    it("should report an unexpected failure", () => {
-        const state = EmulatorState.create({});
-        vi.spyOn(state, "getFileSystem").mockImplementation(() => {
-            throw new Error("broken state");
-        });
-
-        const result = rmdirCommand.functionDef(state, ["/empty"]);
-
-        expect(result).toEqual({ output: "broken state", type: "error" });
-    });
 });

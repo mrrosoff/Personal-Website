@@ -12,6 +12,7 @@ export type CommandMapping = {
     [key: string]: {
         functionDef: (state: EmulatorState, _commandOptions: string[]) => CommandResult;
         optDef: { [key: string]: string };
+        manPage?: string;
     };
 };
 

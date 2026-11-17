@@ -1,19 +1,6 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import { mockShell } from "../../../helpers/terminal";
-import { parseOptions } from "../../../../src/javascript-terminal/parser";
-
-vi.mock("../../../../src/javascript-terminal/parser", async (importOriginal) => {
-    const actual =
-        await importOriginal<typeof import("../../../../src/javascript-terminal/parser")>();
-    return { ...actual, parseOptions: vi.fn(actual.parseOptions) };
-});
-
-const unreadableArgument = {
-    toString: () => {
-        throw new Error("unreadable argument");
-    }
-};
 
 describe("man", () => {
     it("should show a manual page", () => {
@@ -38,17 +25,5 @@ describe("man", () => {
         const result = shell.run("man ls cd");
 
         expect(result).toBe("");
-    });
-
-    it("should report an argument it cannot read", () => {
-        const shell = mockShell();
-        vi.mocked(parseOptions).mockReturnValueOnce({
-            options: {},
-            argv: [unreadableArgument]
-        } as never);
-
-        const [result] = shell.results("man x");
-
-        expect(result.type).toBe("error");
     });
 });

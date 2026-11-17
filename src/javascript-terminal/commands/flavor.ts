@@ -43,4 +43,4 @@ SYNOPSIS
 DESCRIPTION
      Suggest a new ice cream flavor. Must be authenticated as a friend via sudo.`;
 
-export default { optDef, functionDef };
+export default { optDef, functionDef, manPage };

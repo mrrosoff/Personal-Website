@@ -3,8 +3,6 @@ import { describe, expect, it, vi } from "vitest";
 import { mockShell } from "../../../helpers/terminal";
 import { mockToken } from "../../../setup";
 import { UserType } from "../../../../api/types";
-import exportCommand from "../../../../src/javascript-terminal/commands/export";
-import EmulatorState from "../../../../src/javascript-terminal/emulator-state/EmulatorState";
 
 describe("export", () => {
     it("should set a variable", () => {
@@ -41,16 +39,5 @@ describe("export", () => {
         shell.run(`export AUTH_TOKEN=${token}`);
 
         expect(setItem).toHaveBeenCalledWith("AUTH_TOKEN", token);
-    });
-
-    it("should report an unexpected failure", () => {
-        const state = EmulatorState.create({});
-        vi.spyOn(state, "setEnvVariables").mockImplementation(() => {
-            throw new Error("broken state");
-        });
-
-        const result = exportCommand.functionDef(state, ["A=b"]);
-
-        expect(result).toEqual({ output: "broken state", type: "error" });
     });
 });

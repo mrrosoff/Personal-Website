@@ -45,4 +45,4 @@ SYNOPSIS
 DESCRIPTION
      Switch to the specified user. Must be invoked via sudo.`;
 
-export default { optDef, functionDef };
+export default { optDef, functionDef, manPage };

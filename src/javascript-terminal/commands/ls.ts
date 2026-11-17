@@ -4,7 +4,6 @@ import * as DirOp from "../fs/operations/directory-operations";
 import { fsSearch } from "../fs/operations/base-operations";
 import EmulatorState from "../emulator-state/EmulatorState";
 import type { FileSystem } from "../../FileSystem";
-import { errorMessage } from "../emulator-state/CommandMapping";
 
 const IMPLIED_DIRECTORY_ENTRIES = [".", ".."];
 
@@ -44,27 +43,23 @@ export const optDef = { "-a, --all": "", "-A, --almost-all": "", "-l, --long": "
 const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { options, argv } = parseOptions(commandOptions, optDef);
 
-    try {
-        const dirPath = resolveDirectoryToList(state.getEnvVariables(), argv);
-        const dirList = DirOp.list(state.getFileSystem(), dirPath);
+    const dirPath = resolveDirectoryToList(state.getEnvVariables(), argv);
+    const dirList = DirOp.list(state.getFileSystem(), dirPath);
 
-        let listing: string[];
-        if (options.all) {
-            listing = IMPLIED_DIRECTORY_ENTRIES.concat(dirList);
-        } else if (options.almostAll) {
-            listing = dirList;
-        } else {
-            listing = dirList.filter((record) => !record.startsWith("."));
-        }
-
-        if (options.long) {
-            return makeLongFormatReturn(state.getFileSystem(), dirPath, listing);
-        }
-
-        return makeSortedReturn(listing);
-    } catch (err: unknown) {
-        return { output: errorMessage(err), type: "error" };
+    let listing: string[];
+    if (options.all) {
+        listing = IMPLIED_DIRECTORY_ENTRIES.concat(dirList);
+    } else if (options.almostAll) {
+        listing = dirList;
+    } else {
+        listing = dirList.filter((record) => !record.startsWith("."));
     }
+
+    if (options.long) {
+        return makeLongFormatReturn(state.getFileSystem(), dirPath, listing);
+    }
+
+    return makeSortedReturn(listing);
 };
 
 export const manPage = `NAME
@@ -86,4 +81,4 @@ OPTIONS
                        except for . and ..
      -l, --long        List in long format, showing type, permissions, and name`;
 
-export default { optDef, functionDef };
+export default { optDef, functionDef, manPage };

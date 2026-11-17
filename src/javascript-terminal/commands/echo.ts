@@ -1,6 +1,5 @@
 import EmulatorState from "../emulator-state/EmulatorState";
 import { parseOptions } from "../parser";
-import { errorMessage } from "../emulator-state/CommandMapping";
 
 const VARIABLE_GROUP_REGEX = /\$(\w+)/g;
 const DOUBLE_SPACE_REGEX = /\s\s+/g;
@@ -22,19 +21,15 @@ export const optDef = {
 const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { argv } = parseOptions(commandOptions, optDef);
 
-    try {
-        const input = argv.join(" ");
-        const outputStr = substituteEnvVariables(state.getEnvVariables(), input);
-        let cleanStr = outputStr.trim().replace(DOUBLE_SPACE_REGEX, " ");
+    const input = argv.join(" ");
+    const outputStr = substituteEnvVariables(state.getEnvVariables(), input);
+    let cleanStr = outputStr.trim().replace(DOUBLE_SPACE_REGEX, " ");
 
-        if (cleanStr[0] === '"' && cleanStr[cleanStr.length - 1] === '"') {
-            cleanStr = cleanStr.slice(1, cleanStr.length - 1);
-        }
-
-        return { output: cleanStr };
-    } catch (err: unknown) {
-        return { output: errorMessage(err), type: "error" };
+    if (cleanStr[0] === '"' && cleanStr[cleanStr.length - 1] === '"') {
+        cleanStr = cleanStr.slice(1, cleanStr.length - 1);
     }
+
+    return { output: cleanStr };
 };
 
 export const manPage = `NAME
@@ -50,4 +45,4 @@ DESCRIPTION
 OPTIONS
      -n    Do not output the trailing newline`;
 
-export default { optDef, functionDef };
+export default { optDef, functionDef, manPage };

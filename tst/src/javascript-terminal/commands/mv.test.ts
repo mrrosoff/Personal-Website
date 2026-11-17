@@ -1,8 +1,6 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import { mockShell } from "../../../helpers/terminal";
-import mvCommand from "../../../../src/javascript-terminal/commands/mv";
-import EmulatorState from "../../../../src/javascript-terminal/emulator-state/EmulatorState";
 
 describe("mv", () => {
     it("should rename a file", () => {
@@ -36,16 +34,5 @@ describe("mv", () => {
         const result = shell.run("mv /media/song.mp3");
 
         expect(result).toBe("usage: mv [-v] source target");
-    });
-
-    it("should report an unexpected failure", () => {
-        const state = EmulatorState.create({});
-        vi.spyOn(state, "getFileSystem").mockImplementation(() => {
-            throw new Error("broken state");
-        });
-
-        const result = mvCommand.functionDef(state, ["/media/song.mp3", "/media/tune.mp3"]);
-
-        expect(result).toEqual({ output: "broken state", type: "error" });
     });
 });

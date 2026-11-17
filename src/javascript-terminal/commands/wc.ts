@@ -1,7 +1,6 @@
 import { parseOptions } from "../parser";
 import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import * as FileOp from "../fs/operations/file-operations";
-import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = {
     "-l, --lines": "",
@@ -16,32 +15,28 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         return { output: "usage: wc [-lwc] [file]", type: "error" };
     }
 
-    try {
-        const filePath = relativeToAbsolutePath(state, argv[0]);
-        const fileContent = FileOp.read(state.getFileSystem(), filePath);
+    const filePath = relativeToAbsolutePath(state, argv[0]);
+    const fileContent = FileOp.read(state.getFileSystem(), filePath);
 
-        const lines = fileContent.split("\n");
-        const words = fileContent.split(/\s+/).filter((w: string) => w.length > 0);
-        const chars = fileContent.length;
+    const lines = fileContent.split("\n");
+    const words = fileContent.split(/\s+/).filter((w: string) => w.length > 0);
+    const chars = fileContent.length;
 
-        const lineCount = lines.length;
-        const wordCount = words.length;
-        const charCount = chars;
+    const lineCount = lines.length;
+    const wordCount = words.length;
+    const charCount = chars;
 
-        const hasSpecificFlag = options.lines || options.words || options.chars;
+    const hasSpecificFlag = options.lines || options.words || options.chars;
 
-        if (hasSpecificFlag) {
-            const counts: string[] = [];
-            if (options.lines) counts.push(String(lineCount));
-            if (options.words) counts.push(String(wordCount));
-            if (options.chars) counts.push(String(charCount));
-            return { output: `${counts.join(" ")} ${argv[0]}` };
-        }
-
-        return { output: `${lineCount} ${wordCount} ${charCount} ${argv[0]}` };
-    } catch (err: unknown) {
-        return { output: errorMessage(err), type: "error" };
+    if (hasSpecificFlag) {
+        const counts: string[] = [];
+        if (options.lines) counts.push(String(lineCount));
+        if (options.words) counts.push(String(wordCount));
+        if (options.chars) counts.push(String(charCount));
+        return { output: `${counts.join(" ")} ${argv[0]}` };
     }
+
+    return { output: `${lineCount} ${wordCount} ${charCount} ${argv[0]}` };
 };
 
 export const manPage = `NAME
@@ -59,4 +54,4 @@ OPTIONS
      -w, --words    Display only the word count
      -c, --chars    Display only the character count`;
 
-export default { optDef, functionDef };
+export default { optDef, functionDef, manPage };

@@ -16,4 +16,4 @@ DESCRIPTION
      Navigates to the ice cream shop page where you can browse and purchase
      ice cream flavors.`;
 
-export default { optDef, functionDef };
+export default { optDef, functionDef, manPage };

@@ -1,7 +1,6 @@
 import { parseOptions } from "../parser";
 import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import * as FileOp from "../fs/operations/file-operations";
-import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = {};
 
@@ -12,46 +11,42 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         return { output: "sed: missing operand", type: "error" };
     }
 
-    try {
-        const command = argv[0];
-        const filePath = relativeToAbsolutePath(state, argv[1]);
-        const fileContent = FileOp.read(state.getFileSystem(), filePath);
+    const command = argv[0];
+    const filePath = relativeToAbsolutePath(state, argv[1]);
+    const fileContent = FileOp.read(state.getFileSystem(), filePath);
 
-        const sedMatch = command.match(/^s\/(.+)\/(.*)\/([gi]*)$/);
+    const sedMatch = command.match(/^s\/(.+)\/(.*)\/([gi]*)$/);
 
-        if (!sedMatch) {
-            return {
-                output: "sed: invalid command. Use format: s/find/replace/[gi]",
-                type: "error"
-            };
-        }
-
-        const [, findPattern, replacePattern, flags] = sedMatch;
-        const globalFlag = flags.includes("g");
-        const caseInsensitiveFlag = flags.includes("i");
-
-        let output: string;
-        const regexFlags = (globalFlag ? "g" : "") + (caseInsensitiveFlag ? "i" : "");
-
-        if (globalFlag) {
-            const regex = new RegExp(findPattern, regexFlags);
-            output = fileContent.replace(regex, replacePattern);
-        } else {
-            output = fileContent
-                .split("\n")
-                .map((line: string) =>
-                    line.replace(
-                        new RegExp(findPattern, caseInsensitiveFlag ? "i" : ""),
-                        replacePattern
-                    )
-                )
-                .join("\n");
-        }
-
-        return { output };
-    } catch (err: unknown) {
-        return { output: errorMessage(err), type: "error" };
+    if (!sedMatch) {
+        return {
+            output: "sed: invalid command. Use format: s/find/replace/[gi]",
+            type: "error"
+        };
     }
+
+    const [, findPattern, replacePattern, flags] = sedMatch;
+    const globalFlag = flags.includes("g");
+    const caseInsensitiveFlag = flags.includes("i");
+
+    let output: string;
+    const regexFlags = (globalFlag ? "g" : "") + (caseInsensitiveFlag ? "i" : "");
+
+    if (globalFlag) {
+        const regex = new RegExp(findPattern, regexFlags);
+        output = fileContent.replace(regex, replacePattern);
+    } else {
+        output = fileContent
+            .split("\n")
+            .map((line: string) =>
+                line.replace(
+                    new RegExp(findPattern, caseInsensitiveFlag ? "i" : ""),
+                    replacePattern
+                )
+            )
+            .join("\n");
+    }
+
+    return { output };
 };
 
 export const manPage = `NAME
@@ -72,4 +67,4 @@ DESCRIPTION
      The pattern can be a regular expression, and the replacement is the
      text to substitute in place of matches.`;
 
-export default { optDef, functionDef };
+export default { optDef, functionDef, manPage };

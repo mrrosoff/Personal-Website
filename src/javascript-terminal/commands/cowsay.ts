@@ -1,6 +1,5 @@
 import EmulatorState from "../emulator-state/EmulatorState";
 import { parseOptions } from "../parser";
-import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = {};
 
@@ -56,15 +55,11 @@ const cow = `
 const functionDef = (_state: EmulatorState, commandOptions: string[]) => {
     const { argv } = parseOptions(commandOptions, optDef);
 
-    try {
-        const message = argv.join(" ") || "moo";
-        const bubble = createBubble(message);
-        const output = bubble + cow;
+    const message = argv.join(" ") || "moo";
+    const bubble = createBubble(message);
+    const output = bubble + cow;
 
-        return { output };
-    } catch (err: unknown) {
-        return { output: errorMessage(err), type: "error" };
-    }
+    return { output };
 };
 
 export const manPage = `NAME

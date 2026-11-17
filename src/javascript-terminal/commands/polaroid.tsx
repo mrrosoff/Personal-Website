@@ -1,26 +1,21 @@
 import { decodeToken, ownsDeviceKind } from "../../auth";
 import { DeviceKind } from "../../../api/types";
 import EmulatorState from "../emulator-state/EmulatorState";
-import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = {};
 
 const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
-    try {
-        const environmentVariables = state.getEnvVariables();
-        const token = environmentVariables["AUTH_TOKEN"];
-        if (!token) {
-            return { output: "Permission Denied", type: "error" };
-        }
-
-        if (!ownsDeviceKind(decodeToken(token), DeviceKind.POLAROID)) {
-            return { output: "Permission Denied", type: "error" };
-        }
-
-        return { output: "/polaroid", type: "navigate" };
-    } catch (err: unknown) {
-        return { output: errorMessage(err), type: "error" };
+    const environmentVariables = state.getEnvVariables();
+    const token = environmentVariables["AUTH_TOKEN"];
+    if (!token) {
+        return { output: "Permission Denied", type: "error" };
     }
+
+    if (!ownsDeviceKind(decodeToken(token), DeviceKind.POLAROID)) {
+        return { output: "Permission Denied", type: "error" };
+    }
+
+    return { output: "/polaroid", type: "navigate" };
 };
 
 export const manPage = `NAME
@@ -33,4 +28,4 @@ DESCRIPTION
      Navigates to the polaroid page where you can upload images
      if you have a compatible device.`;
 
-export default { optDef, functionDef };
+export default { optDef, functionDef, manPage };

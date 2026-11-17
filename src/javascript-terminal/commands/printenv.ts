@@ -1,6 +1,5 @@
 import EmulatorState from "../emulator-state/EmulatorState";
 import { parseOptions } from "../parser";
-import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = {};
 
@@ -16,17 +15,13 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         };
     }
 
-    try {
-        const varValue = envVariables[argv[0]];
+    const varValue = envVariables[argv[0]];
 
-        if (varValue) {
-            return { output: varValue };
-        }
-
-        return {};
-    } catch (err: unknown) {
-        return { output: errorMessage(err), type: "error" };
+    if (varValue) {
+        return { output: varValue };
     }
+
+    return {};
 };
 
 export const manPage = `NAME
@@ -39,4 +34,4 @@ DESCRIPTION
      Print the values of the specified environment variable(s). If no variable
      is specified, print name and value pairs for them all.`;
 
-export default { optDef, functionDef };
+export default { optDef, functionDef, manPage };

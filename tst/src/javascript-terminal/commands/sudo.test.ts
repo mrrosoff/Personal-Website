@@ -48,7 +48,7 @@ describe("sudo", () => {
         expect(result).toBe("Command Not Found");
     });
 
-    it("should report a command that crashes", async () => {
+    it("should report the error from a command that crashes", async () => {
         const shell = mockShell({ AUTH_TOKEN: await mockToken(UserType.ADMIN) });
         shell.state.setCommandMapping({
             ...shell.state.getCommandMapping(),
@@ -62,7 +62,7 @@ describe("sudo", () => {
 
         const result = shell.run("sudo boom");
 
-        expect(result).toBe("Command Execution Failed");
+        expect(result).toBe("boom");
     });
 });
 

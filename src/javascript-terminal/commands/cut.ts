@@ -1,7 +1,6 @@
 import { parseOptions } from "../parser";
 import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import * as FileOp from "../fs/operations/file-operations";
-import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = {
     "-d, --delimiter": "<delim>",
@@ -15,43 +14,39 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         return { output: "cut: missing file operand", type: "error" };
     }
 
-    try {
-        const filePath = relativeToAbsolutePath(state, argv[0]);
-        const fileContent = FileOp.read(state.getFileSystem(), filePath);
+    const filePath = relativeToAbsolutePath(state, argv[0]);
+    const fileContent = FileOp.read(state.getFileSystem(), filePath);
 
-        const delimiter = options.delimiter || "\t";
-        const fields = options.fields;
+    const delimiter = options.delimiter || "\t";
+    const fields = options.fields;
 
-        if (!fields) {
-            return { output: "cut: you must specify a list of fields with -f", type: "error" };
-        }
-
-        const fieldNumbers: number[] = [];
-        const fieldSpec = fields.toString();
-
-        if (fieldSpec.includes("-")) {
-            const [start, end] = fieldSpec.split("-").map(Number);
-            for (let i = start; i <= end; i++) {
-                fieldNumbers.push(i);
-            }
-        } else if (fieldSpec.includes(",")) {
-            fieldNumbers.push(...fieldSpec.split(",").map(Number));
-        } else {
-            fieldNumbers.push(Number(fieldSpec));
-        }
-
-        const lines = fileContent.split("\n");
-        const output = lines
-            .map((line: string) => {
-                const parts = line.split(delimiter);
-                return fieldNumbers.map((fieldNum) => parts[fieldNum - 1] || "").join(delimiter);
-            })
-            .join("\n");
-
-        return { output };
-    } catch (err: unknown) {
-        return { output: errorMessage(err), type: "error" };
+    if (!fields) {
+        return { output: "cut: you must specify a list of fields with -f", type: "error" };
     }
+
+    const fieldNumbers: number[] = [];
+    const fieldSpec = fields.toString();
+
+    if (fieldSpec.includes("-")) {
+        const [start, end] = fieldSpec.split("-").map(Number);
+        for (let i = start; i <= end; i++) {
+            fieldNumbers.push(i);
+        }
+    } else if (fieldSpec.includes(",")) {
+        fieldNumbers.push(...fieldSpec.split(",").map(Number));
+    } else {
+        fieldNumbers.push(Number(fieldSpec));
+    }
+
+    const lines = fileContent.split("\n");
+    const output = lines
+        .map((line: string) => {
+            const parts = line.split(delimiter);
+            return fieldNumbers.map((fieldNum) => parts[fieldNum - 1] || "").join(delimiter);
+        })
+        .join("\n");
+
+    return { output };
 };
 
 export const manPage = `NAME
@@ -72,4 +67,4 @@ DESCRIPTION
 
      Example: cut -d ',' -f 1,2 data.csv`;
 
-export default { optDef, functionDef };
+export default { optDef, functionDef, manPage };

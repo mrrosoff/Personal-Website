@@ -1,7 +1,6 @@
 import { parseOptions } from "../parser";
 import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import * as FileOp from "../fs/operations/file-operations";
-import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = {
     "-c, --count": ""
@@ -14,43 +13,39 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         return { output: "uniq: missing file operand", type: "error" };
     }
 
-    try {
-        const filePath = relativeToAbsolutePath(state, argv[0]);
-        const fileContent = FileOp.read(state.getFileSystem(), filePath);
+    const filePath = relativeToAbsolutePath(state, argv[0]);
+    const fileContent = FileOp.read(state.getFileSystem(), filePath);
 
-        const lines = fileContent.split("\n");
-        const uniqueLines: Array<{ line: string; count: number }> = [];
-        let previousLine = "";
-        let currentCount = 0;
+    const lines = fileContent.split("\n");
+    const uniqueLines: Array<{ line: string; count: number }> = [];
+    let previousLine = "";
+    let currentCount = 0;
 
-        lines.forEach((line: string) => {
-            if (line === previousLine) {
-                currentCount++;
-            } else {
-                if (previousLine !== "") {
-                    uniqueLines.push({ line: previousLine, count: currentCount });
-                }
-                previousLine = line;
-                currentCount = 1;
+    lines.forEach((line: string) => {
+        if (line === previousLine) {
+            currentCount++;
+        } else {
+            if (previousLine !== "") {
+                uniqueLines.push({ line: previousLine, count: currentCount });
             }
-        });
-
-        if (previousLine !== "") {
-            uniqueLines.push({ line: previousLine, count: currentCount });
+            previousLine = line;
+            currentCount = 1;
         }
+    });
 
-        if (options.count) {
-            return {
-                output: uniqueLines
-                    .map(({ line, count }) => `${String(count).padStart(7, " ")} ${line}`)
-                    .join("\n")
-            };
-        }
-
-        return { output: uniqueLines.map(({ line }) => line).join("\n") };
-    } catch (err: unknown) {
-        return { output: errorMessage(err), type: "error" };
+    if (previousLine !== "") {
+        uniqueLines.push({ line: previousLine, count: currentCount });
     }
+
+    if (options.count) {
+        return {
+            output: uniqueLines
+                .map(({ line, count }) => `${String(count).padStart(7, " ")} ${line}`)
+                .join("\n")
+        };
+    }
+
+    return { output: uniqueLines.map(({ line }) => line).join("\n") };
 };
 
 export const manPage = `NAME
@@ -68,4 +63,4 @@ DESCRIPTION
 OPTIONS
      -c, --count    Precede each output line with the count of occurrences`;
 
-export default { optDef, functionDef };
+export default { optDef, functionDef, manPage };

@@ -1,6 +1,7 @@
 import { parseCommands } from "../parser";
 import { suggestCommandOptions, suggestCommands, suggestFileSystemNames } from "./auto-complete";
 import * as CommandMappingUtil from "../emulator-state/CommandMapping";
+import { errorMessage } from "../emulator-state/CommandMapping";
 import * as PathUtil from "../fs/util/path-util";
 import { fsSearchParent } from "../fs/operations/base-operations";
 import EmulatorState from "../emulator-state/EmulatorState";
@@ -148,19 +149,16 @@ export default class Emulator {
         commandArgs: (EmulatorState | string[])[],
         errorString = "Command Not Found"
     ) {
-        const notFoundCallback = () => ({ output: errorString, type: "error" });
-
         const command = CommandMappingUtil.getCommandFn(commandMapping, commandName);
         if (!command) {
-            return notFoundCallback();
+            return { output: errorString, type: "error" };
         }
 
         try {
             // @ts-ignore
             return command(...commandArgs);
-        } catch (fatalCommandError: unknown) {
-            console.error(fatalCommandError);
-            return { output: "An Unknown Command Error Occurred", type: "error" };
+        } catch (err: unknown) {
+            return { output: errorMessage(err), type: "error" };
         }
     }
 }

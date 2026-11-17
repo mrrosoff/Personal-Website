@@ -20,4 +20,4 @@ SYNOPSIS
 DESCRIPTION
      The whoami utility displays your effective user name.`;
 
-export default { optDef, functionDef };
+export default { optDef, functionDef, manPage };

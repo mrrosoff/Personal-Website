@@ -1,50 +1,5 @@
 import EmulatorState from "../emulator-state/EmulatorState";
 import { parseOptions } from "../parser";
-import { manPage as aliasManPage } from "./alias";
-import { manPage as basenameManPage } from "./basename";
-import { manPage as catManPage } from "./cat";
-import { manPage as cdManPage } from "./cd";
-import { manPage as clearManPage } from "./clear";
-import { manPage as consoleManPage } from "./console";
-import { manPage as cowsayManPage } from "./cowsay";
-import { manPage as cpManPage } from "./cp";
-import { manPage as cutManPage } from "./cut";
-import { manPage as dateManPage } from "./date";
-import { manPage as diffManPage } from "./diff";
-import { manPage as dirnameManPage } from "./dirname";
-import { manPage as displayManPage } from "./display";
-import { manPage as echoManPage } from "./echo";
-import { manPage as exportManPage } from "./export";
-import { manPage as findManPage } from "./find";
-import { manPage as flavorManPage } from "./flavor";
-import { manPage as grepManPage } from "./grep";
-import { manPage as hauntManPage } from "./haunt";
-import { manPage as headManPage } from "./head";
-import { manPage as historyManPage } from "./history";
-import { manPage as icecreamManPage } from "./icecream";
-import { manPage as lsManPage } from "./ls";
-import { manPage as mkdirManPage } from "./mkdir";
-import { manPage as mvManPage } from "./mv";
-import { manPage as playManPage } from "./play";
-import { manPage as polaroidManPage } from "./polaroid";
-import { manPage as printenvManPage } from "./printenv";
-import { manPage as pwdManPage } from "./pwd";
-import { manPage as rmManPage } from "./rm";
-import { manPage as rmdirManPage } from "./rmdir";
-import { manPage as sedManPage } from "./sed";
-import { manPage as snakeManPage } from "./snake";
-import { manPage as sortManPage } from "./sort";
-import { manPage as spotifyManPage } from "./spotify";
-import { manPage as suManPage } from "./su";
-import { manPage as sudoManPage } from "./sudo";
-import { manPage as tailManPage } from "./tail";
-import { manPage as teeManPage } from "./tee";
-import { manPage as touchManPage } from "./touch";
-import { manPage as uniqManPage } from "./uniq";
-import { manPage as wcManPage } from "./wc";
-import { manPage as whichManPage } from "./which";
-import { manPage as whoamiManPage } from "./whoami";
-import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = {};
 
@@ -57,73 +12,14 @@ SYNOPSIS
 DESCRIPTION
      The man utility displays the manual page for the specified command.`;
 
-const manPages: Record<string, string> = {
-    alias: aliasManPage,
-    basename: basenameManPage,
-    cat: catManPage,
-    cd: cdManPage,
-    clear: clearManPage,
-    console: consoleManPage,
-    cowsay: cowsayManPage,
-    cp: cpManPage,
-    cut: cutManPage,
-    date: dateManPage,
-    diff: diffManPage,
-    dirname: dirnameManPage,
-    display: displayManPage,
-    echo: echoManPage,
-    export: exportManPage,
-    find: findManPage,
-    flavor: flavorManPage,
-    grep: grepManPage,
-    haunt: hauntManPage,
-    head: headManPage,
-    history: historyManPage,
-    icecream: icecreamManPage,
-    ls: lsManPage,
-    man: manPage,
-    mkdir: mkdirManPage,
-    mv: mvManPage,
-    play: playManPage,
-    polaroid: polaroidManPage,
-    printenv: printenvManPage,
-    pwd: pwdManPage,
-    rm: rmManPage,
-    rmdir: rmdirManPage,
-    sed: sedManPage,
-    snake: snakeManPage,
-    sort: sortManPage,
-    spotify: spotifyManPage,
-    su: suManPage,
-    sudo: sudoManPage,
-    tail: tailManPage,
-    tee: teeManPage,
-    touch: touchManPage,
-    uniq: uniqManPage,
-    wc: wcManPage,
-    which: whichManPage,
-    whoami: whoamiManPage
-};
-
-const functionDef = (_state: EmulatorState, commandOptions: string[]) => {
+const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const { argv } = parseOptions(commandOptions, optDef);
 
     if (argv.length !== 1) {
         return {};
     }
 
-    try {
-        const command = argv[0];
-        const manPage = manPages[command];
-
-        if (manPage) {
-            return { output: manPage };
-        }
-
-        return { output: "" };
-    } catch (err: unknown) {
-        return { output: errorMessage(err), type: "error" };
-    }
+    return { output: state.getCommandMapping()[argv[0]]?.manPage ?? "" };
 };
 
-export default { optDef, functionDef };
+export default { optDef, functionDef, manPage };

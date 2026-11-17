@@ -1,6 +1,5 @@
 import { parseOptions } from "../parser";
 import EmulatorState from "../emulator-state/EmulatorState";
-import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = {};
 
@@ -11,30 +10,26 @@ const functionDef = (_state: EmulatorState, commandOptions: string[]) => {
         return { output: "dirname: missing operand", type: "error" };
     }
 
-    try {
-        const path = argv[0];
+    const path = argv[0];
 
-        let cleanPath = path.replace(/\/+$/, "");
+    let cleanPath = path.replace(/\/+$/, "");
 
-        if (cleanPath === "" || cleanPath === "/") {
-            return { output: "/" };
-        }
-
-        const lastSlashIndex = cleanPath.lastIndexOf("/");
-
-        if (lastSlashIndex === -1) {
-            return { output: "." };
-        }
-
-        if (lastSlashIndex === 0) {
-            return { output: "/" };
-        }
-
-        const dirname = cleanPath.slice(0, lastSlashIndex);
-        return { output: dirname };
-    } catch (err: unknown) {
-        return { output: errorMessage(err), type: "error" };
+    if (cleanPath === "" || cleanPath === "/") {
+        return { output: "/" };
     }
+
+    const lastSlashIndex = cleanPath.lastIndexOf("/");
+
+    if (lastSlashIndex === -1) {
+        return { output: "." };
+    }
+
+    if (lastSlashIndex === 0) {
+        return { output: "/" };
+    }
+
+    const dirname = cleanPath.slice(0, lastSlashIndex);
+    return { output: dirname };
 };
 
 export const manPage = `NAME
@@ -53,4 +48,4 @@ DESCRIPTION
        dirname file.txt             → .
        dirname /file.txt            → /`;
 
-export default { optDef, functionDef };
+export default { optDef, functionDef, manPage };

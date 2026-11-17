@@ -2,7 +2,6 @@ import { parseOptions } from "../parser";
 import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import * as DirOp from "../fs/operations/directory-operations";
 import * as FileOp from "../fs/operations/file-operations";
-import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = {
     "-r, --recursive": "",
@@ -16,28 +15,24 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         return { output: "usage: cp [-rv] source dest", type: "error" };
     }
 
-    try {
-        const srcPath = relativeToAbsolutePath(state, argv[0]);
-        const destPath = relativeToAbsolutePath(state, argv[1]);
+    const srcPath = relativeToAbsolutePath(state, argv[0]);
+    const destPath = relativeToAbsolutePath(state, argv[1]);
 
-        if (srcPath === destPath) {
-            return { output: "Source and destination are the same (not copied)." };
-        }
-
-        if (options.recursive) {
-            DirOp.copy(state.getFileSystem(), srcPath, destPath);
-        } else {
-            FileOp.copy(state.getFileSystem(), srcPath, destPath);
-        }
-
-        if (options.verbose) {
-            return { output: `'${argv[0]}' -> '${argv[1]}'` };
-        }
-
-        return { output: "" };
-    } catch (err: unknown) {
-        return { output: errorMessage(err), type: "error" };
+    if (srcPath === destPath) {
+        return { output: "Source and destination are the same (not copied)." };
     }
+
+    if (options.recursive) {
+        DirOp.copy(state.getFileSystem(), srcPath, destPath);
+    } else {
+        FileOp.copy(state.getFileSystem(), srcPath, destPath);
+    }
+
+    if (options.verbose) {
+        return { output: `'${argv[0]}' -> '${argv[1]}'` };
+    }
+
+    return { output: "" };
 };
 
 export const manPage = `NAME
@@ -53,4 +48,4 @@ OPTIONS
      -r, --recursive    Copy directories recursively
      -v, --verbose      Explain what is being done`;
 
-export default { optDef, functionDef };
+export default { optDef, functionDef, manPage };

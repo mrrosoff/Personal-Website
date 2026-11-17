@@ -2,7 +2,6 @@ import { parseOptions } from "../parser";
 import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import * as FileOp from "../fs/operations/file-operations";
 import type { FileSystem } from "../../FileSystem";
-import { errorMessage } from "../emulator-state/CommandMapping";
 
 const fileToImageOutput = (fs: FileSystem, filePath: string) => {
     const file = FileOp.read(fs, filePath);
@@ -35,19 +34,15 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         return { output: "usage: display [file ...]", type: "error" };
     }
 
-    try {
-        const regex = new RegExp(".(png|jpe?g|mov|mp4)$", "g");
-        const filePaths = argv
-            .map((pathArg) => relativeToAbsolutePath(state, pathArg))
-            .filter((item) => item.match(regex));
+    const regex = new RegExp(".(png|jpe?g|mov|mp4)$", "g");
+    const filePaths = argv
+        .map((pathArg) => relativeToAbsolutePath(state, pathArg))
+        .filter((item) => item.match(regex));
 
-        return {
-            output: filePaths.map((path) => fileToImageOutput(state.getFileSystem(), path)),
-            type: "react"
-        };
-    } catch (err: unknown) {
-        return { output: errorMessage(err), type: "error" };
-    }
+    return {
+        output: filePaths.map((path) => fileToImageOutput(state.getFileSystem(), path)),
+        type: "react"
+    };
 };
 
 export const manPage = `NAME
@@ -59,4 +54,4 @@ SYNOPSIS
 DESCRIPTION
      Views files sequentially, writing them to the standard output.`;
 
-export default { optDef, functionDef };
+export default { optDef, functionDef, manPage };

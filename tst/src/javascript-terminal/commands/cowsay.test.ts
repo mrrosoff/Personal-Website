@@ -1,21 +1,8 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import { mockShell } from "../../../helpers/terminal";
-import { parseOptions } from "../../../../src/javascript-terminal/parser";
 import cowsayCommand from "../../../../src/javascript-terminal/commands/cowsay";
 import EmulatorState from "../../../../src/javascript-terminal/emulator-state/EmulatorState";
-
-vi.mock("../../../../src/javascript-terminal/parser", async (importOriginal) => {
-    const actual =
-        await importOriginal<typeof import("../../../../src/javascript-terminal/parser")>();
-    return { ...actual, parseOptions: vi.fn(actual.parseOptions) };
-});
-
-const unreadableArgument = {
-    toString: () => {
-        throw new Error("unreadable argument");
-    }
-};
 
 describe("cowsay", () => {
     it("should moo by default", () => {
@@ -65,18 +52,6 @@ describe("cowsay", () => {
         const result = shell.run("cowsay aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa b");
 
         expect(result).toContain("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-    });
-
-    it("should report an argument it cannot read", () => {
-        const shell = mockShell();
-        vi.mocked(parseOptions).mockReturnValueOnce({
-            options: {},
-            argv: [unreadableArgument]
-        } as never);
-
-        const [result] = shell.results("cowsay x");
-
-        expect(result.type).toBe("error");
     });
 
     it("should draw an empty bubble for blank words", () => {

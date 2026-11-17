@@ -3,7 +3,6 @@ import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/Emulato
 import * as DirOp from "../fs/operations/directory-operations";
 import * as PathUtil from "../fs/util/path-util";
 import { fsSearchParent } from "../fs/operations/base-operations";
-import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = { "-p, --parents": "" };
 
@@ -14,42 +13,38 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         return { output: "usage: rmdir [-p] directory", type: "error" };
     }
 
-    try {
-        const pathToDelete = relativeToAbsolutePath(state, argv[0]);
-        DirOp.remove(state.getFileSystem(), pathToDelete);
+    const pathToDelete = relativeToAbsolutePath(state, argv[0]);
+    DirOp.remove(state.getFileSystem(), pathToDelete);
 
-        if (options.parents) {
-            let currentPath = pathToDelete;
+    if (options.parents) {
+        let currentPath = pathToDelete;
 
-            while (currentPath !== "/") {
-                const parentPath = PathUtil.getPathParent(currentPath);
-                if (parentPath === "/") break;
+        while (currentPath !== "/") {
+            const parentPath = PathUtil.getPathParent(currentPath);
+            if (parentPath === "/") break;
 
-                try {
-                    const parent = fsSearchParent(state.getFileSystem(), parentPath);
-                    const dirName = PathUtil.getLastPathPart(parentPath);
-                    const dir = parent[dirName];
+            try {
+                const parent = fsSearchParent(state.getFileSystem(), parentPath);
+                const dirName = PathUtil.getLastPathPart(parentPath);
+                const dir = parent[dirName];
 
-                    if (
-                        dir &&
-                        typeof dir.contents === "object" &&
-                        Object.keys(dir.contents).length === 0
-                    ) {
-                        DirOp.remove(state.getFileSystem(), parentPath);
-                        currentPath = parentPath;
-                    } else {
-                        break;
-                    }
-                } catch (err) {
+                if (
+                    dir &&
+                    typeof dir.contents === "object" &&
+                    Object.keys(dir.contents).length === 0
+                ) {
+                    DirOp.remove(state.getFileSystem(), parentPath);
+                    currentPath = parentPath;
+                } else {
                     break;
                 }
+            } catch (err) {
+                break;
             }
         }
-
-        return { output: "" };
-    } catch (err: unknown) {
-        return { output: errorMessage(err), type: "error" };
     }
+
+    return { output: "" };
 };
 
 export const manPage = `NAME
@@ -67,4 +62,4 @@ OPTIONS
                       will be removed, if they are empty, starting with the last
                       component.`;
 
-export default { optDef, functionDef };
+export default { optDef, functionDef, manPage };

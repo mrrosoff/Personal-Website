@@ -1,6 +1,5 @@
 import { parseOptions } from "../parser";
 import EmulatorState from "../emulator-state/EmulatorState";
-import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = {};
 
@@ -28,28 +27,24 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         };
     }
 
-    try {
-        const input = argv.join(" ");
-        const match = input.match(/^(\w+)=['"](.+)['"]$/);
+    const input = argv.join(" ");
+    const match = input.match(/^(\w+)=['"](.+)['"]$/);
 
-        if (!match) {
-            return {
-                output: "alias: invalid syntax. Use: alias name='command'",
-                type: "error"
-            };
-        }
-
-        const [, aliasName, aliasCommand] = match;
-
-        state.setEnvVariables({
-            ...envVariables,
-            [`alias_${aliasName}`]: aliasCommand
-        });
-
-        return { output: "" };
-    } catch (err: unknown) {
-        return { output: errorMessage(err), type: "error" };
+    if (!match) {
+        return {
+            output: "alias: invalid syntax. Use: alias name='command'",
+            type: "error"
+        };
     }
+
+    const [, aliasName, aliasCommand] = match;
+
+    state.setEnvVariables({
+        ...envVariables,
+        [`alias_${aliasName}`]: aliasCommand
+    });
+
+    return { output: "" };
 };
 
 export const manPage = `NAME
@@ -66,4 +61,4 @@ DESCRIPTION
      Note: Aliases are stored in environment variables and persist for the
      session.`;
 
-export default { optDef, functionDef };
+export default { optDef, functionDef, manPage };

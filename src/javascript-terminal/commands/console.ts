@@ -2,7 +2,6 @@ import axios from "axios";
 
 import { API_ENDPOINT_URL, FLAVOR_TYPES, type FlavorType, UserType } from "../../../api/types";
 import { decodeToken } from "../../auth";
-import { errorMessage } from "../emulator-state/CommandMapping";
 import EmulatorState, { AdminConsoleScreen, MainMenuOption } from "../emulator-state/EmulatorState";
 import { handleAddMailingListEntry } from "./console/mailingList/addMailingListEntry";
 import { handleConfirmProvisionFlavor } from "./console/inventory/confirmProvisionFlavor";
@@ -126,24 +125,20 @@ export async function handleAdminConsoleKeyPress(
 export const optDef = {};
 
 const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
-    try {
-        if (state.getAdminConsoleMode()?.screen) {
-            return { output: "", type: "text" };
-        }
-
-        const token = state.getEnvVariables()["AUTH_TOKEN"];
-        if (decodeToken(token ?? "")?.userType !== UserType.ADMIN) {
-            return { output: "Permission Denied", type: "error" };
-        }
-
-        state.setAdminConsoleMode({
-            screen: AdminConsoleScreen.Main,
-            selectedOption: MainMenuOption.IceCreamInventory
-        });
+    if (state.getAdminConsoleMode()?.screen) {
         return { output: "", type: "text" };
-    } catch (err: unknown) {
-        return { output: errorMessage(err), type: "error" };
     }
+
+    const token = state.getEnvVariables()["AUTH_TOKEN"];
+    if (decodeToken(token ?? "")?.userType !== UserType.ADMIN) {
+        return { output: "Permission Denied", type: "error" };
+    }
+
+    state.setAdminConsoleMode({
+        screen: AdminConsoleScreen.Main,
+        selectedOption: MainMenuOption.IceCreamInventory
+    });
+    return { output: "", type: "text" };
 };
 
 export const manPage = `NAME
@@ -157,4 +152,4 @@ DESCRIPTION
      sending marketing emails, and managing the mailing list. Requires
      authentication via password prompt.`;
 
-export default { optDef, functionDef };
+export default { optDef, functionDef, manPage };

@@ -31,12 +31,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
             return { output: "Command Not Found", type: "error" };
         }
 
-        try {
-            return commandFn(state, targetOptions);
-        } catch (err) {
-            console.error(err);
-            return { output: "Command Execution Failed", type: "error" };
-        }
+        return commandFn(state, targetOptions);
     }
 
     state.setPasswordPromptState({ targetCommand, targetOptions });
@@ -135,4 +130,4 @@ DESCRIPTION
      elevated privileges. You will be prompted for a password before the
      command is executed.`;
 
-export default { optDef, functionDef };
+export default { optDef, functionDef, manPage };

@@ -2,7 +2,6 @@ import { parseOptions } from "../parser";
 import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import * as FileOp from "../fs/operations/file-operations";
 import type { FileSystem } from "../../FileSystem";
-import { errorMessage } from "../emulator-state/CommandMapping";
 
 const fileToAudioOutput = (fs: FileSystem, filePath: string) => {
     const file = FileOp.read(fs, filePath);
@@ -27,23 +26,19 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         return { output: "usage: play [file ...]", type: "error" };
     }
 
-    try {
-        const regex = new RegExp(".(mp3|wav|ogg|flac|aac|mov|mp4|mkv|avi)$", "g");
-        const filePaths = argv
-            .map((pathArg) => relativeToAbsolutePath(state, pathArg))
-            .filter((item) => item.match(regex));
+    const regex = new RegExp(".(mp3|wav|ogg|flac|aac|mov|mp4|mkv|avi)$", "g");
+    const filePaths = argv
+        .map((pathArg) => relativeToAbsolutePath(state, pathArg))
+        .filter((item) => item.match(regex));
 
-        if (filePaths.length === 0) {
-            return { output: "No Supported Audio Files Found", type: "error" };
-        }
-
-        return {
-            output: filePaths.map((path) => fileToAudioOutput(state.getFileSystem(), path)),
-            type: "react"
-        };
-    } catch (err: unknown) {
-        return { output: errorMessage(err), type: "error" };
+    if (filePaths.length === 0) {
+        return { output: "No Supported Audio Files Found", type: "error" };
     }
+
+    return {
+        output: filePaths.map((path) => fileToAudioOutput(state.getFileSystem(), path)),
+        type: "react"
+    };
 };
 
 export const manPage = `NAME

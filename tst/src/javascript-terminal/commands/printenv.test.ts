@@ -1,8 +1,6 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import { mockShell } from "../../../helpers/terminal";
-import printenvCommand from "../../../../src/javascript-terminal/commands/printenv";
-import EmulatorState from "../../../../src/javascript-terminal/emulator-state/EmulatorState";
 
 describe("printenv", () => {
     it("should print a variable", () => {
@@ -27,23 +25,5 @@ describe("printenv", () => {
         const result = shell.run("printenv NOPE");
 
         expect(result).toBe("");
-    });
-
-    it("should report an unexpected failure", () => {
-        const state = EmulatorState.create({});
-        vi.spyOn(state, "getEnvVariables").mockReturnValue(
-            new Proxy(
-                {},
-                {
-                    get: () => {
-                        throw new Error("broken state");
-                    }
-                }
-            )
-        );
-
-        const result = printenvCommand.functionDef(state, ["NAME"]);
-
-        expect(result).toEqual({ output: "broken state", type: "error" });
     });
 });

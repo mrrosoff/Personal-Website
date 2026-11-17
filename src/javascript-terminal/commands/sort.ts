@@ -1,7 +1,6 @@
 import { parseOptions } from "../parser";
 import EmulatorState, { relativeToAbsolutePath } from "../emulator-state/EmulatorState";
 import * as FileOp from "../fs/operations/file-operations";
-import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = {
     "-r, --reverse": "",
@@ -15,30 +14,26 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         return { output: "usage: sort [-rn] [file]", type: "error" };
     }
 
-    try {
-        const filePath = relativeToAbsolutePath(state, argv[0]);
-        const fileContent = FileOp.read(state.getFileSystem(), filePath);
+    const filePath = relativeToAbsolutePath(state, argv[0]);
+    const fileContent = FileOp.read(state.getFileSystem(), filePath);
 
-        let sortedLines = fileContent.split("\n");
+    let sortedLines = fileContent.split("\n");
 
-        if (options.numericSort) {
-            sortedLines = sortedLines.sort((a: string, b: string) => {
-                const numA = parseFloat(a);
-                const numB = parseFloat(b);
-                return numA - numB;
-            });
-        } else {
-            sortedLines = sortedLines.sort();
-        }
-
-        if (options.reverse) {
-            sortedLines = sortedLines.reverse();
-        }
-
-        return { output: sortedLines.join("\n") };
-    } catch (err: unknown) {
-        return { output: errorMessage(err), type: "error" };
+    if (options.numericSort) {
+        sortedLines = sortedLines.sort((a: string, b: string) => {
+            const numA = parseFloat(a);
+            const numB = parseFloat(b);
+            return numA - numB;
+        });
+    } else {
+        sortedLines = sortedLines.sort();
     }
+
+    if (options.reverse) {
+        sortedLines = sortedLines.reverse();
+    }
+
+    return { output: sortedLines.join("\n") };
 };
 
 export const manPage = `NAME
@@ -55,4 +50,4 @@ OPTIONS
      -r, --reverse        Reverse the sort order
      -n, --numeric-sort   Sort numerically instead of alphabetically`;
 
-export default { optDef, functionDef };
+export default { optDef, functionDef, manPage };

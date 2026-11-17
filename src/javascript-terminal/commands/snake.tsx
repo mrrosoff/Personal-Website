@@ -1,19 +1,14 @@
 import EmulatorState from "../emulator-state/EmulatorState";
 import Snake from "../../components/terminal/games/SnakeGame";
-import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = {};
 
 const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
-    try {
-        state.setBlockingMode({});
-        return {
-            output: <Snake />,
-            type: "react"
-        };
-    } catch (err: unknown) {
-        return { output: errorMessage(err), type: "error" };
-    }
+    state.setBlockingMode({});
+    return {
+        output: <Snake />,
+        type: "react"
+    };
 };
 
 export const manPage = `NAME

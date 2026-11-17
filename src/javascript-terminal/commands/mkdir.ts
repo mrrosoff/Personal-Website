@@ -5,7 +5,6 @@ import * as DirOp from "../fs/operations/directory-operations";
 import * as PathUtil from "../fs/util/path-util";
 import { fsSearchParent } from "../fs/operations/base-operations";
 import { getLastPathPart } from "../fs/util/path-util";
-import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = { "-p, --parents": "" };
 
@@ -16,39 +15,35 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         return { output: "usage: mkdir [-p] directory_name", type: "error" };
     }
 
-    try {
-        const newFolderPath = relativeToAbsolutePath(state, argv[0]);
+    const newFolderPath = relativeToAbsolutePath(state, argv[0]);
 
-        if (options.parents) {
-            const pathParts = PathUtil.toPathParts(newFolderPath);
-            let currentPath = "";
+    if (options.parents) {
+        const pathParts = PathUtil.toPathParts(newFolderPath);
+        let currentPath = "";
 
-            for (let i = 0; i < pathParts.length; i++) {
-                if (pathParts[i] === "/") {
-                    currentPath = "/";
-                    continue;
-                }
-
-                currentPath =
-                    currentPath === "/" ? `/${pathParts[i]}` : `${currentPath}/${pathParts[i]}`;
-
-                try {
-                    const parent = fsSearchParent(state.getFileSystem(), currentPath);
-                    const dirName = getLastPathPart(currentPath);
-
-                    if (!parent[dirName]) {
-                        DirOp.add(state.getFileSystem(), currentPath, makeEmptyDirectory());
-                    }
-                } catch (err) {}
+        for (let i = 0; i < pathParts.length; i++) {
+            if (pathParts[i] === "/") {
+                currentPath = "/";
+                continue;
             }
-        } else {
-            DirOp.add(state.getFileSystem(), newFolderPath, makeEmptyDirectory());
-        }
 
-        return { output: "" };
-    } catch (err: unknown) {
-        return { output: errorMessage(err), type: "error" };
+            currentPath =
+                currentPath === "/" ? `/${pathParts[i]}` : `${currentPath}/${pathParts[i]}`;
+
+            try {
+                const parent = fsSearchParent(state.getFileSystem(), currentPath);
+                const dirName = getLastPathPart(currentPath);
+
+                if (!parent[dirName]) {
+                    DirOp.add(state.getFileSystem(), currentPath, makeEmptyDirectory());
+                }
+            } catch (err) {}
+        }
+    } else {
+        DirOp.add(state.getFileSystem(), newFolderPath, makeEmptyDirectory());
     }
+
+    return { output: "" };
 };
 
 export const manPage = `NAME
@@ -64,4 +59,4 @@ OPTIONS
      -p, --parents    Create intermediate directories as required. If this
                       option is not specified, the full path must already exist.`;
 
-export default { optDef, functionDef };
+export default { optDef, functionDef, manPage };
