@@ -41,6 +41,12 @@ jobs:
       - name: Install Node Modules
         run: npm install
 
+      - name: Check Format
+        run: npm run check-format
+
+      - name: Test
+        run: npm test
+
       - name: Build
         run: npm run build-cdk
 

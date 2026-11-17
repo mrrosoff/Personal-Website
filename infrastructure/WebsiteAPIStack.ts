@@ -51,7 +51,7 @@ const ENDPOINTS = globSync("api/endpoints/*/*.{ts,tsx}")
     .map((file) => file.replace(/^api\/|\.tsx?$/g, ""))
     .filter((endpoint) => endpoint !== "endpoints/preview/preview");
 
-function routeForLambda(lambda: string): string {
+export function routeForLambda(lambda: string): string {
     return [...new Set(lambda.split("/").slice(1))]
         .join("/")
         .replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);

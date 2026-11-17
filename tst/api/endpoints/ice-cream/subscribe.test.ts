@@ -1,0 +1,102 @@
+import { ScanCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { describe, expect, it } from "vitest";
+
+import { mockEvent, responseBody } from "../../../setup";
+import { mockDocumentClient } from "../../../__mocks__/__aws__/dynamodb";
+import { mockParameters } from "../../../__mocks__/__aws__/parameterStore";
+import { mockFlavor } from "../../../__mocks__/__data__/aws/dynamodb";
+import { mockResend } from "../../../__mocks__/resend";
+import { mockCheckoutSession, mockStripe } from "../../../__mocks__/stripe";
+
+import { FLAVORS_TABLE } from "../../../../api/common";
+import {
+    fulfillSubscriptionMonth,
+    handler,
+    pickRandomFlavors,
+    registerSubscriberOnMailingList
+} from "../../../../api/endpoints/ice-cream/subscribe";
+
+const invoice = { id: "in_1", customer_email: "a@b.com" } as never;
+
+describe("subscribe", () => {
+    it("should start a subscription checkout", async () => {
+        const result = await handler(mockEvent());
+
+        expect(responseBody(result)).toEqual(mockCheckoutSession);
+        expect(mockStripe.checkout.sessions.create).toHaveBeenCalledWith(
+            expect.objectContaining({
+                mode: "subscription",
+                line_items: [
+                    { price: mockParameters["/website/stripe/subscription-price"], quantity: 1 }
+                ]
+            })
+        );
+    });
+});
+
+describe("registerSubscriberOnMailingList", () => {
+    it("should add the subscriber", async () => {
+        await registerSubscriberOnMailingList(mockCheckoutSession as never);
+
+        expect(mockResend.contacts.get).toHaveBeenCalled();
+    });
+
+    it("should skip a session without an email", async () => {
+        await registerSubscriberOnMailingList({} as never);
+
+        expect(mockResend.contacts.get).not.toHaveBeenCalled();
+    });
+});
+
+describe("fulfillSubscriptionMonth", () => {
+    it("should take the month's flavors out of the freezer", async () => {
+        await fulfillSubscriptionMonth(mockStripe as never, invoice);
+
+        expect(mockDocumentClient).toHaveReceivedCommandWith(UpdateCommand, {
+            Key: { productId: mockFlavor.productId }
+        });
+    });
+
+    it("should record the flavors on the invoice", async () => {
+        await fulfillSubscriptionMonth(mockStripe as never, invoice);
+
+        expect(mockStripe.invoices.update).toHaveBeenCalledWith("in_1", {
+            metadata: { fulfilledFlavors: mockFlavor.name }
+        });
+    });
+
+    it("should only send flavors that are current and in stock", async () => {
+        mockDocumentClient.on(ScanCommand, { TableName: FLAVORS_TABLE }).resolves({
+            Items: [
+                { ...mockFlavor, count: 0 },
+                { ...mockFlavor, type: "upcoming" }
+            ]
+        });
+
+        await fulfillSubscriptionMonth(mockStripe as never, invoice);
+
+        expect(mockDocumentClient).not.toHaveReceivedCommand(UpdateCommand);
+    });
+
+    it("should never fulfill the same invoice twice", async () => {
+        mockStripe.invoices.retrieve.mockResolvedValue({ metadata: { fulfilledFlavors: "mint" } });
+
+        await fulfillSubscriptionMonth(mockStripe as never, invoice);
+
+        expect(mockStripe.invoices.update).not.toHaveBeenCalled();
+    });
+});
+
+describe("pickRandomFlavors", () => {
+    it("should pick two flavors", () => {
+        const result = pickRandomFlavors([mockFlavor, mockFlavor, mockFlavor]);
+
+        expect(result).toHaveLength(2);
+    });
+
+    it("should pick what there is when there are fewer than two", () => {
+        const result = pickRandomFlavors([mockFlavor]);
+
+        expect(result).toEqual([mockFlavor]);
+    });
+});
