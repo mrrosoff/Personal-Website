@@ -11,7 +11,7 @@ import {
     Typography
 } from "@mui/material";
 import Cropper from "react-easy-crop";
-import type { Area } from "react-easy-crop";
+import type { Area, Point } from "react-easy-crop";
 
 const OUTPUT_WIDTH = 1200;
 const OUTPUT_HEIGHT = 1800;
@@ -26,24 +26,22 @@ type CropDialogProps = {
     onConfirm: (cropped: Blob) => void;
 };
 
-export default function CropDialog({ file, remaining, onCancel, onConfirm }: CropDialogProps) {
-    const [crop, setCrop] = useState({ x: 0, y: 0 });
-    const [zoom, setZoom] = useState(1);
-    const [area, setArea] = useState<Area | null>(null);
-    const [source, setSource] = useState<Blob | null>(null);
-    const [src, setSrc] = useState<string | null>(null);
-    const [preparing, setPreparing] = useState(false);
-    const [failed, setFailed] = useState(false);
-    const [shownFile, setShownFile] = useState(file);
+type CropView = { file: File | null; crop: Point; zoom: number; area: Area | null };
 
-    if (file !== shownFile) {
-        setShownFile(file);
-        setCrop({ x: 0, y: 0 });
-        setZoom(1);
-        setArea(null);
-        setFailed(false);
-        setSource(null);
-        setSrc(null);
+type ImageState =
+    { status: "loading" } | { status: "failed" } | { status: "ready"; source: Blob; src: string };
+
+function freshView(file: File | null): CropView {
+    return { file, crop: { x: 0, y: 0 }, zoom: 1, area: null };
+}
+
+export default function CropDialog({ file, remaining, onCancel, onConfirm }: CropDialogProps) {
+    const [view, setView] = useState(() => freshView(file));
+    const [image, setImage] = useState<ImageState>({ status: "loading" });
+
+    if (file !== view.file) {
+        setView(freshView(file));
+        setImage({ status: "loading" });
     }
 
     useEffect(() => {
@@ -55,22 +53,16 @@ export default function CropDialog({ file, remaining, onCancel, onConfirm }: Cro
         let url: string | null = null;
 
         void (async () => {
-            setPreparing(true);
             try {
-                const displayable = await toDisplayable(file);
+                const source = await toDisplayable(file);
                 if (controller.signal.aborted) {
                     return;
                 }
-                url = URL.createObjectURL(displayable);
-                setSource(displayable);
-                setSrc(url);
+                url = URL.createObjectURL(source);
+                setImage({ status: "ready", source, src: url });
             } catch {
                 if (!controller.signal.aborted) {
-                    setFailed(true);
-                }
-            } finally {
-                if (!controller.signal.aborted) {
-                    setPreparing(false);
+                    setImage({ status: "failed" });
                 }
             }
         })();
@@ -88,11 +80,14 @@ export default function CropDialog({ file, remaining, onCancel, onConfirm }: Cro
             try {
                 onConfirm(await renderCrop(source, area));
             } catch {
-                setFailed(true);
+                setImage({ status: "failed" });
             }
         },
         [onConfirm]
     );
+
+    const cropped =
+        image.status === "ready" && view.area ? { source: image.source, area: view.area } : null;
 
     return (
         <Dialog
@@ -119,24 +114,26 @@ export default function CropDialog({ file, remaining, onCancel, onConfirm }: Cro
                         placeItems: "center"
                     }}
                 >
-                    {preparing && (
+                    {image.status === "loading" && file && (
                         <Stack alignItems="center" spacing={2}>
                             <CircularProgress />
                             <Typography color="text.secondary">Opening…</Typography>
                         </Stack>
                     )}
-                    {failed && (
+                    {image.status === "failed" && (
                         <Typography color="text.secondary">Couldn't read that one.</Typography>
                     )}
-                    {src && !preparing && (
+                    {image.status === "ready" && (
                         <Cropper
-                            image={src}
-                            crop={crop}
-                            zoom={zoom}
+                            image={image.src}
+                            crop={view.crop}
+                            zoom={view.zoom}
                             aspect={PANEL_ASPECT}
-                            onCropChange={setCrop}
-                            onZoomChange={setZoom}
-                            onCropComplete={(_, pixels) => setArea(pixels)}
+                            onCropChange={(crop) => setView((current) => ({ ...current, crop }))}
+                            onZoomChange={(zoom) => setView((current) => ({ ...current, zoom }))}
+                            onCropComplete={(_, area) =>
+                                setView((current) => ({ ...current, area }))
+                            }
                             showGrid={false}
                         />
                     )}
@@ -155,12 +152,12 @@ export default function CropDialog({ file, remaining, onCancel, onConfirm }: Cro
                     </Typography>
                 )}
                 <Slider
-                    value={zoom}
+                    value={view.zoom}
                     min={1}
                     max={4}
                     step={0.01}
-                    disabled={!src}
-                    onChange={(_, value) => setZoom(value)}
+                    disabled={image.status !== "ready"}
+                    onChange={(_, zoom) => setView((current) => ({ ...current, zoom }))}
                     sx={{ flex: 1, minWidth: 100, mx: 1 }}
                 />
                 <Button variant="outlined" onClick={onCancel} sx={{ py: 0.25 }}>
@@ -168,8 +165,8 @@ export default function CropDialog({ file, remaining, onCancel, onConfirm }: Cro
                 </Button>
                 <Button
                     variant="contained"
-                    onClick={source && area ? () => void confirm(source, area) : undefined}
-                    disabled={!area}
+                    onClick={cropped ? () => void confirm(cropped.source, cropped.area) : undefined}
+                    disabled={!cropped}
                     sx={{ py: 0.25 }}
                 >
                     Add
