@@ -1,11 +1,12 @@
 import { useState } from "react";
 
-import { Box, Button, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Button, useMediaQuery, useTheme } from "@mui/material";
 import axios from "axios";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 
 import { decodeToken, unexpiredToken } from "../../auth";
 import { API_ENDPOINT_URL, UserType } from "../../../api/types";
+import IceCreamPage from "./IceCreamPage";
 
 const CancelSubscription = () => {
     const theme = useTheme();
@@ -46,74 +47,44 @@ const CancelSubscription = () => {
     }
 
     return (
-        <Box
-            display={"flex"}
-            flexDirection={"column"}
-            alignItems={smallScreen ? "center" : undefined}
-            pb={4}
-            gap={smallScreen ? 4 : 6}
+        <IceCreamPage
+            title={"Manage Your Subscription"}
+            subtitle={
+                result === "cancelled"
+                    ? "Your subscription is cancelled and you will not be charged again. The pints you have already paid for are still yours."
+                    : result === "failed"
+                      ? message
+                      : "This stops the monthly charge right away. Anything you have already paid for is still yours."
+            }
         >
             <Box
+                mt={4}
                 display={"flex"}
-                flexDirection={"column"}
-                alignItems={smallScreen ? "center" : undefined}
-                mb={smallScreen ? 4 : 6}
+                gap={2}
+                flexWrap={"wrap"}
+                justifyContent={smallScreen ? "center" : undefined}
             >
-                <Typography
-                    variant="h1"
-                    align={smallScreen ? "center" : undefined}
-                    sx={{ maxWidth: smallScreen ? 300 : undefined }}
-                >
-                    Manage Your Subscription
-                </Typography>
-                <Typography
-                    mt={smallScreen ? 2 : undefined}
-                    align={smallScreen ? "center" : undefined}
-                    sx={{ maxWidth: smallScreen ? 300 : 600 }}
-                >
-                    {result === "cancelled"
-                        ? "Your subscription is cancelled and you will not be charged again. The pints you have already paid for are still yours."
-                        : result === "failed"
-                          ? message
-                          : "This stops the monthly charge right away. Anything you have already paid for is still yours."}
-                </Typography>
-                <Box
-                    mt={4}
-                    display={"flex"}
-                    gap={2}
-                    flexWrap={"wrap"}
-                    justifyContent={smallScreen ? "center" : undefined}
-                >
-                    {result === "cancelled" ? (
-                        <Button
-                            variant={"outlined"}
-                            sx={{ fontSize: 18 }}
-                            onClick={() => navigate("/ice-cream")}
-                        >
-                            Back To The Flavors
-                        </Button>
-                    ) : (
-                        <Button
-                            variant={"outlined"}
-                            sx={{ fontSize: 18 }}
-                            disabled={cancelling}
-                            loading={cancelling}
-                            onClick={onCancel}
-                        >
-                            {result === "failed" ? "Try Again" : "Cancel Subscription"}
-                        </Button>
-                    )}
-                </Box>
+                {result === "cancelled" ? (
+                    <Button
+                        variant={"outlined"}
+                        sx={{ fontSize: 18 }}
+                        onClick={() => navigate("/ice-cream")}
+                    >
+                        Back To The Flavors
+                    </Button>
+                ) : (
+                    <Button
+                        variant={"outlined"}
+                        sx={{ fontSize: 18 }}
+                        disabled={cancelling}
+                        loading={cancelling}
+                        onClick={onCancel}
+                    >
+                        {result === "failed" ? "Try Again" : "Cancel Subscription"}
+                    </Button>
+                )}
             </Box>
-            <Box height={smallScreen ? 150 : 250} overflow={"hidden"}>
-                <img
-                    src="/images/ice-cream.webp"
-                    alt="Ice Cream"
-                    width={smallScreen ? 150 : 250}
-                    style={{ transform: "rotate(15deg)" }}
-                />
-            </Box>
-        </Box>
+        </IceCreamPage>
     );
 };
 

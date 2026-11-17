@@ -7,6 +7,7 @@ import { validate } from "email-validator";
 
 import { API_ENDPOINT_URL, type MailingListRegistration } from "../../../api/types";
 import FormField, { emailProblem } from "../FormField";
+import IceCreamPage from "./IceCreamPage";
 
 export const registerMailingListUser = async (registration: MailingListRegistration) => {
     const { data } = await axios.post(`${API_ENDPOINT_URL}/email/register`, {
@@ -17,50 +18,16 @@ export const registerMailingListUser = async (registration: MailingListRegistrat
     return data;
 };
 
-const MailingList = () => {
-    const theme = useTheme();
-    const smallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-    return (
-        <Box
-            display={"flex"}
-            flexDirection={"column"}
-            justifyContent={"space-between"}
-            alignItems={smallScreen ? "center" : undefined}
-        >
-            <Box
-                display={"flex"}
-                flexDirection={"column"}
-                alignItems={smallScreen ? "center" : undefined}
-                mb={smallScreen ? 4 : 6}
-            >
-                <Typography
-                    variant="h1"
-                    align={smallScreen ? "center" : undefined}
-                    sx={{ maxWidth: smallScreen ? 300 : undefined }}
-                >
-                    Join The Mailing List
-                </Typography>
-                <Typography
-                    mt={smallScreen ? 1 : undefined}
-                    align={smallScreen ? "center" : undefined}
-                    sx={{ maxWidth: smallScreen ? 300 : undefined }}
-                >
-                    Get notified when new ice cream flavors are available and hear about other fun
-                    things.
-                </Typography>
-                <MailingListForm />
-            </Box>
-            <Box height={smallScreen ? 150 : 250} overflow={"hidden"}>
-                <img
-                    src="/images/ice-cream.webp"
-                    alt="Ice Cream"
-                    width={smallScreen ? 150 : 250}
-                    style={{ transform: "rotate(15deg)" }}
-                />
-            </Box>
-        </Box>
-    );
-};
+const MailingList = () => (
+    <IceCreamPage
+        title={"Join The Mailing List"}
+        subtitle={
+            "Get notified when new ice cream flavors are available and hear about other fun things."
+        }
+    >
+        <MailingListForm />
+    </IceCreamPage>
+);
 
 const MailingListForm = () => {
     const theme = useTheme();
