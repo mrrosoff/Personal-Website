@@ -1,14 +1,5 @@
 {
     "version": 1,
-    "include": ["/*"],
-    "exclude": [
-        "/assets/*",
-        "/fonts/*",
-        "/images/*",
-        "/styles/*",
-        "/favicon.ico",
-        "/llms.txt",
-        "/robots.txt",
-        "/sitemap.xml"
-    ]
+    "include": ["/ice-cream", "/ice-cream/*", "/register-friend"],
+    "exclude": []
 }

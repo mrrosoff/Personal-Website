@@ -38,3 +38,16 @@ test("keeps a crafted link from breaking out of the tag", async ({ request }) =>
 
     expect(html).not.toContain("<script>alert(1)</script>");
 });
+
+test("leaves pages without their own card alone", async ({ request }) => {
+    const image = await previewImage(request, "/polaroid?token=a.b.c");
+
+    expect(image).toBe("https://api.maxrosoff.com/preview.png");
+});
+
+test("serves an empty agent manifest", async ({ request }) => {
+    const response = await request.get("/.well-known/ard.json");
+
+    expect(response.headers()["content-type"]).toContain("application/json");
+    expect(await response.json()).toEqual({ entries: [] });
+});
