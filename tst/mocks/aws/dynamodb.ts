@@ -48,7 +48,7 @@ function keyOf(name: string | undefined, item: Item | undefined): string {
 export const mockDynamoDB = {
     seed<T extends Table>(name: T, ...items: TableObject<T>[]) {
         for (const item of items) {
-            table(name).set(keyOf(name, item), item);
+            table(name).set(keyOf(name, item), structuredClone(item));
         }
     },
     get<T extends Table>(name: T, key: string) {
@@ -95,7 +95,7 @@ function update({
     );
 
     table(TableName).set(keyOf(TableName, Key), updated);
-    return { Attributes: updated };
+    return { Attributes: structuredClone(updated) };
 }
 
 function query({
@@ -109,7 +109,8 @@ function query({
     }
     const attribute = ExpressionAttributeNames["#key"];
     const value: unknown = ExpressionAttributeValues[":value"];
-    return { Items: [...table(TableName).values()].filter((item) => item[attribute] === value) };
+    const matches = [...table(TableName).values()].filter((item) => item[attribute] === value);
+    return { Items: structuredClone(matches) };
 }
 
 function remove({ TableName, Key }: DeleteCommandInput) {
@@ -125,14 +126,14 @@ beforeEach(() => {
     mockDynamoDB.seed(PASSKEYS_TABLE, mockPasskey);
     mockDynamoDB.seed(PASSKEY_CHALLENGES_TABLE, mockChallenge);
     mockDocumentClient.on(GetCommand).callsFake(({ TableName, Key }: GetCommandInput) => ({
-        Item: table(TableName).get(keyOf(TableName, Key))
+        Item: structuredClone(table(TableName).get(keyOf(TableName, Key)))
     }));
     mockDocumentClient.on(PutCommand).callsFake(({ TableName, Item }: PutCommandInput) => {
-        table(TableName).set(keyOf(TableName, Item), Item as Item);
+        table(TableName).set(keyOf(TableName, Item), structuredClone(Item as Item));
         return {};
     });
     mockDocumentClient.on(ScanCommand).callsFake(({ TableName }: ScanCommandInput) => ({
-        Items: [...table(TableName).values()]
+        Items: structuredClone([...table(TableName).values()])
     }));
     mockDocumentClient.on(QueryCommand).callsFake(query);
     mockDocumentClient.on(DeleteCommand).callsFake(remove);
