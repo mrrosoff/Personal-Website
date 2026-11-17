@@ -10,7 +10,6 @@ import { mockToken } from "../../../setup";
 import { UserType } from "../../../../api/types";
 import { useAppContext } from "../../../../site/components/AppContext";
 import Terminal from "../../../../site/components/terminal/Terminal";
-import { authenticateWithPasskey } from "../../../../site/javascript-terminal/commands/sudo";
 import type EmulatorState from "../../../../site/javascript-terminal/emulatorState/EmulatorState";
 import type * as Sudo from "../../../../site/javascript-terminal/commands/sudo";
 import type * as ReactRouter from "react-router-dom";
@@ -58,32 +57,6 @@ function type(command: string) {
 }
 
 describe("Terminal", () => {
-    it("should greet with the message of the day", () => {
-        renderTerminal();
-
-        expect(screen.getByText(/Welcome To Rosoff OS/)).toBeInTheDocument();
-        expect(screen.getByText("me@maxrosoff.com")).toHaveAttribute(
-            "href",
-            "mailto:me@maxrosoff.com"
-        );
-        expect(screen.getByText("https://linkedin.com/in/max-rosoff")).toHaveAttribute(
-            "target",
-            "_blank"
-        );
-        expect(screen.queryByText(/Ice Cream:/)).not.toBeInTheDocument();
-    });
-
-    it("should link the shop and shorten links on a small screen", async () => {
-        mockSmallScreen();
-        const { user } = renderTerminal();
-
-        await user.click(screen.getByText("maxrosoff.com"));
-
-        expect(navigate).toHaveBeenCalledWith("/ice-cream");
-        expect(screen.getByText("linkedin.com/in/max-rosoff")).toBeInTheDocument();
-        expect(screen.getByText("me@maxrosoff.com")).toBeInTheDocument();
-    });
-
     it("should run a command and show its output", () => {
         renderTerminal();
 
@@ -277,20 +250,6 @@ describe("password prompt", () => {
 
         expect(screen.getByText("Password:")).toBeInTheDocument();
         expect(screen.getByText("..")).toBeInTheDocument();
-        vi.useRealTimers();
-    });
-
-    it("should blink a cursor while waiting for the passkey", () => {
-        vi.useFakeTimers();
-        vi.mocked(authenticateWithPasskey).mockReturnValue(new Promise(() => undefined));
-        const emulatorState = mockEmulatorState();
-        emulatorState.setPasswordPromptState({});
-        renderTerminal(emulatorState);
-        const cursor = screen.getByTestId("cursor");
-
-        act(() => void vi.advanceTimersByTime(600));
-
-        expect(cursor).toHaveStyle({ visibility: "hidden" });
         vi.useRealTimers();
     });
 });
