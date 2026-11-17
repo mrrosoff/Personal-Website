@@ -104,7 +104,7 @@ describe("SnakeGame", () => {
     });
 
     it("should end the game when it runs into itself", () => {
-        foodAt([12, 6], [19, 6], [20, 6], [21, 6], [0, 0]);
+        foodAt([18, 6], [19, 6], [20, 6], [21, 6], [0, 0]);
         startGame();
 
         tick(150 * 9);

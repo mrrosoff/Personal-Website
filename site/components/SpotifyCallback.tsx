@@ -38,12 +38,22 @@ const ConnectingAnimation = () => (
 
 const REDIRECT_SECONDS = 5;
 
+function callbackProblem(params: URLSearchParams) {
+    if (params.has("error")) {
+        return "Authorization Was Denied";
+    }
+    return params.has("code") && params.has("state") ? null : "Missing Authorization Details";
+}
+
 const SpotifyCallback = () => {
-    const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
-    const [message, setMessage] = useState("");
+    const [params] = useSearchParams();
+    const problem = callbackProblem(params);
+    const [status, setStatus] = useState<"loading" | "success" | "error">(
+        problem ? "error" : "loading"
+    );
+    const [message, setMessage] = useState(problem ?? "");
     const [secondsLeft, setSecondsLeft] = useState(REDIRECT_SECONDS);
     const navigate = useNavigate();
-    const [params] = useSearchParams();
 
     useEffect(() => {
         if (status === "loading") {
@@ -62,19 +72,16 @@ const SpotifyCallback = () => {
     }, [status, secondsLeft, navigate]);
 
     useEffect(() => {
-        const error = params.get("error");
-        const code = params.get("code");
-        const state = params.get("state");
-
-        if (error || !code || !state) {
-            setMessage(error ? "Authorization Was Denied" : "Missing Authorization Details");
-            setStatus("error");
+        if (problem) {
             return;
         }
 
         const exchange = async () => {
             try {
-                await axios.post(`${API_ENDPOINT_URL}/spotify/exchange`, { code, state });
+                await axios.post(`${API_ENDPOINT_URL}/spotify/exchange`, {
+                    code: params.get("code"),
+                    state: params.get("state")
+                });
                 setStatus("success");
             } catch (err: unknown) {
                 if (isAxiosError<ErrorResponseBody>(err) && err.response?.data.message) {
@@ -86,7 +93,7 @@ const SpotifyCallback = () => {
             }
         };
         void exchange();
-    }, []);
+    }, [params, problem]);
 
     return (
         <Box

@@ -12,6 +12,17 @@ const INITIAL_SNAKE: Position[] = [{ x: 12, y: 6 }];
 const INITIAL_DIRECTION: Position = { x: 1, y: 0 };
 const GAME_SPEED = 150;
 
+function randomFood(snake: Position[]): Position {
+    let food: Position;
+    do {
+        food = {
+            x: Math.floor(Math.random() * GRID_WIDTH),
+            y: Math.floor(Math.random() * GRID_HEIGHT)
+        };
+    } while (snake.some((segment) => segment.x === food.x && segment.y === food.y));
+    return food;
+}
+
 const SnakeGame = () => {
     const { emulatorState } = useAppContext();
     const [snake, setSnake] = useState<Position[]>(INITIAL_SNAKE);
@@ -20,19 +31,8 @@ const SnakeGame = () => {
     const [gameOver, setGameOver] = useState(false);
     const [score, setScore] = useState(0);
     const [countdown, setCountdown] = useState(3);
-    const [loading, setLoading] = useState(true);
+    const loading = countdown > 0;
     const directionRef = useRef(direction);
-
-    const generateFood = (): Position => {
-        let newFood: Position;
-        do {
-            newFood = {
-                x: Math.floor(Math.random() * GRID_WIDTH),
-                y: Math.floor(Math.random() * GRID_HEIGHT)
-            };
-        } while (snake.some((segment) => segment.x === newFood.x && segment.y === newFood.y));
-        return newFood;
-    };
 
     useEffect(() => {
         directionRef.current = direction;
@@ -50,17 +50,16 @@ const SnakeGame = () => {
     }, [gameOver, emulatorState]);
 
     useEffect(() => {
-        if (countdown > 0) {
-            const timer = setTimeout(() => {
-                setCountdown(countdown - 1);
-            }, 1000);
-            return () => {
-                clearTimeout(timer);
-            };
-        } else {
-            setLoading(false);
+        if (!loading) {
+            return;
         }
-    }, [countdown]);
+        const timer = setTimeout(() => {
+            setCountdown(countdown - 1);
+        }, 1000);
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [countdown, loading]);
 
     useEffect(() => {
         const handleKeyPress = (e: KeyboardEvent) => {
@@ -122,7 +121,7 @@ const SnakeGame = () => {
 
                 if (newHead.x === food.x && newHead.y === food.y) {
                     setScore((prev) => prev + 10);
-                    setFood(generateFood());
+                    setFood(randomFood(newSnake));
                     return newSnake;
                 }
 
@@ -153,7 +152,7 @@ const SnakeGame = () => {
                     }}
                 >
                     <Typography sx={{ color: "#2BC903", fontSize: "1.5em" }}>
-                        {countdown > 0 ? countdown : "GO!"}
+                        {countdown}
                     </Typography>
                 </Box>
             ) : gameOver ? (
