@@ -57,6 +57,9 @@ describe("Checkout", () => {
         renderCheckout("?priceIds=price_Fig", await mockToken(UserType.FRIEND));
 
         expect(screen.getByRole("button", { name: "Complete Order" })).toBeInTheDocument();
+        expect(axiosPost).not.toHaveBeenCalledWith(
+            "https://api.maxrosoff.com/ice-cream/checkout?priceIds=price_Fig"
+        );
     });
 
     it("should still charge a friend for a subscription", async () => {

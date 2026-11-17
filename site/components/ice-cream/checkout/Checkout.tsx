@@ -37,54 +37,43 @@ async function fetchClientSecret(isSubscription: boolean, priceIdsString: string
     }
 }
 
-const Checkout = () => {
-    const [searchParams] = useSearchParams();
-    const { friendToken } = useAppContext();
-    const priceIdsString = searchParams.get("priceIds") ?? "";
-    const priceIdsArray = priceIdsString.split(",").filter(Boolean);
-    const isSubscription = searchParams.get("subscription") === "true";
-    const clientSecret = useMemo(
-        () => fetchClientSecret(isSubscription, priceIdsString),
-        [isSubscription, priceIdsString]
-    );
-
-    if (!isSubscription && (!priceIdsString || priceIdsArray.length === 0)) {
-        return <Navigate to={"/ice-cream"} replace />;
-    }
-
-    if (friendToken && !isSubscription) {
-        return <FriendCheckout priceIds={priceIdsArray} friendToken={friendToken} />;
-    }
-
-    const appearance: Appearance = {
-        theme: "night",
-        variables: {
+const APPEARANCE: Appearance = {
+    theme: "night",
+    variables: {
+        fontFamily: "Clacon",
+        fontSizeBase: "22px",
+        fontWeightNormal: "200",
+        fontWeightMedium: "400",
+        colorPrimary: "#52535F",
+        colorPrimaryText: "#FFFFFF",
+        colorBackground: "#1C1C1E",
+        colorText: "#F9F9F9",
+        borderRadius: "4px",
+        spacingUnit: "4px"
+    },
+    rules: {
+        ".Input": {
             fontFamily: "Clacon",
-            fontSizeBase: "22px",
-            fontWeightNormal: "200",
-            fontWeightMedium: "400",
-            colorPrimary: "#52535F",
-            colorPrimaryText: "#FFFFFF",
-            colorBackground: "#1C1C1E",
-            colorText: "#F9F9F9",
-            borderRadius: "4px",
-            spacingUnit: "4px"
+            fontSize: "22px",
+            borderColor: "rgba(255,255,255,0.5)"
         },
-        rules: {
-            ".Input": {
-                fontFamily: "Clacon",
-                fontSize: "22px",
-                borderColor: "rgba(255,255,255,0.5)"
-            },
-            ".Input:focus": { borderColor: "#F9F9F9", boxShadow: "none" },
-            ".Label": { fontFamily: "Clacon", fontSize: "18px", opacity: "0.7" },
-            ".Tab": { fontFamily: "Clacon", borderColor: "rgba(255,255,255,0.5)" },
-            ".Tab--selected": { borderColor: "#F9F9F9", color: "#F9F9F9" },
-            ".AccordionItem": { fontFamily: "Clacon", borderColor: "rgba(255,255,255,0.5)" },
-            ".Error": { fontFamily: "Clacon", fontSize: "18px" },
-            ".Block": { borderColor: "rgba(255,255,255,0.5)" }
-        }
-    };
+        ".Input:focus": { borderColor: "#F9F9F9", boxShadow: "none" },
+        ".Label": { fontFamily: "Clacon", fontSize: "18px", opacity: "0.7" },
+        ".Tab": { fontFamily: "Clacon", borderColor: "rgba(255,255,255,0.5)" },
+        ".Tab--selected": { borderColor: "#F9F9F9", color: "#F9F9F9" },
+        ".AccordionItem": { fontFamily: "Clacon", borderColor: "rgba(255,255,255,0.5)" },
+        ".Error": { fontFamily: "Clacon", fontSize: "18px" },
+        ".Block": { borderColor: "rgba(255,255,255,0.5)" }
+    }
+};
+
+type PaidCheckoutProps = { priceIdsString: string; subscription: boolean };
+
+function PaidCheckout({ priceIdsString, subscription }: PaidCheckoutProps) {
+    const clientSecret = useMemo(
+        () => fetchClientSecret(subscription, priceIdsString),
+        [subscription, priceIdsString]
+    );
 
     return (
         <CheckoutElementsProvider
@@ -92,16 +81,37 @@ const Checkout = () => {
             options={{
                 clientSecret,
                 elementsOptions: {
-                    appearance,
+                    appearance: APPEARANCE,
                     fonts: [
                         { family: "Clacon", src: "url(https://maxrosoff.com/fonts/clacon.ttf)" }
                     ]
                 }
             }}
         >
-            <CheckoutForm priceIds={priceIdsArray} subscription={isSubscription} />
+            <CheckoutForm
+                priceIds={priceIdsString.split(",").filter(Boolean)}
+                subscription={subscription}
+            />
         </CheckoutElementsProvider>
     );
+}
+
+const Checkout = () => {
+    const [searchParams] = useSearchParams();
+    const { friendToken } = useAppContext();
+    const priceIdsString = searchParams.get("priceIds") ?? "";
+    const priceIdsArray = priceIdsString.split(",").filter(Boolean);
+    const isSubscription = searchParams.get("subscription") === "true";
+
+    if (!isSubscription && priceIdsArray.length === 0) {
+        return <Navigate to={"/ice-cream"} replace />;
+    }
+
+    if (friendToken && !isSubscription) {
+        return <FriendCheckout priceIds={priceIdsArray} friendToken={friendToken} />;
+    }
+
+    return <PaidCheckout priceIdsString={priceIdsString} subscription={isSubscription} />;
 };
 
 export default Checkout;
