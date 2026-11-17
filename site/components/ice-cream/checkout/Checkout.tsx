@@ -31,7 +31,7 @@ async function fetchClientSecret(isSubscription: boolean, priceIdsString: string
         return result.data.client_secret;
     } catch (error) {
         if (isAxiosError<ErrorResponseBody>(error) && error.response?.data.message) {
-            throw new Error(error.response.data.message);
+            throw new Error(error.response.data.message, { cause: error });
         }
         throw error;
     }
