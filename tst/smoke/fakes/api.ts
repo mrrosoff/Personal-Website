@@ -1,11 +1,12 @@
+import { expect } from "@playwright/test";
 import type { Page, Request } from "@playwright/test";
 
 import { DeviceKind, UserType } from "../../../api/types";
 import type { DatabaseFlavor } from "../../../api/types";
 
-export const API = "https://api.maxrosoff.com";
+const API = "https://api.maxrosoff.com";
 
-export const FLAVORS: DatabaseFlavor[] = [
+const FLAVORS: DatabaseFlavor[] = [
     {
         productId: "prod_mint",
         priceId: "price_mint",
@@ -144,6 +145,11 @@ export async function signedIn(page: Page, token: string) {
         sessionStorage.setItem("HAS_BOOTED_UP", "true");
         sessionStorage.setItem("AUTH_TOKEN", value);
     }, token);
+}
+
+export async function openTerminal(page: Page) {
+    await page.goto("/");
+    await expect(page.locator("main input")).toBeFocused();
 }
 
 export async function skipBoot(page: Page) {

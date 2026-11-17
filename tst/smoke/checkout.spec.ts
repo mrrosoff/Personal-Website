@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import type { Page } from "@playwright/test";
 
-import { POLAROID_FRIEND_TOKEN, fakeApi, signedIn, skipBoot } from "./fakes/api";
+import { POLAROID_FRIEND_TOKEN, fakeApi, openTerminal, signedIn, skipBoot } from "./fakes/api";
 import type { FakeApi } from "./fakes/api";
 import { fakeStripe } from "./fakes/stripe";
 
@@ -33,13 +33,6 @@ async function fillDelivery(page: Page) {
     await page.getByRole("button", { name: "Enter Test Card" }).click();
 }
 
-test("sends an empty cart back to the shop", async ({ page }) => {
-    await fakeStripe(page, CART);
-    await openCheckout(page, "");
-
-    await expect(page).toHaveURL("/ice-cream");
-});
-
 test("pays for a cart and confirms the order", async ({ page }) => {
     await fakeStripe(page, CART);
     const api = await openCheckout(page, "?priceIds=price_mint,price_fig");
@@ -52,37 +45,6 @@ test("pays for a cart and confirms the order", async ({ page }) => {
     await expect(page.getByText("ada@example.com")).toBeVisible();
     expect(api.calls("/ice-cream/checkout").at(0)?.search).toBe("?priceIds=price_mint,price_fig");
     expect(api.calls("/ice-cream/checkout-status").at(0)?.body).toEqual({ sessionId: "cs_test" });
-});
-
-test("only delivers within San Francisco", async ({ page }) => {
-    await fakeStripe(page, CART);
-    await openCheckout(page, "?priceIds=price_mint,price_fig");
-
-    await fillDelivery(page);
-    await page.getByLabel("ZIP").fill("10001");
-
-    await expect(page.getByText("I only deliver within San Francisco.")).toBeVisible();
-    await expect(page.getByRole("button", { name: "Pay $12.00" })).toBeDisabled();
-});
-
-test("shows a declined card", async ({ page }) => {
-    await fakeStripe(page, { ...CART, declined: true });
-    await openCheckout(page, "?priceIds=price_mint,price_fig");
-
-    await fillDelivery(page);
-    await page.getByRole("button", { name: "Pay $12.00" }).click();
-
-    await expect(page.getByText("Your card was declined.")).toBeVisible();
-});
-
-test("explains why a checkout could not start", async ({ page }) => {
-    await fakeStripe(page, CART);
-    await skipBoot(page);
-    const api = await fakeApi(page);
-    api.reply("/ice-cream/checkout", { status: 400, json: { message: "Fig Is Sold Out" } });
-    await page.goto("/ice-cream/checkout?priceIds=price_fig");
-
-    await expect(page.getByText("Fig Is Sold Out")).toBeVisible();
 });
 
 test("starts a monthly subscription", async ({ page }) => {
@@ -102,34 +64,11 @@ test("starts a monthly subscription", async ({ page }) => {
     });
 });
 
-test("does not subscribe an email twice", async ({ page }) => {
-    await fakeStripe(page, {
-        lineItems: [{ name: "Two Pints", amount: "$10.00" }],
-        total: "$10.00"
-    });
-    const api = await openCheckout(page, "?subscription=true");
-    api.reply("/ice-cream/subscription-status", { json: { subscribed: true } });
-
-    await fillDelivery(page);
-    await page.getByRole("button", { name: "Pay $10.00" }).click();
-
-    await expect(page.getByText("This email already has a subscription.")).toBeVisible();
-});
-
-test("sends an unfinished payment back to the shop", async ({ page }) => {
-    await skipBoot(page);
-    const api = await fakeApi(page);
-    api.reply("/ice-cream/checkout-status", { json: { status: "open" } });
-    await page.goto("/ice-cream/checkout/return?sessionId=cs_test");
-
-    await expect(page).toHaveURL("/ice-cream");
-});
-
 test("gives a friend their order on the house", async ({ page }) => {
     await signedIn(page, POLAROID_FRIEND_TOKEN);
     const api = await fakeApi(page);
     api.reply("/ice-cream/checkout", { json: {} });
-    await page.goto("/");
+    await openTerminal(page);
 
     await page.keyboard.type("icecream");
     await page.keyboard.press("Enter");

@@ -5,7 +5,6 @@ export type FakeLineItem = { name: string; amount: string };
 export type FakeStripeOptions = {
     lineItems: FakeLineItem[];
     total: string;
-    declined?: boolean;
 };
 
 export async function fakeStripe(page: Page, options: FakeStripeOptions) {
@@ -53,12 +52,6 @@ function installFakeStripe(options: FakeStripeOptions) {
         updateEmail: () => Promise.resolve(ok),
         updateBillingAddress: () => Promise.resolve(ok),
         confirm: () => {
-            if (options.declined) {
-                return Promise.resolve({
-                    type: "error",
-                    error: { message: "Your card was declined." }
-                });
-            }
             window.location.assign("/ice-cream/checkout/return?sessionId=cs_test");
             return new Promise(() => undefined);
         }

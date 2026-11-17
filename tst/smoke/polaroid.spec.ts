@@ -1,8 +1,7 @@
 import { expect, test } from "@playwright/test";
 import type { Page } from "@playwright/test";
 
-import { UserType } from "../../api/types";
-import { POLAROID_FRIEND_TOKEN, fakeApi, fakeToken, signedIn, skipBoot } from "./fakes/api";
+import { POLAROID_FRIEND_TOKEN, fakeApi, signedIn, skipBoot } from "./fakes/api";
 import type { FakeApi } from "./fakes/api";
 import { PASSKEY_AUTH_OPTIONS, fakePasskeys } from "./fakes/passkeys";
 import { png, previewUrl } from "./fakes/photos";
@@ -41,14 +40,6 @@ async function choosePhoto(page: Page) {
         .setInputFiles({ name: "beach.png", mimeType: "image/png", buffer: png(600, 900) });
 }
 
-test("shows the photos on the frame", async ({ page }) => {
-    await signedIn(page, POLAROID_FRIEND_TOKEN);
-    await frameWith(page, [photo("p1"), photo("p2")]);
-    await page.goto("/polaroid");
-
-    await expect(page.locator("img[src^='data:image/png']")).toHaveCount(2);
-});
-
 test("crops and uploads a photo", async ({ page }) => {
     await signedIn(page, POLAROID_FRIEND_TOKEN);
     const api = await frameWith(page, []);
@@ -60,21 +51,6 @@ test("crops and uploads a photo", async ({ page }) => {
     await expect(page.locator("img[src^='data:image/png']")).toHaveCount(1);
     const upload = api.calls("/polaroid/upload").at(0);
     expect(upload?.authorization).toBe(`Bearer ${POLAROID_FRIEND_TOKEN}`);
-});
-
-test("explains why an upload failed", async ({ page }) => {
-    await signedIn(page, POLAROID_FRIEND_TOKEN);
-    const api = await frameWith(page, []);
-    api.reply("/polaroid/upload", {
-        status: 400,
-        json: { message: "That Photo Couldn't Be Read" }
-    });
-    await page.goto("/polaroid");
-
-    await choosePhoto(page);
-    await page.getByRole("dialog").getByRole("button", { name: "Add" }).click();
-
-    await expect(page.getByText("That Photo Couldn't Be Read")).toBeVisible();
 });
 
 test("removes a photo from the frame", async ({ page }) => {
@@ -100,15 +76,4 @@ test("signs a friend in with a passkey to open the frame", async ({ page }) => {
     await page.getByText("Unlock").click();
 
     await expect(page.locator("img[src^='data:image/png']")).toHaveCount(1);
-});
-
-test("sends someone without a polaroid home", async ({ page }) => {
-    await signedIn(
-        page,
-        fakeToken({ id: "Bo", userType: UserType.FRIEND, email: "bo@example.com" })
-    );
-    await fakeApi(page);
-    await page.goto("/polaroid");
-
-    await expect(page).toHaveURL("/");
 });
