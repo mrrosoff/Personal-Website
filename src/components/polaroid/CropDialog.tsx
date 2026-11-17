@@ -152,7 +152,7 @@ export default function CropDialog({ file, remaining, onCancel, onConfirm }: Cro
                     max={4}
                     step={0.01}
                     disabled={!src}
-                    onChange={(_, value) => setZoom(value as number)}
+                    onChange={(_, value) => setZoom(value)}
                     sx={{ flex: 1, minWidth: 100, mx: 1 }}
                 />
                 <Button variant="outlined" onClick={onCancel} sx={{ py: 0.25 }}>

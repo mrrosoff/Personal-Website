@@ -18,7 +18,7 @@ const KIND_LABELS: Record<DeviceKind, string> = {
 
 const listOwners = (owners: string[]): string =>
     owners.length < 2
-        ? owners[0]!
+        ? owners[0]
         : `${owners.slice(0, -1).join(", ")} & ${owners[owners.length - 1]}`;
 
 export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {

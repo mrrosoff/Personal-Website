@@ -24,7 +24,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const targetCommand = argv[0];
     const targetOptions = argv.slice(1);
 
-    if (environmentVariables["AUTH_TOKEN"]) {
+    if (environmentVariables.AUTH_TOKEN) {
         const commandMapping = state.getCommandMapping();
         const commandFn = CommandMappingUtil.getCommandFn(commandMapping, targetCommand);
         if (!commandFn) {

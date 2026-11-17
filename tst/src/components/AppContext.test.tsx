@@ -50,7 +50,7 @@ describe("AppProvider", () => {
 
         const { result } = renderHook(() => useAppContext(), { wrapper: AppProvider });
 
-        expect(result.current.emulatorState.getEnvVariables()["AUTH_TOKEN"]).toBe(token);
+        expect(result.current.emulatorState.getEnvVariables().AUTH_TOKEN).toBe(token);
     });
 
     it("should forget an expired sign in", async () => {
@@ -59,7 +59,7 @@ describe("AppProvider", () => {
 
         const { result } = renderHook(() => useAppContext(), { wrapper: AppProvider });
 
-        expect(result.current.emulatorState.getEnvVariables()["AUTH_TOKEN"]).toBeUndefined();
+        expect(result.current.emulatorState.getEnvVariables().AUTH_TOKEN).toBeUndefined();
         expect(sessionStorage.getItem("AUTH_TOKEN")).toBeNull();
     });
 
@@ -88,7 +88,7 @@ describe("exit", () => {
         const { output, state } = await runExit({ AUTH_TOKEN: "token" });
 
         expect(output).toEqual({ output: "", type: "text" });
-        expect(state.getEnvVariables()["AUTH_TOKEN"]).toBeUndefined();
+        expect(state.getEnvVariables().AUTH_TOKEN).toBeUndefined();
         expect(sessionStorage.getItem("AUTH_TOKEN")).toBeNull();
     });
 

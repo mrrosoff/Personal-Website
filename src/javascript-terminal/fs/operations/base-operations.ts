@@ -10,7 +10,7 @@ const descend = (entry: File): FileSystem => {
 
 export const fsSearchParent = (fs: FileSystem, path: string): FileSystem => {
     let fsSection: FileSystem = fs;
-    let pathParts = toPathParts(path);
+    const pathParts = toPathParts(path);
 
     for (const pathPart of pathParts.slice(0, pathParts.length - 1)) {
         if (!fsSection[pathPart]) {
@@ -25,7 +25,7 @@ export const fsSearchParent = (fs: FileSystem, path: string): FileSystem => {
 
 export const fsSearchAutoComplete = (fs: FileSystem, path: string): FileSystem => {
     let fsSection: FileSystem = fs;
-    let pathParts = toPathParts(path);
+    const pathParts = toPathParts(path);
 
     for (const pathPart of pathParts) {
         if (!fsSection[pathPart]) {
@@ -40,7 +40,7 @@ export const fsSearchAutoComplete = (fs: FileSystem, path: string): FileSystem =
 
 export const fsSearch = (fs: FileSystem, path: string): FileSystem => {
     let fsSection: FileSystem = fs;
-    let pathParts = toPathParts(path);
+    const pathParts = toPathParts(path);
 
     for (const pathPart of pathParts) {
         if (!fsSection[pathPart]) {

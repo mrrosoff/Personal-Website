@@ -17,7 +17,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const filePath = relativeToAbsolutePath(state, argv[0]);
     const fileContent = FileOp.read(state.getFileSystem(), filePath);
 
-    const delimiter = options.delimiter || "\t";
+    const delimiter = String(options.delimiter ?? "\t");
     const fields = options.fields;
 
     if (!fields) {
@@ -25,7 +25,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     }
 
     const fieldNumbers: number[] = [];
-    const fieldSpec = fields.toString();
+    const fieldSpec = String(fields);
 
     if (fieldSpec.includes("-")) {
         const [start, end] = fieldSpec.split("-").map(Number);

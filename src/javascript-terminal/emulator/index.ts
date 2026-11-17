@@ -83,7 +83,7 @@ export default class Emulator {
     }
 
     updateStateByExecution(state: EmulatorState, commandStrToExecute: string, errorString: string) {
-        let commandResults = [];
+        const commandResults = [];
 
         for (const { commandName, commandOptions } of parseCommands(commandStrToExecute)) {
             const commandMapping = state.getCommandMapping();

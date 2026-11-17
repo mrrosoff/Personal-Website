@@ -117,7 +117,7 @@ const FlavorsList = (props: { title: string; description: string; flavors: Datab
                     borderColor: "rgb(209,213,219) !important"
                 }}
             />
-            {props.flavors!.map((flavor, index) => (
+            {props.flavors.map((flavor, index) => (
                 <>
                     <Section key={flavor.name}>
                         <Row>

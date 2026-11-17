@@ -7,7 +7,7 @@ export const read = (fs: FileSystem, path: string): string => {
     const fsPart = fsSearchParent(fs, path);
     const file = fsPart[getLastPathPart(path)];
 
-    if (!file || file.type !== "-") {
+    if (file?.type !== "-") {
         throw Error("Not A File At Specified Path: " + path);
     }
 
@@ -21,7 +21,7 @@ export const write = (fs: FileSystem, path: string, file: File) => {
 export const copy = (fs: FileSystem, srcPath: string, destPath: string) => {
     const fsPart = fsSearchParent(fs, srcPath);
 
-    if (!fsPart[getLastPathPart(srcPath)] || fsPart[getLastPathPart(srcPath)].type !== "-") {
+    if (fsPart[getLastPathPart(srcPath)]?.type !== "-") {
         throw Error("Not A File At Specified Path: " + srcPath);
     }
 
@@ -31,7 +31,7 @@ export const copy = (fs: FileSystem, srcPath: string, destPath: string) => {
 export const remove = (fs: FileSystem, path: string) => {
     const fsPart = fsSearchParent(fs, path);
 
-    if (!fsPart[getLastPathPart(path)] || fsPart[getLastPathPart(path)].type !== "-") {
+    if (fsPart[getLastPathPart(path)]?.type !== "-") {
         throw Error("Not A File At Specified Path: " + path);
     }
 

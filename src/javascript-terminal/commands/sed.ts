@@ -15,7 +15,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const filePath = relativeToAbsolutePath(state, argv[1]);
     const fileContent = FileOp.read(state.getFileSystem(), filePath);
 
-    const sedMatch = command.match(/^s\/(.+)\/(.*)\/([gi]*)$/);
+    const sedMatch = /^s\/(.+)\/(.*)\/([gi]*)$/.exec(command);
 
     if (!sedMatch) {
         return {

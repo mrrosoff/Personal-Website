@@ -8,11 +8,7 @@ import EmulatorState, {
 } from "../../../emulator-state/EmulatorState";
 import { arrowStep, editText, setAdminConsoleError, stepAround } from "../../console";
 
-const MAILING_LIST_FIELDS: Array<keyof MailingListRegistration> = [
-    "firstName",
-    "lastName",
-    "email"
-];
+const MAILING_LIST_FIELDS: (keyof MailingListRegistration)[] = ["firstName", "lastName", "email"];
 
 export async function handleAddMailingListEntry(
     key: string,

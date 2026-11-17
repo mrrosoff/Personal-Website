@@ -25,7 +25,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const outputStr = substituteEnvVariables(state.getEnvVariables(), input);
     let cleanStr = outputStr.trim().replace(DOUBLE_SPACE_REGEX, " ");
 
-    if (cleanStr[0] === '"' && cleanStr[cleanStr.length - 1] === '"') {
+    if (cleanStr.startsWith('"') && cleanStr.endsWith('"')) {
         cleanStr = cleanStr.slice(1, cleanStr.length - 1);
     }
 

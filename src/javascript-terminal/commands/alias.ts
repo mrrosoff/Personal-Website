@@ -28,7 +28,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     }
 
     const input = argv.join(" ");
-    const match = input.match(/^(\w+)=['"](.+)['"]$/);
+    const match = /^(\w+)=['"](.+)['"]$/.exec(input);
 
     if (!match) {
         return {

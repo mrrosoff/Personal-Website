@@ -7,7 +7,7 @@ import { mockAdminState } from "../../../../helpers/terminal";
 import AdminConsole from "../../../../../src/components/terminal/admin/AdminConsole";
 import { AdminConsoleScreen } from "../../../../../src/javascript-terminal/emulator-state/EmulatorState";
 
-const screens: Array<[AdminConsoleScreen, object, string]> = [
+const screens: [AdminConsoleScreen, object, string][] = [
     [AdminConsoleScreen.Main, {}, "=== Admin Console ==="],
     [AdminConsoleScreen.IceCreamInventory, {}, "(Ice Cream Inventory)"],
     [AdminConsoleScreen.SelectFlavor, {}, "(Select Flavor)"],

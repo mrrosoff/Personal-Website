@@ -17,7 +17,7 @@ vi.mock("../../../../public/fonts/clacon.ttf", () => ({ default: "font" }));
 vi.mock("../../../../public/images/profile.jpg", () => ({ default: "photo" }));
 
 function renderedCard(): ReactElement {
-    return vi.mocked(render).mock.calls[0]![0] as ReactElement;
+    return vi.mocked(render).mock.calls[0][0] as ReactElement;
 }
 
 function textOf(node: ReactNode): string {

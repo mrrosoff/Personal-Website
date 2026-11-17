@@ -26,7 +26,7 @@ const isSupportedImage = (file: File) =>
 
 export default function Polaroid() {
     const { emulatorState } = useAppContext();
-    const [token, setToken] = useState(() => emulatorState.getEnvVariables()["AUTH_TOKEN"]);
+    const [token, setToken] = useState(() => emulatorState.getEnvVariables().AUTH_TOKEN);
 
     const unlock = useCallback(async () => {
         const fresh = await signInWithPasskey();

@@ -1,9 +1,6 @@
 import { Box, useMediaQuery, useTheme } from "@mui/material";
 
-import {
-    MainMenuOption,
-    type AdminConsoleState
-} from "../../../javascript-terminal/emulator-state/EmulatorState";
+import { MainMenuOption } from "../../../javascript-terminal/emulator-state/EmulatorState";
 import { useAppContext } from "../../AppContext";
 import type { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
@@ -13,7 +10,7 @@ const MainMenu = (props: { theme: TerminalTheme; onAction: (key: string) => void
     const { emulatorState } = useAppContext();
     const muiTheme = useTheme();
     const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
-    const mode = emulatorState.getAdminConsoleMode() as AdminConsoleState;
+    const mode = emulatorState.getAdminConsoleMode()!;
 
     const select = (option: MainMenuOption) => {
         emulatorState.setAdminConsoleMode({ ...mode, selectedOption: option });

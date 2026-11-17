@@ -1,9 +1,6 @@
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 
-import type {
-    AdminConsoleState,
-    MailingListEntry
-} from "../../../../javascript-terminal/emulator-state/EmulatorState";
+import type { MailingListEntry } from "../../../../javascript-terminal/emulator-state/EmulatorState";
 import { useAppContext } from "../../../AppContext";
 import type { TerminalTheme } from "../../Terminal";
 import MenuItem from "../common/MenuItem";
@@ -19,7 +16,7 @@ const AddMailingListEntryMenu = (props: {
     const { emulatorState } = useAppContext();
     const muiTheme = useTheme();
     const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
-    const mode = emulatorState.getAdminConsoleMode() as AdminConsoleState;
+    const mode = emulatorState.getAdminConsoleMode()!;
     const entry = mode.mailingListEntry!;
     const dots = useLoadingDots();
 
@@ -34,7 +31,7 @@ const AddMailingListEntryMenu = (props: {
         props.onAction("");
     };
 
-    const fields: Array<{ field: FormField; label: string }> = [
+    const fields: { field: FormField; label: string }[] = [
         { field: "firstName", label: "First Name" },
         { field: "lastName", label: "Last Name" },
         { field: "email", label: "Email" }

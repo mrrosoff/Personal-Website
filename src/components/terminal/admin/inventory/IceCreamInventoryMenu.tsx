@@ -1,9 +1,6 @@
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 
-import {
-    type AdminConsoleState,
-    IceCreamInventoryMenuOption
-} from "../../../../javascript-terminal/emulator-state/EmulatorState";
+import { IceCreamInventoryMenuOption } from "../../../../javascript-terminal/emulator-state/EmulatorState";
 import { useAppContext } from "../../../AppContext";
 import type { TerminalTheme } from "../../Terminal";
 import MenuItem from "../common/MenuItem";
@@ -20,7 +17,7 @@ const IceCreamInventoryMenu = (props: {
     const { emulatorState } = useAppContext();
     const muiTheme = useTheme();
     const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
-    const mode = emulatorState.getAdminConsoleMode() as AdminConsoleState;
+    const mode = emulatorState.getAdminConsoleMode()!;
     const dots = useLoadingDots();
 
     const selectOption = (option: IceCreamInventoryMenuOption) => {

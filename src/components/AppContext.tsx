@@ -30,7 +30,7 @@ const initialEmulatorState = EmulatorState.create({
         ...DefaultCommandMapping,
         exit: {
             functionDef: (state) => {
-                if (state.getEnvVariables()["AUTH_TOKEN"]) {
+                if (state.getEnvVariables().AUTH_TOKEN) {
                     const { AUTH_TOKEN: _removed, ...rest } = state.getEnvVariables();
                     state.setEnvVariables(rest);
                     sessionStorage.removeItem(AUTH_TOKEN_KEY);

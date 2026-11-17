@@ -11,7 +11,7 @@ vi.unmock("../../../../../src/components/terminal/games/SnakeGame");
 const GRID_WIDTH = 25;
 const GRID_HEIGHT = 12;
 
-function foodAt(...cells: Array<[number, number]>) {
+function foodAt(...cells: [number, number][]) {
     const values = cells.flatMap(([x, y]) => [(x + 0.5) / GRID_WIDTH, (y + 0.5) / GRID_HEIGHT]);
     vi.spyOn(Math, "random").mockImplementation(() => values.shift() ?? 0);
 }

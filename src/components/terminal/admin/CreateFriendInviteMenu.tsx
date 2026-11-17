@@ -5,7 +5,6 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CheckIcon from "@mui/icons-material/Check";
 
 import {
-    type AdminConsoleState,
     type FriendInvite,
     type InviteDevice
 } from "../../../javascript-terminal/emulator-state/EmulatorState";
@@ -25,13 +24,13 @@ const CreateFriendInviteMenu = (props: {
     const { emulatorState } = useAppContext();
     const muiTheme = useTheme();
     const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
-    const mode = emulatorState.getAdminConsoleMode() as AdminConsoleState;
+    const mode = emulatorState.getAdminConsoleMode()!;
     const invite = mode.friendInvite!;
     const [copied, setCopied] = useState(false);
     const dots = useLoadingDots();
 
     const devices = mode.inviteDevices;
-    const authToken = emulatorState.getEnvVariables()["AUTH_TOKEN"];
+    const authToken = emulatorState.getEnvVariables().AUTH_TOKEN;
 
     const requestedDevices = useRef(false);
 
@@ -78,7 +77,7 @@ const CreateFriendInviteMenu = (props: {
         props.onAction("");
     };
 
-    const fields: Array<{ field: FriendInvite["currentField"]; label: string; value: string }> = [
+    const fields: { field: FriendInvite["currentField"]; label: string; value: string }[] = [
         { field: "friendName", label: "Friend Name", value: invite.friendName },
         { field: "email", label: "Email", value: invite.email },
         {

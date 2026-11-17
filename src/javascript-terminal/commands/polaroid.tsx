@@ -6,7 +6,7 @@ export const optDef = {};
 
 const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
     const environmentVariables = state.getEnvVariables();
-    const token = environmentVariables["AUTH_TOKEN"];
+    const token = environmentVariables.AUTH_TOKEN;
     if (!token) {
         return { output: "Permission Denied", type: "error" };
     }

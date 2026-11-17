@@ -55,7 +55,7 @@ const MOTD_LINKS: Record<string, { mobile?: string; path?: string }> = {
 const renderOutputs = (
     emulatorState: EmulatorState,
     props: { theme: TerminalTheme },
-    promptSymbol: string = "dev@rosoff"
+    promptSymbol = "dev@rosoff"
 ) => {
     return emulatorState.getOutputs().map((content, index) => (
         <Grid key={index} container direction={"column"}>
@@ -113,9 +113,9 @@ const Terminal = (
     const [loadingDots, setLoadingDots] = useState(0);
     const [, bumpAdminConsole] = useReducer((count: number) => count + 1, 0);
 
-    let emulator = new Emulator();
+    const emulator = new Emulator();
 
-    const runAdminAction = async (key: string, ctrlKey: boolean = false) => {
+    const runAdminAction = async (key: string, ctrlKey = false) => {
         await handleAdminConsoleKeyPress(key, emulatorState, ctrlKey);
         bumpAdminConsole();
     };
@@ -144,7 +144,7 @@ const Terminal = (
         }
     }, [emulatorState.getPasswordPromptState()]);
 
-    const authToken = emulatorState.getEnvVariables()["AUTH_TOKEN"];
+    const authToken = emulatorState.getEnvVariables().AUTH_TOKEN;
     const authPayload = authToken ? decodeToken(authToken) : null;
     const promptUser =
         authPayload?.userType === UserType.ADMIN ? "admin" : (authPayload?.id ?? "dev");
@@ -287,7 +287,7 @@ const Terminal = (
                                 {trimmedLine}
                             </Box>
                         ];
-                        if (trimmedLine.charAt(0) === "*") {
+                        if (trimmedLine.startsWith("*")) {
                             outputs.splice(0, 0, <Box key={"indent"} width={20} />);
                         }
                         const index = trimmedLine.indexOf("~");

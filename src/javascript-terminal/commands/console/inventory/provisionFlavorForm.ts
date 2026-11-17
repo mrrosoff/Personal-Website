@@ -5,7 +5,7 @@ import EmulatorState, {
 } from "../../../emulator-state/EmulatorState";
 import { arrowStep, cycleFlavorType, editNumber, editText, stepAround } from "../../console";
 
-const FORM_FIELDS: Array<ProvisionFlavorForm["currentField"]> = [
+const FORM_FIELDS: ProvisionFlavorForm["currentField"][] = [
     "flavorName",
     "initialQuantity",
     "color",

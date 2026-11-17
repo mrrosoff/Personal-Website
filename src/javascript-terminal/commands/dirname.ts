@@ -12,7 +12,7 @@ const functionDef = (_state: EmulatorState, commandOptions: string[]) => {
 
     const path = argv[0];
 
-    let cleanPath = path.replace(/\/+$/, "");
+    const cleanPath = path.replace(/\/+$/, "");
 
     if (cleanPath === "" || cleanPath === "/") {
         return { output: "/" };

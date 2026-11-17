@@ -26,8 +26,8 @@ export async function resolveDevice(
         return undefined;
     }
 
-    const device = await deviceForId(prefixed[1]!, prefixed[2]!);
-    if (!device || device.kind !== kind) {
+    const device = await deviceForId(prefixed[1], prefixed[2]);
+    if (device?.kind !== kind) {
         return undefined;
     }
     await touchLastSeen(device);

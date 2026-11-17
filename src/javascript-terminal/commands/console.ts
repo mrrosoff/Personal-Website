@@ -12,7 +12,7 @@ import { handleMainMenu } from "./console/mainMenu";
 import { handleProvisionFlavorForm } from "./console/inventory/provisionFlavorForm";
 import { handleSelectFlavor } from "./console/inventory/selectFlavor";
 
-const FLAVOR_TYPE_OPTIONS: Array<FlavorType | null> = [...FLAVOR_TYPES, null];
+const FLAVOR_TYPE_OPTIONS: (FlavorType | null)[] = [...FLAVOR_TYPES, null];
 
 export function isPrintableKey(key: string): boolean {
     return [...key].length === 1;
@@ -56,7 +56,7 @@ export async function postAsAdmin<T>(
     body: object = {}
 ): Promise<T> {
     const { data } = await axios.post<T>(`${API_ENDPOINT_URL}${path}`, body, {
-        headers: { Authorization: `Bearer ${state.getEnvVariables()["AUTH_TOKEN"]}` }
+        headers: { Authorization: `Bearer ${state.getEnvVariables().AUTH_TOKEN}` }
     });
     return data;
 }
@@ -129,7 +129,7 @@ const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
         return { output: "", type: "text" };
     }
 
-    const token = state.getEnvVariables()["AUTH_TOKEN"];
+    const token = state.getEnvVariables().AUTH_TOKEN;
     if (decodeToken(token ?? "")?.userType !== UserType.ADMIN) {
         return { output: "Permission Denied", type: "error" };
     }

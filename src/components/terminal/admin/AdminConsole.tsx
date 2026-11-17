@@ -15,7 +15,7 @@ import AddMailingListEntryMenu from "./mailingList/AddMailingListEntryMenu";
 const AdminConsole = (props: { theme: TerminalTheme; onAction: (key: string) => void }) => {
     const { emulatorState } = useAppContext();
     const mode = emulatorState.getAdminConsoleMode();
-    if (!mode || !mode.screen) return null;
+    if (!mode?.screen) return null;
 
     const renderScreen = () => {
         switch (mode.screen) {

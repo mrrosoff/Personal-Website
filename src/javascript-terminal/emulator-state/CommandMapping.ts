@@ -8,13 +8,14 @@ export type CommandResult = {
     oldCwdPath?: string;
 };
 
-export type CommandMapping = {
-    [key: string]: {
+export type CommandMapping = Record<
+    string,
+    {
         functionDef: (state: EmulatorState, _commandOptions: string[]) => CommandResult;
-        optDef: { [key: string]: string };
+        optDef: Record<string, string>;
         manPage?: string;
-    };
-};
+    }
+>;
 
 export const errorMessage = (err: unknown) => (err instanceof Error ? err.message : String(err));
 

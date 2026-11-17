@@ -115,7 +115,7 @@ describe("BootUp", () => {
 
     it("should reveal each line one step at a time", () => {
         renderBootUp();
-        const steps: Array<[number, string, string?]> = [
+        const steps: [number, string, string?][] = [
             [450, "AF6S7V89 - JUC84X", "User:"],
             [200, "User:", "Device Name:"],
             [200, "Device Name:", "Memory Test:"],

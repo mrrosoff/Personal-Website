@@ -1,6 +1,5 @@
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 
-import type { AdminConsoleState } from "../../../../javascript-terminal/emulator-state/EmulatorState";
 import { useAppContext } from "../../../AppContext";
 import type { TerminalTheme } from "../../Terminal";
 import MenuItem from "../common/MenuItem";
@@ -16,7 +15,7 @@ const ProvisionFlavorFormMenu = (props: {
     const { emulatorState } = useAppContext();
     const muiTheme = useTheme();
     const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
-    const mode = emulatorState.getAdminConsoleMode() as AdminConsoleState;
+    const mode = emulatorState.getAdminConsoleMode()!;
     const form = mode.provisionForm!;
 
     const selectField = (field: FormField) => {
@@ -27,7 +26,7 @@ const ProvisionFlavorFormMenu = (props: {
         props.onAction("");
     };
 
-    const fields: Array<{ field: FormField; label: string; value: string | number }> = [
+    const fields: { field: FormField; label: string; value: string | number }[] = [
         { field: "flavorName", label: "Flavor Name", value: form.flavorName || "_" },
         { field: "initialQuantity", label: "Initial Quantity", value: form.initialQuantity },
         { field: "color", label: "Color", value: form.color || "_" },

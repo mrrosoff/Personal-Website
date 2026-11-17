@@ -108,12 +108,12 @@ type EmulatorStateType = {
     [FS_KEY]: FileSystem;
     [ENVIRONMENT_VARIABLES_KEY]: Record<string, string | undefined>;
     [HISTORY_KEY]: string[];
-    [OUTPUTS_KEY]: Array<{
+    [OUTPUTS_KEY]: {
         command?: string;
         cwd?: string;
         output: CommandResult[];
         promptSymbol?: string;
-    }>;
+    }[];
     [COMMAND_MAPPING_KEY]: CommandMapping;
     [ADMIN_CONSOLE_KEY]?: AdminConsoleState;
     [PASSWORD_PROMPT_KEY]?: PasswordPromptState;

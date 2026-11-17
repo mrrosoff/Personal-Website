@@ -2,7 +2,6 @@ import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { useMemo } from "react";
 
 import { sortInventory } from "../../../../javascript-terminal/commands/console/inventory/selectFlavor";
-import type { AdminConsoleState } from "../../../../javascript-terminal/emulator-state/EmulatorState";
 import { useAppContext } from "../../../AppContext";
 import type { TerminalTheme } from "../../Terminal";
 import MenuItem from "../common/MenuItem";
@@ -13,7 +12,7 @@ const SelectFlavorMenu = (props: { theme: TerminalTheme; onAction: (key: string)
     const { emulatorState } = useAppContext();
     const muiTheme = useTheme();
     const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
-    const mode = emulatorState.getAdminConsoleMode() as AdminConsoleState;
+    const mode = emulatorState.getAdminConsoleMode()!;
     const dots = useLoadingDots();
 
     const ITEMS_PER_PAGE = 4;

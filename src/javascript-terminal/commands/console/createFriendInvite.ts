@@ -20,7 +20,7 @@ function clampDurationHours(hours: number): number {
     return Math.min(Math.max(hours, SHARE_TOKEN_MIN_HOURS), SHARE_TOKEN_MAX_HOURS);
 }
 
-const INVITE_FIELDS: Array<FriendInvite["currentField"]> = [
+const INVITE_FIELDS: FriendInvite["currentField"][] = [
     "friendName",
     "email",
     "durationHours",

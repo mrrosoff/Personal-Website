@@ -22,7 +22,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         return { output: "grep: missing file operand", type: "error" };
     }
 
-    let pattern = argv[0];
+    const pattern = argv[0];
     const filePath = relativeToAbsolutePath(state, argv[1]);
 
     const fsPart = fsSearchParent(state.getFileSystem(), filePath);

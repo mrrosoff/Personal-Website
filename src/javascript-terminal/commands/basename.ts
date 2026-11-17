@@ -13,7 +13,7 @@ const functionDef = (_state: EmulatorState, commandOptions: string[]) => {
     const path = argv[0];
     const suffix = argv[1];
 
-    let cleanPath = path.replace(/\/+$/, "");
+    const cleanPath = path.replace(/\/+$/, "");
 
     const lastSlashIndex = cleanPath.lastIndexOf("/");
     let basename = lastSlashIndex === -1 ? cleanPath : cleanPath.slice(lastSlashIndex + 1);

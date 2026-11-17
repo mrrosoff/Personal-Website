@@ -17,7 +17,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const fileContent = FileOp.read(state.getFileSystem(), filePath);
 
     const lines = fileContent.split("\n");
-    const uniqueLines: Array<{ line: string; count: number }> = [];
+    const uniqueLines: { line: string; count: number }[] = [];
     let previousLine = "";
     let currentCount = 0;
 

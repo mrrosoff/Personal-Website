@@ -145,7 +145,7 @@ describe("authenticateWithPasskey", () => {
 
         await authenticateWithPasskey(shell.emulator, shell.state);
 
-        expect(shell.state.getEnvVariables()["AUTH_TOKEN"]).toBe("token");
+        expect(shell.state.getEnvVariables().AUTH_TOKEN).toBe("token");
     });
 
     it("should sign back out when su fails", async () => {
@@ -154,7 +154,7 @@ describe("authenticateWithPasskey", () => {
 
         await authenticateWithPasskey(shell.emulator, shell.state);
 
-        expect(shell.state.getEnvVariables()["AUTH_TOKEN"]).toBeUndefined();
+        expect(shell.state.getEnvVariables().AUTH_TOKEN).toBeUndefined();
         expect(sessionStorage.removeItem).toHaveBeenCalledWith("AUTH_TOKEN");
     });
 
@@ -164,7 +164,7 @@ describe("authenticateWithPasskey", () => {
 
         await authenticateWithPasskey(shell.emulator, shell.state);
 
-        expect(shell.state.getEnvVariables()["AUTH_TOKEN"]).toBeDefined();
+        expect(shell.state.getEnvVariables().AUTH_TOKEN).toBeDefined();
     });
 
     it("should run the command even with nothing on screen", async () => {
@@ -174,7 +174,7 @@ describe("authenticateWithPasskey", () => {
 
         await authenticateWithPasskey(shell.emulator, shell.state);
 
-        expect(shell.state.getOutputs()).toBeEmpty();
+        expect(shell.state.getOutputs()).toHaveLength(0);
     });
 
     it("should report a failed sign in", async () => {

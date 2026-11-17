@@ -17,7 +17,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     }
 
     const input = argv.join(" ");
-    const match = input.match(/^(\w+)=(.*)$/);
+    const match = /^(\w+)=(.*)$/.exec(input);
 
     if (!match) {
         return { output: "export: invalid syntax. Use: export VAR=value", type: "error" };
@@ -27,7 +27,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
     const envVariables = state.getEnvVariables();
 
     if (varName === AUTH_TOKEN_KEY && unexpiredToken(varValue)) {
-        sessionStorage.setItem(AUTH_TOKEN_KEY, varValue!);
+        sessionStorage.setItem(AUTH_TOKEN_KEY, varValue);
     }
 
     state.setEnvVariables({ ...envVariables, [varName]: varValue });

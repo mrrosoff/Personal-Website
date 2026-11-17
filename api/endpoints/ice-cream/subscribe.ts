@@ -37,7 +37,7 @@ export const registerSubscriberOnMailingList = async (session: Stripe.Checkout.S
 
 export const fulfillSubscriptionMonth = async (stripe: Stripe, invoice: Stripe.Invoice) => {
     const fulfilledMetadataKey = "fulfilledFlavors";
-    const currentInvoice = await stripe.invoices.retrieve(invoice.id!);
+    const currentInvoice = await stripe.invoices.retrieve(invoice.id);
     if (currentInvoice.metadata?.[fulfilledMetadataKey]) {
         return;
     }
@@ -48,7 +48,7 @@ export const fulfillSubscriptionMonth = async (stripe: Stripe, invoice: Stripe.I
     );
     const picked = pickRandomFlavors(available);
 
-    await stripe.invoices.update(invoice.id!, {
+    await stripe.invoices.update(invoice.id, {
         metadata: { [fulfilledMetadataKey]: picked.map((flavor) => flavor.name).join(", ") }
     });
 

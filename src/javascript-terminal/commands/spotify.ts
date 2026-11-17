@@ -27,7 +27,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
         return { output: manPage, type: "text" };
     }
 
-    const token = state.getEnvVariables()["AUTH_TOKEN"];
+    const token = state.getEnvVariables().AUTH_TOKEN;
     if (!token) {
         return { output: "Permission Denied", type: "error" };
     }

@@ -173,7 +173,7 @@ function renderPhoto(input: Buffer): RenderResult {
 
     const linear = new Float32Array(PANEL_WIDTH * PANEL_HEIGHT * 3);
     for (let i = 0; i < linear.length; i++) {
-        linear[i] = srgbToLinear(cropped.data[i]!);
+        linear[i] = srgbToLinear(cropped.data[i]);
     }
 
     applyFilm(linear, PANEL_WIDTH, PANEL_HEIGHT);
@@ -254,9 +254,9 @@ function boxResize(image: RgbImage, rect: CropRect, targetW: number, targetH: nu
                     const wx = Math.min(sx + 1, x1) - Math.max(sx, x0);
                     const w = wx * wy;
                     const i = (sy * image.width + sx) * 3;
-                    r += image.data[i]! * w;
-                    g += image.data[i + 1]! * w;
-                    b += image.data[i + 2]! * w;
+                    r += image.data[i] * w;
+                    g += image.data[i + 1] * w;
+                    b += image.data[i + 2] * w;
                     weight += w;
                 }
             }
@@ -298,7 +298,7 @@ function srgbToLinear(channel: number): number {
     const low = Math.floor(clamped);
     const high = Math.min(255, low + 1);
     const t = clamped - low;
-    return srgbToLinearLut[low]! * (1 - t) + srgbToLinearLut[high]! * t;
+    return srgbToLinearLut[low] * (1 - t) + srgbToLinearLut[high] * t;
 }
 
 /** In place. Values are 0-1 linear, three channels, row-major. */
@@ -313,9 +313,9 @@ function applyFilm(
             const i = (y * width + x) * 3;
 
             let rgb: [number, number, number] = [
-                linear[i]! * stock.whiteBalance[0],
-                linear[i + 1]! * stock.whiteBalance[1],
-                linear[i + 2]! * stock.whiteBalance[2]
+                linear[i] * stock.whiteBalance[0],
+                linear[i + 1] * stock.whiteBalance[1],
+                linear[i + 2] * stock.whiteBalance[2]
             ];
 
             const vignette = vignetteFactor(x, y, width, height, stock);
@@ -442,9 +442,9 @@ function ditherToPalette(linear: Float32Array, width: number, height: number): U
             return;
         }
         const i = (y * width + x) * 3;
-        work[i] = work[i]! + clamp(er * weight, errorClamp);
-        work[i + 1] = work[i + 1]! + clamp(eg * weight, errorClamp);
-        work[i + 2] = work[i + 2]! + clamp(eb * weight, errorClamp);
+        work[i] = work[i] + clamp(er * weight, errorClamp);
+        work[i + 1] = work[i + 1] + clamp(eg * weight, errorClamp);
+        work[i + 2] = work[i + 2] + clamp(eb * weight, errorClamp);
     };
 
     for (let y = 0; y < height; y++) {
@@ -456,9 +456,9 @@ function ditherToPalette(linear: Float32Array, width: number, height: number): U
         for (let x = start; x !== end; x += step) {
             const i = (y * width + x) * 3;
 
-            const r = work[i]!;
-            const g = work[i + 1]!;
-            const b = work[i + 2]!;
+            const r = work[i];
+            const g = work[i + 1];
+            const b = work[i + 2];
 
             // Floyd-Steinberg alone organises into worms and checkerboards.
             // Jittering only the ink choice breaks that up without touching the
@@ -470,7 +470,7 @@ function ditherToPalette(linear: Float32Array, width: number, height: number): U
             );
             out[y * width + x] = index;
 
-            const chosen = palette.inks[index]!.rgb;
+            const chosen = palette.inks[index].rgb;
             const er = (r - srgbToLinear(chosen[0])) * strength;
             const eg = (g - srgbToLinear(chosen[1])) * strength;
             const eb = (b - srgbToLinear(chosen[2])) * strength;
@@ -504,11 +504,11 @@ function nearestInk(palette: PreparedPalette, lab: Lab): number {
     let bestDistance = Infinity;
 
     for (let i = 0; i < palette.labs.length; i++) {
-        const candidate = palette.labs[i]!;
+        const candidate = palette.labs[i];
         const dl = (lab[0] - candidate[0]) * LIGHTNESS_WEIGHT;
         const da = (lab[1] - candidate[1]) * CHROMA_WEIGHT;
         const db = (lab[2] - candidate[2]) * CHROMA_WEIGHT;
-        const distance = (dl * dl + da * da + db * db) * palette.inks[i]!.weight;
+        const distance = (dl * dl + da * da + db * db) * palette.inks[i].weight;
 
         if (distance < bestDistance) {
             bestDistance = distance;
@@ -537,9 +537,9 @@ function packFramebuffer(indices: Uint8Array): Buffer {
 
     for (let y = 0; y < PANEL_HEIGHT; y++) {
         for (let x = 0; x < PANEL_WIDTH; x += 2) {
-            const high = inks[indices[y * PANEL_WIDTH + x]!]!.code;
-            const low = inks[indices[y * PANEL_WIDTH + x + 1]!]!.code;
-            out[(y * PANEL_ROW_BYTES + x / 2) as number] = (high << 4) | low;
+            const high = inks[indices[y * PANEL_WIDTH + x]].code;
+            const low = inks[indices[y * PANEL_WIDTH + x + 1]].code;
+            out[y * PANEL_ROW_BYTES + x / 2] = (high << 4) | low;
         }
     }
 
@@ -550,7 +550,7 @@ function indicesToRgb(indices: Uint8Array): Uint8Array {
     const inks = SPECTRA_6;
     const out = new Uint8Array(indices.length * 3);
     for (let i = 0; i < indices.length; i++) {
-        const rgb = inks[indices[i]!]!.rgb;
+        const rgb = inks[indices[i]].rgb;
         out[i * 3] = rgb[0];
         out[i * 3 + 1] = rgb[1];
         out[i * 3 + 2] = rgb[2];

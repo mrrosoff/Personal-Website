@@ -5,7 +5,7 @@ import EmulatorState from "../emulator-state/EmulatorState";
 export const optDef = {};
 
 const functionDef = (state: EmulatorState, _commandOptions: string[]) => {
-    const token = state.getEnvVariables()["AUTH_TOKEN"];
+    const token = state.getEnvVariables().AUTH_TOKEN;
     const payload = token ? decodeToken(token) : null;
     const user = payload?.userType === UserType.ADMIN ? "admin" : (payload?.id ?? "dev");
     return { output: user };

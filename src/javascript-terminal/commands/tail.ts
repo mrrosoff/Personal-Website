@@ -13,7 +13,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
 
     const filePath = relativeToAbsolutePath(state, argv[0]);
     const file = FileOp.read(state.getFileSystem(), filePath);
-    const lineCount = options.lines ? options.lines : 10;
+    const lineCount = Number(options.lines ?? 10);
 
     return {
         output: file
