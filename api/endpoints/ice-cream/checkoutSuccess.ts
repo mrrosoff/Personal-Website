@@ -22,9 +22,11 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         stripeKeys["/website/stripe/webhook"]
     );
 
-    const invoice = stripeEvent.data.object as Stripe.Invoice;
-    if (stripeEvent.type === "invoice.paid" && invoice.parent?.type === "subscription_details") {
-        await fulfillSubscriptionMonth(stripe, invoice);
+    if (
+        stripeEvent.type === "invoice.paid" &&
+        stripeEvent.data.object.parent?.type === "subscription_details"
+    ) {
+        await fulfillSubscriptionMonth(stripe, stripeEvent.data.object);
         return buildResponse(event, HttpResponseStatus.OK, { received: true });
     }
 
@@ -38,9 +40,11 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         return buildResponse(event, HttpResponseStatus.OK, { received: true });
     }
 
-    const paymentIntentId = session.payment_intent as string;
-    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
-    if (paymentIntent.metadata.fulfilled) {
+    const paymentIntentId = expandableId(session.payment_intent);
+    const paymentIntent = paymentIntentId
+        ? await stripe.paymentIntents.retrieve(paymentIntentId)
+        : undefined;
+    if (paymentIntent?.metadata.fulfilled) {
         return buildResponse(event, HttpResponseStatus.OK, { received: true });
     }
 
@@ -56,7 +60,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     }
 
     const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
-    const productIds = lineItems.data.map((item) => item.price?.product as string);
+    const productIds = lineItems.data.flatMap((item) => expandableId(item.price?.product) ?? []);
 
     const decrementResults = await Promise.all(
         productIds.map(async (productId) => {
@@ -79,7 +83,7 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
     );
 
     const keptItems = lineItems.data.filter(
-        (item) => !oversoldProductIds.includes(item.price?.product as string)
+        (item) => !oversoldProductIds.includes(expandableId(item.price?.product) ?? "")
     );
     if (keptItems.length > 0) {
         await sendOrderSuccessEmails({
@@ -93,9 +97,9 @@ export const handler = async (event: APIGatewayEvent): Promise<APIGatewayProxyRe
         });
     }
 
-    await stripe.paymentIntents.update(paymentIntentId, {
-        metadata: { fulfilled: "true" }
-    });
+    if (paymentIntentId) {
+        await stripe.paymentIntents.update(paymentIntentId, { metadata: { fulfilled: "true" } });
+    }
 
     return buildResponse(event, HttpResponseStatus.OK, { received: true });
 };
@@ -110,9 +114,9 @@ async function processCheckoutOversold(
         oversoldProductIds.map((productId) => incrementField(FLAVORS_TABLE, productId, "count"))
     );
 
-    const paymentIntentId = session.payment_intent as string;
+    const paymentIntentId = expandableId(session.payment_intent);
     const oversoldLineItems = lineItems.filter(({ price }) =>
-        oversoldProductIds.includes(price?.product as string)
+        oversoldProductIds.includes(expandableId(price?.product) ?? "")
     );
     const refundAmount = oversoldLineItems.reduce((sum, item) => sum + item.amount_total, 0);
 
@@ -125,4 +129,9 @@ async function processCheckoutOversold(
         amount: refundAmount,
         reason: "requested_by_customer"
     });
+}
+
+// Stripe sends ids for related objects unless the request asked to expand them.
+function expandableId(field: string | { id: string } | null | undefined): string | undefined {
+    return typeof field === "string" ? field : field?.id;
 }

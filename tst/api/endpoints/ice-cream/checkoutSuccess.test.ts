@@ -160,6 +160,28 @@ describe("checkoutSuccess", () => {
         expect(mockContacts.has("a@b.com")).toBe(true);
     });
 
+    it("should read a product that came back expanded", async () => {
+        mockStripe.checkout.sessions.listLineItems.mockResolvedValue({
+            data: [{ ...mockLineItem, price: { product: { id: mockFlavor.productId } } }]
+        });
+
+        await handler(event);
+
+        expect(storedFlavor()?.count).toBe(mockFlavor.count - 1);
+    });
+
+    it("should leave the freezer alone for a line item without a price", async () => {
+        mockDynamoDB.seed(FLAVORS_TABLE, { ...mockFlavor, count: 0 });
+        mockStripe.checkout.sessions.listLineItems.mockResolvedValue({
+            data: [mockLineItem, { ...mockLineItem, price: null, description: "Gift Card" }]
+        });
+
+        await handler(event);
+
+        expect(storedFlavor()?.count).toBe(0);
+        expect(mockInbox).toContainEqual(expect.objectContaining({ subject: "Ice Cream Order" }));
+    });
+
     it("should not refund an oversold pint that cost nothing", async () => {
         mockDynamoDB.seed(FLAVORS_TABLE, { ...mockFlavor, count: 0 });
         mockStripe.checkout.sessions.listLineItems.mockResolvedValue({
