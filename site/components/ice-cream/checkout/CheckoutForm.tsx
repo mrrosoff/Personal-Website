@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import { useCheckout } from "@stripe/react-stripe-js/checkout";
+import { useCheckoutElements } from "@stripe/react-stripe-js/checkout";
 
 import { CheckoutFormProvider } from "./CheckoutForm/CheckoutFormContext";
 import CompactLayout from "./CheckoutForm/CompactLayout";
@@ -11,7 +11,7 @@ type CheckoutFormProps = {
 };
 
 const CheckoutForm = ({ priceIds, subscription }: CheckoutFormProps) => {
-    const state = useCheckout();
+    const state = useCheckoutElements();
 
     if (state.type === "error") {
         return (

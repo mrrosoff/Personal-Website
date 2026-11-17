@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { validate } from "email-validator";
 import { Box, Button, Skeleton, Typography } from "@mui/material";
-import { PaymentElement, useCheckout } from "@stripe/react-stripe-js/checkout";
+import { PaymentElement, useCheckoutElements } from "@stripe/react-stripe-js/checkout";
 
 import { isDeliverable, useCheckoutForm } from "./CheckoutFormContext";
 
@@ -78,7 +78,7 @@ const PaymentSkeleton = (props: PaymentSkeletonProps) => (
 );
 
 export const PayButton = () => {
-    const state = useCheckout();
+    const state = useCheckoutElements();
     const { address, email, payment, onSubmit, paymentComplete } = useCheckoutForm();
     return (
         <>

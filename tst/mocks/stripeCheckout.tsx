@@ -5,7 +5,7 @@ type PaymentElementProps = {
     onChange: (event: { complete: boolean }) => void;
 };
 
-type CheckoutProviderProps = {
+type CheckoutElementsProviderProps = {
     options: { clientSecret: Promise<string> };
     children: React.ReactNode;
 };
@@ -41,12 +41,12 @@ export function mockCheckoutSession(overrides: Record<string, unknown> = {}) {
     return checkout;
 }
 
-export function CheckoutProvider(props: CheckoutProviderProps) {
+export function CheckoutElementsProvider(props: CheckoutElementsProviderProps) {
     mockStripeCheckout.clientSecret = props.options.clientSecret;
     return props.children;
 }
 
-export function useCheckout() {
+export function useCheckoutElements() {
     return mockStripeCheckout.state;
 }
 

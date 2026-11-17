@@ -2,8 +2,8 @@ import { createContext, useContext, useEffect, useState } from "react";
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 
 import axios from "axios";
-import { useCheckout } from "@stripe/react-stripe-js/checkout";
-import type { StripeCheckoutValue } from "@stripe/react-stripe-js/checkout";
+import { useCheckoutElements } from "@stripe/react-stripe-js/checkout";
+import type { StripeCheckoutElementsValue } from "@stripe/react-stripe-js/checkout";
 import type { StripeCheckoutContact } from "@stripe/stripe-js";
 
 import { API_ENDPOINT_URL } from "../../../../../api/types";
@@ -95,14 +95,14 @@ export function CheckoutFormProvider({
     const [payment, setPayment] = useState<PaymentStatus>({ state: "idle" });
     const [paymentComplete, setPaymentComplete] = useState(false);
 
-    const state = useCheckout();
+    const state = useCheckoutElements();
     const { flavors, loadFlavors } = useIceCreamCart();
 
     useEffect(() => {
         void loadFlavors();
     }, [loadFlavors]);
 
-    async function pay(checkout: StripeCheckoutValue): Promise<string | null> {
+    async function pay(checkout: StripeCheckoutElementsValue): Promise<string | null> {
         const emailResult = await checkout.updateEmail(email);
         if (emailResult.type === "error") {
             setEmailError(emailResult.error.message);
@@ -120,7 +120,7 @@ export function CheckoutFormProvider({
         return confirmResult.type === "error" ? confirmResult.error.message : null;
     }
 
-    async function submit(checkout: StripeCheckoutValue): Promise<void> {
+    async function submit(checkout: StripeCheckoutElementsValue): Promise<void> {
         setPayment({ state: "paying" });
         let message: string | null = null;
         try {

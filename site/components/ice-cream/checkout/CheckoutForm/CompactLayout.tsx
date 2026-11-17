@@ -3,7 +3,7 @@ import { useState } from "react";
 import axios from "axios";
 import { validate } from "email-validator";
 import { Box, Divider, Grid, Link, Typography, useMediaQuery, useTheme } from "@mui/material";
-import { useCheckout } from "@stripe/react-stripe-js/checkout";
+import { useCheckoutElements } from "@stripe/react-stripe-js/checkout";
 
 import { API_ENDPOINT_URL } from "../../../../../api/types";
 import { useCheckoutForm } from "./CheckoutFormContext";
@@ -15,7 +15,7 @@ const CompactLayout = () => {
     const { email, selectedFlavors, setPaymentComplete, subscription } = useCheckoutForm();
     const theme = useTheme();
     const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
-    const state = useCheckout();
+    const state = useCheckoutElements();
     const [manageResult, setManageResult] = useState<"sent" | "failed" | null>(null);
     const canManage = validate(email);
 

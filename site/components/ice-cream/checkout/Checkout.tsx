@@ -4,7 +4,7 @@ import { Navigate, useSearchParams } from "react-router-dom";
 import axios, { isAxiosError } from "axios";
 import { loadStripe } from "@stripe/stripe-js";
 import type { Appearance } from "@stripe/stripe-js";
-import { CheckoutProvider } from "@stripe/react-stripe-js/checkout";
+import { CheckoutElementsProvider } from "@stripe/react-stripe-js/checkout";
 
 import { API_ENDPOINT_URL } from "../../../../api/types";
 import type { ErrorResponseBody } from "../../../../api/types";
@@ -87,7 +87,7 @@ const Checkout = () => {
     };
 
     return (
-        <CheckoutProvider
+        <CheckoutElementsProvider
             stripe={stripeLoader}
             options={{
                 clientSecret,
@@ -100,7 +100,7 @@ const Checkout = () => {
             }}
         >
             <CheckoutForm priceIds={priceIdsArray} subscription={isSubscription} />
-        </CheckoutProvider>
+        </CheckoutElementsProvider>
     );
 };
 

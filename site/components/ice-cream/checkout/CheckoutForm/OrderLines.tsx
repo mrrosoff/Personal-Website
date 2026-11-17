@@ -1,12 +1,12 @@
 import { Box, Divider, Skeleton, Typography } from "@mui/material";
 import type { SxProps, Theme } from "@mui/material";
 import type { CSSObject } from "@mui/material/styles";
-import { useCheckout } from "@stripe/react-stripe-js/checkout";
+import { useCheckoutElements } from "@stripe/react-stripe-js/checkout";
 
 import type { DatabaseFlavor } from "../../../../../api/types";
 import { skeletonSx } from "./PaymentFields";
 
-function lineItemAmount(state: ReturnType<typeof useCheckout>, name: string): string {
+function lineItemAmount(state: ReturnType<typeof useCheckoutElements>, name: string): string {
     if (state.type !== "success") {
         return "";
     }
@@ -21,7 +21,7 @@ type OrderLinesProps = {
 };
 
 const OrderLines = (props: OrderLinesProps) => {
-    const state = useCheckout();
+    const state = useCheckoutElements();
     return props.flavors.map((flavor, index) => (
         <Box key={flavor.priceId}>
             <Box
