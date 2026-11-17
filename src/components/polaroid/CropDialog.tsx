@@ -79,10 +79,11 @@ export default function CropDialog({ file, remaining, onCancel, onConfirm }: Cro
     }, [file]);
 
     const confirm = useCallback(async () => {
-        if (!source || !area) {
-            return;
+        try {
+            onConfirm(await renderCrop(source!, area!));
+        } catch {
+            setFailed(true);
         }
-        onConfirm(await renderCrop(source, area));
     }, [area, onConfirm, source]);
 
     return (
