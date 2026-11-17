@@ -5,7 +5,7 @@ import type { FileSystem } from "../../FileSystem";
 import { errorMessage } from "../emulator-state/CommandMapping";
 
 export const optDef = {
-    "-name": "<pattern>"
+    "--name": "<pattern>"
 };
 
 const findInDirectory = (
@@ -23,7 +23,12 @@ const findInDirectory = (
             let matches = true;
             if (namePattern) {
                 const regex = new RegExp(
-                    "^" + namePattern.replace(/\*/g, ".*").replace(/\?/g, ".") + "$"
+                    "^" +
+                        namePattern
+                            .replace(/[.+^${}()|[\]\\]/g, "\\$&")
+                            .replace(/\*/g, ".*")
+                            .replace(/\?/g, ".") +
+                        "$"
                 );
                 matches = regex.test(name);
             }
@@ -42,7 +47,10 @@ const findInDirectory = (
 };
 
 const functionDef = (state: EmulatorState, commandOptions: string[]) => {
-    const { options, argv } = parseOptions(commandOptions, optDef);
+    const { options, argv } = parseOptions(
+        commandOptions.map((option) => (option === "-name" ? "--name" : option)),
+        optDef
+    );
 
     try {
         const searchPath =

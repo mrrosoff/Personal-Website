@@ -1,7 +1,6 @@
 import axios from "axios";
 
-import { UserType } from "../../../api/types";
-import { API_URL } from "../../components/App";
+import { API_ENDPOINT_URL, UserType } from "../../../api/types";
 import { decodeToken } from "../../auth";
 import EmulatorState from "../emulator-state/EmulatorState";
 import { parseOptions } from "../parser";
@@ -28,7 +27,7 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
 
     const flavorName = argv.join(" ");
     axios.post(
-        `${API_URL}/friends/suggest-flavor`,
+        `${API_ENDPOINT_URL}/friends/suggest-flavor`,
         { flavor: flavorName },
         { headers: { Authorization: `Bearer ${token}` } }
     );

@@ -1,8 +1,7 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 import axios from "axios";
 
-import type { DatabaseFlavor } from "../../../api/types";
-import { API_URL } from "../App";
+import { API_ENDPOINT_URL, type DatabaseFlavor } from "../../../api/types";
 
 type IceCreamCartContextType = {
     flavors: DatabaseFlavor[];
@@ -29,7 +28,7 @@ export const IceCreamCartProvider = ({ children }: { children: ReactNode }) => {
             setIsLoadingFlavors(true);
             setFlavorsError(null);
             const { data } = await axios.post<{ inventory: DatabaseFlavor[] }>(
-                `${API_URL}/ice-cream/inventory`
+                `${API_ENDPOINT_URL}/ice-cream/inventory`
             );
             setFlavors(data.inventory);
         } catch (error) {

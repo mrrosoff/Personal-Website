@@ -5,12 +5,11 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import axios, { isAxiosError } from "axios";
 import { validate } from "email-validator";
 
-import type { MailingListRegistration } from "../../../api/types";
-import { API_URL } from "../App";
+import { API_ENDPOINT_URL, type MailingListRegistration } from "../../../api/types";
 import FormField, { emailProblem } from "../FormField";
 
 export const registerMailingListUser = async (registration: MailingListRegistration) => {
-    const { data } = await axios.post(`${API_URL}/email/register`, {
+    const { data } = await axios.post(`${API_ENDPOINT_URL}/email/register`, {
         firstName: registration.firstName?.trim() || undefined,
         lastName: registration.lastName?.trim() || undefined,
         email: registration.email.trim()

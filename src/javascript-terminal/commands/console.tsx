@@ -6,9 +6,9 @@ import {
     FLAVOR_TYPES,
     type FlavorType,
     type MailingListRegistration,
-    UserType
+    UserType,
+    API_ENDPOINT_URL
 } from "../../../api/types";
-import { API_URL } from "../../components/App";
 import { decodeToken } from "../../auth";
 import EmulatorState, {
     AdminConsoleScreen,
@@ -886,7 +886,7 @@ const handleCreateFriendInvite = async (
 
 const createFriendInvite = async (invite: FriendInvite, authToken: string): Promise<string> => {
     const { data } = await axios.post<{ url: string }>(
-        `${API_URL}/admin/create-friend-invite`,
+        `${API_ENDPOINT_URL}/admin/create-friend-invite`,
         {
             friendName: invite.friendName.trim(),
             expiresInHours: invite.durationHours,
@@ -1041,7 +1041,7 @@ const fetchInventoryData = async (state: EmulatorState) => {
 
     try {
         const { data } = await axios.post(
-            `${API_URL}/ice-cream/inventory`,
+            `${API_ENDPOINT_URL}/ice-cream/inventory`,
             {},
             {
                 headers: { Authorization: `Bearer ${authToken}` }

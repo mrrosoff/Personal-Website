@@ -10,7 +10,7 @@ import {
     type InviteDevice,
     shareTokenDurationLabel
 } from "../../../javascript-terminal/emulator-state/EmulatorState";
-import { API_URL } from "../../App";
+import { API_ENDPOINT_URL } from "../../../../api/types";
 import { useAppContext } from "../../AppContext";
 import type { TerminalTheme } from "../Terminal";
 import MenuItem from "./common/MenuItem";
@@ -45,7 +45,7 @@ const CreateFriendInviteMenu = (props: {
         requestedDevices.current = true;
         void (async () => {
             const loaded = await axios
-                .get<{ devices: InviteDevice[] }>(`${API_URL}/admin/devices`, {
+                .get<{ devices: InviteDevice[] }>(`${API_ENDPOINT_URL}/admin/devices`, {
                     headers: { Authorization: `Bearer ${authToken}` }
                 })
                 .then(({ data }) => data.devices)

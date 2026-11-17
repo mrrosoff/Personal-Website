@@ -4,9 +4,8 @@ import { Box, Button, Typography, useMediaQuery, useTheme } from "@mui/material"
 import axios from "axios";
 import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 
-import { API_URL } from "../App";
 import { decodeToken, unexpiredToken } from "../../auth";
-import { UserType } from "../../../api/types";
+import { API_ENDPOINT_URL, UserType } from "../../../api/types";
 
 const CancelSubscription = () => {
     const theme = useTheme();
@@ -23,7 +22,7 @@ const CancelSubscription = () => {
     const onCancel = async () => {
         setCancelling(true);
         try {
-            await axios.post(`${API_URL}/ice-cream/cancel`, { token });
+            await axios.post(`${API_ENDPOINT_URL}/ice-cream/cancel`, { token });
             setResult("cancelled");
         } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status === 401) {

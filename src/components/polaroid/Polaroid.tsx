@@ -4,8 +4,7 @@ import { Box, Button, Typography, useMediaQuery } from "@mui/material";
 import axios from "axios";
 
 import { MAX_PHOTOS } from "../../../api/common";
-import { DeviceKind } from "../../../api/types";
-import { API_URL } from "../App";
+import { API_ENDPOINT_URL, DeviceKind } from "../../../api/types";
 import { decodeToken, ownsDeviceKind } from "../../auth";
 import { signInWithPasskey } from "../../javascript-terminal/commands/sudo";
 import { TERMINAL_COLORS } from "../terminal/Terminal";
@@ -13,7 +12,7 @@ import { useAppContext } from "../AppContext";
 import CropDialog from "./CropDialog";
 import PhotoGrid, { type Photo } from "./PhotoGrid";
 
-const API = `${API_URL}/polaroid`;
+const API = `${API_ENDPOINT_URL}/polaroid`;
 
 // What the browser can decode for the crop step. HEIC often arrives with an
 // empty type, so the extension is the only reliable signal for it.

@@ -6,7 +6,7 @@ import { Box, Link, Typography, useMediaQuery, useTheme } from "@mui/material";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import LaunchIcon from "@mui/icons-material/Launch";
 
-import { API_URL } from "../../App";
+import { API_ENDPOINT_URL } from "../../../../api/types";
 import { decodeToken } from "../../../auth";
 import { useAppContext } from "../../AppContext";
 import type Stripe from "stripe";
@@ -31,7 +31,7 @@ const Return = () => {
             try {
                 const body = { sessionId };
                 const result = await axios.post<Stripe.Checkout.Session>(
-                    `${API_URL}/ice-cream/checkout-status`,
+                    `${API_ENDPOINT_URL}/ice-cream/checkout-status`,
                     body
                 );
                 setStatus(result.data.status);

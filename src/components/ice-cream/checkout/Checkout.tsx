@@ -23,12 +23,11 @@ import {
 } from "@stripe/react-stripe-js/checkout";
 import type { StripeCheckoutContact } from "@stripe/stripe-js";
 
-import { API_URL } from "../../App";
+import { API_ENDPOINT_URL, type DatabaseFlavor } from "../../../../api/types";
 import FormField, { emailProblem } from "../../FormField";
 import { decodeToken } from "../../../auth";
 import { useAppContext } from "../../AppContext";
 import { useIceCreamCart } from "../IceCreamCartContext";
-import type { DatabaseFlavor } from "../../../../api/types";
 import { rainbowTextSx } from "../IceCream";
 
 const stripePublishableApiKey =
@@ -71,8 +70,10 @@ const Checkout = () => {
     const fetchClientSecret = useMemo(async () => {
         try {
             const result = isSubscription
-                ? await axios.post(`${API_URL}/ice-cream/subscribe`, {})
-                : await axios.post(`${API_URL}/ice-cream/checkout?priceIds=${priceIdsString}`);
+                ? await axios.post(`${API_ENDPOINT_URL}/ice-cream/subscribe`, {})
+                : await axios.post(
+                      `${API_ENDPOINT_URL}/ice-cream/checkout?priceIds=${priceIdsString}`
+                  );
             return result.data.client_secret;
         } catch (error) {
             const message = axios.isAxiosError(error) && error.response?.data?.message;
@@ -163,7 +164,7 @@ const FriendCheckoutForm = ({
         setMessage(null);
         try {
             await axios.post(
-                `${API_URL}/ice-cream/checkout?priceIds=${priceIds.join(",")}`,
+                `${API_ENDPOINT_URL}/ice-cream/checkout?priceIds=${priceIds.join(",")}`,
                 { email },
                 { headers: { Authorization: `Bearer ${friendToken}` } }
             );
@@ -413,7 +414,9 @@ const DeliveryAddressFields = (props: {
 
 const alreadySubscribed = async (email: string): Promise<boolean> => {
     try {
-        const result = await axios.post(`${API_URL}/ice-cream/subscription-status`, { email });
+        const result = await axios.post(`${API_ENDPOINT_URL}/ice-cream/subscription-status`, {
+            email
+        });
         return result.data.subscribed === true;
     } catch {
         return false;
@@ -514,7 +517,7 @@ const CompactCheckoutLayout = (props: {
 
     const onManage = async () => {
         try {
-            await axios.post(`${API_URL}/ice-cream/unsubscribe`, { email });
+            await axios.post(`${API_ENDPOINT_URL}/ice-cream/unsubscribe`, { email });
             setManageResult("sent");
         } catch {
             setManageResult("failed");

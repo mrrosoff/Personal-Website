@@ -5,7 +5,7 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import axios, { isAxiosError } from "axios";
 import { validate } from "email-validator";
 
-import { API_URL } from "../App";
+import { API_ENDPOINT_URL } from "../../../api/types";
 import FormField, { emailProblem } from "../FormField";
 
 const Unsubscribe = () => {
@@ -96,7 +96,7 @@ const UnsubscribeForm = () => {
                 onClick={async () => {
                     try {
                         setLoading(true);
-                        await axios.post(`${API_URL}/email/unsubscribe`, { email });
+                        await axios.post(`${API_ENDPOINT_URL}/email/unsubscribe`, { email });
                         setSuccess(true);
                     } catch (error: unknown) {
                         setRegisterError(

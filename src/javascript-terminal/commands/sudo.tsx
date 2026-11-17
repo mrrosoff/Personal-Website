@@ -5,7 +5,7 @@ import EmulatorState from "../emulator-state/EmulatorState";
 import { parseOptions } from "../parser";
 import * as CommandMappingUtil from "../emulator-state/CommandMapping";
 import Emulator from "../emulator";
-import { API_URL } from "../../components/App";
+import { API_ENDPOINT_URL } from "../../../api/types";
 import { AUTH_TOKEN_KEY } from "../../auth";
 
 export const optDef = {};
@@ -44,10 +44,12 @@ const functionDef = (state: EmulatorState, commandOptions: string[]) => {
 };
 
 export const signInWithPasskey = async (): Promise<string> => {
-    const { data: authOptions } = await axios.post(`${API_URL}/admin/passkey-auth-options`);
+    const { data: authOptions } = await axios.post(
+        `${API_ENDPOINT_URL}/admin/passkey-auth-options`
+    );
     const authResponse = await startAuthentication({ optionsJSON: authOptions });
     const { data: authResult } = await axios.post<{ token: string }>(
-        `${API_URL}/admin/passkey-auth`,
+        `${API_ENDPOINT_URL}/admin/passkey-auth`,
         { response: authResponse, challenge: authOptions.challenge }
     );
 

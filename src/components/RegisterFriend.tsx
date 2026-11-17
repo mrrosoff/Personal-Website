@@ -6,10 +6,9 @@ import { browserSupportsWebAuthn, startRegistration, WebAuthnError } from "@simp
 import axios from "axios";
 import { DateTime } from "luxon";
 
-import { API_URL } from "./App";
 import FormField, { emailProblem } from "./FormField";
 import { decodeToken } from "../auth";
-import { DeviceKind } from "../../api/types";
+import { API_ENDPOINT_URL, DeviceKind } from "../../api/types";
 
 const Code = ({ children }: { children: string }) => (
     <code
@@ -50,7 +49,7 @@ const RegisterForm = (props: { token: string; friendName: string }) => {
     useEffect(() => {
         const loadDevices = async () => {
             try {
-                const url = `${API_URL}/friends/devices`;
+                const url = `${API_ENDPOINT_URL}/friends/devices`;
                 const { data } = await axios.get<{ deviceKinds: DeviceKind[] }>(url, authHeaders);
                 setDevices(data.deviceKinds);
             } catch (err) {
@@ -73,12 +72,12 @@ const RegisterForm = (props: { token: string; friendName: string }) => {
         }
         setIsLoading(true);
         try {
-            const optionsUrl = `${API_URL}/friends/passkey-register-options`;
+            const optionsUrl = `${API_ENDPOINT_URL}/friends/passkey-register-options`;
             const { data: options } = await axios.post(optionsUrl, {}, authHeaders);
 
             const registrationResponse = await startRegistration({ optionsJSON: options });
             await axios.post(
-                `${API_URL}/friends/passkey-register`,
+                `${API_ENDPOINT_URL}/friends/passkey-register`,
                 {
                     challenge: options.challenge,
                     response: registrationResponse,

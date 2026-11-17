@@ -20,8 +20,6 @@ const Checkout = lazy(() => import("./ice-cream/checkout/Checkout"));
 const CancelSubscription = lazy(() => import("./ice-cream/CancelSubscription"));
 const Polaroid = lazy(() => import("./polaroid/Polaroid"));
 
-export const API_URL = "https://api.maxrosoff.com";
-
 const App = () => {
     const theme = createTheme({
         palette: {

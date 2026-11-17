@@ -1,7 +1,6 @@
 import axios from "axios";
 
-import { DeviceKind } from "../../../api/types";
-import { API_URL } from "../../components/App";
+import { API_ENDPOINT_URL, DeviceKind } from "../../../api/types";
 import { decodeToken, ownsDeviceKind } from "../../auth";
 import EmulatorState from "../emulator-state/EmulatorState";
 import { parseOptions } from "../parser";
@@ -11,7 +10,7 @@ export const optDef = {};
 async function openAuthorization(token: string) {
     try {
         const { data } = await axios.post(
-            `${API_URL}/spotify/connect`,
+            `${API_ENDPOINT_URL}/spotify/connect`,
             {},
             { headers: { Authorization: `Bearer ${token}` } }
         );

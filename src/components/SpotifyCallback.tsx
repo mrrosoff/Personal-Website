@@ -5,7 +5,7 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import axios from "axios";
 
-import { API_URL } from "./App";
+import { API_ENDPOINT_URL } from "../../api/types";
 
 const SPOTIFY_GREEN = "#1DB954";
 
@@ -70,7 +70,7 @@ const SpotifyCallback = () => {
 
         const exchange = async () => {
             try {
-                await axios.post(`${API_URL}/spotify/exchange`, { code, state });
+                await axios.post(`${API_ENDPOINT_URL}/spotify/exchange`, { code, state });
                 setStatus("success");
             } catch (err: unknown) {
                 let detail = "Could Not Connect Spotify, Please Try Again";
