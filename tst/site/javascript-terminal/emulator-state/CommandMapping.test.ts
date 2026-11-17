@@ -24,11 +24,7 @@ describe("CommandMapping", () => {
 });
 
 describe("errorMessage", () => {
-    it("should read an error's message", () => {
-        expect(errorMessage(new Error("bad"))).toBe("bad");
-    });
+    it("should read an error's message", () => expect(errorMessage(new Error("bad"))).toBe("bad"));
 
-    it("should stringify anything else", () => {
-        expect(errorMessage("bad")).toBe("bad");
-    });
+    it("should stringify anything else", () => expect(errorMessage("bad")).toBe("bad"));
 });

@@ -7,9 +7,8 @@ import {
 } from "../../../../../site/javascript-terminal/fs/util/file-util";
 
 describe("file-util", () => {
-    it("should make an empty file", () => {
-        expect(makeEmptyFile()).toEqual({ type: "-", permissions: "rwx------", contents: "" });
-    });
+    it("should make an empty file", () =>
+        expect(makeEmptyFile()).toEqual({ type: "-", permissions: "rwx------", contents: "" }));
 
     it("should make an empty directory", () => {
         expect(isDirectory(makeEmptyDirectory())).toBe(true);

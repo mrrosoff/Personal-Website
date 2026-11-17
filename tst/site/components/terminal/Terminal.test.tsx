@@ -131,9 +131,7 @@ describe("Terminal", () => {
 
         type("pwd");
 
-        await waitFor(() => {
-            expect(scrollContainerRef.current.scrollTop).toBe(500);
-        });
+        await waitFor(() => expect(scrollContainerRef.current.scrollTop).toBe(500));
     });
 
     it("should not mind a missing scroll container", async () => {
@@ -309,9 +307,9 @@ describe("admin console", () => {
 
         fireEvent.keyDown(input(), { key: "ArrowDown" });
 
-        await waitFor(() => {
-            expect(emulatorState.getAdminConsoleMode()?.selectedOption).toBe("SendMarketingEmails");
-        });
+        await waitFor(() =>
+            expect(emulatorState.getAdminConsoleMode()?.selectedOption).toBe("SendMarketingEmails")
+        );
     });
 
     it("should let command key shortcuts through", async () => {
@@ -348,9 +346,9 @@ describe("admin console", () => {
 
         fireEvent.paste(input(), { clipboardData: { getData: () => "Hi!" } });
 
-        await waitFor(() => {
-            expect(emulatorState.getAdminConsoleMode()?.marketing?.message).toBe("Hi!");
-        });
+        await waitFor(() =>
+            expect(emulatorState.getAdminConsoleMode()?.marketing?.message).toBe("Hi!")
+        );
     });
 
     it("should take taps from the menus", async () => {
@@ -359,9 +357,7 @@ describe("admin console", () => {
 
         await user.click(screen.getByText(/5\. Exit/));
 
-        await waitFor(() => {
-            expect(emulatorState.getAdminConsoleMode()).toBeUndefined();
-        });
+        await waitFor(() => expect(emulatorState.getAdminConsoleMode()).toBeUndefined());
     });
 
     it("should focus the hidden input for key presses", async () => {

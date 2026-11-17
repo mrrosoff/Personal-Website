@@ -14,9 +14,7 @@ describe("decodeToken", () => {
         expect(result?.userType).toBe(UserType.FRIEND);
     });
 
-    it("should return null for junk", () => {
-        expect(decodeToken("junk")).toBeNull();
-    });
+    it("should return null for junk", () => expect(decodeToken("junk")).toBeNull());
 });
 
 describe("ownsDeviceKind", () => {

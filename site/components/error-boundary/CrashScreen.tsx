@@ -45,23 +45,15 @@ const CrashScreen = () => {
     }, []);
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            setVisibleCursor((visible) => !visible);
-        }, 600);
-        return () => {
-            clearInterval(interval);
-        };
+        const interval = setInterval(() => setVisibleCursor((visible) => !visible), 600);
+        return () => clearInterval(interval);
     }, []);
 
     useEffect(() => {
         if (phase !== "restarting") return;
 
-        const dotsInterval = setInterval(() => {
-            setDots((prevDots) => (prevDots + 1) % 4);
-        }, 500);
-        const bootTimeout = setTimeout(() => {
-            setPhase("booting");
-        }, RESTART_DURATION_MS);
+        const dotsInterval = setInterval(() => setDots((prevDots) => (prevDots + 1) % 4), 500);
+        const bootTimeout = setTimeout(() => setPhase("booting"), RESTART_DURATION_MS);
 
         return () => {
             clearInterval(dotsInterval);
@@ -72,12 +64,11 @@ const CrashScreen = () => {
     useEffect(() => {
         if (phase !== "booting") return;
 
-        const linesInterval = setInterval(() => {
-            setLines((prevLines) => [...prevLines, randomBootLine()].slice(-20));
-        }, BOOT_LINE_INTERVAL_MS);
-        const clearTimeoutId = setTimeout(() => {
-            setPhase("clearing");
-        }, BOOT_DURATION_MS);
+        const linesInterval = setInterval(
+            () => setLines((prevLines) => [...prevLines, randomBootLine()].slice(-20)),
+            BOOT_LINE_INTERVAL_MS
+        );
+        const clearTimeoutId = setTimeout(() => setPhase("clearing"), BOOT_DURATION_MS);
 
         return () => {
             clearInterval(linesInterval);
@@ -92,9 +83,7 @@ const CrashScreen = () => {
             window.location.href = "/";
         }, CLEAR_DURATION_MS);
 
-        return () => {
-            clearTimeout(redirectTimeout);
-        };
+        return () => clearTimeout(redirectTimeout);
     }, [phase]);
 
     if (phase === "clearing") {
@@ -156,13 +145,7 @@ const CrashScreen = () => {
                 :~${" "}
                 <Box
                     component={phase === "restarting" ? "span" : "a"}
-                    onClick={
-                        phase === "restarting"
-                            ? undefined
-                            : () => {
-                                  setPhase("restarting");
-                              }
-                    }
+                    onClick={phase === "restarting" ? undefined : () => setPhase("restarting")}
                     sx={{
                         color: "#FCFCFC",
                         cursor: phase === "restarting" ? "default" : "pointer",

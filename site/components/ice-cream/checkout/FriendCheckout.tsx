@@ -73,9 +73,7 @@ const FriendCheckout = ({ priceIds, friendToken }: FriendCheckoutProps) => {
                     <FormField
                         label={"Email"}
                         value={email}
-                        onChange={(e) => {
-                            setEmail(e.target.value);
-                        }}
+                        onChange={(e) => setEmail(e.target.value)}
                         problem={emailProblem}
                         placeholder={"karl@fog.sf"}
                     />

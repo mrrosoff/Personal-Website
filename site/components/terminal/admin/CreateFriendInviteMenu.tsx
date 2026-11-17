@@ -60,9 +60,7 @@ const CreateFriendInviteMenu = (props: CreateFriendInviteMenuProps) => {
     const onCopy = async (url: string) => {
         await navigator.clipboard.writeText(url);
         setCopied(true);
-        setTimeout(() => {
-            setCopied(false);
-        }, 1500);
+        setTimeout(() => setCopied(false), 1500);
     };
 
     const toggleDevice = (index: number) => {
@@ -137,13 +135,7 @@ const CreateFriendInviteMenu = (props: CreateFriendInviteMenuProps) => {
                         return (
                             <Box key={field}>
                                 <Typography
-                                    onClick={
-                                        smallScreen
-                                            ? () => {
-                                                  selectField(field);
-                                              }
-                                            : undefined
-                                    }
+                                    onClick={smallScreen ? () => selectField(field) : undefined}
                                     sx={{
                                         color: active ? commandColor : outputColor,
                                         backgroundColor: active
@@ -161,9 +153,7 @@ const CreateFriendInviteMenu = (props: CreateFriendInviteMenuProps) => {
                                             value={value}
                                             width={"13ch"}
                                             theme={props.theme}
-                                            onStep={(key) => {
-                                                props.onAction(key);
-                                            }}
+                                            onStep={(key) => props.onAction(key)}
                                         />
                                     ) : (
                                         <>
@@ -183,9 +173,7 @@ const CreateFriendInviteMenu = (props: CreateFriendInviteMenuProps) => {
                                               key={device.deviceId}
                                               onClick={
                                                   smallScreen
-                                                      ? () => {
-                                                            toggleDevice(index);
-                                                        }
+                                                      ? () => toggleDevice(index)
                                                       : undefined
                                               }
                                               sx={{
@@ -222,9 +210,7 @@ const CreateFriendInviteMenu = (props: CreateFriendInviteMenuProps) => {
                             selected={false}
                             theme={props.theme}
                             disabled={!invite.friendName}
-                            onClick={() => {
-                                props.onAction("Enter");
-                            }}
+                            onClick={() => props.onAction("Enter")}
                         >
                             Create
                         </MenuItem>
@@ -232,9 +218,7 @@ const CreateFriendInviteMenu = (props: CreateFriendInviteMenuProps) => {
                     <MenuItem
                         selected={false}
                         theme={props.theme}
-                        onClick={() => {
-                            props.onAction("Escape");
-                        }}
+                        onClick={() => props.onAction("Escape")}
                     >
                         {inviteUrl ? "Back" : "Cancel"}
                     </MenuItem>

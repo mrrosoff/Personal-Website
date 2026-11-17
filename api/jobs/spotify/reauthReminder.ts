@@ -66,9 +66,7 @@ async function remindIfDue(deviceId: string, owners: DatabasePasskey[]): Promise
 
     const failures = sent.map(({ error }) => error).filter((error) => error !== null);
     if (failures.length) {
-        failures.forEach((error) => {
-            console.error(error);
-        });
+        failures.forEach((error) => console.error(error));
         throw new Error("Error Sending Spotify Reauth Email");
     }
 }

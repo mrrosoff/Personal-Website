@@ -42,11 +42,7 @@ describe("file-operations", () => {
     });
 
     it("should refuse to copy or remove a directory", () => {
-        expect(() => {
-            FileOp.copy(mockFileSystem(), "/home/projects", "/x");
-        }).toThrow();
-        expect(() => {
-            FileOp.remove(mockFileSystem(), "/home/projects");
-        }).toThrow();
+        expect(() => FileOp.copy(mockFileSystem(), "/home/projects", "/x")).toThrow();
+        expect(() => FileOp.remove(mockFileSystem(), "/home/projects")).toThrow();
     });
 });

@@ -130,9 +130,7 @@ const RegisterForm = (props: { token: string; friendName: string }) => {
                 type={"email"}
                 label={"Email"}
                 value={email}
-                onChange={(e) => {
-                    setEmail(e.target.value);
-                }}
+                onChange={(e) => setEmail(e.target.value)}
                 problem={emailProblem}
                 placeholder={"karl@fog.sf"}
                 autoComplete="email"

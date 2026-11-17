@@ -112,9 +112,7 @@ describe("IceCream", () => {
         const { unmount } = renderShop({ route: "/ice-cream?flavor=price_Fig" });
         await screen.findByLabelText("Checkout, 1 in cart");
 
-        act(() => {
-            unmount();
-        });
+        act(() => unmount());
 
         await waitFor(() => expect(screen.queryByLabelText(/in cart/)).not.toBeInTheDocument());
     });

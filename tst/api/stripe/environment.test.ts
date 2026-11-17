@@ -14,13 +14,10 @@ import { GetParametersCommand } from "@aws-sdk/client-ssm";
 import { mockSSMClient } from "../../__mocks__/__aws__/parameterStore";
 
 describe("isLocalTest", () => {
-    it("should be true for local development", () => {
-        expect(isLocalTest(mockEvent({ local: true }))).toBe(true);
-    });
+    it("should be true for local development", () =>
+        expect(isLocalTest(mockEvent({ local: true }))).toBe(true));
 
-    it("should be false for the site", () => {
-        expect(isLocalTest(mockEvent())).toBe(false);
-    });
+    it("should be false for the site", () => expect(isLocalTest(mockEvent())).toBe(false));
 });
 
 describe("stripeForEvent", () => {
@@ -32,13 +29,11 @@ describe("stripeForEvent", () => {
 });
 
 describe("siteUrlForEvent", () => {
-    it("should point at the site", () => {
-        expect(siteUrlForEvent(mockEvent())).toBe("https://maxrosoff.com");
-    });
+    it("should point at the site", () =>
+        expect(siteUrlForEvent(mockEvent())).toBe("https://maxrosoff.com"));
 
-    it("should point at local development", () => {
-        expect(siteUrlForEvent(mockEvent({ local: true }))).toBe("http://localhost:3000");
-    });
+    it("should point at local development", () =>
+        expect(siteUrlForEvent(mockEvent({ local: true }))).toBe("http://localhost:3000"));
 });
 
 describe("checkoutLineItem", () => {

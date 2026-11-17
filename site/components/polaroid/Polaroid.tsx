@@ -181,9 +181,7 @@ export default function Polaroid() {
             <CropDialog
                 file={queue[0] ?? null}
                 remaining={Math.max(0, queue.length - 1)}
-                onCancel={() => {
-                    setQueue((current) => current.slice(1));
-                }}
+                onCancel={() => setQueue((current) => current.slice(1))}
                 onConfirm={(cropped) => void upload(cropped)}
             />
         </Box>
@@ -213,9 +211,7 @@ function Unlock({ onUnlock }: UnlockProps) {
             }
         };
         window.addEventListener("keydown", onKeyDown);
-        return () => {
-            window.removeEventListener("keydown", onKeyDown);
-        };
+        return () => window.removeEventListener("keydown", onKeyDown);
     }, [attempt, busy]);
 
     return (

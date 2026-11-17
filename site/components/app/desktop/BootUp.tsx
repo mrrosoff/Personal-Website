@@ -35,11 +35,7 @@ const BootUp = ({ setBootingUp, creationDate }: BootUpProps) => {
     const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
 
     useEffect(() => {
-        const timeouts = STEP_TIMES.map((ms, step) =>
-            setTimeout(() => {
-                setState(step + 1);
-            }, ms)
-        );
+        const timeouts = STEP_TIMES.map((ms, step) => setTimeout(() => setState(step + 1), ms));
         timeouts.push(
             setTimeout(() => {
                 sessionStorage.setItem(HAS_BOOTED_KEY, "true");
@@ -47,9 +43,7 @@ const BootUp = ({ setBootingUp, creationDate }: BootUpProps) => {
                 setBootingUp(false);
             }, FINISHED_AT)
         );
-        return () => {
-            timeouts.forEach(clearTimeout);
-        };
+        return () => timeouts.forEach(clearTimeout);
     }, [setBootingUp, setShouldBootUp]);
 
     return (
@@ -268,12 +262,11 @@ const NetworkInfo = (props: { state: number }) => {
 const StartingComputer = () => {
     const [dots, setDots] = useState(".");
     useEffect(() => {
-        const interval = setInterval(() => {
-            setDots((prev) => (prev.length >= 3 ? "." : prev + "."));
-        }, 250);
-        return () => {
-            clearInterval(interval);
-        };
+        const interval = setInterval(
+            () => setDots((prev) => (prev.length >= 3 ? "." : prev + ".")),
+            250
+        );
+        return () => clearInterval(interval);
     }, []);
     return <Grid>Starting Computer {dots}</Grid>;
 };

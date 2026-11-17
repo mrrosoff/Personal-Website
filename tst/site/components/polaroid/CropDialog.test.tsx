@@ -17,27 +17,11 @@ vi.mock("react-easy-crop", () => ({
     }) => (
         <>
             <img alt="crop" src={props.image} />
-            <button
-                onClick={() => {
-                    props.onCropComplete({}, { x: 1, y: 2, width: 40, height: 60 });
-                }}
-            >
+            <button onClick={() => props.onCropComplete({}, { x: 1, y: 2, width: 40, height: 60 })}>
                 {"crop done"}
             </button>
-            <button
-                onClick={() => {
-                    props.onCropChange({ x: 5, y: 5 });
-                }}
-            >
-                {"move"}
-            </button>
-            <button
-                onClick={() => {
-                    props.onZoomChange(2);
-                }}
-            >
-                {"zoom"}
-            </button>
+            <button onClick={() => props.onCropChange({ x: 5, y: 5 })}>{"move"}</button>
+            <button onClick={() => props.onZoomChange(2)}>{"zoom"}</button>
         </>
     )
 }));
@@ -48,9 +32,7 @@ const revokeObjectURL = vi.fn<(url: string) => void>();
 Blob.prototype.arrayBuffer = function (this: Blob) {
     return new Promise<ArrayBuffer>((resolve) => {
         const reader = new FileReader();
-        reader.onload = () => {
-            resolve(reader.result as ArrayBuffer);
-        };
+        reader.onload = () => resolve(reader.result as ArrayBuffer);
         reader.readAsArrayBuffer(this);
     });
 };
@@ -66,9 +48,9 @@ function canvas(options: { context?: boolean; blob?: boolean } = {}) {
     vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(
         (options.context === false ? null : context) as never
     );
-    vi.spyOn(HTMLCanvasElement.prototype, "toBlob").mockImplementation((resolve) => {
-        resolve(options.blob === false ? null : new Blob(["jpeg"], { type: "image/jpeg" }));
-    });
+    vi.spyOn(HTMLCanvasElement.prototype, "toBlob").mockImplementation((resolve) =>
+        resolve(options.blob === false ? null : new Blob(["jpeg"], { type: "image/jpeg" }))
+    );
 }
 
 const bitmap = { close: vi.fn() };
@@ -138,9 +120,7 @@ describe("CropDialog", () => {
 
         await user.click(screen.getByRole("button", { name: "Add" }));
 
-        await waitFor(() => {
-            expect(onConfirm).toHaveBeenCalledWith(expect.any(Blob));
-        });
+        await waitFor(() => expect(onConfirm).toHaveBeenCalledWith(expect.any(Blob)));
         expect(context.drawImage).toHaveBeenCalledWith(bitmap, 1, 2, 40, 60, 0, 0, 1200, 1800);
         expect(bitmap.close).toHaveBeenCalled();
     });
@@ -151,9 +131,7 @@ describe("CropDialog", () => {
 
         await user.click(screen.getByText("move"));
         await user.click(screen.getByText("zoom"));
-        act(() => {
-            screen.getByRole("slider").focus();
-        });
+        act(() => screen.getByRole("slider").focus());
         await user.keyboard("{ArrowRight}");
 
         expect(screen.getByRole("slider")).toHaveValue("2.01");
@@ -253,9 +231,7 @@ describe("CropDialog", () => {
         let finish: (value: object) => void = () => undefined;
         decodeHeic.mockReturnValue(new Promise((resolve) => (finish = resolve)));
         const { rerender } = renderDialog(heic());
-        await waitFor(() => {
-            expect(decodeHeic).toHaveBeenCalled();
-        });
+        await waitFor(() => expect(decodeHeic).toHaveBeenCalled());
 
         rerender(<CropDialog file={null} remaining={0} onCancel={vi.fn()} onConfirm={vi.fn()} />);
         finish({ width: 2, height: 3, data: new Uint8Array(24) });
@@ -268,9 +244,7 @@ describe("CropDialog", () => {
         let fail: (error: Error) => void = () => undefined;
         decodeHeic.mockReturnValue(new Promise((_, reject) => (fail = reject)));
         const { rerender } = renderDialog(heic());
-        await waitFor(() => {
-            expect(decodeHeic).toHaveBeenCalled();
-        });
+        await waitFor(() => expect(decodeHeic).toHaveBeenCalled());
 
         rerender(<CropDialog file={null} remaining={0} onCancel={vi.fn()} onConfirm={vi.fn()} />);
         fail(new Error("corrupt"));

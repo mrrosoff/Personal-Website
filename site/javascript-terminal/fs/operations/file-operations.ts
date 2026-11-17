@@ -14,9 +14,7 @@ export const read = (fs: FileSystem, path: string): string => {
     return file.contents;
 };
 
-export const write = (fs: FileSystem, path: string, file: File) => {
-    BaseOp.add(fs, path, file);
-};
+export const write = (fs: FileSystem, path: string, file: File) => BaseOp.add(fs, path, file);
 
 export const copy = (fs: FileSystem, srcPath: string, destPath: string) => {
     const fsPart = fsSearchParent(fs, srcPath);

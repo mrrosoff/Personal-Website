@@ -91,9 +91,7 @@ describe("CreateFriendInviteMenu", () => {
         const { onAction, emulatorState } = renderMenu({}, {});
 
         expect(screen.getByText(/Devices:/)).toHaveTextContent("Devices: Loading");
-        await waitFor(() => {
-            expect(onAction).toHaveBeenCalledWith("");
-        });
+        await waitFor(() => expect(onAction).toHaveBeenCalledWith(""));
         expect(emulatorState.getAdminConsoleMode()?.inviteDevices).toEqual(inviteDevices);
         expect(axiosGet).toHaveBeenCalledWith("https://api.maxrosoff.com/admin/devices", {
             headers: { Authorization: "Bearer token" }
@@ -105,9 +103,7 @@ describe("CreateFriendInviteMenu", () => {
 
         const { onAction, emulatorState } = renderMenu({}, {});
 
-        await waitFor(() => {
-            expect(onAction).toHaveBeenCalled();
-        });
+        await waitFor(() => expect(onAction).toHaveBeenCalled());
         expect(emulatorState.getAdminConsoleMode()?.inviteDevices).toEqual([]);
     });
 

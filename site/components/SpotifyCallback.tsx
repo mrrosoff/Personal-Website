@@ -63,12 +63,8 @@ const SpotifyCallback = () => {
             void navigate("/");
             return;
         }
-        const timeout = setTimeout(() => {
-            setSecondsLeft((seconds) => seconds - 1);
-        }, 1000);
-        return () => {
-            clearTimeout(timeout);
-        };
+        const timeout = setTimeout(() => setSecondsLeft((seconds) => seconds - 1), 1000);
+        return () => clearTimeout(timeout);
     }, [status, secondsLeft, navigate]);
 
     useEffect(() => {

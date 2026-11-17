@@ -68,13 +68,7 @@ const ConfirmProvisionFlavorMenu = (props: ConfirmProvisionFlavorMenuProps) => {
                     selected={selectedOption === "yes"}
                     theme={props.theme}
                     disabled={props.mode.loading}
-                    onClick={
-                        smallScreen
-                            ? () => {
-                                  select("yes");
-                              }
-                            : undefined
-                    }
+                    onClick={smallScreen ? () => select("yes") : undefined}
                 >
                     Yes
                 </MenuItem>
@@ -82,13 +76,7 @@ const ConfirmProvisionFlavorMenu = (props: ConfirmProvisionFlavorMenuProps) => {
                     selected={selectedOption === "no"}
                     theme={props.theme}
                     disabled={props.mode.loading}
-                    onClick={
-                        smallScreen
-                            ? () => {
-                                  select("no");
-                              }
-                            : undefined
-                    }
+                    onClick={smallScreen ? () => select("no") : undefined}
                 >
                     No
                 </MenuItem>

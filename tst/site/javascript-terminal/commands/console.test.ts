@@ -68,41 +68,25 @@ describe("isPrintableKey", () => {
         expect(isPrintableKey("😀")).toBe(true);
     });
 
-    it("should reject a named key", () => {
-        expect(isPrintableKey("Shift")).toBe(false);
-    });
+    it("should reject a named key", () => expect(isPrintableKey("Shift")).toBe(false));
 });
 
 describe("editText", () => {
-    it("should type a character", () => {
-        expect(editText("ab", "c")).toBe("abc");
-    });
+    it("should type a character", () => expect(editText("ab", "c")).toBe("abc"));
 
-    it("should delete the last character", () => {
-        expect(editText("ab😀", "Backspace")).toBe("ab");
-    });
+    it("should delete the last character", () => expect(editText("ab😀", "Backspace")).toBe("ab"));
 
-    it("should ignore a named key", () => {
-        expect(editText("ab", "Shift")).toBe("ab");
-    });
+    it("should ignore a named key", () => expect(editText("ab", "Shift")).toBe("ab"));
 });
 
 describe("editNumber", () => {
-    it("should type a digit", () => {
-        expect(editNumber(12, "3", 9999)).toBe(123);
-    });
+    it("should type a digit", () => expect(editNumber(12, "3", 9999)).toBe(123));
 
-    it("should stop at the maximum", () => {
-        expect(editNumber(999, "9", 168)).toBe(168);
-    });
+    it("should stop at the maximum", () => expect(editNumber(999, "9", 168)).toBe(168));
 
-    it("should delete the last digit", () => {
-        expect(editNumber(123, "Backspace", 9999)).toBe(12);
-    });
+    it("should delete the last digit", () => expect(editNumber(123, "Backspace", 9999)).toBe(12));
 
-    it("should ignore anything else", () => {
-        expect(editNumber(12, "a", 9999)).toBe(12);
-    });
+    it("should ignore anything else", () => expect(editNumber(12, "a", 9999)).toBe(12));
 });
 
 describe("stepWithin", () => {
@@ -173,13 +157,11 @@ describe("errorMessageFrom", () => {
         expect(errorMessageFrom(err, "Fallback")).toBe("Name Taken");
     });
 
-    it("should fall back without an API message", () => {
-        expect(errorMessageFrom(new AxiosError("failed"), "Fallback")).toBe("Fallback");
-    });
+    it("should fall back without an API message", () =>
+        expect(errorMessageFrom(new AxiosError("failed"), "Fallback")).toBe("Fallback"));
 
-    it("should fall back for any other error", () => {
-        expect(errorMessageFrom(new Error("boom"), "Fallback")).toBe("Fallback");
-    });
+    it("should fall back for any other error", () =>
+        expect(errorMessageFrom(new Error("boom"), "Fallback")).toBe("Fallback"));
 });
 
 describe("setAdminConsoleError", () => {

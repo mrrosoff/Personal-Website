@@ -40,12 +40,8 @@ const SnakeGame = () => {
 
     useEffect(() => {
         if (gameOver) {
-            const timer = setTimeout(() => {
-                emulatorState.setBlockingMode(undefined);
-            }, 1500);
-            return () => {
-                clearTimeout(timer);
-            };
+            const timer = setTimeout(() => emulatorState.setBlockingMode(undefined), 1500);
+            return () => clearTimeout(timer);
         }
     }, [gameOver, emulatorState]);
 
@@ -53,12 +49,8 @@ const SnakeGame = () => {
         if (!loading) {
             return;
         }
-        const timer = setTimeout(() => {
-            setCountdown(countdown - 1);
-        }, 1000);
-        return () => {
-            clearTimeout(timer);
-        };
+        const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+        return () => clearTimeout(timer);
     }, [countdown, loading]);
 
     useEffect(() => {
@@ -84,9 +76,7 @@ const SnakeGame = () => {
         };
 
         window.addEventListener("keydown", handleKeyPress);
-        return () => {
-            window.removeEventListener("keydown", handleKeyPress);
-        };
+        return () => window.removeEventListener("keydown", handleKeyPress);
     }, [gameOver, loading]);
 
     useEffect(() => {
@@ -130,9 +120,7 @@ const SnakeGame = () => {
             });
         }, GAME_SPEED);
 
-        return () => {
-            clearInterval(gameLoop);
-        };
+        return () => clearInterval(gameLoop);
     }, [gameOver, food, loading]);
 
     return (

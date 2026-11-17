@@ -6,13 +6,10 @@ import { renderWithApp } from "../../helpers/render";
 import FormField, { emailProblem } from "../../../site/components/FormField";
 
 describe("emailProblem", () => {
-    it("should accept a valid email", () => {
-        expect(emailProblem("a@b.com")).toBeNull();
-    });
+    it("should accept a valid email", () => expect(emailProblem("a@b.com")).toBeNull());
 
-    it("should explain an invalid email", () => {
-        expect(emailProblem("nope")).toBe("Enter a valid email.");
-    });
+    it("should explain an invalid email", () =>
+        expect(emailProblem("nope")).toBe("Enter a valid email."));
 });
 
 describe("FormField", () => {

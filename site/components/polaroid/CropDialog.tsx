@@ -131,9 +131,7 @@ export default function CropDialog({ file, remaining, onCancel, onConfirm }: Cro
                             aspect={PANEL_ASPECT}
                             onCropChange={setCrop}
                             onZoomChange={setZoom}
-                            onCropComplete={(_, pixels) => {
-                                setArea(pixels);
-                            }}
+                            onCropComplete={(_, pixels) => setArea(pixels)}
                             showGrid={false}
                         />
                     )}
@@ -157,9 +155,7 @@ export default function CropDialog({ file, remaining, onCancel, onConfirm }: Cro
                     max={4}
                     step={0.01}
                     disabled={!src}
-                    onChange={(_, value) => {
-                        setZoom(value);
-                    }}
+                    onChange={(_, value) => setZoom(value)}
                     sx={{ flex: 1, minWidth: 100, mx: 1 }}
                 />
                 <Button variant="outlined" onClick={onCancel} sx={{ py: 0.25 }}>
@@ -209,9 +205,9 @@ async function toDisplayable(file: File): Promise<Blob> {
     }
     context.putImageData(new ImageData(new Uint8ClampedArray(data), width, height), 0, 0);
 
-    const blob = await new Promise<Blob | null>((resolve) => {
-        canvas.toBlob(resolve, "image/jpeg", 0.95);
-    });
+    const blob = await new Promise<Blob | null>((resolve) =>
+        canvas.toBlob(resolve, "image/jpeg", 0.95)
+    );
     if (!blob) {
         throw new Error("Could not convert that photo");
     }
@@ -247,9 +243,9 @@ async function renderCrop(source: Blob, area: Area): Promise<Blob> {
     );
     bitmap.close();
 
-    const blob = await new Promise<Blob | null>((resolve) => {
-        canvas.toBlob(resolve, "image/jpeg", 0.9);
-    });
+    const blob = await new Promise<Blob | null>((resolve) =>
+        canvas.toBlob(resolve, "image/jpeg", 0.9)
+    );
     if (!blob) {
         throw new Error("Could not read that photo");
     }

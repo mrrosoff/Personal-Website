@@ -84,13 +84,7 @@ const SelectFlavorMenu = (props: SelectFlavorMenuProps) => {
                         key={item.productId}
                         selected={selectedIndex === globalIndex}
                         theme={props.theme}
-                        onClick={
-                            smallScreen
-                                ? () => {
-                                      select(globalIndex);
-                                  }
-                                : undefined
-                        }
+                        onClick={smallScreen ? () => select(globalIndex) : undefined}
                     >
                         {globalIndex + 1}. {item.name} ({item.count} pints)
                     </MenuItem>
@@ -104,9 +98,7 @@ const SelectFlavorMenu = (props: SelectFlavorMenuProps) => {
                                 selected={false}
                                 theme={props.theme}
                                 disabled={currentPage === 0}
-                                onClick={() => {
-                                    goToPage(currentPage - 1);
-                                }}
+                                onClick={() => goToPage(currentPage - 1)}
                             >
                                 ‹ Prev
                             </MenuItem>
@@ -114,9 +106,7 @@ const SelectFlavorMenu = (props: SelectFlavorMenuProps) => {
                                 selected={false}
                                 theme={props.theme}
                                 disabled={currentPage >= totalPages - 1}
-                                onClick={() => {
-                                    goToPage(currentPage + 1);
-                                }}
+                                onClick={() => goToPage(currentPage + 1)}
                             >
                                 Next ›
                             </MenuItem>
@@ -125,9 +115,7 @@ const SelectFlavorMenu = (props: SelectFlavorMenuProps) => {
                     <MenuItem
                         selected={false}
                         theme={props.theme}
-                        onClick={() => {
-                            props.onAction("Escape");
-                        }}
+                        onClick={() => props.onAction("Escape")}
                     >
                         Go Back
                     </MenuItem>

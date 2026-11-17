@@ -27,13 +27,7 @@ vi.mock("../../../../site/components/polaroid/CropDialog", () => ({
         props.file && (
             <div>
                 <p>{`cropping ${props.file.name}, ${props.remaining.toString()} more`}</p>
-                <button
-                    onClick={() => {
-                        props.onConfirm(new Blob(["jpeg"]));
-                    }}
-                >
-                    {"add"}
-                </button>
+                <button onClick={() => props.onConfirm(new Blob(["jpeg"]))}>{"add"}</button>
                 <button onClick={props.onCancel}>{"skip"}</button>
             </div>
         )
@@ -84,9 +78,7 @@ describe("Polaroid", () => {
     it("should load the frame's photos", async () => {
         const { token } = await renderSignedIn();
 
-        await waitFor(() => {
-            expect(document.querySelectorAll("img")).toHaveLength(1);
-        });
+        await waitFor(() => expect(document.querySelectorAll("img")).toHaveLength(1));
         expect(axiosGet).toHaveBeenCalledWith("https://api.maxrosoff.com/polaroid/photos", {
             headers: { Authorization: `Bearer ${token}` }
         });
@@ -208,9 +200,7 @@ describe("Polaroid", () => {
             }
         });
         await renderSignedIn();
-        await waitFor(() => {
-            expect(document.querySelectorAll("img")).toHaveLength(49);
-        });
+        await waitFor(() => expect(document.querySelectorAll("img")).toHaveLength(49));
 
         choose(photo("a.jpg"), photo("b.jpg"));
 
@@ -251,9 +241,7 @@ describe("Polaroid", () => {
 
     it("should remove a photo", async () => {
         const { user, token } = await renderSignedIn();
-        await waitFor(() => {
-            expect(document.querySelectorAll("img")).toHaveLength(1);
-        });
+        await waitFor(() => expect(document.querySelectorAll("img")).toHaveLength(1));
 
         await user.click(document.querySelectorAll("img")[0]);
         await user.click(screen.getByTestId("DeleteOutlineIcon"));
@@ -268,17 +256,13 @@ describe("Polaroid", () => {
     it("should put a photo back when removing fails", async () => {
         axiosPost.mockRejectedValue(new Error("offline"));
         const { user } = await renderSignedIn();
-        await waitFor(() => {
-            expect(document.querySelectorAll("img")).toHaveLength(1);
-        });
+        await waitFor(() => expect(document.querySelectorAll("img")).toHaveLength(1));
 
         await user.click(document.querySelectorAll("img")[0]);
         await user.click(screen.getByTestId("DeleteOutlineIcon"));
 
         expect(await screen.findByText("Couldn't remove that one.")).toBeInTheDocument();
-        await waitFor(() => {
-            expect(axiosGet).toHaveBeenCalledTimes(2);
-        });
+        await waitFor(() => expect(axiosGet).toHaveBeenCalledTimes(2));
     });
 
     it("should fold the extra line into the description on a phone", async () => {

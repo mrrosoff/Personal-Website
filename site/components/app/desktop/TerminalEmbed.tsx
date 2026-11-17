@@ -7,9 +7,9 @@ const TerminalEmbed = (
     ref: Ref<HTMLInputElement | null>
 ) => {
     useEffect(() => {
-        Array.from(document.getElementsByTagName("form")).forEach((form) => {
-            form.setAttribute("spellcheck", "false");
-        });
+        Array.from(document.getElementsByTagName("form")).forEach((form) =>
+            form.setAttribute("spellcheck", "false")
+        );
     }, []);
 
     return (

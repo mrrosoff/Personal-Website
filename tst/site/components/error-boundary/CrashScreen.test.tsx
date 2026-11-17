@@ -42,9 +42,7 @@ describe("CrashScreen", () => {
         vi.spyOn(Math, "random").mockReturnValue(0);
         renderWithApp(<CrashScreen />);
 
-        act(() => {
-            screen.getByText("restart").click();
-        });
+        act(() => screen.getByText("restart").click());
         advance(500);
         expect(screen.getByText("restart.")).toBeInTheDocument();
 
@@ -59,13 +57,9 @@ describe("CrashScreen", () => {
 
     it("should ignore taps while restarting", () => {
         renderWithApp(<CrashScreen />);
-        act(() => {
-            screen.getByText("restart").click();
-        });
+        act(() => screen.getByText("restart").click());
 
-        act(() => {
-            screen.getByText("restart").click();
-        });
+        act(() => screen.getByText("restart").click());
 
         expect(screen.getByText("restart").tagName).toBe("SPAN");
     });

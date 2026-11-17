@@ -38,18 +38,10 @@ describe("IceCreamCartContext", () => {
     it("should add and remove flavors from the cart", () => {
         const { result } = renderCart();
 
-        act(() => {
-            result.current.toggleFlavor("price_a");
-        });
-        act(() => {
-            result.current.toggleFlavor("price_b");
-        });
-        act(() => {
-            result.current.toggleFlavor("price_a");
-        });
-        act(() => {
-            result.current.toggleFlavor(undefined);
-        });
+        act(() => result.current.toggleFlavor("price_a"));
+        act(() => result.current.toggleFlavor("price_b"));
+        act(() => result.current.toggleFlavor("price_a"));
+        act(() => result.current.toggleFlavor(undefined));
 
         expect(result.current.selectedPriceIds).toEqual(["price_b"]);
     });
