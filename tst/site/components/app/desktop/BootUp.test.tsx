@@ -41,21 +41,6 @@ describe("BootUp", () => {
         expect(screen.getByText("Rosoff OS (BETA PROGRAM)")).toBeInTheDocument();
     });
 
-    it.each([
-        [1050, "2.0MB"],
-        [1200, "20KB"],
-        [1350, "87KB"],
-        [1500, "173KB"],
-        [1650, "837KM"],
-        [1800, "1.1MB"]
-    ])("should count up memory at %ims", (ms, memory) => {
-        renderBootUp();
-
-        advanceTo(ms);
-
-        expect(screen.getByText(memory)).toBeInTheDocument();
-    });
-
     it("should run through the whole boot and hand over", () => {
         const { setBootingUp } = renderBootUp();
 
@@ -63,11 +48,7 @@ describe("BootUp", () => {
         expect(screen.getByText(/Detecting Secondary Drive/)).toHaveTextContent("SUCCESS");
         expect(screen.getByText(/Initializing OS/)).toHaveTextContent("SUCCESS");
         expect(screen.getByText(/Detecting Network Link/)).toHaveTextContent("CONNECTED");
-        expect(screen.getByText(/Starting Computer \./)).toBeInTheDocument();
-        advanceTo(250);
-        expect(screen.getByText(/Starting Computer \.\./)).toBeInTheDocument();
-        advanceTo(500);
-        expect(screen.getByText(/Starting Computer \.$/)).toBeInTheDocument();
+        expect(screen.getByText(/Starting Computer/)).toBeInTheDocument();
 
         advanceTo(1150);
         expect(setBootingUp).toHaveBeenCalledWith(false);

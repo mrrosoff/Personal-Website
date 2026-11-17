@@ -1,22 +1,26 @@
 import { useEffect, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
 
-import { Box, Grid, Stack, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Stack, useMediaQuery, useTheme } from "@mui/material";
 
 import { HAS_BOOTED_KEY, useAppContext } from "../../AppContext";
+import BootLine from "./BootUp/BootLine";
+import Header from "./BootUp/Header";
+import StartingComputer from "./BootUp/StartingComputer";
+import SystemInfo from "./BootUp/SystemInfo";
 
 type NetworkInformation = { type?: string; effectiveType?: string };
 
-const getNetworkLabel = (): string | null => {
+function getNetworkLabel(): string {
     const connection = (navigator as Navigator & { connection?: NetworkInformation }).connection;
     if (connection?.type && connection.type !== "unknown") {
-        return connection.type.toUpperCase();
+        return ` (${connection.type.toUpperCase()})`;
     }
     if (connection?.effectiveType) {
-        return connection.effectiveType.toUpperCase();
+        return ` (${connection.effectiveType.toUpperCase()})`;
     }
-    return null;
-};
+    return "";
+}
 
 const STEP_TIMES = [
     300, 450, 650, 850, 1050, 1200, 1350, 1500, 1650, 1800, 1950, 2200, 2500, 3000, 3500, 3850,
@@ -24,19 +28,21 @@ const STEP_TIMES = [
 ];
 const FINISHED_AT = 6400;
 
+const SUCCESS = { text: "SUCCESS", ok: true };
+
 type BootUpProps = {
     setBootingUp: Dispatch<SetStateAction<boolean>>;
     creationDate: string;
 };
 
 const BootUp = ({ setBootingUp, creationDate }: BootUpProps) => {
-    const [state, setState] = useState(0);
+    const [step, setStep] = useState(0);
     const { setShouldBootUp } = useAppContext();
-    const muiTheme = useTheme();
-    const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
+    const theme = useTheme();
+    const smallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
     useEffect(() => {
-        const timeouts = STEP_TIMES.map((ms, step) => setTimeout(() => setState(step + 1), ms));
+        const timeouts = STEP_TIMES.map((ms, index) => setTimeout(() => setStep(index + 1), ms));
         timeouts.push(
             setTimeout(() => {
                 sessionStorage.setItem(HAS_BOOTED_KEY, "true");
@@ -47,222 +53,52 @@ const BootUp = ({ setBootingUp, creationDate }: BootUpProps) => {
         return () => timeouts.forEach(clearTimeout);
     }, [setBootingUp, setShouldBootUp]);
 
+    const online = navigator.onLine;
+
     return (
         <Stack spacing={4}>
-            <Grid>
-                <Header />
-            </Grid>
-            <Grid>
-                <ReleaseData creationDate={creationDate} />
-            </Grid>
-            {state >= 1 ? <Grid>AF6S7V89 - JUC84X</Grid> : null}
-            {state >= 2 ? (
-                <Grid>
-                    <SystemInfo state={state} />
-                </Grid>
-            ) : null}
-            {state >= 11 ? (
-                <Grid>
-                    <DriveInfo state={state} />
-                </Grid>
-            ) : null}
-            {state >= 15 ? (
-                <Grid>
-                    <Stack spacing={1}>
-                        <NetworkInfo state={state} />
-                        {state >= 17 && !smallScreen ? (
-                            <Grid>
-                                <Typography>
-                                    {" "}
-                                    Initializing OS . . . . . .
-                                    {state >= 18 ? (
-                                        <span style={{ color: "#2BC903" }}> SUCCESS </span>
-                                    ) : null}
-                                </Typography>
-                            </Grid>
-                        ) : null}
-                    </Stack>
-                </Grid>
-            ) : null}
-            {state >= 19 ? (
-                <Grid>
-                    <StartingComputer />
-                </Grid>
-            ) : null}
-        </Stack>
-    );
-};
-
-const Header = () => {
-    const muiTheme = useTheme();
-    const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
-    return (
-        <Grid container spacing={4}>
-            <Grid>
-                <img src="/images/logo.webp" alt={"Logo"} style={{ width: 100, height: 100 }} />
-            </Grid>
-            <Grid>
-                <Stack sx={{ justifyContent: "center", alignItems: "center", height: "100%" }}>
-                    <Grid>
-                        {smallScreen ? (
-                            <>
-                                <Typography>Rosoff OS</Typography>
-                                <Typography>(BETA PROGRAM)</Typography>
-                            </>
-                        ) : (
-                            <Typography>Rosoff OS (BETA PROGRAM)</Typography>
-                        )}
-                    </Grid>
+            <Header creationDate={creationDate} smallScreen={smallScreen} />
+            {step >= 1 && <Box>AF6S7V89 - JUC84X</Box>}
+            {step >= 2 && <SystemInfo step={step} />}
+            {step >= 12 && (
+                <Stack spacing={1}>
+                    <BootLine
+                        label={`Detecting ${smallScreen ? "" : "Primary "}Drive (/dev/sda1)`}
+                        dots={smallScreen ? 4 : 6}
+                        status={step >= 13 ? SUCCESS : undefined}
+                    />
+                    {!smallScreen && (
+                        <BootLine
+                            label="Detecting Secondary Drive (/dev/sda2)"
+                            dots={6}
+                            status={step >= 14 ? SUCCESS : undefined}
+                        />
+                    )}
                 </Stack>
-            </Grid>
-        </Grid>
-    );
-};
-
-const ReleaseData = (props: { creationDate: string }) => {
-    return (
-        <Stack sx={{ justifyContent: "center", height: "100%" }}>
-            <Grid>
-                <Typography>Released: {props.creationDate}</Typography>
-            </Grid>
-            <Grid>
-                <a
-                    href={"https://github.com/mrrosoff/Personal-Website"}
-                    target="_blank"
-                    style={{ color: "#FCFCFC", fontSize: 22 }}
-                >
-                    Open Source (BETA 4.1.2)
-                </a>
-            </Grid>
+            )}
+            {step >= 15 && (
+                <Stack spacing={1}>
+                    <BootLine
+                        label={`Detecting Network Link${getNetworkLabel()}`}
+                        dots={smallScreen ? 3 : 6}
+                        status={
+                            step >= 16
+                                ? { text: online ? "CONNECTED" : "OFFLINE", ok: online }
+                                : undefined
+                        }
+                    />
+                    {step >= 17 && !smallScreen && (
+                        <BootLine
+                            label="Initializing OS"
+                            dots={6}
+                            status={step >= 18 ? SUCCESS : undefined}
+                        />
+                    )}
+                </Stack>
+            )}
+            {step >= 19 && <StartingComputer />}
         </Stack>
     );
-};
-
-const SystemInfo = (props: { state: number }) => {
-    return (
-        <Stack sx={{ paddingLeft: "20px" }}>
-            {props.state >= 3 ? (
-                <Grid>
-                    <Box sx={{ pl: 1, pr: 1 }}>
-                        <Grid container spacing={2}>
-                            <Grid>
-                                <Typography>User:</Typography>
-                            </Grid>
-                            <Grid>
-                                <Typography>Developer</Typography>
-                            </Grid>
-                        </Grid>
-                    </Box>
-                </Grid>
-            ) : null}
-            {props.state >= 4 ? (
-                <Grid>
-                    <Box sx={{ pl: 1, pr: 1 }}>
-                        <Grid container spacing={2}>
-                            <Grid>
-                                <Typography>Device Name:</Typography>
-                            </Grid>
-                            <Grid>
-                                <Typography>Rosoff Virtual Machine</Typography>
-                            </Grid>
-                        </Grid>
-                    </Box>
-                </Grid>
-            ) : null}
-            {props.state >= 5 ? (
-                <Grid>
-                    <Box sx={{ pl: 1, pr: 1 }}>
-                        <Grid container spacing={2}>
-                            <Grid>
-                                <Typography>Memory Test:</Typography>
-                            </Grid>
-                            <Grid>
-                                <Typography>
-                                    {
-                                        // prettier-ignore
-                                        props.state === 6 ? "20KB" : 
-                                        props.state === 7 ? "87KB" :
-                                        props.state === 8 ? "173KB" : 
-                                        props.state === 9 ? "837KM" : 
-                                        props.state === 10 ? "1.1MB" : 
-                                        "2.0MB"
-                                    }
-                                </Typography>
-                            </Grid>
-                        </Grid>
-                    </Box>
-                </Grid>
-            ) : null}
-        </Stack>
-    );
-};
-
-const DriveInfo = (props: { state: number }) => {
-    const muiTheme = useTheme();
-    const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
-    return (
-        <Stack spacing={1}>
-            {props.state >= 12 ? (
-                <Grid>
-                    <header>
-                        <Typography>
-                            Detecting {smallScreen ? "" : "Primary "}Drive (/dev/sda1)
-                            {smallScreen ? " . . . ." : " . . . . . ."}
-                            {props.state >= 13 ? (
-                                <span style={{ color: "#2BC903" }}> SUCCESS </span>
-                            ) : null}
-                        </Typography>
-                    </header>
-                </Grid>
-            ) : null}
-            {props.state >= 12 && !smallScreen ? (
-                <Grid>
-                    <header>
-                        <Typography>
-                            Detecting Secondary Drive (/dev/sda2)
-                            {" . . . . . ."}
-                            {props.state >= 14 ? (
-                                <span style={{ color: "#2BC903" }}> SUCCESS </span>
-                            ) : null}
-                        </Typography>
-                    </header>
-                </Grid>
-            ) : null}
-        </Stack>
-    );
-};
-const NetworkInfo = (props: { state: number }) => {
-    const muiTheme = useTheme();
-    const smallScreen = useMediaQuery(muiTheme.breakpoints.down("md"));
-    const online = navigator.onLine;
-    const networkLabel = getNetworkLabel();
-    return (
-        <Grid>
-            <header>
-                <Typography>
-                    Detecting Network Link{networkLabel ? ` (${networkLabel})` : ""}
-                    {smallScreen ? " . . ." : " . . . . . ."}
-                    {props.state >= 16 ? (
-                        <span style={{ color: online ? "#2BC903" : "#ff0606" }}>
-                            {online ? " CONNECTED " : " OFFLINE "}
-                        </span>
-                    ) : null}
-                </Typography>
-            </header>
-        </Grid>
-    );
-};
-
-const StartingComputer = () => {
-    const [dots, setDots] = useState(".");
-    useEffect(() => {
-        const interval = setInterval(
-            () => setDots((prev) => (prev.length >= 3 ? "." : prev + ".")),
-            250
-        );
-        return () => clearInterval(interval);
-    }, []);
-    return <Grid>Starting Computer {dots}</Grid>;
 };
 
 export default BootUp;
