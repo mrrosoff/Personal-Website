@@ -9,14 +9,78 @@ permissions:
   id-token: write
   contents: read
 
-concurrency:
-  group: deploy
-  cancel-in-progress: false
-
 jobs:
-  build-and-deploy:
-    name: Build And Deploy
+  check:
+    name: Lint And Unit Test
     runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: npm
+
+      - name: Install Node Modules
+        run: npm ci
+
+      - name: Check Format
+        run: npm run check-format
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Check Types
+        run: npm run types
+
+      - name: Unit Test
+        run: npx vitest run --silent
+
+  smoke:
+    name: Smoke Test (${{ matrix.shard }}/2)
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: npm
+
+      - name: Install Node Modules
+        run: npm ci
+
+      - name: Cache Browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Browsers
+        run: npx playwright install --with-deps chromium webkit
+
+      - name: Smoke Test
+        run: npx playwright test --shard=${{ matrix.shard }}/2
+
+  deploy:
+    name: Deploy
+    needs: [check, smoke]
+    runs-on: ubuntu-latest
+
+    concurrency:
+      group: deploy
+      cancel-in-progress: false
 
     steps:
       - name: Checkout Repo
@@ -36,18 +100,6 @@ jobs:
 
       - name: Install Node Modules
         run: npm ci
-
-      - name: Check Format
-        run: npm run check-format
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Install Browsers
-        run: npx playwright install --with-deps chromium webkit
-
-      - name: Test
-        run: npm test
 
       - name: Build
         run: npm run build-cdk
