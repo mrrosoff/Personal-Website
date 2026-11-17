@@ -52,7 +52,7 @@ async function registerNewUser(
         firstName: payload.firstName,
         lastName: payload.lastName,
         unsubscribed: false,
-        audienceId: audienceId
+        segments: [{ id: audienceId }]
     });
     if (error || !data) {
         throw Error(`Error Creating Contact: ${error?.message}`);

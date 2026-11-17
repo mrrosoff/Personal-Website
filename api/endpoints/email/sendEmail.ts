@@ -47,7 +47,7 @@ async function createBroadcast(resend: Resend, message?: string): Promise<string
 
     const { data, error } = await resend.broadcasts.create({
         name: "Ice Cream Flavor Drop",
-        audienceId: id,
+        segmentId: id,
         from: "Max <drops@ice-cream.maxrosoff.com>",
         replyTo: "me@maxrosoff.com",
         subject: "New Ice Cream Flavor Drop!",
