@@ -12,6 +12,22 @@ describe("index", () => {
         expect(await screen.findByText("the app")).toBeInTheDocument();
     });
 
+    it("should greet whoever opens the console", async () => {
+        vi.resetModules();
+        const log = vi.spyOn(console, "log").mockImplementation(() => undefined);
+        document.body.innerHTML = '<div id="root"></div>';
+
+        await import("../../site/index");
+
+        expect(log).toHaveBeenCalledWith(
+            expect.stringContaining("curl -L maxrosoff.com"),
+            expect.any(String),
+            expect.any(String),
+            expect.any(String),
+            expect.any(String)
+        );
+    });
+
     it("should refuse to start without a root element", async () => {
         vi.resetModules();
         document.body.innerHTML = "";

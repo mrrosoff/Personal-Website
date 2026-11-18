@@ -8,7 +8,8 @@ import { mockDocumentClient, mockFlavor } from "../../../mocks/aws/dynamodb";
 import { mockToken } from "../../../setup";
 
 import { handler } from "../../../../api/endpoints/preview/preview";
-import { PREVIEW_CARD_PAGES, UserType } from "../../../../api/types";
+import { PREVIEW_CARD_PAGES } from "../../../../api/previewCardPages.mts";
+import { UserType } from "../../../../api/types";
 
 vi.mock("@cf-wasm/og/node", () => ({
     render: vi.fn(),

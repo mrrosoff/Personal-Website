@@ -2,26 +2,7 @@
 
 My personal website, [maxrosoff.com](https://maxrosoff.com): a terminal you can type into, an ice cream shop, a Polaroid frame friends can send photos to, and a few games.
 
-## How It Fits Together
-
-| Folder            | What lives there                                                                 |
-| ----------------- | -------------------------------------------------------------------------------- |
-| `site/`           | The React app, built with Vite and served by Cloudflare Pages                    |
-| `site/theme.ts`   | Colors, fonts and the MUI theme, shared by the site, the emails and the API      |
-| `functions/`      | The Cloudflare Pages middleware                                                  |
-| `api/`            | AWS Lambda handlers behind API Gateway, one per file in `api/endpoints/*/`       |
-| `infrastructure/` | The CDK stack that deploys the API, tables, bucket and alarms                    |
-| `tst/`            | Unit tests mirroring the source folders, plus browser smoke tests in `tst/smoke` |
-
-### Link Previews
-
-Every page shares one static `index.html`, so the Pages middleware gives link previews their per-page card. On pages with their own card it points `og:image` at `api.maxrosoff.com/preview.png`, passing along the page and its query string. The preview Lambda picks a card for the page (home, shop, mailing list, friend invite or subscription link), verifies any token, and renders it with Max's photo. The pages that get a card are listed once in `PREVIEW_CARD_PAGES`, and the build generates the middleware's routes from it.
-
-### curl
-
-`curl https://maxrosoff.com` answers with a terminal card instead of the site.
-
-## Running It
+## Getting Started
 
 ```bash
 nvm use
@@ -29,22 +10,30 @@ npm install
 npm start
 ```
 
+That opens the site locally. A few other commands:
+
 | Command               | What it does                                               |
 | --------------------- | ---------------------------------------------------------- |
-| `npm start`           | Runs the site locally                                      |
-| `npm run start-email` | Previews the email templates                               |
 | `npm test`            | Runs the unit tests, then the smoke tests on seven devices |
+| `npm run start-email` | Previews the email templates                               |
 | `npm run types`       | Type checks everything                                     |
 | `npm run lint`        | Lints everything                                           |
 | `npm run format`      | Formats everything                                         |
-| `npm run build-cdk`   | Bundles the Lambdas for deploying                          |
 
-## Testing
+The smoke tests need browsers the first time: `npx playwright install chromium webkit`.
 
-Unit tests run in Vitest with 100% coverage required. AWS, Stripe and Resend are faked in memory at the boundary, and everything else runs for real.
+Pushing to `main` deploys. GitHub Actions runs the checks and tests, then deploys the API. Cloudflare Pages builds and deploys the site.
 
-The smoke tests run the production build in real browsers, on Cloudflare's local Pages runtime so the middleware runs too. They cover every main path on desktop Chrome and Safari, an iPhone, an iPhone SE, an iPad and Google and Samsung phones, with the API, Stripe.js and passkeys faked in the browser. They check behavior and computed styles rather than screenshots. Install the browsers once with `npx playwright install chromium webkit`.
+## How It Works
 
-## Deploying
+**The site** is a React app served by Cloudflare Pages. It boots into a terminal, and the shop, Polaroid and other pages sit alongside it.
 
-Pushing to `main` deploys. GitHub Actions runs format, lint, types and unit tests alongside the smoke tests, then deploys the API with CDK once both pass. Cloudflare Pages builds and deploys the site on its own.
+**The API** is a set of AWS Lambdas behind API Gateway, deployed with CDK. It handles the shop, the mailing list, friend invites and passkeys, and the Polaroid frame's photos.
+
+**The edge** is a small Cloudflare Pages function. It gives each shared link its own preview image, and answers `curl -L maxrosoff.com` with a terminal card instead of the site.
+
+**Link previews** are rendered by the API on demand: one card for the home page, the shop, the mailing list, friend invites and subscription links.
+
+**The theme** keeps colors and fonts in one place for the site, the emails and the preview cards.
+
+**Tests** come in two kinds. Unit tests cover everything with fakes for AWS, Stripe and email. Smoke tests run the real production build in real browsers, on phones, tablets and desktops.

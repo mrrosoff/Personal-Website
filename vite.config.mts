@@ -5,11 +5,21 @@ import { resolve } from "node:path";
 import { defineConfig } from "vite";
 import type { Plugin } from "vite";
 
-import { PREVIEW_CARD_PAGES } from "./api/types";
-
 import react from "@vitejs/plugin-react";
 
 const mockJwks = resolve("tst/mocks/jwks");
+
+const STATIC_FILES = [
+    "/assets/*",
+    "/fonts/*",
+    "/images/*",
+    "/styles/*",
+    "/.well-known/*",
+    "/favicon.ico",
+    "/llms.txt",
+    "/robots.txt",
+    "/sitemap.xml"
+];
 
 function pagesRoutes(): Plugin {
     return {
@@ -18,11 +28,7 @@ function pagesRoutes(): Plugin {
             this.emitFile({
                 type: "asset",
                 fileName: "_routes.json",
-                source: JSON.stringify({
-                    version: 1,
-                    include: ["/", ...PREVIEW_CARD_PAGES],
-                    exclude: []
-                })
+                source: JSON.stringify({ version: 1, include: ["/*"], exclude: STATIC_FILES })
             });
         }
     };

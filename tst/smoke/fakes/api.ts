@@ -3,43 +3,11 @@ import type { Page, Request } from "@playwright/test";
 
 import { DeviceKind, UserType } from "../../../api/types";
 import type { DatabaseFlavor } from "../../../api/types";
+import flavors from "./flavors.json";
 
 const API = "https://api.maxrosoff.com";
 
-const FLAVORS: DatabaseFlavor[] = [
-    {
-        productId: "prod_mint",
-        priceId: "price_mint",
-        name: "Mint Chip",
-        color: "#3fdad8",
-        count: 4,
-        type: "currentFlavor"
-    },
-    {
-        productId: "prod_fig",
-        priceId: "price_fig",
-        name: "Fig",
-        color: "#ba0cf8",
-        count: 3,
-        type: "currentFlavor"
-    },
-    {
-        productId: "prod_berry",
-        priceId: "price_berry",
-        name: "Strawberry",
-        color: "#fb07d9",
-        count: 2,
-        type: "lastBatch"
-    },
-    {
-        productId: "prod_pumpkin",
-        priceId: "price_pumpkin",
-        name: "Pumpkin Pie",
-        color: "#ff9a00",
-        count: 0,
-        type: "upcoming"
-    }
-];
+const FLAVORS = flavors as DatabaseFlavor[];
 
 type Reply = { status?: number; json?: unknown; body?: Buffer; contentType?: string };
 type Handler = Reply | ((request: Request) => Reply);

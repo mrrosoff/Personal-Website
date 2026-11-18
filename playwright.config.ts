@@ -12,10 +12,18 @@ export default defineConfig({
         { name: "galaxy", use: { ...devices["Galaxy S24"] } },
         { name: "iphone-se", use: { ...devices["iPhone SE (3rd gen)"] } }
     ],
-    webServer: {
-        command: "npx vite build && npx wrangler pages dev dist --port 4173",
-        env: { WRANGLER_SEND_METRICS: "false" },
-        url: "http://localhost:4173",
-        reuseExistingServer: !process.env.CI
-    }
+    webServer: [
+        {
+            command: "node --experimental-strip-types tst/smoke/fakes/inventoryServer.mts",
+            port: 4175,
+            reuseExistingServer: !process.env.CI
+        },
+        {
+            command:
+                "npx vite build && npx wrangler pages dev dist --port 4173 --binding API_ENDPOINT=http://localhost:4175",
+            env: { WRANGLER_SEND_METRICS: "false" },
+            url: "http://localhost:4173",
+            reuseExistingServer: !process.env.CI
+        }
+    ]
 });

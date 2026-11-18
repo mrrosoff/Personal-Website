@@ -77,3 +77,27 @@ test("sends security headers on pages with and without a function", async ({ req
         expect(headers["referrer-policy"]).toBe("strict-origin-when-cross-origin");
     }
 });
+
+test("shows curl what is in the freezer", async ({ request }) => {
+    const response = await request.get("/ice-cream", { headers: { "user-agent": "curl/8.7.1" } });
+
+    const text = await response.text();
+    expect(response.headers()["content-type"]).toContain("text/plain");
+    expect(text).toContain("Max's Freezer Stash");
+    expect(text).toContain("Mint Chip");
+    expect(text).toContain("Strawberry");
+    expect(text).toMatch(/Coming up\S*\s+Pumpkin Pie/);
+});
+
+test("serves the shop to browsers", async ({ request }) => {
+    const response = await request.get("/ice-cream", { headers: { "user-agent": "Mozilla/5.0" } });
+
+    expect(response.headers()["content-type"]).toContain("text/html");
+});
+
+test("greets curl with the terminal card on any page", async ({ request }) => {
+    const response = await request.get("/some/page", { headers: { "user-agent": "curl/8.7.1" } });
+
+    expect(response.headers()["content-type"]).toContain("text/plain");
+    expect(await response.text()).toMatch(/Booting OS[ .]+\S+SUCCESS/);
+});
