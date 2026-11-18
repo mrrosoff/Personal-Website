@@ -25,6 +25,7 @@ const RESET = "\x1b[0m";
 const BOLD = "\x1b[1m";
 const DIM = "\x1b[2m";
 const GREEN = rgb(COLORS.green);
+const RED = rgb(COLORS.red);
 
 function rgb(hex: string): string {
     if (!/^#[\da-f]{6}$/i.test(hex)) {
@@ -82,13 +83,18 @@ async function loadFlavors(api: string): Promise<DatabaseFlavor[] | null> {
     }
 }
 
-async function freezerCard(api: string): Promise<string> {
+const FREEZER_HEADER = `
+  ${BOLD}Max's Freezer Stash${RESET}
+  ${DIM}Small batch, $6 a pint${RESET}
+
+  ${leader("Checking Freezer")} `;
+
+async function freezerContents(api: string): Promise<string> {
     const flavors = await loadFlavors(api);
     if (!flavors) {
-        return `
-  ${BOLD}Max's Freezer Stash${RESET}
+        return `${RED}OFFLINE${RESET}
 
-  The freezer is offline right now. Try ${GREEN}${SHOP}${RESET}
+  Try ${GREEN}${SHOP}${RESET}
 
 `;
     }
@@ -97,15 +103,16 @@ async function freezerCard(api: string): Promise<string> {
             (flavor.type === "currentFlavor" || flavor.type === "lastBatch") && flavor.count > 0
     );
     const upcoming = flavors.filter((flavor) => flavor.type === "upcoming");
+    const status = inStock.length
+        ? `${GREEN}${inStock.length.toString()} FLAVORS${RESET}`
+        : `${RED}EMPTY${RESET}`;
     const stock = inStock.length
         ? inStock.map((flavor) => `  ${rgb(flavor.color)}${flavor.name}${RESET}`).join("\n")
         : "  Restocking soon";
     const comingUp = upcoming.length
         ? `\n\n  ${DIM}Coming up${RESET}  ${upcoming.map((flavor) => flavor.name).join(", ")}`
         : "";
-    return `
-  ${BOLD}Max's Freezer Stash${RESET}
-  ${DIM}Small batch, $6 a pint${RESET}
+    return `${status}
 
 ${stock}${comingUp}
 
@@ -114,14 +121,32 @@ ${stock}${comingUp}
 `;
 }
 
-function text(body: string): Response {
+function text(body: string | ReadableStream): Response {
     return new Response(body, { headers: { "content-type": "text/plain; charset=utf-8" } });
 }
 
-async function answerTerminal(page: URL, { env }: PagesContext): Promise<Response> {
+async function writeParts(
+    writable: WritableStream<Uint8Array>,
+    parts: (string | Promise<string>)[]
+): Promise<void> {
+    const writer = writable.getWriter();
+    const encoder = new TextEncoder();
+    for (const part of parts) {
+        await writer.write(encoder.encode(await part));
+    }
+    await writer.close();
+}
+
+function streamText(...parts: (string | Promise<string>)[]): Response {
+    const { readable, writable } = new TransformStream<Uint8Array, Uint8Array>();
+    void writeParts(writable, parts);
+    return text(readable);
+}
+
+function answerTerminal(page: URL, { env }: PagesContext): Response {
     switch (page.pathname) {
         case "/ice-cream":
-            return text(await freezerCard(env.API_ENDPOINT ?? API_ENDPOINT));
+            return streamText(FREEZER_HEADER, freezerContents(env.API_ENDPOINT ?? API_ENDPOINT));
         default:
             return text(TERMINAL_CARD);
     }
@@ -141,7 +166,7 @@ async function addPreviewImage(page: URL, { next }: PagesContext): Promise<Respo
         .transform(await next());
 }
 
-export function onRequest(context: PagesContext): Promise<Response> {
+export function onRequest(context: PagesContext): Response | Promise<Response> {
     const page = new URL(context.request.url);
     if (TERMINAL_CLIENTS.test(context.request.headers.get("user-agent") ?? "")) {
         return answerTerminal(page, context);

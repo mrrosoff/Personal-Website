@@ -84,6 +84,7 @@ test("shows curl what is in the freezer", async ({ request }) => {
     const text = await response.text();
     expect(response.headers()["content-type"]).toContain("text/plain");
     expect(text).toContain("Max's Freezer Stash");
+    expect(text).toMatch(/Checking Freezer[ .]+\S+3 FLAVORS/);
     expect(text).toContain("Mint Chip");
     expect(text).toContain("Strawberry");
     expect(text).toMatch(/Coming up\S*\s+Pumpkin Pie/);
